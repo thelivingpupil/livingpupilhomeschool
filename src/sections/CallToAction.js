@@ -1,22 +1,18 @@
 const CallToAction = () => {
   return (
-    <div className="flex items-center justify-center w-full h-screen bg-blue-600">
-      <div className="relative flex flex-col px-5 mx-auto space-y-5 md:w-3/4">
-        <div className="flex flex-col space-y-3 text-white">
-          <h2 className="text-4xl font-extrabold text-center md:text-6xl">
-            <span className="block">Build SaaS platforms like a PRO</span>
-          </h2>
-          <h2 className="text-2xl font-bold text-center md:text-4xl">
-            <span className="block">Start your free trial today</span>
-          </h2>
-        </div>
-        <div className="flex items-center justify-center">
-          <a className="px-10 py-3 text-xl text-center text-blue-600 bg-white rounded shadow hover:bg-blue-50">
-            Subscribe Now
-          </a>
+    <section className="text-gray-600 body-font">
+      <div className="container px-5 py-24 mx-auto">
+        <div className="flex flex-col items-start mx-auto lg:w-2/3 sm:flex-row sm:items-center">
+          <h1 className="flex-grow text-2xl font-medium text-gray-900 sm:pr-16 title-font">
+            Slow-carb next level shoindxgoitch ethical authentic, scenester
+            sriracha forage.
+          </h1>
+          <button className="flex-shrink-0 px-8 py-2 mt-10 text-lg text-white bg-blue-500 border-0 rounded focus:outline-none hover:bg-blue-600 sm:mt-0">
+            Button
+          </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
