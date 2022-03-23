@@ -1,6 +1,6 @@
 {
-  "name": "nextacular",
-  "version": "1.1.0-Beta",
+  "name": "livingpupilhomeschool",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev",

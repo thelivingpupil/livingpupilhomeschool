@@ -4,8 +4,8 @@ import EmailProvider from 'next-auth/providers/email';
 
 import prisma from '@/prisma/index';
 import { html, text } from '@/config/email-templates/signin';
-import { sendMail } from '@/lib/server/mail';
-import { getPayment } from '@/prisma/services/customer';
+import { emailConfig, sendMail } from '@/lib/server/mail';
+import { createPaymentAccount, getPayment } from '@/prisma/services/customer';
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -36,14 +36,7 @@ export default NextAuth({
   providers: [
     EmailProvider({
       from: process.env.EMAIL_FROM,
-      server: {
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
-        host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
-      },
+      server: emailConfig,
       sendVerificationRequest: async ({ identifier: email, url }) => {
         const { host } = new URL(url);
         await sendMail({
@@ -55,7 +48,7 @@ export default NextAuth({
       },
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || null,
   session: {
     jwt: true,
   },
