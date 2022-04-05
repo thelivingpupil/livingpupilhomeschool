@@ -4,6 +4,8 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
+        blog: "url('/images/bg-blog.jpg')",
+        cta: "url('/images/bg-cta.jpg')",
         'underline-highlight': "url('/images/underline.svg')",
         'wave-1': "url('/images/wave-1.svg')",
         'wave-1-1': "url('/images/wave-1-1.svg')",

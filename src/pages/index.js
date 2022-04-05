@@ -1,5 +1,6 @@
 import Meta from '@/components/Meta/index';
 import { LandingLayout } from '@/layouts/index';
+import Contact from '@/sections/Contact';
 import {
   Blog,
   CallToAction,
@@ -26,6 +27,7 @@ const Home = () => {
       <Blog />
       <Testimonial />
       <Quote />
+      <Contact />
       <Footer />
     </LandingLayout>
   );
