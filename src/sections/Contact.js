@@ -3,7 +3,7 @@ const Contact = () => {
     <section class="text-gray-600 body-font relative">
       <div class="absolute inset-0 bg-gray-300">
         <iframe
-          className="grayscale contrast-125 opacity-40"
+          className="opacity-50 contrast-125"
           width="100%"
           height="100%"
           frameborder="0"

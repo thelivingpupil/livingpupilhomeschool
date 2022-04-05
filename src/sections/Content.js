@@ -3,7 +3,7 @@ const Content = () => {
     <section className="text-gray-600 body-font bg-blog">
       <div className="bg-right bg-no-repeat bg-contain bg-gradient-to-b from-white via-white/70 to-white">
         <div className="container px-5 py-24 mx-auto">
-          <div className="flex flex-wrap w-full mb-20">
+          <div className="flex w-full mb-20 space-x-10">
             <div className="w-full mb-6 lg:w-1/3 lg:mb-0">
               <h1 className="mb-2 text-2xl font-medium text-primary-600 sm:text-3xl title-font font-display">
                 Homeschool Stories from our Parents
