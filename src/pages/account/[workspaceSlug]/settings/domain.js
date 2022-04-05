@@ -83,7 +83,7 @@ const Domain = ({ isTeamOwner, workspace }) => {
               </div>
               <Link href={`http://${workspace.hostname}`}>
                 <a target="_blank">
-                  <ExternalLinkIcon className="w-5 h-5 cursor-pointer hover:text-blue-600" />
+                  <ExternalLinkIcon className="w-5 h-5 cursor-pointer hover:text-primary-600" />
                 </a>
               </Link>
             </div>
@@ -117,7 +117,7 @@ const Domain = ({ isTeamOwner, workspace }) => {
                 <Card.Footer>
                   <span />
                   <Button
-                    className="text-white bg-blue-600 hover:bg-blue-500"
+                    className="text-white bg-primary-600 hover:bg-primary-600"
                     disabled={!validDomainName || isSubmitting}
                     onClick={addDomain}
                   >

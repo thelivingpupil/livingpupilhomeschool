@@ -2,7 +2,7 @@ const Testimonial = () => {
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-24 mx-auto">
-        <h1 className="mb-12 text-3xl font-medium text-center text-gray-900 title-font">
+        <h1 className="mb-12 text-3xl text-center text-gray-900 font-display title-font">
           Testimonials
         </h1>
         <div className="flex flex-wrap -m-4">
@@ -32,7 +32,7 @@ const Testimonial = () => {
                   <span className="font-medium text-gray-900 title-font">
                     Holden Caulfield
                   </span>
-                  <span className="text-sm text-gray-500">UI DEVELOPER</span>
+                  <span className="text-sm text-gray-600">UI DEVELOPER</span>
                 </span>
               </a>
             </div>
@@ -63,7 +63,7 @@ const Testimonial = () => {
                   <span className="font-medium text-gray-900 title-font">
                     Alper Kamu
                   </span>
-                  <span className="text-sm text-gray-500">DESIGNER</span>
+                  <span className="text-sm text-gray-600">DESIGNER</span>
                 </span>
               </a>
             </div>

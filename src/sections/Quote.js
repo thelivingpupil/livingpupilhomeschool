@@ -22,11 +22,11 @@ const Quote = () => {
             shoindigoitch ethical authentic, yr scenester sriracha forage
             franzen organic drinking vinegar.
           </p>
-          <span className="inline-block w-10 h-1 mt-8 mb-6 bg-blue-500 rounded"></span>
+          <span className="inline-block w-10 h-1 mt-8 mb-6 bg-primary-600 rounded"></span>
           <h2 className="text-sm font-medium tracking-wider text-gray-900 title-font">
             HOLDEN CAULFIELD
           </h2>
-          <p className="text-gray-500">Senior Product Designer</p>
+          <p className="text-gray-600">Senior Product Designer</p>
         </div>
       </div>
     </section>

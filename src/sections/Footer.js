@@ -1,101 +1,116 @@
+import Image from 'next/image';
+
 const Footer = () => {
   return (
     <footer className="text-gray-600 body-font">
       <div className="container flex flex-col flex-wrap px-5 py-24 mx-auto md:items-center lg:items-start md:flex-row md:flex-nowrap">
         <div className="flex-shrink-0 w-64 mx-auto text-center md:mx-0 md:text-left">
           <a className="flex items-center justify-center font-medium text-gray-900 title-font md:justify-start">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              className="w-10 h-10 p-2 text-white bg-blue-500 rounded-full"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-            </svg>
-            <span className="ml-3 text-xl">Tailblocks</span>
+            <Image
+              alt="The Living Pupil Homeschool"
+              src="/images/livingpupil-homeschool-logo.png"
+              width={150}
+              height={200}
+            />
+            <span className="ml-3 text-xl font-bold md:text-2xl text-primary-600">
+              The Living Pupil Homeschool
+            </span>
           </a>
-          <p className="mt-2 text-sm text-gray-500">
-            Air plant banjo lyft occupy retro adaptogen indego
+          <p className="mt-2 text-sm text-gray-600">
+            The Living Pupil Homeschool Solutions is a DepEd accredited, open
+            curriculum, Charlotte Mason method Homeschool provider based in Cebu
+            City but operating nationwide and internationally.
           </p>
         </div>
         <div className="flex flex-wrap flex-grow mt-10 -mb-10 text-center md:pl-20 md:mt-0 md:text-left">
           <div className="w-full px-4 lg:w-1/4 md:w-1/2">
-            <h2 className="mb-3 text-sm font-medium tracking-widest text-gray-900 title-font">
-              CATEGORIES
+            <h2 className="mb-3 text-sm font-bold tracking-widest text-gray-900 title-font">
+              ABOUT
             </h2>
             <nav className="mb-10 list-none">
               <li>
-                <a className="text-gray-600 hover:text-gray-800">First Link</a>
+                <a className="text-gray-600 hover:text-gray-800">
+                  The Living Pupil Homeschool
+                </a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Second Link</a>
+                <a className="text-gray-600 hover:text-gray-800">
+                  How It Works
+                </a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Third Link</a>
+                <a className="text-gray-600 hover:text-gray-800">The Team</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Fourth Link</a>
+                <a className="text-gray-600 hover:text-gray-800">
+                  Charlotte Mason
+                </a>
               </li>
             </nav>
           </div>
           <div className="w-full px-4 lg:w-1/4 md:w-1/2">
-            <h2 className="mb-3 text-sm font-medium tracking-widest text-gray-900 title-font">
-              CATEGORIES
+            <h2 className="mb-3 text-sm font-bold tracking-widest text-gray-900 title-font">
+              COMMUNITY
             </h2>
             <nav className="mb-10 list-none">
               <li>
-                <a className="text-gray-600 hover:text-gray-800">First Link</a>
+                <a className="text-gray-600 hover:text-gray-800">
+                  Learning Resources
+                </a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Second Link</a>
+                <a className="text-gray-600 hover:text-gray-800">
+                  News and Announcements
+                </a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Third Link</a>
+                <a className="text-gray-600 hover:text-gray-800">
+                  Our Blog and Stories
+                </a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Fourth Link</a>
+                <a className="text-gray-600 hover:text-gray-800">
+                  Social Channels
+                </a>
               </li>
             </nav>
           </div>
           <div className="w-full px-4 lg:w-1/4 md:w-1/2">
-            <h2 className="mb-3 text-sm font-medium tracking-widest text-gray-900 title-font">
-              CATEGORIES
+            <h2 className="mb-3 text-sm font-bold tracking-widest text-gray-900 title-font">
+              PROGRAMS
             </h2>
             <nav className="mb-10 list-none">
               <li>
-                <a className="text-gray-600 hover:text-gray-800">First Link</a>
+                <a className="text-gray-600 hover:text-gray-800">Programs</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Second Link</a>
+                <a className="text-gray-600 hover:text-gray-800">Curriculums</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Third Link</a>
-              </li>
-              <li>
-                <a className="text-gray-600 hover:text-gray-800">Fourth Link</a>
+                <a className="text-gray-600 hover:text-gray-800">Enrollment</a>
               </li>
             </nav>
           </div>
           <div className="w-full px-4 lg:w-1/4 md:w-1/2">
-            <h2 className="mb-3 text-sm font-medium tracking-widest text-gray-900 title-font">
-              CATEGORIES
+            <h2 className="mb-3 text-sm font-bold tracking-widest text-gray-900 title-font">
+              SUPPORT
             </h2>
             <nav className="mb-10 list-none">
               <li>
-                <a className="text-gray-600 hover:text-gray-800">First Link</a>
+                <a className="text-gray-600 hover:text-gray-800">Help Center</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Second Link</a>
+                <a className="text-gray-600 hover:text-gray-800">Contact Us</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Third Link</a>
+                <a className="text-gray-600 hover:text-gray-800">
+                  Privacy Policy
+                </a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Fourth Link</a>
+                <a className="text-gray-600 hover:text-gray-800">
+                  Terms and Conditions
+                </a>
               </li>
             </nav>
           </div>
@@ -103,7 +118,7 @@ const Footer = () => {
       </div>
       <div className="bg-gray-100">
         <div className="container flex flex-col flex-wrap px-5 py-4 mx-auto sm:flex-row">
-          <p className="text-sm text-center text-gray-500 sm:text-left">
+          <p className="text-sm text-center text-gray-600 sm:text-left">
             © {new Date().getFullYear()} The Living Pupil Homeschool —
             <a
               href="https://twitter.com/nextacular"
@@ -115,7 +130,7 @@ const Footer = () => {
             </a>
           </p>
           <span className="inline-flex justify-center mt-2 sm:ml-auto sm:mt-0 sm:justify-start">
-            <a className="text-gray-500">
+            <a className="text-gray-600">
               <svg
                 fill="currentColor"
                 stroke-linecap="round"
@@ -127,7 +142,7 @@ const Footer = () => {
                 <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
               </svg>
             </a>
-            <a className="ml-3 text-gray-500">
+            <a className="ml-3 text-gray-600">
               <svg
                 fill="currentColor"
                 stroke-linecap="round"
@@ -139,7 +154,7 @@ const Footer = () => {
                 <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
               </svg>
             </a>
-            <a className="ml-3 text-gray-500">
+            <a className="ml-3 text-gray-600">
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -153,7 +168,7 @@ const Footer = () => {
                 <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
               </svg>
             </a>
-            <a className="ml-3 text-gray-500">
+            <a className="ml-3 text-gray-600">
               <svg
                 fill="currentColor"
                 stroke="currentColor"

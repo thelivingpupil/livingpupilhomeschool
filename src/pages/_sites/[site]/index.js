@@ -29,7 +29,7 @@ const Site = ({ workspace }) => {
         <p>You can also visit these links:</p>
         <Link href={`https://${workspace.hostname}`}>
           <a
-            className="flex space-x-3 text-blue-600 hover:underline"
+            className="flex space-x-3 text-primary-600 hover:underline"
             target="_blank"
           >
             <span>{`${workspace.hostname}`}</span>
@@ -39,7 +39,7 @@ const Site = ({ workspace }) => {
         {workspace.domains.map((domain, index) => (
           <Link key={index} href={`https://${domain.name}`}>
             <a
-              className="flex space-x-3 text-blue-600 hover:underline"
+              className="flex space-x-3 text-primary-600 hover:underline"
               target="_blank"
             >
               <span>{domain.name}</span>

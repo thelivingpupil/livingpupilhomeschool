@@ -4,12 +4,12 @@ const Content = () => {
       <div className="container px-5 py-24 mx-auto">
         <div className="flex flex-wrap w-full mb-20">
           <div className="w-full mb-6 lg:w-1/2 lg:mb-0">
-            <h1 className="mb-2 text-2xl font-medium text-gray-900 sm:text-3xl title-font">
+            <h1 className="mb-2 text-2xl font-medium text-primary-600 sm:text-3xl title-font font-display">
               Pitchfork Kickstarter Taxidermy
             </h1>
-            <div className="w-20 h-1 bg-blue-500 rounded"></div>
+            <div className="w-20 h-1 rounded bg-secondary-600"></div>
           </div>
-          <p className="w-full leading-relaxed text-gray-500 lg:w-1/2">
+          <p className="w-full leading-relaxed text-gray-600 lg:w-1/2">
             Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical
             gentrify, subway tile poke farm-to-table. Franzen you probably
             haven't heard of them man bun deep jianbing selfies heirloom prism
@@ -24,7 +24,7 @@ const Content = () => {
                 src="https://dummyimage.com/720x400"
                 alt="content"
               />
-              <h3 className="text-xs font-medium tracking-widest text-blue-500 title-font">
+              <h3 className="text-xs font-medium tracking-widest text-primary-600 title-font">
                 SUBTITLE
               </h3>
               <h2 className="mb-4 text-lg font-medium text-gray-900 title-font">
@@ -43,7 +43,7 @@ const Content = () => {
                 src="https://dummyimage.com/721x401"
                 alt="content"
               />
-              <h3 className="text-xs font-medium tracking-widest text-blue-500 title-font">
+              <h3 className="text-xs font-medium tracking-widest text-primary-600 title-font">
                 SUBTITLE
               </h3>
               <h2 className="mb-4 text-lg font-medium text-gray-900 title-font">
@@ -62,7 +62,7 @@ const Content = () => {
                 src="https://dummyimage.com/722x402"
                 alt="content"
               />
-              <h3 className="text-xs font-medium tracking-widest text-blue-500 title-font">
+              <h3 className="text-xs font-medium tracking-widest text-primary-600 title-font">
                 SUBTITLE
               </h3>
               <h2 className="mb-4 text-lg font-medium text-gray-900 title-font">
@@ -81,7 +81,7 @@ const Content = () => {
                 src="https://dummyimage.com/723x403"
                 alt="content"
               />
-              <h3 className="text-xs font-medium tracking-widest text-blue-500 title-font">
+              <h3 className="text-xs font-medium tracking-widest text-primary-600 title-font">
                 SUBTITLE
               </h3>
               <h2 className="mb-4 text-lg font-medium text-gray-900 title-font">

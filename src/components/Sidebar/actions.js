@@ -52,7 +52,7 @@ const Actions = () => {
   return (
     <div className="flex flex-col items-stretch justify-center px-5 space-y-3">
       <Button
-        className="text-white bg-blue-600 hover:bg-blue-500"
+        className="text-white bg-primary-600 hover:bg-primary-600"
         onClick={toggleModal}
       >
         <PlusIcon className="w-5 h-5 text-white" aria-hidden="true" />
@@ -80,7 +80,7 @@ const Actions = () => {
         </div>
         <div className="flex flex-col items-stretch">
           <Button
-            className="text-white bg-blue-600 hover:bg-blue-500"
+            className="text-white bg-primary-600 hover:bg-primary-600"
             disabled={!validName || isSubmitting}
             onClick={createWorkspace}
           >
@@ -119,7 +119,11 @@ const Actions = () => {
                   <Listbox.Option
                     key={index}
                     className={({ active }) =>
-                      `${active ? 'text-blue-800 bg-blue-200' : 'text-gray-800'}
+                      `${
+                        active
+                          ? 'text-primary-800 bg-primary-200'
+                          : 'text-gray-800'
+                      }
                           cursor-pointer select-none relative py-2 pl-10 pr-4`
                     }
                     value={workspace}
@@ -136,7 +140,7 @@ const Actions = () => {
                         {selected ? (
                           <span
                             className={`${
-                              active ? 'text-blue-600' : 'text-blue-600'
+                              active ? 'text-primary-600' : 'text-primary-600'
                             }
                                 absolute inset-y-0 left-0 flex items-center pl-3`}
                           >

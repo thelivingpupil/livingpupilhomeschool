@@ -128,7 +128,7 @@ const Settings = ({ user }) => {
             <Card.Footer>
               <small>Please use 32 characters at maximum</small>
               <Button
-                className="text-white bg-blue-600 hover:bg-blue-500"
+                className="text-white bg-primary-600 hover:bg-primary-600"
                 disabled={!validName || isSubmitting}
                 onClick={changeName}
               >
@@ -155,7 +155,7 @@ const Settings = ({ user }) => {
             <Card.Footer>
               <small>We will email you to verify the change</small>
               <Button
-                className="text-white bg-blue-600 hover:bg-blue-500"
+                className="text-white bg-primary-600 hover:bg-primary-600"
                 disabled={!validEmail || isSubmitting}
                 onClick={changeEmail}
               >
@@ -172,7 +172,7 @@ const Settings = ({ user }) => {
             <div className="flex items-center justify-between px-3 py-2 space-x-5 font-mono text-sm border rounded md:w-1/2">
               <span className="overflow-x-auto">{userCode}</span>
               <CopyToClipboard onCopy={copyToClipboard} text={userCode}>
-                <DocumentDuplicateIcon className="w-5 h-5 cursor-pointer hover:text-blue-600" />
+                <DocumentDuplicateIcon className="w-5 h-5 cursor-pointer hover:text-primary-600" />
               </CopyToClipboard>
             </div>
           </Card.Body>
@@ -188,7 +188,7 @@ const Settings = ({ user }) => {
               This action is not reversible, so please continue with caution
             </small>
             <Button
-              className="text-white bg-red-600 hover:bg-red-500"
+              className="text-white bg-red-600 hover:bg-red-600"
               onClick={toggleModal}
             >
               Deactivate Personal Account
@@ -221,7 +221,7 @@ const Settings = ({ user }) => {
             </div>
             <div className="flex flex-col items-stretch">
               <Button
-                className="text-white bg-red-600 hover:bg-red-500"
+                className="text-white bg-red-600 hover:bg-red-600"
                 disabled={!verifiedEmail || isSubmitting}
                 onClick={deactivateAccount}
               >

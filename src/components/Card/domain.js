@@ -35,7 +35,7 @@ const DomainCard = ({ apex, cname, isLoading, name, refresh, remove }) => {
             <div className="flex items-center mb-5 space-x-3">
               <Link href={`https://${name}`}>
                 <a
-                  className="flex items-center space-x-2 text-blue-600 hover:underline"
+                  className="flex items-center space-x-2 text-primary-600 hover:underline"
                   target="_blank"
                 >
                   <span>Visit {name}</span>
@@ -49,7 +49,7 @@ const DomainCard = ({ apex, cname, isLoading, name, refresh, remove }) => {
                 </h3>
               ) : (
                 <h3 className="flex items-center space-x-1">
-                  <CheckCircleIcon className="w-5 h-5 text-blue-600" />
+                  <CheckCircleIcon className="w-5 h-5 text-primary-600" />
                   <span>Valid Configuration</span>
                 </h3>
               )}
@@ -115,7 +115,7 @@ const DomainCard = ({ apex, cname, isLoading, name, refresh, remove }) => {
                 </Button>
               )}
               <Button
-                className="text-white bg-red-600 hover:bg-red-500"
+                className="text-white bg-red-600 hover:bg-red-600"
                 onClick={onRemove}
               >
                 Remove

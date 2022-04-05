@@ -22,7 +22,7 @@ const Blog = () => {
                   jianbing microdosing tousled waistcoat.
                 </p>
                 <div className="flex flex-wrap items-center ">
-                  <a className="inline-flex items-center text-blue-500 md:mb-2 lg:mb-0">
+                  <a className="inline-flex items-center text-primary-600 md:mb-2 lg:mb-0">
                     Learn More
                     <svg
                       className="w-4 h-4 ml-2"
@@ -89,7 +89,7 @@ const Blog = () => {
                   jianbing microdosing tousled waistcoat.
                 </p>
                 <div className="flex flex-wrap items-center">
-                  <a className="inline-flex items-center text-blue-500 md:mb-2 lg:mb-0">
+                  <a className="inline-flex items-center text-primary-600 md:mb-2 lg:mb-0">
                     Learn More
                     <svg
                       className="w-4 h-4 ml-2"
@@ -156,7 +156,7 @@ const Blog = () => {
                   jianbing microdosing tousled waistcoat.
                 </p>
                 <div className="flex flex-wrap items-center ">
-                  <a className="inline-flex items-center text-blue-500 md:mb-2 lg:mb-0">
+                  <a className="inline-flex items-center text-primary-600 md:mb-2 lg:mb-0">
                     Learn More
                     <svg
                       className="w-4 h-4 ml-2"

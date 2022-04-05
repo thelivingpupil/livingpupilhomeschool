@@ -71,7 +71,7 @@ const Advanced = ({ isCreator }) => {
             </small>
             {isCreator && (
               <Button
-                className="text-white bg-red-600 hover:bg-red-500"
+                className="text-white bg-red-600 hover:bg-red-600"
                 disabled={isSubmitting}
                 onClick={toggleModal}
               >
@@ -111,7 +111,7 @@ const Advanced = ({ isCreator }) => {
             </div>
             <div className="flex flex-col items-stretch">
               <Button
-                className="text-white bg-red-600 hover:bg-red-500"
+                className="text-white bg-red-600 hover:bg-red-600"
                 disabled={!verifiedWorkspace || isSubmitting}
                 onClick={deleteWorkspace}
               >

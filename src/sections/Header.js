@@ -1,43 +1,39 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
 const Header = () => {
   return (
-    <header className="text-gray-600 body-font">
-      <div className="container flex flex-col flex-wrap items-center p-5 mx-auto md:flex-row">
-        <a className="flex items-center mb-4 font-medium text-gray-900 title-font md:mb-0">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            className="w-10 h-10 p-2 text-white bg-blue-500 rounded-full"
-            viewBox="0 0 24 24"
-          >
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-          </svg>
-          <span className="ml-3 text-xl">The Living Pupil Homeschool</span>
+    <header className="fixed z-50 w-full text-gray-600 shadow-xl body-font backdrop-blur-xl bg-white/60">
+      <div className="container flex flex-col flex-wrap items-center justify-center p-5 mx-auto md:justify-between md:flex-row">
+        <a className="flex items-center mb-4 font-medium text-primary-800 title-font md:mb-0">
+          <Image
+            alt="The Living Pupil Homeschool"
+            src="/images/livingpupil-homeschool-icon.png"
+            width={65}
+            height={65}
+          />
+          <span className="ml-3 text-xl font-bold md:text-2xl text-primary-600">
+            The Living Pupil Homeschool
+          </span>
         </a>
-        <nav className="flex flex-wrap items-center justify-center text-base md:ml-auto">
-          <a className="mr-5 hover:text-gray-900">Home</a>
-          <a className="mr-5 hover:text-gray-900">About</a>
-          <a className="mr-5 hover:text-gray-900">Programs</a>
-          <a className="mr-5 hover:text-gray-900">Curriculum</a>
-          <a className="mr-5 hover:text-gray-900">Rates</a>
-        </nav>
-        <button className="inline-flex items-center px-3 py-1 mt-4 text-base bg-gray-100 border-0 rounded focus:outline-none hover:bg-gray-200 md:mt-0">
-          Sign In
-          <svg
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            className="w-4 h-4 ml-1"
-            viewBox="0 0 24 24"
-          >
-            <path d="M5 12h14M12 5l7 7-7 7"></path>
-          </svg>
-        </button>
+        <div className="flex flex-wrap items-center justify-center space-x-0 space-y-5 md:space-x-10 md:space-y-0">
+          <nav className="flex flex-wrap items-center justify-center space-x-10 text-base text-gray-800 md:ml-auto">
+            <a className="border-b-4 hover:text-primary-600 hover:border-b-primary-600 border-b-transparent">
+              About
+            </a>
+            <a className="border-b-4 hover:text-primary-600 hover:border-b-primary-600 border-b-transparent">
+              Programs
+            </a>
+            <a className="border-b-4 hover:text-primary-600 hover:border-b-primary-600 border-b-transparent">
+              Curriculum
+            </a>
+          </nav>
+          <Link href="/auth/login">
+            <a className="inline-flex items-center px-10 py-3 text-base font-bold border-0 rounded-full text-primary-800 bg-secondary-500 focus:outline-none hover:bg-primary-600 hover:text-white">
+              Parent Portal &rarr;
+            </a>
+          </Link>
+        </div>
       </div>
     </header>
   );

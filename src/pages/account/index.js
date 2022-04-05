@@ -82,7 +82,7 @@ const Welcome = () => {
                 <Card.Body title={workspace.name} />
                 <Card.Footer>
                   <button
-                    className="text-blue-600"
+                    className="text-primary-600"
                     onClick={() => navigate(workspace)}
                   >
                     Select workspace &rarr;
@@ -119,7 +119,7 @@ const Welcome = () => {
                 />
                 <Card.Footer>
                   <Button
-                    className="text-white bg-blue-600 hover:bg-blue-500"
+                    className="text-white bg-primary-600 hover:bg-primary-600"
                     disabled={isSubmitting}
                     onClick={() => accept(invitation.id)}
                   >

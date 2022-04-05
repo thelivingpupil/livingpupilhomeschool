@@ -3,6 +3,14 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      backgroundImage: {
+        'underline-highlight': "url('/images/underline.svg')",
+        'wave-1': "url('/images/wave-1.svg')",
+        'wave-1-1': "url('/images/wave-1-1.svg')",
+        'wave-2': "url('/images/wave-2.svg')",
+        'wave-3': "url('/images/wave-3.svg')",
+        'wave-4': "url('/images/wave-4.svg')",
+      },
       colors: {
         primary: {
           50: '#9A9EE0',
@@ -31,6 +39,7 @@ module.exports = {
       },
       fontFamily: {
         display: ['Luckiest Guy', 'cursive'],
+        sans: ['Poppins', 'sans-serif'],
       },
     },
   },

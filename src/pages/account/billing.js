@@ -61,7 +61,7 @@ const Billing = ({ invoices, products }) => {
           <Card.Footer>
             <small>You will be redirected to the payment page</small>
             <Button
-              className="text-white bg-blue-600 hover:bg-blue-500"
+              className="text-white bg-primary-600 hover:bg-primary-600"
               disabled={isSubmitting}
               onClick={toggleModal}
             >
@@ -87,7 +87,7 @@ const Billing = ({ invoices, products }) => {
                 </Card.Body>
                 <Card.Footer>
                   <Button
-                    className="w-full text-white bg-blue-600 hover:bg-blue-500"
+                    className="w-full text-white bg-primary-600 hover:bg-primary-600"
                     disabled={isSubmitting}
                     onClick={() => subscribe(product.prices.id)}
                   >
@@ -123,7 +123,7 @@ const Billing = ({ invoices, products }) => {
                 <tr key={index} className="text-sm hover:bg-gray-100">
                   <td className="px-3 py-5">
                     <Link href={invoice.hosted_invoice_url}>
-                      <a className="text-blue-600" target="_blank">
+                      <a className="text-primary-600" target="_blank">
                         {invoice.number}
                       </a>
                     </Link>
@@ -140,7 +140,7 @@ const Billing = ({ invoices, products }) => {
                   <td className="py-5">{invoice.status}</td>
                   <td className="py-5">
                     <Link href={invoice.hosted_invoice_url}>
-                      <a className="text-blue-600" target="_blank">
+                      <a className="text-primary-600" target="_blank">
                         &rarr;
                       </a>
                     </Link>

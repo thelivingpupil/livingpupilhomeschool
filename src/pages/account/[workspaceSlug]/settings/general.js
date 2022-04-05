@@ -107,7 +107,7 @@ const General = ({ isTeamOwner, workspace }) => {
             <small>Please use 16 characters at maximum</small>
             {isTeamOwner && (
               <Button
-                className="text-white bg-blue-600 hover:bg-blue-500"
+                className="text-white bg-primary-600 hover:bg-primary-600"
                 disabled={!validName || isSubmitting}
                 onClick={changeName}
               >
@@ -141,7 +141,7 @@ const General = ({ isTeamOwner, workspace }) => {
             </small>
             {isTeamOwner && (
               <Button
-                className="text-white bg-blue-600 hover:bg-blue-500"
+                className="text-white bg-primary-600 hover:bg-primary-600"
                 disabled={!validSlug || isSubmitting}
                 onClick={changeSlug}
               >
@@ -161,7 +161,7 @@ const General = ({ isTeamOwner, workspace }) => {
                 onCopy={copyToClipboard}
                 text={workspace.workspaceCode}
               >
-                <DocumentDuplicateIcon className="w-5 h-5 cursor-pointer hover:text-blue-600" />
+                <DocumentDuplicateIcon className="w-5 h-5 cursor-pointer hover:text-primary-600" />
               </CopyToClipboard>
             </div>
           </Card.Body>

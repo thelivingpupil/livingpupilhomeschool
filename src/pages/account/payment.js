@@ -31,7 +31,7 @@ const Payment = () => {
           </div>
           <div className="flex flex-row items-center justify-center space-x-5">
             <Link href="/account/billing">
-              <a className="px-10 py-3 text-white bg-blue-600 rounded shadow hover:bg-blue-500">
+              <a className="px-10 py-3 text-white bg-primary-600 rounded shadow hover:bg-primary-600">
                 Go Back
               </a>
             </Link>
