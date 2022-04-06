@@ -56,7 +56,7 @@ const Login = () => {
         <div className="text-center">
           <Link href="/">
             <a className="text-4xl font-bold text-primary-500">
-              The Living Pupil Homeschool
+              Living Pupil Homeschool
             </a>
           </Link>
         </div>

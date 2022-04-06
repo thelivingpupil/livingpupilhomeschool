@@ -1,6 +1,6 @@
 const Hero = () => {
   return (
-    <section className="relative pt-20 text-gray-200 body-font from-indigo-500 via-purple-500 to-pink-500 bg-gradient-to-br">
+    <section className="relative pt-20 text-gray-200 body-font from-primary-500 via-blue-500 to-blue-700 bg-gradient-to-br">
       <div className="w-full bg-bottom bg-no-repeat shadow-inner bg-wave-4">
         <div className="w-full bg-bottom bg-no-repeat shadow-inner bg-wave-3">
           <div className="w-full bg-bottom bg-no-repeat shadow-inner bg-wave-2">
@@ -8,9 +8,9 @@ const Hero = () => {
               <div className="w-full pb-20 bg-bottom bg-no-repeat shadow-inner bg-wave-1">
                 <div className="container flex flex-col items-center px-5 py-24 mx-auto md:flex-row">
                   <div className="flex flex-col items-center mb-16 text-center md:w-3/4 lg:pr-24 md:pr-16 md:items-start md:text-left md:mb-0">
-                    <h1 className="flex flex-wrap mb-4 space-y-5 text-3xl font-medium tracking-wide text-white title-font sm:text-5xl font-display">
+                    <h1 className="flex flex-col flex-wrap mb-4 space-y-5 text-3xl font-medium tracking-wide text-white title-font sm:text-5xl font-display">
                       <span>The First</span>
-                      <span className="bg-bottom bg-no-repeat bg-underline-highlight">
+                      <span className="bg-left-bottom bg-no-repeat bg-underline-highlight">
                         <p className="drop-shadow-xl">Charlotte Mason</p>
                       </span>
                       <span>Homeschool Provider</span>
@@ -18,9 +18,9 @@ const Hero = () => {
                     </h1>
                     <p className="mb-8 leading-relaxed">
                       Following Charlotte Mason&apos;s principle,&nbsp;
-                      <strong>The Living Pupil Homeschool</strong> gives
-                      particular attention to our pupil&apos;s relationship with
-                      God, with man, and with the world.
+                      <strong>Living Pupil Homeschool</strong> gives particular
+                      attention to our pupil&apos;s relationship with God, with
+                      man, and with the world.
                     </p>
                     <div className="flex justify-center">
                       <button className="inline-flex px-10 py-2 text-lg border-0 rounded-full text-primary-800 bg-secondary-600 focus:outline-none hover:bg-secondary-500">

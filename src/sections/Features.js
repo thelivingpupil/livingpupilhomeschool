@@ -4,11 +4,11 @@ const Features = () => {
       <div className="container px-5 py-24 mx-auto">
         <div className="mb-20 text-center">
           <h1 className="py-5 mb-4 text-2xl text-transparent text-primary-600 bg-clip-text bg-gradient-to-r from-primary-600 to-primary-300 font-display sm:text-5xl title-font drop-shadow-xl">
-            Welcome to The Living Pupil Homeschool
+            Welcome to Living Pupil Homeschool
           </h1>
           {/* <p className="mx-auto text-base leading-relaxed xl:w-2/4 lg:w-3/4 text-gray-600s">
             Educating pupils with a gentle feast curriculum in an atmosphere of
-            love and respect. Following Charlotte Mason’s principle, The Living
+            love and respect. Following Charlotte Mason’s principle, Living
             Pupil Homeschool gives particular attention our pupil’s relationship
             with God, with man and with the world.
           </p> */}

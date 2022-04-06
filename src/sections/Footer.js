@@ -7,19 +7,19 @@ const Footer = () => {
         <div className="flex-shrink-0 w-64 mx-auto text-center md:mx-0 md:text-left">
           <a className="flex items-center justify-center font-medium text-gray-900 title-font md:justify-start">
             <Image
-              alt="The Living Pupil Homeschool"
+              alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
               width={150}
               height={200}
             />
             <span className="ml-3 text-xl font-bold md:text-2xl text-primary-600">
-              The Living Pupil Homeschool
+              Living Pupil Homeschool
             </span>
           </a>
           <p className="mt-2 text-sm text-gray-600">
-            The Living Pupil Homeschool Solutions is a DepEd accredited, open
-            curriculum, Charlotte Mason method Homeschool provider based in Cebu
-            City but operating nationwide and internationally.
+            Living Pupil Homeschool is a DepEd accredited, open curriculum,
+            Charlotte Mason method Homeschool provider based in Cebu City but
+            operating nationwide and internationally.
           </p>
         </div>
         <div className="flex flex-wrap flex-grow mt-10 -mb-10 text-center md:pl-20 md:mt-0 md:text-left">
@@ -30,7 +30,7 @@ const Footer = () => {
             <nav className="mb-10 list-none">
               <li>
                 <a className="text-gray-600 hover:text-gray-800">
-                  The Living Pupil Homeschool
+                  Living Pupil Homeschool
                 </a>
               </li>
               <li>
@@ -119,7 +119,7 @@ const Footer = () => {
       <div className="bg-gray-100">
         <div className="container flex flex-col flex-wrap px-5 py-4 mx-auto sm:flex-row">
           <p className="text-sm text-center text-gray-600 sm:text-left">
-            © {new Date().getFullYear()} The Living Pupil Homeschool —
+            © {new Date().getFullYear()} Living Pupil Homeschool —
             <a
               href="https://twitter.com/nextacular"
               rel="noopener noreferrer"

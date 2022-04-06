@@ -17,7 +17,7 @@ import {
 const Home = () => {
   return (
     <LandingLayout>
-      <Meta title="The Living Pupil Homeschool" />
+      <Meta title="Living Pupil Homeschool" />
       <Header />
       <Hero />
       <CallToAction />

@@ -7,19 +7,19 @@ const Header = () => {
       <div className="container flex flex-col flex-wrap items-center justify-center p-5 mx-auto md:justify-between md:flex-row">
         <a className="flex items-center w-1/4 mb-4 font-medium text-primary-800 title-font md:mb-0">
           <Image
-            alt="The Living Pupil Homeschool"
+            alt="Living Pupil Homeschool"
             src="/images/livingpupil-homeschool-icon.png"
             width={65}
             height={65}
           />
           <span className="ml-3 text-xl font-bold md:text-xl text-primary-600">
-            The Living Pupil Homeschool
+            Living Pupil Homeschool
           </span>
         </a>
         <div className="flex flex-wrap items-center justify-center w-3/4 space-x-0 space-y-5 md:space-x-10 md:space-y-0">
           <nav className="flex flex-wrap items-center justify-center space-x-10 text-base text-gray-800 md:ml-auto">
             <a className="border-b-4 hover:text-primary-600 hover:border-b-primary-600 border-b-transparent">
-              About
+              About Us
             </a>
             <a className="border-b-4 hover:text-primary-600 hover:border-b-primary-600 border-b-transparent">
               Programs
