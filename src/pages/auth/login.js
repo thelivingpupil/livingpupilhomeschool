@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { getProviders, signIn, useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
@@ -53,13 +54,21 @@ const Login = () => {
         description="A boilerplate for your NextJS SaaS projects."
       />
       <div className="flex flex-col items-center justify-center p-5 m-auto space-y-5 rounded shadow-lg md:p-10 md:w-1/3">
-        <div className="text-center">
-          <Link href="/">
-            <a className="text-4xl font-bold text-primary-500">
-              Living Pupil Homeschool
-            </a>
-          </Link>
-        </div>
+        <Link href="/">
+          <a>
+            <Image
+              alt="Living Pupil Homeschool"
+              src="/images/livingpupil-homeschool-logo.png"
+              width={80}
+              height={80}
+            />
+          </a>
+        </Link>
+        <Link href="/">
+          <a className="text-4xl font-bold text-center text-primary-500">
+            Living Pupil Homeschool
+          </a>
+        </Link>
         <div className="text-center">
           <h1 className="text-2xl font-bold">Sign in with your email</h1>
           <h2 className="text-gray-600">

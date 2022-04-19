@@ -1,14 +1,26 @@
 const menu = (workspaceId) => [
   {
-    name: 'Workspace',
+    name: 'Student Record',
     menuItems: [
       {
-        name: 'Home',
+        name: 'Profile',
         path: `/account/${workspaceId}`,
       },
       {
-        name: 'Integrations',
-        path: `/account/${workspaceId}/integrations`,
+        name: 'Courses',
+        path: `/account/${workspaceId}/courses`,
+      },
+      {
+        name: 'Grades',
+        path: `/account/${workspaceId}/grades`,
+      },
+      {
+        name: 'Documents',
+        path: `/account/${workspaceId}/documents`,
+      },
+      {
+        name: 'School Fees',
+        path: `/account/${workspaceId}/fees`,
       },
     ],
   },
@@ -16,15 +28,15 @@ const menu = (workspaceId) => [
     name: 'Settings',
     menuItems: [
       {
-        name: 'Workspace Information',
+        name: 'Student Information',
         path: `/account/${workspaceId}/settings/general`,
       },
+      // {
+      //   name: 'Domain Configurations',
+      //   path: `/account/${workspaceId}/settings/domain`,
+      // },
       {
-        name: 'Domain Configurations',
-        path: `/account/${workspaceId}/settings/domain`,
-      },
-      {
-        name: 'Team Management',
+        name: 'Group Members',
         path: `/account/${workspaceId}/settings/team`,
       },
       {

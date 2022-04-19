@@ -19,7 +19,7 @@ Card.Body = ({ children, subtitle, title }) => {
         <div className="w-full h-8 bg-gray-400 rounded animate-pulse" />
       )}
       {subtitle && <h3 className="text-gray-400">{subtitle}</h3>}
-      <div className="flex flex-col">{children}</div>
+      <div className="flex flex-col space-y-5">{children}</div>
     </div>
   );
 };

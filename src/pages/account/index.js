@@ -63,10 +63,10 @@ const Welcome = () => {
 
   return (
     <AccountLayout>
-      <Meta title="Nextacular - Dashboard" />
+      <Meta title="Living Pupil Homeschool - Dashboard" />
       <Content.Title
-        title="Nextacular Dashboard"
-        subtitle="Start building SaaS platforms in a day"
+        title="Living Pupil Homeschool Dashboard"
+        subtitle="Enroll your child's future with us"
       />
       <Content.Divider />
       <Content.Container>
@@ -85,20 +85,20 @@ const Welcome = () => {
                     className="text-primary-600"
                     onClick={() => navigate(workspace)}
                   >
-                    Select workspace &rarr;
+                    Select student &rarr;
                   </button>
                 </Card.Footer>
               </Card>
             ))
           ) : (
-            <Card.Empty>Start creating a workspace now</Card.Empty>
+            <Card.Empty>Start creating a student record</Card.Empty>
           )}
         </div>
       </Content.Container>
       <Content.Divider thick />
       <Content.Title
-        title="Workspace Invitations"
-        subtitle="Listed here are the invitations received by your account"
+        title="Student Record Invitations"
+        subtitle="These are the invitations received by your account"
       />
       <Content.Divider />
       <Content.Container>
@@ -137,7 +137,7 @@ const Welcome = () => {
             ))
           ) : (
             <Card.Empty>
-              You haven't received any invitations to a workspace yet.
+              You haven't received any invitations to any student record
             </Card.Empty>
           )}
         </div>

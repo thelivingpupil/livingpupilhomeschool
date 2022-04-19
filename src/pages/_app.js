@@ -11,6 +11,8 @@ import swrConfig from '@/config/swr/index';
 import WorkspaceProvider from '@/providers/workspace';
 
 import '@/styles/globals.css';
+import '@/styles/datepicker.css';
+import '@splidejs/react-splide/css';
 
 const App = ({ Component, pageProps }) => {
   const [progress, setProgress] = useState(false);

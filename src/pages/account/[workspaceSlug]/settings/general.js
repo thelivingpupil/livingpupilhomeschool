@@ -83,14 +83,14 @@ const General = ({ isTeamOwner, workspace }) => {
 
   return (
     <AccountLayout>
-      <Meta title={`Nextacular - ${workspace.name} | Settings`} />
+      <Meta title={`Living Pupil Homeschool - ${workspace.name} | Settings`} />
       <Content.Title
-        title="Workspace Information"
-        subtitle="Manage your workspace details and information"
+        title="Student Record Information"
+        subtitle="View your auxiliary student record details"
       />
       <Content.Divider />
       <Content.Container>
-        <Card>
+        {/* <Card>
           <Card.Body
             title="Workspace Name"
             subtitle="Used to identify your Workspace on the Dashboard"
@@ -149,11 +149,11 @@ const General = ({ isTeamOwner, workspace }) => {
               </Button>
             )}
           </Card.Footer>
-        </Card>
+        </Card> */}
         <Card>
           <Card.Body
-            title="Workspace ID"
-            subtitle="Used when interacting with APIs"
+            title="Student Record ID"
+            subtitle="Used when interacting with APIs and for verification"
           >
             <div className="flex items-center justify-between px-3 py-2 space-x-5 font-mono text-sm border rounded md:w-1/2">
               <span className="overflow-x-auto">{workspace.workspaceCode}</span>

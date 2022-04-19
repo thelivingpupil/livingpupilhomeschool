@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Head from 'next/head';
 
 const Meta = ({ author, description, keywords, noIndex, title }) => {
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState('https://livingpupilhomeschool.com');
 
   useEffect(() => {
     setUrl(window.location.origin);

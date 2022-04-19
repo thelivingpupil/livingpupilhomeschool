@@ -107,17 +107,17 @@ const Team = ({ isTeamOwner, workspace }) => {
 
   return (
     <AccountLayout>
-      <Meta title={`Nextacular - ${workspace.name} | Team Management`} />
+      <Meta title={`Living Pupil - ${workspace.name} | Group Management`} />
       <Content.Title
-        title="Team Management"
-        subtitle="Manage your team under your workspace and invite team members"
+        title="Group Management"
+        subtitle="Manage your group under your student record and invite group members"
       />
       <Content.Divider />
       <Content.Container>
         <Card>
           <Card.Body
             title="Invite Link"
-            subtitle="Allow other people to join your team through the link below"
+            subtitle="Allow other people to join your group through the link below"
           >
             <div className="flex items-center justify-between px-3 py-2 space-x-5 font-mono text-sm border rounded">
               <span className="overflow-x-auto">{workspace.inviteLink}</span>
@@ -134,7 +134,7 @@ const Team = ({ isTeamOwner, workspace }) => {
           <Card>
             <Card.Body
               title="Add New Members"
-              subtitle="Invite Team members using email address"
+              subtitle="Invite Group members using email addresses"
             >
               <div className="flex flex-col space-y-3">
                 <div className="flex flex-row space-x-5">
@@ -199,7 +199,8 @@ const Team = ({ isTeamOwner, workspace }) => {
             </Card.Body>
             <Card.Footer>
               <small>
-                All invited team members will be set to <strong>Pending</strong>
+                All invited members will be initially set to&nbsp;
+                <strong>Pending</strong>
               </small>
               <Button
                 className="text-white bg-primary-600 hover:bg-primary-600"
@@ -214,13 +215,13 @@ const Team = ({ isTeamOwner, workspace }) => {
       </Content.Container>
       <Content.Divider thick />
       <Content.Title
-        title="Team Members"
-        subtitle="View team members and pending invites"
+        title="Group Members"
+        subtitle="View group members and pending invites"
       />
       <Content.Divider />
       <Content.Container>
         <Card>
-          <Card.Body title="Manage Team Members">
+          <Card.Body title="Manage Group Members">
             <table className="table-fixed">
               <thead className="text-gray-400 border-b">
                 <tr>

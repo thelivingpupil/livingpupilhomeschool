@@ -51,17 +51,19 @@ const Advanced = ({ isCreator }) => {
 
   return (
     <AccountLayout>
-      <Meta title={`Nextacular - ${workspace?.name} | Advanced Settings`} />
+      <Meta
+        title={`Living Pupil Homeschool - ${workspace?.name} | Advanced Settings`}
+      />
       <Content.Title
-        title="Advanced Workspace Settings"
-        subtitle="Manage your workspace settings"
+        title="Advanced Student Record Settings"
+        subtitle="Manage your student records"
       />
       <Content.Divider />
       <Content.Container>
         <Card danger>
           <Card.Body
-            title="Delete Workspace"
-            subtitle="The workspace will be permanently deleted, including its contents and domains. This action is irreversible and can not be undone."
+            title="Request Student Record Deletion"
+            subtitle="The student record will be permanently deleted, including its contents and related information. This action is irreversible and cannot be undone."
           />
           <Card.Footer>
             <small className={[isCreator && 'text-red-600']}>
@@ -81,15 +83,16 @@ const Advanced = ({ isCreator }) => {
           </Card.Footer>
           <Modal
             show={showModal}
-            title="Deactivate Workspace"
+            title="Deactivate Student Record"
             toggle={toggleModal}
           >
             <p className="flex flex-col">
               <span>
-                Your workspace will be deleted, along with all of its contents.
+                Your student record will be deleted, along with all of its
+                contents.
               </span>
               <span>
-                Data associated with this workspace can't be accessed by team
+                Data associated with this student can't be accessed by invited
                 members.
               </span>
             </p>
@@ -115,7 +118,7 @@ const Advanced = ({ isCreator }) => {
                 disabled={!verifiedWorkspace || isSubmitting}
                 onClick={deleteWorkspace}
               >
-                <span>Delete Workspace</span>
+                <span>Request Student Record Deletion</span>
               </Button>
             </div>
           </Modal>

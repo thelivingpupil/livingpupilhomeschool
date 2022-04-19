@@ -1,36 +1,49 @@
+import Image from 'next/image';
+
 const Quote = () => {
   return (
-    <section className="text-gray-600 body-font">
-      <div className="container px-5 py-24 mx-auto">
-        <div className="w-full mx-auto text-center xl:w-1/2 lg:w-3/4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            className="inline-block w-8 h-8 mb-8 text-primary-500"
-            viewBox="0 0 975.036 975.036"
-          >
-            <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
-          </svg>
-          <p className="text-lg leading-relaxed">
+    <section className="relative w-full py-20 bg-[left_-100px_top_1rem] bg-no-repeat bg-[length:300px_300px] bg-secondary-100 bg-asset-3">
+      <div className="container flex items-center justify-between mx-auto space-x-10">
+        <div className="flex flex-col w-1/2 space-y-10">
+          <h2 className="flex flex-col text-5xl font-medium tracking-wide font-display">
+            Charlotte Mason
+          </h2>
+          <p className="mb-8 leading-relaxed">
             Charlotte Mason is an 18th-century educator who believes that
             education should be liberal for all and that parents play a
             significant role in educating their children. She believed that
             children are born persons with capabilities necessary to acquire all
             appropriate knowledge for themselves by feasting on ideas; thus,
             they are not empty vessels that teachers are to fill knowledge with.
+          </p>
+          <p className="mb-8 leading-relaxed">
             Education is an atmosphere (the natural atmosphere in our homes
-            directly affect our children’s education), a discipline (the
+            directly affect our children&apos;s education), a discipline (the
             formation of good habits through intentional training) and life
             (learning should be living, through living books and not just the
-            presentation of dry facts) became the parent’s motto in her schools.
-            Students are taught to memorize “I am, I can, I ought, I will” as
-            their motto.
+            presentation of dry facts) became the parent&apos;s motto in her
+            schools. Students are taught to memorize “I am, I can, I ought, I
+            will” as their motto.
           </p>
-          <span className="inline-block w-10 h-1 mt-8 mb-6 rounded bg-primary-600"></span>
-          <h2 className="text-sm font-bold tracking-wider uppercase text-primary-700 title-font">
-            Charlotte Mason
-          </h2>
-          <p className="text-gray-600">A Philosophy of Education</p>
+          <h3 className="flex items-center justify-center space-x-5 text-3xl font-display">
+            <span className="text-secondary-500">I am</span>
+            <span className="text-primary-50">&#10022;</span>
+            <span className="text-secondary-500">I can</span>
+            <span className="text-primary-50">&#10022;</span>
+            <span className="text-secondary-500">I ought</span>
+            <span className="text-primary-50">&#10022;</span>
+            <span className="text-secondary-500">I will</span>
+          </h3>
+        </div>
+        <div className="relative w-1/2 h-[500px]">
+          <Image
+            alt="Actual Image"
+            className="rounded-xl"
+            layout="fill"
+            loading="lazy"
+            objectFit="cover"
+            src="https://images.pexels.com/photos/4473990/pexels-photo-4473990.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+          />
         </div>
       </div>
     </section>

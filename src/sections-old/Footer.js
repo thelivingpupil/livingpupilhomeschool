@@ -2,10 +2,10 @@ import Image from 'next/image';
 
 const Footer = () => {
   return (
-    <footer className="body-font">
+    <footer className="text-gray-600 body-font">
       <div className="container flex flex-col flex-wrap px-5 py-24 mx-auto md:items-center lg:items-start md:flex-row md:flex-nowrap">
         <div className="flex-shrink-0 w-64 mx-auto text-center md:mx-0 md:text-left">
-          <a className="flex items-center justify-center font-medium title-font md:justify-start">
+          <a className="flex items-center justify-center font-medium text-gray-900 title-font md:justify-start">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
@@ -24,7 +24,7 @@ const Footer = () => {
         </div>
         <div className="flex flex-wrap flex-grow mt-10 -mb-10 text-center md:pl-20 md:mt-0 md:text-left">
           <div className="w-full px-4 lg:w-1/4 md:w-1/2">
-            <h2 className="mb-3 text-sm font-bold tracking-widest title-font">
+            <h2 className="mb-3 text-sm font-bold tracking-widest text-gray-900 title-font">
               ABOUT
             </h2>
             <nav className="mb-10 list-none">

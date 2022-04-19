@@ -104,7 +104,7 @@ const Settings = ({ user }) => {
 
   return (
     <AccountLayout>
-      <Meta title="Nextacular - Account Settings" />
+      <Meta title="Living Pupil Homeschool - Account Settings" />
       <Content.Title
         title="Account Settings"
         subtitle="Manage your profile, preferences, and account settings"
@@ -142,7 +142,7 @@ const Settings = ({ user }) => {
             <Card.Body
               title="Email Address"
               subtitle="Please enter the email address you want to use to log in with
-              Nextacular"
+              Living Pupil Homeschool"
             >
               <input
                 className="px-3 py-2 border rounded md:w-1/2"
@@ -181,7 +181,7 @@ const Settings = ({ user }) => {
           <Card.Body
             title="Danger Zone"
             subtitle="Permanently remove your Personal Account and all of its contents
-              from Nextacular platform"
+              from Living Pupil Homeschool platform"
           />
           <Card.Footer>
             <small>

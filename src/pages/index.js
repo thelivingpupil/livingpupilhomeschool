@@ -1,18 +1,6 @@
 import Meta from '@/components/Meta/index';
 import { LandingLayout } from '@/layouts/index';
-import Contact from '@/sections/Contact';
-import {
-  Blog,
-  CallToAction,
-  Content,
-  Features,
-  Footer,
-  Gallery,
-  Header,
-  Hero,
-  Quote,
-  Testimonial,
-} from '@/sections/index';
+import { About, Features, Footer, Header, Hero, Quote } from '@/sections/index';
 
 const Home = () => {
   return (
@@ -20,14 +8,9 @@ const Home = () => {
       <Meta title="Living Pupil Homeschool" />
       <Header />
       <Hero />
-      <CallToAction />
+      <About />
       <Features />
-      <Content />
-      <Gallery />
-      <Blog />
-      <Testimonial />
       <Quote />
-      <Contact />
       <Footer />
     </LandingLayout>
   );

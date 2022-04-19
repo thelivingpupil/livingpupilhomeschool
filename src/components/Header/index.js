@@ -2,10 +2,9 @@ import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import {
   CogIcon,
-  CreditCardIcon,
-  DesktopComputerIcon,
   LogoutIcon,
   MoonIcon,
+  ShoppingCartIcon,
   SunIcon,
   UserCircleIcon,
 } from '@heroicons/react/outline';
@@ -65,17 +64,17 @@ const Header = () => {
                   </a>
                 </Link>
               </Menu.Item>
-              <Menu.Item>
+              {/* <Menu.Item>
                 <Link href="/account/billing">
                   <a className="flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group">
                     <CreditCardIcon aria-hidden="true" className="w-5 h-5" />
                     <span>Billing</span>
                   </a>
                 </Link>
-              </Menu.Item>
+              </Menu.Item> */}
             </div>
             <div className="p-2">
-              <Menu.Item>
+              {/* <Menu.Item>
                 <Link href="/">
                   <a className="flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group">
                     <DesktopComputerIcon
@@ -83,6 +82,14 @@ const Header = () => {
                       className="w-5 h-5"
                     />
                     <span>Landing Page</span>
+                  </a>
+                </Link>
+              </Menu.Item> */}
+              <Menu.Item>
+                <Link href="/">
+                  <a className="flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group">
+                    <ShoppingCartIcon aria-hidden="true" className="w-5 h-5" />
+                    <span>Shop</span>
                   </a>
                 </Link>
               </Menu.Item>

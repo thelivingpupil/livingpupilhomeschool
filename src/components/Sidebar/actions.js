@@ -52,28 +52,33 @@ const Actions = () => {
   return (
     <div className="flex flex-col items-stretch justify-center px-5 space-y-3">
       <Button
-        className="text-white bg-primary-600 hover:bg-primary-600"
+        className="text-gray-800 hover:text-white bg-secondary-500 hover:bg-primary-500"
         onClick={toggleModal}
       >
-        <PlusIcon className="w-5 h-5 text-white" aria-hidden="true" />
-        <span>Create Workspace</span>
+        <PlusIcon className="w-5 h-5" aria-hidden="true" />
+        <span>Create Student Record</span>
       </Button>
-      <Modal show={showModal} title="Create a Workspace" toggle={toggleModal}>
+      <Modal
+        show={showModal}
+        title="Create a Student Record"
+        toggle={toggleModal}
+      >
         <div className="space-y-0 text-sm text-gray-600">
           <p>
-            Create a workspace to keep your team&apos;s content in one place.
+            Create a student entry to keep your student's records in one place.
           </p>
-          <p>You&apos;ll be able to invite everyone later!</p>
+          <p>You&apos;ll be able to invite teachers and tutors later!</p>
         </div>
         <div className="space-y-1">
-          <h3 className="text-xl font-bold">Workspace Name</h3>
+          <h3 className="text-xl font-bold">Student Name</h3>
           <p className="text-sm text-gray-400">
-            Name your workspace. Keep it simple.
+            What's your student's name? Nicknames will do.
           </p>
           <input
             className="w-full px-3 py-2 border rounded"
             disabled={isSubmitting}
             onChange={handleNameChange}
+            placeholder="Name or Nickname"
             type="text"
             value={name}
           />
@@ -84,7 +89,7 @@ const Actions = () => {
             disabled={!validName || isSubmitting}
             onClick={createWorkspace}
           >
-            <span>Create Workspace</span>
+            <span>Create Record</span>
           </Button>
         </div>
       </Modal>
@@ -93,11 +98,11 @@ const Actions = () => {
           <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default">
             <span className="block text-gray-600 truncate">
               {isLoading
-                ? 'Fetching workspaces...'
+                ? 'Fetching students...'
                 : data?.workspaces.length === 0
-                ? 'No workspaces found'
+                ? 'No records found'
                 : workspace === null
-                ? 'Select a workspace...'
+                ? 'Select a student...'
                 : workspace.name}
             </span>
             <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
@@ -119,11 +124,7 @@ const Actions = () => {
                   <Listbox.Option
                     key={index}
                     className={({ active }) =>
-                      `${
-                        active
-                          ? 'text-primary-800 bg-primary-200'
-                          : 'text-gray-800'
-                      }
+                      `${active ? 'text-white bg-primary-200' : 'text-gray-800'}
                           cursor-pointer select-none relative py-2 pl-10 pr-4`
                     }
                     value={workspace}
@@ -140,7 +141,7 @@ const Actions = () => {
                         {selected ? (
                           <span
                             className={`${
-                              active ? 'text-primary-600' : 'text-primary-600'
+                              active ? 'text-white' : 'text-primary-600'
                             }
                                 absolute inset-y-0 left-0 flex items-center pl-3`}
                           >
