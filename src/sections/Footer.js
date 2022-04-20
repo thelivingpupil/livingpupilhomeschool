@@ -1,22 +1,21 @@
 import Image from 'next/image';
+import Link from 'next/link';
+import { FaFacebookF, FaYoutube, FaInstagram } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer className="body-font">
+    <footer>
       <div className="container flex flex-col flex-wrap px-5 py-24 mx-auto md:items-center lg:items-start md:flex-row md:flex-nowrap">
         <div className="flex-shrink-0 w-64 mx-auto text-center md:mx-0 md:text-left">
           <a className="flex items-center justify-center font-medium title-font md:justify-start">
             <Image
               alt="Living Pupil Homeschool"
-              src="/images/livingpupil-homeschool-logo.png"
-              width={200}
-              height={200}
+              src="/images/LPHS-logo-horizontal.png"
+              width={260}
+              height={120}
             />
-            <span className="ml-3 text-xl font-bold md:text-2xl text-primary-600">
-              Living Pupil Homeschool
-            </span>
           </a>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm ">
             Living Pupil Homeschool is a DepEd accredited, open curriculum,
             Charlotte Mason method Homeschool provider based in Cebu City but
             operating nationwide and internationally.
@@ -29,88 +28,70 @@ const Footer = () => {
             </h2>
             <nav className="mb-10 list-none">
               <li>
-                <a className="text-gray-600 hover:text-gray-800">
-                  Living Pupil Homeschool
-                </a>
+                <a>Living Pupil Homeschool</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">
-                  How It Works
-                </a>
+                <a>How It Works</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">The Team</a>
+                <a>The Team</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">
-                  Charlotte Mason
-                </a>
+                <a>Charlotte Mason</a>
               </li>
             </nav>
           </div>
           <div className="w-full px-4 lg:w-1/4 md:w-1/2">
-            <h2 className="mb-3 text-sm font-bold tracking-widest text-gray-900 title-font">
+            <h2 className="mb-3 text-sm font-bold tracking-widest title-font">
               COMMUNITY
             </h2>
             <nav className="mb-10 list-none">
               <li>
-                <a className="text-gray-600 hover:text-gray-800">
-                  Learning Resources
-                </a>
+                <a>Learning Resources</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">
-                  News and Announcements
-                </a>
+                <a>News and Announcements</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">
-                  Our Blog and Stories
-                </a>
+                <a>Our Blog and Stories</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">
-                  Social Channels
-                </a>
+                <a>Social Channels</a>
               </li>
             </nav>
           </div>
           <div className="w-full px-4 lg:w-1/4 md:w-1/2">
-            <h2 className="mb-3 text-sm font-bold tracking-widest text-gray-900 title-font">
+            <h2 className="mb-3 text-sm font-bold tracking-widest title-font">
               PROGRAMS
             </h2>
             <nav className="mb-10 list-none">
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Programs</a>
+                <a>Programs</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Curriculums</a>
+                <a>Curriculums</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Enrollment</a>
+                <a>Enrollment</a>
               </li>
             </nav>
           </div>
           <div className="w-full px-4 lg:w-1/4 md:w-1/2">
-            <h2 className="mb-3 text-sm font-bold tracking-widest text-gray-900 title-font">
+            <h2 className="mb-3 text-sm font-bold tracking-widest title-font">
               SUPPORT
             </h2>
             <nav className="mb-10 list-none">
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Help Center</a>
+                <a>Help Center</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">Contact Us</a>
+                <a>Contact Us</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">
-                  Privacy Policy
-                </a>
+                <a>Privacy Policy</a>
               </li>
               <li>
-                <a className="text-gray-600 hover:text-gray-800">
-                  Terms and Conditions
-                </a>
+                <a>Terms and Conditions</a>
               </li>
             </nav>
           </div>
@@ -118,72 +99,27 @@ const Footer = () => {
       </div>
       <div className="bg-gray-100">
         <div className="container flex flex-col flex-wrap px-5 py-4 mx-auto sm:flex-row">
-          <p className="text-sm text-center text-gray-600 sm:text-left">
+          <p className="text-sm text-center sm:text-left">
             © {new Date().getFullYear()} Living Pupil Homeschool —
-            <a
-              href="https://twitter.com/nextacular"
-              rel="noopener noreferrer"
-              className="ml-1 text-gray-600"
-              target="_blank"
-            >
-              @nextacular
-            </a>
+            <Link href="https://twitter.com/nextacular">
+              <a
+                rel="noopener noreferrer"
+                className="ml-1 text-gray-600"
+                target="_blank"
+              >
+                @nextacular
+              </a>
+            </Link>
           </p>
           <span className="inline-flex justify-center mt-2 sm:ml-auto sm:mt-0 sm:justify-start">
             <a className="text-gray-600">
-              <svg
-                fill="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-              >
-                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
-              </svg>
+              <FaFacebookF className="w-5 h-5" />
             </a>
             <a className="ml-3 text-gray-600">
-              <svg
-                fill="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-              >
-                <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
-              </svg>
+              <FaYoutube className="w-5 h-5" />
             </a>
             <a className="ml-3 text-gray-600">
-              <svg
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-              >
-                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
-              </svg>
-            </a>
-            <a className="ml-3 text-gray-600">
-              <svg
-                fill="currentColor"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="0"
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke="none"
-                  d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"
-                ></path>
-                <circle cx="4" cy="4" r="2" stroke="none"></circle>
-              </svg>
+              <FaInstagram className="w-5 h-5" />
             </a>
           </span>
         </div>

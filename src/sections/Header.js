@@ -22,11 +22,6 @@ const Header = () => {
             <ul className="flex space-x-5">
               <li>
                 <Link href="/">
-                  <a className="text-center hover:text-secondary-500">Home</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/">
                   <a className="text-center hover:text-secondary-500">
                     About Us
                   </a>
