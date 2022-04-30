@@ -4,7 +4,6 @@ import render from '@/lib/client/renderer';
 import sanityClient from '@/lib/server/sanity';
 
 const Home = ({ page }) => {
-  console.log(page);
   return (
     <LandingLayout>
       <Meta title="Living Pupil Homeschool" />
@@ -29,7 +28,6 @@ export const getStaticProps = async ({ params }) => {
     `*[_type == 'pages' && index != true && slug.current == $slug][0]{..., content[]->{...}}`,
     { slug }
   );
-  console.log(page);
   return {
     props: { page },
     revalidate: 10,
