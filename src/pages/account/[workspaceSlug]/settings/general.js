@@ -90,10 +90,10 @@ const General = ({ isTeamOwner, workspace }) => {
       />
       <Content.Divider />
       <Content.Container>
-        {/* <Card>
+        <Card>
           <Card.Body
-            title="Workspace Name"
-            subtitle="Used to identify your Workspace on the Dashboard"
+            title="Student Name or Nickname"
+            subtitle="Used to identify your Student Record on the Dashboard"
           >
             <input
               className="px-3 py-2 border rounded md:w-1/2"
@@ -116,7 +116,7 @@ const General = ({ isTeamOwner, workspace }) => {
             )}
           </Card.Footer>
         </Card>
-        <Card>
+        {/* <Card>
           <Card.Body
             title="Workspace Slug"
             subtitle="Used to identify your Workspace on the Dashboard"
