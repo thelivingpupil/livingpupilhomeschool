@@ -1,6 +1,6 @@
 const progressBarConfig = () => ({
   barColors: {
-    0: '#2563eb',
+    0: '#FAC84F',
   },
   shadowBlur: 5,
 });

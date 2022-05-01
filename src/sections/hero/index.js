@@ -24,9 +24,9 @@ const Hero = ({ items }) => {
             const imageAsset = builder.image(image.asset);
             return (
               <SplideSlide key={index}>
-                <div className="container flex items-center justify-between px-10 py-5 mx-auto md:px-20">
+                <div className="container flex items-center justify-between px-10 py-5 mx-auto space-x-5 md:px-20">
                   <div className="flex flex-col space-y-5 text-center md:w-1/2 md:text-left">
-                    <h1 className="flex flex-col space-y-3 text-5xl font-medium tracking-wide md:text-6xl font-display">
+                    <h1 className="flex flex-col space-y-3 text-5xl font-medium tracking-wide md:text-5xl font-display">
                       {title.map((t, index) => (
                         <span key={index}>{t}</span>
                       ))}
@@ -45,7 +45,7 @@ const Hero = ({ items }) => {
                       ))}
                     </div>
                   </div>
-                  <div className="relative hidden md:flex md:w-1/3 h-96">
+                  <div className="relative hidden md:flex md:w-1/2 h-96">
                     <div className="absolute top-0 border-8 border-white rotate-[2deg] h-full w-full bg-gray-400" />
                     <div className="border-8 border-white h-full w-full rotate-[5deg]">
                       <Image
