@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { PortableText } from '@portabletext/react';
 import imageUrlBuilder from '@sanity/image-url';
 import Image from 'next/image';
@@ -19,14 +20,12 @@ const Info = ({ title, description, highlight, image }) => {
           <PortableText value={description} />
           <h3 className="flex items-center justify-center space-x-5 text-3xl font-display">
             {highlight.map((item, index) => (
-              <>
-                <span key={index} className="text-secondary-500">
-                  {item}
-                </span>
+              <Fragment key={index}>
+                <span className="text-secondary-500">{item}</span>
                 {index < highlight.length - 1 && (
                   <span className="text-primary-50">&#10022;</span>
                 )}
-              </>
+              </Fragment>
             ))}
           </h3>
         </div>

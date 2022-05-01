@@ -15,6 +15,7 @@ module.exports = {
         'asset-1': "url('/images/asset-1.png')",
         'asset-2': "url('/images/asset-2.png')",
         'asset-3': "url('/images/asset-3.png')",
+        'asset-4': "url('/images/asset-4.png')",
       },
       colors: {
         primary: {
