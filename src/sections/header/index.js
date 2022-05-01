@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { MenuIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const Header = ({ cta, menuLinks }) => {
+  const router = useRouter();
   const [showMenu, setMenuVisibility] = useState(false);
 
   const toggleMenu = () => setMenuVisibility(!showMenu);
@@ -42,7 +44,11 @@ const Header = ({ cta, menuLinks }) => {
                     <div className="relative group">
                       <Link href={!link.hasChildLinks ? link.path : '#!'}>
                         <a
-                          className="md:group-hover:text-secondary-500"
+                          className={`md:group-hover:text-secondary-500 ${
+                            router.pathname == link.path
+                              ? 'text-secondary-500'
+                              : null
+                          }`}
                           target={link.isExternal ? '_blank' : undefined}
                         >
                           {link.name}

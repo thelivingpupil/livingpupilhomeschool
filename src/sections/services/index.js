@@ -33,11 +33,11 @@ const Services = ({ title, content }) => {
             <div className="inline-flex w-20 h-1 rounded-full bg-secondary-600"></div>
           </div>
         </div>
-        <div className="flex flex-wrap items-center justify-center -mx-4 -mt-4 -mb-10 space-y-6 sm:-m-4 md:space-y-0">
+        <div className="flex flex-wrap items-start justify-center -mx-4 -mt-4 -mb-10 space-y-6 sm:-m-4 md:space-y-0">
           {content.map((c, index) => (
             <div
               key={index}
-              className="flex flex-col items-center p-4 text-center md:w-1/3"
+              className="flex flex-col items-center justify-start p-4 mb-10 text-center md:w-1/3"
             >
               <div
                 className={`inline-flex items-center justify-center flex-shrink-0 w-20 h-20 mb-5 rounded-full text-primary-600 border-4 ${
