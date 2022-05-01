@@ -1,9 +1,22 @@
+import ErrorPage from 'next/error';
+import { useRouter } from 'next/router';
+
 import Meta from '@/components/Meta/index';
 import { LandingLayout } from '@/layouts/index';
 import render from '@/lib/client/renderer';
 import sanityClient from '@/lib/server/sanity';
 
-const Home = ({ page }) => {
+const Page = ({ page }) => {
+  const router = useRouter();
+
+  if (!page) {
+    return <ErrorPage statusCode={404} />;
+  }
+
+  if (router.isFallback) {
+    return <h1>Loading...</h1>;
+  }
+
   return (
     <LandingLayout>
       <Meta title="Living Pupil Homeschool" />
@@ -34,4 +47,4 @@ export const getStaticProps = async ({ params }) => {
   };
 };
 
-export default Home;
+export default Page;
