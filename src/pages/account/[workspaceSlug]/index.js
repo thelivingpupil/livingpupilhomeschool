@@ -246,6 +246,7 @@ const Workspace = () => {
           <div className="flex flex-wrap justify-between w-full space-x-5">
             {steps.map((name, index) => (
               <div
+                key={index}
                 className="flex flex-col items-center justify-center space-y-3 cursor-pointer"
                 onClick={() => goToStep(index)}
               >

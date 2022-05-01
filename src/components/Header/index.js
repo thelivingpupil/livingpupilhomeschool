@@ -86,7 +86,7 @@ const Header = () => {
                 </Link>
               </Menu.Item> */}
               <Menu.Item>
-                <Link href="/">
+                <Link href="/shop">
                   <a className="flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group">
                     <ShoppingCartIcon aria-hidden="true" className="w-5 h-5" />
                     <span>Shop</span>

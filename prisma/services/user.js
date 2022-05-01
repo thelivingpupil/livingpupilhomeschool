@@ -8,6 +8,26 @@ export const deactivate = async (id) =>
     where: { id },
   });
 
+export const getGuardianInformation = async (id) =>
+  await prisma.guardianInformation.findUnique({
+    select: {
+      primaryGuardianName: true,
+      primaryGuardianOccupation: true,
+      primaryGuardianType: true,
+      primaryGuardianProfile: true,
+      secondaryGuardianName: true,
+      secondaryGuardianOccupation: true,
+      secondaryGuardianType: true,
+      secondaryGuardianProfile: true,
+      mobileNumber: true,
+      telephoneNumber: true,
+      anotherEmail: true,
+      address1: true,
+      address2: true,
+    },
+    where: { userId: id },
+  });
+
 export const getUser = async (id) =>
   await prisma.user.findUnique({
     select: {
@@ -33,6 +53,13 @@ export const updateEmail = async (id, email, previousEmail) => {
     to: [email, previousEmail],
   });
 };
+
+export const updateGuardianInformation = async (id, guardianInformation) =>
+  await prisma.guardianInformation.upsert({
+    create: { userId: id, ...guardianInformation },
+    update: guardianInformation,
+    where: { userId: id },
+  });
 
 export const updateName = async (id, name) =>
   await prisma.user.update({

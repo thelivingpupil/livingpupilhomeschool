@@ -17,9 +17,11 @@ const Contact = ({ title, subtitle }) => {
         ></iframe>
       </div>
       <div className="container flex px-5 py-24 mx-auto">
-        <div className="relative z-10 flex flex-col w-full p-8 mt-10 bg-white rounded-lg shadow-md lg:w-1/3 md:w-1/2 md:ml-auto md:mt-0">
+        <div className="relative z-10 flex flex-col w-full p-8 mt-10 space-y-5 bg-white rounded-lg shadow-md lg:w-1/3 md:w-1/2 md:ml-auto md:mt-0">
           <h2 className="mb-1 text-xl font-display title-font">{title}</h2>
-          <PortableText value={subtitle} />
+          <div className="space-y-2">
+            <PortableText value={subtitle} />
+          </div>
           <div className="relative mb-4">
             <label htmlFor="email" className="text-sm leading-7 ">
               Email

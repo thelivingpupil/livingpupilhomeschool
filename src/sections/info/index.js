@@ -36,6 +36,7 @@ const Info = ({ title, description, highlight, image }) => {
             layout="fill"
             loading="lazy"
             objectFit="cover"
+            objectPosition="top"
             src={imageAsset.url()}
           />
         </div>
