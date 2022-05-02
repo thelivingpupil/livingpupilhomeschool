@@ -8,7 +8,7 @@ import Footer from '@/sections/footer';
 import Header from '@/sections/header';
 import Title from '@/sections/title';
 
-const ShopItem = ({ page }) => {
+const ShopItem = ({ page, item }) => {
   const router = useRouter();
 
   if (!page) {
@@ -22,7 +22,7 @@ const ShopItem = ({ page }) => {
   const { footer, header } = page;
   const [headerSection] = header?.sectionType;
   const [footerSection] = footer?.sectionType;
-  console.log(item);
+
   return (
     <LandingLayout>
       <Meta title="Living Pupil Homeschool" />
@@ -43,12 +43,15 @@ export const getStaticPaths = async () => {
   };
 };
 
-export const getStaticProps = async () => {
+export const getStaticProps = async ({ params }) => {
+  const { slug } = params;
   const [[header, footer], item] = await Promise.all([
     sanityClient.fetch(
       `*[_type == 'sections' && (name == 'Common Header' || name == 'Common Footer')]`
     ),
-    sanityClient.fetch(`*[_type == 'shopItems' && slug.current == $slug][0]`),
+    sanityClient.fetch(`*[_type == 'shopItems' && slug.current == $slug][0]`, {
+      slug,
+    }),
   ]);
   return {
     props: {
