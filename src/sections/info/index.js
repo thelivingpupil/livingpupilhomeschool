@@ -12,7 +12,7 @@ const Info = ({ title, description, highlight, image }) => {
 
   return (
     <section className="relative w-full py-20 bg-[left_-100px_top_1rem] bg-no-repeat bg-[length:300px_300px] bg-secondary-100 bg-asset-3">
-      <div className="container flex items-center justify-between mx-auto space-x-10">
+      <div className="container flex items-center justify-between px-20 mx-auto space-x-10">
         <div className="flex flex-col w-1/2 space-y-10">
           <h2 className="flex flex-col text-5xl font-medium tracking-wide font-display">
             {title}

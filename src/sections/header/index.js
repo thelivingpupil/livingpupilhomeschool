@@ -12,7 +12,7 @@ const Header = ({ cta, menuLinks }) => {
 
   return (
     <header className="z-50 px-5 py-5 md:px-0">
-      <div className="container flex items-center justify-between mx-auto">
+      <div className="container flex items-center justify-between px-10 mx-auto">
         <div className="relative">
           <Link href="/">
             <a>

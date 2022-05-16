@@ -25,25 +25,44 @@ const Footer = ({
   support,
 }) => {
   return (
-    <footer>
-      <div className="container flex flex-col flex-wrap px-5 py-24 mx-auto md:items-center lg:items-start md:flex-row md:flex-nowrap">
-        <div className="flex-shrink-0 w-64 mx-auto text-center md:mx-0 md:text-left">
-          <a className="flex items-center justify-center font-medium title-font md:justify-start">
+    <footer className="bg-primary-500">
+      <div className="container flex flex-col flex-wrap px-5 py-24 mx-auto text-white md:items-center lg:items-start md:flex-row md:flex-nowrap">
+        <div className="flex mx-auto space-x-5 text-center md:mx-0 md:text-left md:w-1/3">
+          <div className="flex items-center justify-center py-5 font-medium bg-white rounded title-font md:justify-start">
             <Image
               alt="Living Pupil Homeschool"
-              src="/images/LPHS-logo-horizontal.png"
-              width={260}
-              height={120}
+              src="/images/livingpupil-homeschool-logo.png"
+              width={550}
+              height={550}
             />
-          </a>
-          <p className="mt-2 text-sm ">{description}</p>
+          </div>
+          <div className="space-y-5">
+            <p className="mt-2 text-sm ">{description}</p>
+            <div className="flex space-x-5">
+              {socialLinks &&
+                socialLinks.map((link, index) => {
+                  const Icon = icons[link.icon];
+                  return (
+                    <Link key={index} href={link.path}>
+                      <a
+                        className="p-1 bg-white rounded text-primary-500"
+                        target={link.isExternal ? '_blank' : undefined}
+                        title={link.name}
+                      >
+                        <Icon className="w-5 h-5" />
+                      </a>
+                    </Link>
+                  );
+                })}
+            </div>
+          </div>
         </div>
-        <div className="flex flex-wrap flex-grow mt-10 -mb-10 text-center md:pl-20 md:mt-0 md:text-left">
-          <div className="w-full px-4 lg:w-1/4 md:w-1/2">
-            <h2 className="mb-3 text-sm font-bold tracking-widest title-font">
-              ABOUT
+        <div className="flex flex-wrap flex-grow mt-10 -mb-10 text-center md:pl-20 md:mt-0 md:text-left md:w-2/3">
+          <div className="w-full px-4 md:w-1/2">
+            <h2 className="mb-3 text-sm font-bold tracking-widest title-font text-secondary-500">
+              About Us
             </h2>
-            <nav className="mb-10 list-none">
+            <nav className="mb-10 space-y-5 list-none">
               {about &&
                 about.map((link, index) => (
                   <li key={index}>
@@ -56,7 +75,7 @@ const Footer = ({
                 ))}
             </nav>
           </div>
-          <div className="w-full px-4 lg:w-1/4 md:w-1/2">
+          {/* <div className="w-full px-4 lg:w-1/4 md:w-1/2">
             <h2 className="mb-3 text-sm font-bold tracking-widest title-font">
               COMMUNITY
             </h2>
@@ -72,8 +91,8 @@ const Footer = ({
                   </li>
                 ))}
             </nav>
-          </div>
-          <div className="w-full px-4 lg:w-1/4 md:w-1/2">
+          </div> */}
+          {/* <div className="w-full px-4 lg:w-1/4 md:w-1/2">
             <h2 className="mb-3 text-sm font-bold tracking-widest title-font">
               PROGRAMS
             </h2>
@@ -89,12 +108,12 @@ const Footer = ({
                   </li>
                 ))}
             </nav>
-          </div>
-          <div className="w-full px-4 lg:w-1/4 md:w-1/2">
-            <h2 className="mb-3 text-sm font-bold tracking-widest title-font">
-              SUPPORT
+          </div> */}
+          <div className="w-full px-4 md:w-1/3">
+            <h2 className="mb-3 text-sm font-bold tracking-widest title-font text-secondary-500">
+              Support
             </h2>
-            <nav className="mb-10 list-none">
+            <nav className="mb-10 space-y-5 list-none">
               {support &&
                 support.map((link, index) => (
                   <li key={index}>
@@ -109,17 +128,13 @@ const Footer = ({
           </div>
         </div>
       </div>
-      <div className="bg-gray-100">
-        <div className="container flex flex-col flex-wrap px-5 py-4 mx-auto sm:flex-row">
-          <p className="text-sm text-center sm:text-left">
-            © {new Date().getFullYear()} Living Pupil Homeschool —
-            <Link href="https://twitter.com/nextacular">
-              <a className="ml-1 text-gray-600" target="_blank">
-                Created with @nextacular
-              </a>
-            </Link>
+      <div className="bg-secondary-500">
+        <div className="container px-5 py-4 mx-auto">
+          <p className="text-sm text-center">
+            © {new Date().getFullYear()} Living Pupil Homeschool. All Rights
+            Reserved
           </p>
-          <span className="inline-flex justify-center mt-2 space-x-5 sm:ml-auto sm:mt-0 sm:justify-start">
+          {/* <span className="inline-flex justify-center mt-2 space-x-5 sm:ml-auto sm:mt-0 sm:justify-start">
             {socialLinks &&
               socialLinks.map((link, index) => {
                 const Icon = icons[link.icon];
@@ -135,7 +150,7 @@ const Footer = ({
                   </Link>
                 );
               })}
-          </span>
+          </span> */}
         </div>
       </div>
     </footer>

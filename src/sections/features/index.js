@@ -17,7 +17,7 @@ const icons = {
 const Features = ({ title, description, features }) => {
   return (
     <section className="relative w-full">
-      <div className="container flex flex-col py-40 mx-auto space-y-20">
+      <div className="container flex flex-col px-20 py-40 mx-auto space-y-20">
         <h2 className="flex flex-col text-5xl font-medium tracking-wide text-center font-display">
           {title}
         </h2>
@@ -35,7 +35,7 @@ const Features = ({ title, description, features }) => {
             );
           })}
           <div className="flex items-center justify-center space-y-3">
-            <h3 className="text-xl font-medium leading-10">{description}</h3>
+            <h3 className="text-xl font-bold leading-10">{description}</h3>
           </div>
         </div>
       </div>

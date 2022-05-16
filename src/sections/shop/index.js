@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import imageUrlBuilder from '@sanity/image-url';
+import Image from 'next/image';
 import Link from 'next/link';
 
 import sanityClient from '@/lib/server/sanity';
-import Image from 'next/image';
 import { XIcon } from '@heroicons/react/outline';
 
 const builder = imageUrlBuilder(sanityClient);

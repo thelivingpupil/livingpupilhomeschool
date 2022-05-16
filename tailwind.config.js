@@ -10,12 +10,18 @@ module.exports = {
         'wave-1': "url('/images/wave-1.svg')",
         'wave-1-1': "url('/images/wave-1-1.svg')",
         'wave-2': "url('/images/wave-2.svg')",
+        'wave-2-1': "url('/images/wave-2-1.svg')",
         'wave-3': "url('/images/wave-3.svg')",
         'wave-4': "url('/images/wave-4.svg')",
         'asset-1': "url('/images/asset-1.png')",
         'asset-2': "url('/images/asset-2.png')",
         'asset-3': "url('/images/asset-3.png')",
         'asset-4': "url('/images/asset-4.png')",
+        'asset-5': "url('/images/asset-5.png')",
+        'asset-6': "url('/images/asset-6.png')",
+        'asset-7': "url('/images/asset-7.png')",
+        'asset-8': "url('/images/asset-8.png')",
+        'asset-9': "url('/images/asset-9.png')",
       },
       colors: {
         primary: {
