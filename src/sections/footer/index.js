@@ -27,7 +27,7 @@ const Footer = ({
   return (
     <footer className="bg-primary-500">
       <div className="container flex flex-col flex-wrap px-5 py-24 mx-auto text-white md:items-center lg:items-start md:flex-row md:flex-nowrap">
-        <div className="flex mx-auto space-x-5 text-center md:mx-0 md:text-left md:w-1/3">
+        <div className="flex mx-auto space-x-5 md:mx-0 md:text-left md:w-1/3">
           <div className="flex items-center justify-center py-5 font-medium bg-white rounded title-font md:justify-start">
             <Image
               alt="Living Pupil Homeschool"

@@ -17,11 +17,11 @@ const icons = {
 const Features = ({ title, description, features }) => {
   return (
     <section className="relative w-full">
-      <div className="container flex flex-col px-20 py-40 mx-auto space-y-20">
+      <div className="container flex flex-col px-10 py-20 mx-auto space-y-20 md:py-40 md:px-20">
         <h2 className="flex flex-col text-5xl font-medium tracking-wide text-center font-display">
           {title}
         </h2>
-        <div className="grid grid-cols-3 gap-x-10 gap-y-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 md:gap-y-20">
           {features.map((feature, index) => {
             const Icon = icons[feature.icon];
             return (

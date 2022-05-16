@@ -10,7 +10,7 @@ const Contact = ({ title, subtitle, address, phone, email, hours }) => {
     <section className="relative body-font bg-secondary-500">
       <div className="w-full bg-bottom bg-no-repeat shadow-inner bg-wave-3">
         <div className="w-full bg-bottom bg-no-repeat shadow-inner bg-wave-1">
-          <div className="container flex p-20 mx-auto space-x-10">
+          <div className="container flex flex-col p-10 mx-auto space-x-0 md:space-x-10 md:p-20 md:flex-row">
             <div className="space-y-5 md:w-1/2">
               <h2 className="mb-1 text-5xl font-display title-font">{title}</h2>
               <p>{subtitle}</p>
