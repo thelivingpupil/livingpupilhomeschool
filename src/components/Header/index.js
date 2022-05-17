@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import {
   CogIcon,
+  IdentificationIcon,
   LogoutIcon,
   MoonIcon,
   ShoppingCartIcon,
@@ -11,8 +12,11 @@ import {
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
 import { useTheme } from 'next-themes';
+import { UserType } from '@prisma/client';
+import { useRouter } from 'next/router';
 
 const Header = () => {
+  const router = useRouter();
   const { data } = useSession();
   const { theme, setTheme } = useTheme();
 
@@ -112,6 +116,31 @@ const Header = () => {
                 </button>
               </Menu.Item>
             </div>
+            {data && data.user && data.user.userType === UserType.ADMIN && (
+              <div className="p-2">
+                <Menu.Item>
+                  <Link
+                    href={
+                      router.pathname === '/account/admin'
+                        ? '/account'
+                        : '/account/admin'
+                    }
+                  >
+                    <a className="flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group">
+                      <IdentificationIcon
+                        aria-hidden="true"
+                        className="w-5 h-5"
+                      />
+                      <span>
+                        {router.pathname === '/account/admin'
+                          ? 'Parent Portal'
+                          : 'Administration'}
+                      </span>
+                    </a>
+                  </Link>
+                </Menu.Item>
+              </div>
+            )}
             <div className="p-2">
               <Menu.Item>
                 <button

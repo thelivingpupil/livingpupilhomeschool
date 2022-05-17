@@ -15,7 +15,7 @@ export default NextAuth({
       if (session.user) {
         // const customerPayment = await getPayment(user.email);
         session.user.userId = user.id;
-
+        session.user.userType = user.userType;
         // if (customerPayment) {
         //   session.user.subscription = customerPayment.subscriptionType;
         // }

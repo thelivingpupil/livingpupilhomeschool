@@ -27,8 +27,8 @@ const Home = ({ page }) => {
       <Script strategy="lazyOnload">
         {`
           var chatbox = document.getElementById('fb-customer-chat');
-          chatbox.setAttribute("page_id", "174774976550458");
-          chatbox.setAttribute("attribution", "biz_inbox");
+          chatbox?.setAttribute("page_id", "174774976550458");
+          chatbox?.setAttribute("attribution", "biz_inbox");
           
           window.fbAsyncInit = function() {
             FB.init({
