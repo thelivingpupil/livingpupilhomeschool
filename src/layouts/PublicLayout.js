@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { Toaster } from 'react-hot-toast';
 
