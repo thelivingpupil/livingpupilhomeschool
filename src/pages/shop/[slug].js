@@ -10,7 +10,6 @@ import Title from '@/sections/title';
 
 const ShopItem = ({ page, item }) => {
   const router = useRouter();
-  console.log(item);
 
   if (!page) {
     return <ErrorPage statusCode={404} />;

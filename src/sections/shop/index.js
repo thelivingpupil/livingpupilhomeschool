@@ -14,7 +14,6 @@ const LPH_CART_KEY = 'LPHCART';
 
 const Shop = ({ items }) => {
   const { data } = useSession();
-  console.log(data);
   const [showCart, setCartVisibility] = useState(false);
   const [total, setTotal] = useState(0);
   const [cart, setCart] = useState([]);
@@ -61,7 +60,10 @@ const Shop = ({ items }) => {
     <>
       {data && (
         <div className="w-full py-3 text-sm text-center text-white bg-primary-500">
-          You are signed in as: {data?.user?.email}
+          You are signed in as:
+          <span className="ml-2 font-medium text-secondary-500">
+            {data?.user?.email}
+          </span>
         </div>
       )}
       <section className="px-5 py-10 md:px-0">
