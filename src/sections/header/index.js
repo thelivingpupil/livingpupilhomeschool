@@ -47,7 +47,7 @@ const Header = ({ cta, menuLinks }) => {
                           className={`md:group-hover:text-secondary-500 ${
                             router.pathname == link.path
                               ? 'text-secondary-500'
-                              : null
+                              : 'font-bold md:font-normal'
                           }`}
                           target={link.isExternal ? '_blank' : undefined}
                         >

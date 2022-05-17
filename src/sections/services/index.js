@@ -1,19 +1,17 @@
+import {
+  FaAward,
+  FaBook,
+  FaHorse,
+  FaPencilAlt,
+  FaPuzzlePiece,
+} from 'react-icons/fa';
+
 const icons = {
-  apple: {
-    image: '/images/apple.png',
-  },
-  backpack: {
-    image: '/images/backpack.png',
-  },
-  stroller: {
-    image: '/images/stroller.png',
-  },
-  atom: {
-    image: '/images/atom.png',
-  },
-  'earth-globe': {
-    image: '/images/earth-globe.png',
-  },
+  apple: FaPuzzlePiece,
+  backpack: FaPencilAlt,
+  stroller: FaHorse,
+  atom: FaBook,
+  'earth-globe': FaAward,
 };
 
 const Services = ({ title, content }) => {
@@ -30,26 +28,29 @@ const Services = ({ title, content }) => {
             </div>
           </div>
           <div className="grid justify-center grid-cols-1 gap-2 md:gap-5 md:grid-cols-3">
-            {content.map((c, index) => (
-              <div
-                key={index}
-                className="flex flex-col p-5 bg-white rounded-lg shadow-xl"
-              >
-                <div className="flex items-center space-x-5">
-                  <div className="inline-flex items-center justify-center flex-shrink-0 w-16 h-16 px-2 mb-5 rounded-xl bg-secondary-500 text-primary-600">
-                    <img src={icons[c.icon].image} />
+            {content.map((c, index) => {
+              const Icon = icons[c.icon];
+              return (
+                <div
+                  key={index}
+                  className="flex flex-col p-5 bg-white rounded-lg shadow-xl"
+                >
+                  <div className="flex items-center space-x-5">
+                    <div className="inline-flex items-center justify-center flex-shrink-0 w-16 h-16 px-2 mb-5 rounded-xl bg-secondary-500">
+                      <Icon className="w-10 h-10 text-primary-500" />
+                    </div>
+                    <h2 className="mb-3 text-xl font-bold text-primary-500 title-font">
+                      {c.title}
+                    </h2>
                   </div>
-                  <h2 className="mb-3 text-xl font-bold text-primary-500 title-font">
-                    {c.title}
-                  </h2>
+                  <div className="flex-grow">
+                    <p className="text-sm leading-relaxed text-gray-800">
+                      {c.description}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-grow">
-                  <p className="text-sm leading-relaxed text-gray-800">
-                    {c.description}
-                  </p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
