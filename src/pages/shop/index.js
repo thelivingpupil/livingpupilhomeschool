@@ -1,7 +1,6 @@
 import Meta from '@/components/Meta/index';
 import { LandingLayout } from '@/layouts/index';
 import sanityClient from '@/lib/server/sanity';
-
 import Footer from '@/sections/footer';
 import Header from '@/sections/header';
 import ShopSection from '@/sections/shop';
