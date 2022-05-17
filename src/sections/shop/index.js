@@ -62,9 +62,13 @@ const Shop = ({ items }) => {
             className="px-5 py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600"
             onClick={toggleCart}
           >
-            View Cart
+            Review Cart
           </button>
-          <Modal show={showCart} title="Shopping Cart" toggle={toggleCart}>
+          <Modal
+            show={showCart}
+            title="Review Shopping Cart"
+            toggle={toggleCart}
+          >
             <div className="flex flex-col items-start justify-between w-full h-full space-y-3">
               {cart.length ? (
                 cart.map(({ image, name, price, quantity }, index) => {
@@ -93,7 +97,7 @@ const Shop = ({ items }) => {
                           }).format(price * quantity)}
                         </span>
                         <button
-                          className="hover:text-red-500"
+                          className="p-2 hover:text-red-500"
                           onClick={() => removeFromCart(index)}
                         >
                           <XIcon className="w-3 h-3" />
@@ -170,7 +174,7 @@ const Shop = ({ items }) => {
                         }).format(price * quantity)}
                       </span>
                       <button
-                        className="hover:text-red-500"
+                        className="p-2 hover:text-red-500"
                         onClick={() => removeFromCart(index)}
                       >
                         <XIcon className="w-3 h-3" />
@@ -193,7 +197,10 @@ const Shop = ({ items }) => {
               }).format(total)}
             </div>
           </div>
-          <button className="py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400">
+          <button
+            className="py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400"
+            onClick={toggleCart}
+          >
             Checkout
           </button>
         </div>
