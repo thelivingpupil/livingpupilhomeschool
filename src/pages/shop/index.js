@@ -4,7 +4,7 @@ import sanityClient from '@/lib/server/sanity';
 import Footer from '@/sections/footer';
 import Header from '@/sections/header';
 import ShopSection from '@/sections/shop';
-import Title from '@/sections/title';
+import Title from '@/sections/sectionTitle';
 
 const Shop = ({ page, shop }) => {
   const { footer, header } = page;

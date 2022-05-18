@@ -5,7 +5,7 @@ const Title = ({ title, subtitle }) => {
         <h1 className="text-4xl font-medium tracking-wide md:text-6xl font-display">
           {title}
         </h1>
-        <p className="leading-relaxed">{subtitle}</p>
+        {subtitle && <p className="leading-relaxed">{subtitle}</p>}
       </div>
     </section>
   );

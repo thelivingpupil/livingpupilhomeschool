@@ -6,7 +6,7 @@ import { LandingLayout } from '@/layouts/index';
 import sanityClient from '@/lib/server/sanity';
 import Footer from '@/sections/footer';
 import Header from '@/sections/header';
-import Title from '@/sections/title';
+import Title from '@/sections/sectionTitle';
 
 const ShopItem = ({ page, item }) => {
   const router = useRouter();

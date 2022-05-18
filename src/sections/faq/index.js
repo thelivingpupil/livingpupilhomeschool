@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { PortableText } from '@portabletext/react';
 
-import Title from '../title';
+import Title from '../sectionTitle';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/outline';
 
 const FAQItem = ({ item }) => {

@@ -18,16 +18,18 @@ const Info = ({ title, description, highlight, image }) => {
             {title}
           </h2>
           <PortableText value={description} />
-          <h3 className="flex items-center justify-center space-x-5 text-sm md:text-3xl font-display">
-            {highlight.map((item, index) => (
-              <Fragment key={index}>
-                <span className="text-secondary-500">{item}</span>
-                {index < highlight.length - 1 && (
-                  <span className="text-primary-50">&#10022;</span>
-                )}
-              </Fragment>
-            ))}
-          </h3>
+          {highlight && (
+            <h3 className="flex items-center justify-center space-x-5 text-sm md:text-3xl font-display">
+              {highlight.map((item, index) => (
+                <Fragment key={index}>
+                  <span className="text-secondary-500">{item}</span>
+                  {index < highlight.length - 1 && (
+                    <span className="text-primary-50">&#10022;</span>
+                  )}
+                </Fragment>
+              ))}
+            </h3>
+          )}
         </div>
         <div className="relative w-full md:w-1/2 h-[500px]">
           <Image

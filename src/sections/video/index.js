@@ -30,7 +30,7 @@ const Video = ({ title, description, action, video }) => {
                 {title}
               </h2>
               <PortableText value={description} />
-              {action && (
+              {action && action.path && (
                 <div className="relative">
                   <Link href={action.path}>
                     <a className="inline-block px-3 py-2 text-xs text-center rounded-lg md:px-5 md:py-3 bg-secondary-500 hover:bg-secondary-400 md:text-base">

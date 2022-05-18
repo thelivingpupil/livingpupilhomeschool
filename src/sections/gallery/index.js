@@ -2,7 +2,7 @@ import imageUrlBuilder from '@sanity/image-url';
 import Image from 'next/image';
 
 import sanityClient from '@/lib/server/sanity';
-import Title from '../title';
+import Title from '../sectionTitle';
 
 const builder = imageUrlBuilder(sanityClient);
 

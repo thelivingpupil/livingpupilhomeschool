@@ -1,5 +1,5 @@
 import { PortableText } from '@portabletext/react';
-import Title from '@/sections/title';
+import Title from '@/sections/sectionTitle';
 
 const RichText = ({ content, title, subtitle }) => {
   return (
