@@ -105,6 +105,39 @@ model Member {
   @@map("members")
 }
 
+model Order {
+  id                String    @id @default(cuid())
+  code              String
+  name              String
+  image             String
+  basePrice         Decimal   @default(0)
+  totalPrice        Decimal   @default(0)
+  quantity          Int       @default(0)
+  remarks           String?
+  purchaseHistoryId String?
+  createdAt         DateTime? @default(now())
+  deletedAt         DateTime?
+  updatedAt         DateTime? @updatedAt
+
+  purchaseHistory PurchaseHistory? @relation(fields: [purchaseHistoryId], references: [id])
+
+  @@map("orders")
+}
+
+model PurchaseHistory {
+  id            String    @id @default(cuid())
+  transactionId String    @unique @default(cuid())
+  total         Decimal   @default(0)
+  createdAt     DateTime? @default(now())
+  deletedAt     DateTime?
+  updatedAt     DateTime? @updatedAt
+
+  orderItems  Order[]
+  transaction Transaction?
+
+  @@map("purchaseHistory")
+}
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -114,6 +147,32 @@ model Session {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
+}
+
+model Transaction {
+  id                String            @id @default(cuid())
+  transactionId     String            @unique
+  referenceNumber   String            @unique
+  userId            String
+  amount            Decimal           @default(0)
+  currency          Currency          @default(PHP)
+  transactionStatus TransactionStatus @default(U)
+  paymentStatus     TransactionStatus @default(U)
+  source            TransactionSource @default(STORE)
+  paymentReference  String?
+  description       String?
+  message           String?
+  url               String?
+  purchaseHistoryId String            @unique
+  createdAt         DateTime?         @default(now())
+  deletedAt         DateTime?
+  updatedAt         DateTime?         @updatedAt
+
+  user            User            @relation(fields: [userId], references: [id])
+  purchaseHistory PurchaseHistory @relation(fields: [purchaseHistoryId], references: [id])
+
+  @@unique([transactionId, referenceNumber])
+  @@map("transactions")
 }
 
 model User {
@@ -136,6 +195,7 @@ model User {
   guardianInformation GuardianInformation?
   customerPayment     CustomerPayment?
   domains             Domain[]
+  transaction         Transaction[]
 
   @@unique([userCode, email])
   @@map("users")
@@ -169,6 +229,12 @@ model Workspace {
   @@map("workspaces")
 }
 
+enum Currency {
+  CAD
+  PHP
+  USD
+}
+
 enum GuardianType {
   MOTHER
   FATHER
@@ -190,6 +256,22 @@ enum SubscriptionType {
 enum TeamRole {
   MEMBER
   OWNER
+}
+
+enum TransactionSource {
+  ENROLLMENT
+  STORE
+}
+
+enum TransactionStatus {
+  S
+  F
+  P
+  U
+  R
+  K
+  V
+  A
 }
 
 enum UserType {

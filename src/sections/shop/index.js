@@ -1,20 +1,25 @@
 import { useEffect, useState } from 'react';
 import { XIcon } from '@heroicons/react/outline';
 import imageUrlBuilder from '@sanity/image-url';
-import Image from 'next/image';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 import Modal from '@/components/Modal';
-import sanityClient from '@/lib/server/sanity';
 import Item from '@/components/Shop/item';
-import Link from 'next/link';
+import api from '@/lib/common/api';
+import sanityClient from '@/lib/server/sanity';
 
 const builder = imageUrlBuilder(sanityClient);
 const LPH_CART_KEY = 'LPHCART';
 
 const Shop = ({ items }) => {
   const { data } = useSession();
+  const [isSubmitting, setSubmittingState] = useState(false);
   const [showCart, setCartVisibility] = useState(false);
+  const [showPaymentLink, setPaymentLinkVisibility] = useState(false);
+  const [paymentLink, setPaymentLink] = useState('');
   const [total, setTotal] = useState(0);
   const [cart, setCart] = useState([]);
 
@@ -33,6 +38,30 @@ const Shop = ({ items }) => {
     localStorage.setItem(LPH_CART_KEY, JSON.stringify(cart));
   };
 
+  const checkout = () => {
+    setSubmittingState(true);
+    api('/api/shop', {
+      body: { items: cart },
+      method: 'POST',
+    }).then((response) => {
+      setSubmittingState(false);
+
+      if (response.errors) {
+        Object.keys(response.errors).forEach((error) =>
+          toast.error(response.errors[error].msg)
+        );
+      } else {
+        toggleCart();
+        setPaymentLink(response.data.paymentLink);
+        togglePaymentLink();
+        setCart([]);
+        computeTotal([]);
+        localStorage.setItem(LPH_CART_KEY, JSON.stringify([]));
+        toast.success('Posted items for purchase!');
+      }
+    });
+  };
+
   const computeTotal = (cart) => {
     const total = cart.reduce((a, b) => a + b.price * b.quantity, 0);
     setTotal(total);
@@ -46,6 +75,8 @@ const Shop = ({ items }) => {
   };
 
   const toggleCart = () => setCartVisibility(!showCart);
+
+  const togglePaymentLink = () => setPaymentLinkVisibility(!showPaymentLink);
 
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem(LPH_CART_KEY));
@@ -84,7 +115,6 @@ const Shop = ({ items }) => {
               <div className="flex flex-col items-start justify-between w-full h-full space-y-3">
                 {cart.length ? (
                   cart.map(({ image, name, price, quantity }, index) => {
-                    const imageAsset = builder.image(image.asset);
                     return (
                       <div
                         key={index}
@@ -95,7 +125,7 @@ const Shop = ({ items }) => {
                             width={30}
                             height={30}
                             objectFit="cover"
-                            src={imageAsset.url()}
+                            src={image}
                           />
                           <div className="flex flex-col">
                             <p className="font-bold">{name}</p>
@@ -141,9 +171,10 @@ const Shop = ({ items }) => {
               </div>
               <button
                 className="w-full py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
-                disabled={!data}
+                disabled={!data || isSubmitting}
+                onClick={checkout}
               >
-                Checkout
+                {isSubmitting ? 'Processing...' : 'Checkout'}
               </button>
               {!data && (
                 <Link href="/auth/login">
@@ -156,17 +187,34 @@ const Shop = ({ items }) => {
                 </Link>
               )}
             </Modal>
+            <Modal
+              show={showPaymentLink}
+              title="Go To Payment Link"
+              toggle={togglePaymentLink}
+            >
+              <p>You may view your purchase history in your account profile.</p>
+              <Link href={paymentLink}>
+                <a
+                  className="inline-block w-full px-3 py-2 text-lg text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
+                  target="_blank"
+                >
+                  Pay Now
+                </a>
+              </Link>
+            </Modal>
           </div>
           <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-3 md:w-2/3">
             {items ? (
-              items.map(({ _id, image, name, price }, index) => {
+              items.map(({ _id, code, image, name, price }, index) => {
+                const imageAsset = builder.image(image.asset);
                 return (
                   <Item
                     key={index}
                     id={_id}
                     addToCart={addToCart}
+                    code={code}
                     count={cart.find((x) => x.id === _id)?.quantity || 0}
-                    image={image}
+                    image={imageAsset.url()}
                     name={name}
                     price={price}
                   />
@@ -192,7 +240,7 @@ const Shop = ({ items }) => {
                           width={30}
                           height={30}
                           objectFit="cover"
-                          src={imageAsset.url()}
+                          src={image}
                         />
                         <div className="flex flex-col">
                           <p className="font-bold">{name}</p>

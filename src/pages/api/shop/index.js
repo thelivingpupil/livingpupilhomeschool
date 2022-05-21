@@ -1,6 +1,7 @@
-import crypto from 'crypto';
+import { TransactionSource } from '@prisma/client';
 
 import { validateSession } from '@/config/api-validation';
+import { createPurchase } from '@/prisma/services/purchase-history';
 import { createTransaction } from '@/prisma/services/transaction';
 
 const handler = async (req, res) => {
@@ -8,13 +9,15 @@ const handler = async (req, res) => {
 
   if (method === 'POST') {
     const session = await validateSession(req, res);
-    const { amount, description } = req.body;
+    const { items } = req.body;
+    const { id, transactionId, total } = await createPurchase(items);
     const paymentLink = await createTransaction(
       session.user.userId,
       session.user.email,
-      crypto.randomUUID(),
-      amount,
-      description
+      transactionId,
+      total,
+      TransactionSource.STORE,
+      id
     );
     res.status(200).json({ data: { paymentLink } });
   } else {

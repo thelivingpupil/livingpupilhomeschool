@@ -1,12 +1,13 @@
 import { createHash } from 'crypto';
 
+import { updateTransaction } from '@/prisma/services/transaction';
+
 const handler = async (req, res) => {
   const { method } = req;
 
-  if (method === 'POST') {
+  if (method === 'GET') {
     const { txnid, refno, status, message, digest } = req.query;
     let result = 'FAIL_DIGEST_MISMATCH';
-    // Save these data into the database
     const hash = createHash('sha1')
       .update(
         `${txnid}:${refno}:${status}:${message}:${process.env.PAYMENTS_SECRET_KEY}`
@@ -15,9 +16,12 @@ const handler = async (req, res) => {
 
     if (hash === digest) {
       result = 'OK';
+      await updateTransaction(txnid, refno, status, message);
     }
 
-    res.status(200).send(`result=${result}`);
+    res
+      .status(200)
+      .send(`Payment Result: ${result}. You may now close this window.`);
   } else {
     res
       .status(405)

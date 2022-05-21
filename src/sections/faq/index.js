@@ -30,8 +30,6 @@ const FAQItem = ({ item }) => {
 };
 
 const FAQ = ({ title, items }) => {
-  console.log(title);
-  console.log(items);
   return (
     <>
       <Title title={title} />

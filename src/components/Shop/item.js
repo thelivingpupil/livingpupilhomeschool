@@ -1,15 +1,10 @@
 import { useEffect, useState } from 'react';
-import imageUrlBuilder from '@sanity/image-url';
 import Image from 'next/image';
 
-import sanityClient from '@/lib/server/sanity';
 import { MinusIcon, PlusIcon } from '@heroicons/react/outline';
 
-const builder = imageUrlBuilder(sanityClient);
-
-const Item = ({ id, addToCart, count, image, name, price }) => {
+const Item = ({ id, addToCart, code, count, image, name, price }) => {
   const [quantity, setQuantity] = useState(count);
-  const imageAsset = builder.image(image.asset);
 
   const decrease = () => setQuantity(quantity - 1);
 
@@ -25,12 +20,12 @@ const Item = ({ id, addToCart, count, image, name, price }) => {
         <div>
           <div className="relative inline-block w-full h-40">
             <Image
-              alt={image.alt}
+              alt={name}
               className="rounded-lg"
               layout="fill"
               loading="lazy"
               objectFit="cover"
-              src={imageAsset.url()}
+              src={image}
             />
           </div>
           <h3 className="font-bold">{name}</h3>
@@ -60,7 +55,7 @@ const Item = ({ id, addToCart, count, image, name, price }) => {
         <button
           className="w-full py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-50"
           disabled={quantity === 0}
-          onClick={() => addToCart({ id, image, name, price, quantity })}
+          onClick={() => addToCart({ id, code, image, name, price, quantity })}
         >
           Add to Cart
         </button>
