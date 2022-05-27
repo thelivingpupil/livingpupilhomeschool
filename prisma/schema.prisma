@@ -149,6 +149,25 @@ model Session {
   @@map("sessions")
 }
 
+model StudentRecord {
+  id                  String     @id @default(cuid())
+  studentId           String     @unique @default(cuid())
+  firstName           String
+  middleName          String
+  lastName            String
+  birthDate           DateTime
+  gender              Gender
+  religion            Religion
+  incomingGradeLevel  GradeLevel
+  reason              String?
+  formerSchoolName    String
+  formerSchoolAddress String
+
+  student Workspace @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("studentRecord")
+}
+
 model Transaction {
   id                String            @id @default(cuid())
   transactionId     String            @unique
@@ -221,9 +240,10 @@ model Workspace {
   deletedAt     DateTime?
   updatedAt     DateTime? @updatedAt
 
-  creator User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  members Member[]
-  domains Domain[]
+  creator       User           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  members       Member[]
+  domains       Domain[]
+  studentRecord StudentRecord?
 
   @@unique([workspaceCode, inviteCode])
   @@map("workspaces")
@@ -233,6 +253,29 @@ enum Currency {
   CAD
   PHP
   USD
+}
+
+enum Gender {
+  FEMALE
+  MALE
+}
+
+enum GradeLevel {
+  PRESCHOOL
+  K1
+  K2
+  GRADE_1
+  GRADE_2
+  GRADE_3
+  GRADE_4
+  GRADE_5
+  GRADE_6
+  GRADE_7
+  GRADE_8
+  GRADE_9
+  GRADE_10
+  GRADE_11
+  GRADE_12
 }
 
 enum GuardianType {
@@ -245,6 +288,16 @@ enum InvitationStatus {
   ACCEPTED
   PENDING
   DECLINED
+}
+
+enum Religion {
+  ROMAN_CATHOLIC
+  MUSLIM
+  BORN_AGAIN_CHRISTIAN
+  SEVENT_DAY_ADVENTIST
+  IGLESIA_NI_CRISTO
+  LATTER_DAY_SAINTS_MORMONS
+  OTHERS
 }
 
 enum SubscriptionType {

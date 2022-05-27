@@ -48,6 +48,7 @@ const App = ({ Component, pageProps }) => {
           attribute="class"
           defaultTheme="light"
           enableSystem="false"
+          forcedTheme="light"
         >
           <WorkspaceProvider>
             {progress && <TopBarProgress />}

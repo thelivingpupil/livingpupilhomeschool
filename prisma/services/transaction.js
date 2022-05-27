@@ -63,12 +63,33 @@ export const updateTransaction = async (
   paymentReference,
   paymentStatus,
   message
-) =>
-  await prisma.transaction.update({
+) => {
+  const transaction = await prisma.transaction.update({
     data: {
       paymentReference,
       paymentStatus,
       message,
     },
+    select: {
+      transactionId: true,
+      referenceNumber: true,
+      amount: true,
+      currency: true,
+      transactionStatus: true,
+      paymentStatus: true,
+      source: true,
+      paymentReference: true,
+      description: true,
+      message: true,
+      url: true,
+      createdAt: true,
+    },
     where: { transactionId },
   });
+
+  return {
+    ...transaction,
+    amount: transaction?.amount?.toNumber() || 0,
+    createdAt: transaction?.createdAt?.toDateString(),
+  };
+};

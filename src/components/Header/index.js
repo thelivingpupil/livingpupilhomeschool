@@ -97,7 +97,7 @@ const Header = () => {
                   </a>
                 </Link>
               </Menu.Item>
-              <Menu.Item>
+              {/* <Menu.Item>
                 <button
                   className="flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group"
                   onClick={toggleTheme}
@@ -114,7 +114,7 @@ const Header = () => {
                     </>
                   )}
                 </button>
-              </Menu.Item>
+              </Menu.Item> */}
             </div>
             {data && data.user && data.user.userType === UserType.ADMIN && (
               <div className="p-2">

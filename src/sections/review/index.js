@@ -1,6 +1,12 @@
 import { StarIcon } from '@heroicons/react/solid';
 import { StarIcon as StarIconOutline } from '@heroicons/react/outline';
+import imageUrlBuilder from '@sanity/image-url';
 import Link from 'next/link';
+import Image from 'next/image';
+
+import sanityClient from '@/lib/server/sanity';
+
+const builder = imageUrlBuilder(sanityClient);
 
 const Review = ({ items, more }) => {
   return (
@@ -14,6 +20,8 @@ const Review = ({ items, more }) => {
       </div>
       <div className="space-y-20 bg-water-500/50">
         {items.map((item, index) => {
+          console.log(item);
+          const imageAsset = builder.image(item?.image?.asset);
           return (
             <section key={index} className="relative w-full">
               <div className="relative w-full bg-[left_-50px_top_1rem] md:bg-[left_-100px_top_1rem] bg-no-repeat bg-[length:100px_100px] md:bg-[length:300px_300px] bg-asset-5">
@@ -23,7 +31,17 @@ const Review = ({ items, more }) => {
                       <div className="relative w-full bg-[right_-5px_top_0rem] md:bg-[right_-20px_top_0rem] bg-no-repeat bg-[length:25px_25px] md:bg-[length:150px_150px] bg-asset-7">
                         <div className="relative w-full bg-[right_-50px_top_10rem] md:bg-[right_-100px_top_10rem] bg-no-repeat bg-[length:100px_100px] md:bg-[length:300px_300px] bg-asset-9">
                           <div className="container flex items-center justify-center px-5 py-10 mx-auto space-x-10 md:px-20">
-                            <div className="flex flex-col w-full py-20 space-y-5 md:w-1/2">
+                            <div className="flex flex-col items-center justify-center w-full py-10 space-y-5 md:w-1/2">
+                              {item.image && (
+                                <div className="relative bg-gray-300 border-4 rounded-full w-28 h-28 overflow-clip border-primary-500">
+                                  <Image
+                                    layout="fill"
+                                    loading="lazy"
+                                    objectFit="cover"
+                                    src={imageAsset.url()}
+                                  />
+                                </div>
+                              )}
                               <div>
                                 <h2 className="flex flex-col text-3xl font-medium tracking-wide text-center md:text-5xl font-display">
                                   {item.name}
