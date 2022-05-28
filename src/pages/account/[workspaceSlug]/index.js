@@ -17,7 +17,14 @@ import Content from '@/components/Content/index';
 import Meta from '@/components/Meta/index';
 import { AccountLayout } from '@/layouts/index';
 import { useWorkspace } from '@/providers/workspace';
-import { GRADE_LEVEL, GRADE_LEVEL_GROUPS, RELIGION } from '@/utils/constants';
+import {
+  ACCREDITATION,
+  ENROLLMENT_TYPE,
+  GRADE_LEVEL,
+  GRADE_LEVEL_GROUPS,
+  PROGRAM,
+  RELIGION,
+} from '@/utils/constants';
 
 const steps = [
   'Personal Information',
@@ -404,7 +411,7 @@ const Workspace = () => {
                 </h3>
               </div>
               <div
-                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/3 ${
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/3 border-dashed ${
                   incomingGradeLevel !== GradeLevel.PRESCHOOL
                     ? accreditation === Accreditation.DUAL
                       ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
@@ -496,12 +503,159 @@ const Workspace = () => {
             </>
           )}
         </div>
+        <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded">
+          <h3 className="text-sm font-bold">
+            General Policies and Guidelines:
+          </h3>
+          <ol className="px-5 list-decimal">
+            <li>
+              Parents who intend to enroll are required to watch our “HOMESCHOOL
+              FUNDAMENTALS" videos.
+            </li>
+            <li>
+              Should the parent choose to use Pure Charlotte Mason or A CM
+              inspired Curriculum, the parent must attend the CM
+              training/workshop faithfully.
+            </li>
+            <li>
+              It is expected of the parents to dutifully fulfill the annual, bi
+              annual or quarterly dues and other financial obligation of their
+              children on time.
+            </li>
+          </ol>
+          <p>Payment Policies:</p>
+          <ol className="px-5 list-disc">
+            <li>
+              A child is considered fully enrolled only after full payment of
+              the annual homeschool fee.
+            </li>
+          </ol>
+        </div>
       </div>
     );
   };
 
   const renderSchoolFees = () => {
-    return <></>;
+    return (
+      <div className="flex flex-col p-5 space-y-5 overflow-auto">
+        <div>
+          <p>{ENROLLMENT_TYPE[enrollmentType]} Enrollment</p>
+          <h2 className="text-2xl text-primary-500">
+            {PROGRAM[program]} for {GRADE_LEVEL[incomingGradeLevel]} -{' '}
+            {ACCREDITATION[accreditation]}
+          </h2>
+        </div>
+        <div className="flex flex-row space-x-5">
+          <div className="flex flex-row items-center justify-between w-full px-5 py-3 space-y-3 border rounded-lg hover:shadow-lg">
+            <div>
+              <h3 className="text-xl font-bold">Full Payment</h3>
+              <div>
+                <span className="font-medium">Breakdown: </span>
+              </div>
+            </div>
+            <h3 className="text-xl font-bold"></h3>
+          </div>
+        </div>
+        <div className="flex flex-row space-x-5">
+          <div className="flex flex-row items-center justify-between w-full px-5 py-3 space-y-3 border rounded-lg hover:shadow-lg">
+            <div>
+              <h3 className="text-xl font-bold">Semi Annual</h3>
+              <div>
+                <span className="font-medium">Breakdown: </span>
+              </div>
+            </div>
+            <h3 className="text-xl font-bold"></h3>
+          </div>
+        </div>
+        <div className="flex flex-row space-x-5">
+          <div className="flex flex-row items-center justify-between w-full px-5 py-3 space-y-3 border rounded-lg hover:shadow-lg">
+            <div>
+              <h3 className="text-xl font-bold">Quarterly</h3>
+              <div>
+                <span className="font-medium">Breakdown: </span>
+              </div>
+            </div>
+            <h3 className="text-xl font-bold"></h3>
+          </div>
+        </div>
+        <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded">
+          <h3 className="text-sm font-bold">Payment Policies:</h3>
+          <ol className="px-5 list-decimal">
+            <li>
+              A 3% interest will be added to the school fee when the parents are
+              not able to pay on time.
+            </li>
+            <li>
+              For Post-dated checks, bounced or delayed payments will be
+              subjected to 5% interest per month.
+            </li>
+            <li>
+              It is expected of the Parents to submit every quarter the grades
+              and assessment, class documentation (at least 2 photos/videos per
+              subject per quarter) and eCard page 2 (number of school days,
+              traits and teacher&apos;s comments form). At the end of the school
+              year, parents should compile in a digital form all the outputs per
+              subject and send /share the drive link to LPHS admin. Deadline of
+              submission: Q1 & Q2 = January 10, 2023 and Q3 & Q4 = June 8, 2023.
+              Failure to submit grades will incur a retard fee of 1,000.00 per
+              delay.
+            </li>
+            <li>
+              Students are expected to present an Annual portfolio (Show and
+              Tell).
+            </li>
+            <li>
+              All school records will be released after the student has been
+              cleared of financial and academic obligations from the LPHS.
+            </li>
+            <li>
+              In case of non-compliance with LPHS requirements and/or the
+              student decides to withdraw/ drop out, the tuition fee and
+              miscellaneous fees will not be carried over to the next school
+              year.
+            </li>
+            <li>
+              Living Pupil Homeschool&apos;s foundation is build on trust and
+              relationship with our families. We therefore require our
+              Parent-Teachers to do their task with honesty & commitment. Should
+              there be homeschool concerns, please communicate directly to our
+              team.
+            </li>
+          </ol>
+          <h3 className="text-sm font-bold">
+            Refund on Tuition Fees and other fees:
+          </h3>
+          <p>
+            A student who wishes to transfer or withdraw his/her enrollment from
+            LPHS would be entitled to a tuition refund provided: (1) he/she
+            submit a letter of withdrawal/transfer (2) has already paid the
+            tuition and other fees in full. The amount of refund depends on:
+          </p>
+          <ol className="px-5 list-decimal">
+            <li>
+              When the student withdraws a week after enrolment, 10% of the
+              total annual due will be charged.
+            </li>
+            <li>
+              When the student withdraws two (2) weeks after enrollment, 20% of
+              the total annual due will be charged.
+            </li>
+            <li>
+              When the student withdraws one (1) one month after enrollment, no
+              refund will be given.
+            </li>
+            <li>
+              There will be no refund for books and other learning materials.
+            </li>
+            <li>
+              When the student withdraw before the school year ends, the parent
+              will pay the annual tuition fee for the school records to be
+              released.
+            </li>
+          </ol>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -555,7 +709,7 @@ const Workspace = () => {
               )}
               <Button
                 className="text-white bg-primary-600 hover:bg-primary-500"
-                disabled={validateNext}
+                // disabled={validateNext}
                 onClick={next}
               >
                 {step === steps.length - 1 ? 'Proceed' : 'Next'}

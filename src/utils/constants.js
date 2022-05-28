@@ -1,5 +1,18 @@
 import { GradeLevel } from '@prisma/client';
 
+export const ACCREDITATION = {
+  LOCAL: 'DepEd Accreditation (Local)',
+  INTERNATIONAL: 'US Accreditation (International)',
+  DUAL: 'DepEd & US Accreditation (Dual)',
+  FORM_ONE: 'DepEd Accreditation Form 1 (Grades 1-3)',
+  FORM_TWO: 'DepEd Accreditation Form 2 (Grades 4-6)',
+};
+
+export const ENROLLMENT_TYPE = {
+  CONTINUING: 'Continuing Family',
+  NEW: 'New Family',
+};
+
 export const GRADE_LEVEL = {
   PRESCHOOL: 'Preschool',
   K1: 'Kindergarten 1',
@@ -52,6 +65,11 @@ export const GRADE_LEVEL_GROUPS = [
     levels: [GradeLevel.GRADE_11, GradeLevel.GRADE_12],
   },
 ];
+
+export const PROGRAM = {
+  HOMESCHOOL_PROGRAM: 'Homeschool Program',
+  HOMESCHOOL_COTTAGE: ' Homeschool Cottage',
+};
 
 export const RELIGION = {
   ROMAN_CATHOLIC: 'Roman Catholic',
