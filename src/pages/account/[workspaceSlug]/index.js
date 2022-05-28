@@ -11,12 +11,15 @@ import {
 } from '@prisma/client';
 import differenceInCalendarYears from 'date-fns/differenceInCalendarYears';
 import DatePicker from 'react-datepicker';
+import toast from 'react-hot-toast';
 
 import Button from '@/components/Button';
 import Card from '@/components/Card';
 import Content from '@/components/Content/index';
 import Meta from '@/components/Meta/index';
+import Modal from '@/components/Modal';
 import { AccountLayout } from '@/layouts/index';
+import api from '@/lib/common/api';
 import sanityClient from '@/lib/server/sanity';
 import { useWorkspace } from '@/providers/workspace';
 import {
@@ -38,6 +41,8 @@ const steps = [
 const Workspace = ({ schoolFees }) => {
   const { workspace } = useWorkspace();
   const [step, setStep] = useState(0);
+  const [isSubmitting, setSubmittingState] = useState(false);
+  const [review, setReviewVisibility] = useState(false);
   const [agree, setAgree] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [middleName, setMiddleName] = useState('');
@@ -54,12 +59,12 @@ const Workspace = ({ schoolFees }) => {
   const [program, setProgram] = useState(Program.HOMESCHOOL_PROGRAM);
   const [accreditation, setAccreditation] = useState(null);
   const [payment, setPayment] = useState(null);
+  const [fee, setFee] = useState(null);
   const [birthDate, setBirthDate] = useState(new Date());
   const age = differenceInCalendarYears(new Date(), birthDate) || 0;
   const validateNext =
     (step === 0 &&
       firstName.length > 0 &&
-      middleName.length > 0 &&
       lastName.length > 0 &&
       reason.length > 0) ||
     (step === 1 &&
@@ -121,9 +126,51 @@ const Workspace = ({ schoolFees }) => {
 
   const goToStep = (step) => setStep(step);
 
-  const next = () => setStep(step + 1);
+  const next = () => {
+    if (step < steps.length - 1) {
+      setStep(step + 1);
+    } else {
+      toggleReview();
+    }
+  };
 
   const previous = () => setStep(step - 1);
+
+  const submit = () => {
+    setSubmittingState(true);
+    api('/api/enroll', {
+      body: {
+        firstName,
+        middleName,
+        lastName,
+        gender,
+        religion,
+        reason,
+        enrollmentType,
+        incomingGradeLevel,
+        formerSchoolName,
+        formerSchoolAddress,
+        program,
+        accreditation,
+        payment,
+        birthDate,
+      },
+      method: 'POST',
+    }).then((response) => {
+      setSubmittingState(false);
+
+      if (response.errors) {
+        Object.keys(response.errors).forEach((error) =>
+          toast.error(response.errors[error].msg)
+        );
+      } else {
+        toast.success('Student information successfully submitted!');
+      }
+    });
+    setSubmittingState(false);
+  };
+
+  const toggleReview = () => setReviewVisibility(!review);
 
   const renderTab = () => {
     const tabs = [
@@ -152,7 +199,7 @@ const Workspace = ({ schoolFees }) => {
             <input
               className="px-3 py-2 border rounded md:w-1/3"
               onChange={(e) => setMiddleName(e.target.value)}
-              placeholder="Middle Name"
+              placeholder="Middle Name (Optional)"
               value={middleName}
             />
             <input
@@ -637,7 +684,10 @@ const Workspace = ({ schoolFees }) => {
                 ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                 : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
             }`}
-            onClick={() => setPayment(PaymentType.ANNUAL)}
+            onClick={() => {
+              setPayment(PaymentType.ANNUAL);
+              setFee(schoolFee?.fees[0]);
+            }}
           >
             {payment === PaymentType.ANNUAL && (
               <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
@@ -673,7 +723,10 @@ const Workspace = ({ schoolFees }) => {
                 ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                 : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
             }`}
-            onClick={() => setPayment(PaymentType.SEMI_ANNUAL)}
+            onClick={() => {
+              setPayment(PaymentType.SEMI_ANNUAL);
+              setFee(schoolFee?.fees[1]);
+            }}
           >
             {payment === PaymentType.SEMI_ANNUAL && (
               <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
@@ -719,7 +772,10 @@ const Workspace = ({ schoolFees }) => {
                 ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                 : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
             }`}
-            onClick={() => setPayment(PaymentType.QUARTERLY)}
+            onClick={() => {
+              setPayment(PaymentType.QUARTERLY);
+              setFee(schoolFee?.fees[2]);
+            }}
           >
             {payment === PaymentType.QUARTERLY && (
               <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
@@ -919,6 +975,134 @@ const Workspace = ({ schoolFees }) => {
             </Card.Footer>
           </Card>
         </Content.Container>
+        <Modal
+          show={review}
+          toggle={toggleReview}
+          title="Review LPHS Enrollment Details"
+        >
+          <h3 className="text-lg font-bold">
+            Student Information -{' '}
+            <span className="text-primary-500">
+              {ENROLLMENT_TYPE[enrollmentType]}
+            </span>
+          </h3>
+          <div className="px-3 text-sm">
+            <p>
+              <strong>Name:</strong> {lastName}, {firstName} {middleName}
+            </p>
+            <p className="capitalize">
+              <strong>Incoming Grade Level:</strong>{' '}
+              {GRADE_LEVEL[incomingGradeLevel].toLowerCase()}
+            </p>
+            <p>
+              <strong>Birth Date:</strong> {birthDate.toDateString()} ({age}{' '}
+              years old)
+            </p>
+            <p className="capitalize">
+              <strong>Gender:</strong> {gender.toLowerCase()}
+            </p>
+            <p className="capitalize">
+              <strong>Religion:</strong> {RELIGION[religion].toLowerCase()}
+            </p>
+            <p className="capitalize">
+              <strong>Reason for homeschooling:</strong> {reason}
+            </p>
+            <p>
+              <strong>Former School:</strong> {formerSchoolName} (
+              {formerSchoolAddress})
+            </p>
+          </div>
+          <h3 className="text-lg font-bold">
+            {PROGRAM[program]} for {GRADE_LEVEL[incomingGradeLevel]} -{' '}
+            {ACCREDITATION[accreditation]} Fees
+          </h3>
+          <div className="px-3 text-sm">
+            <div>
+              <p>
+                <strong>Payment Breakdown</strong>
+              </p>
+              <table className="w-full my-5 border ">
+                <tbody>
+                  <tr>
+                    <td className="px-3 py-1 border">
+                      {fee?._type === 'annual' ? 'Total Fee' : 'Initial Fee'}
+                    </td>
+                    <td className="px-3 py-1 text-right border">
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        fee?._type === 'annual'
+                          ? fee?.totalFee
+                          : fee?.initialFee
+                      )}
+                    </td>
+                  </tr>
+                  {Array.from(
+                    Array(
+                      fee?._type === 'annual'
+                        ? 0
+                        : fee?._type === 'semiAnnual'
+                        ? 2
+                        : 3
+                    ),
+                    (_, index) => (
+                      <tr key={index}>
+                        <td className="px-3 py-1 border">
+                          {fee?._type === 'annual'
+                            ? ''
+                            : fee?._type === 'semiAnnual'
+                            ? `Semi Annual Payment #${index + 1}`
+                            : `Quarterly Payment #${index + 1}`}
+                        </td>
+                        <td className="px-3 py-1 text-right border">
+                          {new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'PHP',
+                          }).format(
+                            fee?._type === 'annual'
+                              ? 0
+                              : fee?._type === 'semiAnnual'
+                              ? fee?.semiAnnualFee
+                              : fee?.quarterlyFee
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <h4 className="text-lg font-bold">
+              Total School Fees:{' '}
+              <span className="text-primary-500">
+                {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(
+                  (fee?._type === 'annual' ? fee?.totalFee : fee?.initialFee) +
+                    (fee?._type === 'annual'
+                      ? 0
+                      : fee?._type === 'semiAnnual'
+                      ? fee?.semiAnnualFee
+                      : fee?.quarterlyFee *
+                        (fee?._type === 'annual'
+                          ? 1
+                          : fee?._type === 'semiAnnual'
+                          ? 2
+                          : 3)) || 0
+                )}
+              </span>
+            </h4>
+          </div>
+          <button
+            className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
+            disabled={isSubmitting}
+            onClick={submit}
+          >
+            {isSubmitting ? 'Processing...' : 'Submit'}
+          </button>
+        </Modal>
       </AccountLayout>
     )
   );
