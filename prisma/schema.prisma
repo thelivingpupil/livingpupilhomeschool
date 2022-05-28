@@ -138,6 +138,21 @@ model PurchaseHistory {
   @@map("purchaseHistory")
 }
 
+model SchoolFee {
+  id            String      @id @default(cuid())
+  studentId     String      @unique @default(cuid())
+  transactionId String      @unique
+  paymentType   PaymentType
+  createdAt     DateTime?   @default(now())
+  deletedAt     DateTime?
+  updatedAt     DateTime?   @updatedAt
+
+  student     Workspace    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  transaction Transaction? @relation(fields: [transactionId], references: [id])
+
+  @@map("schoolFee")
+}
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -192,6 +207,7 @@ model Transaction {
 
   user            User            @relation(fields: [userId], references: [id])
   purchaseHistory PurchaseHistory @relation(fields: [purchaseHistoryId], references: [id])
+  schoolFees      SchoolFee[]
 
   @@unique([transactionId, referenceNumber])
   @@map("transactions")
@@ -247,6 +263,7 @@ model Workspace {
   members       Member[]
   domains       Domain[]
   studentRecord StudentRecord?
+  schoolFees    SchoolFee[]
 
   @@unique([workspaceCode, inviteCode])
   @@map("workspaces")
@@ -304,6 +321,12 @@ enum InvitationStatus {
   ACCEPTED
   PENDING
   DECLINED
+}
+
+enum PaymentType {
+  ANNUAL
+  SEMI_ANNUAL
+  QUARTERLY
 }
 
 enum Program {

@@ -5,6 +5,7 @@ import {
   Enrollment,
   Gender,
   GradeLevel,
+  PaymentType,
   Program,
   Religion,
 } from '@prisma/client';
@@ -16,6 +17,7 @@ import Card from '@/components/Card';
 import Content from '@/components/Content/index';
 import Meta from '@/components/Meta/index';
 import { AccountLayout } from '@/layouts/index';
+import sanityClient from '@/lib/server/sanity';
 import { useWorkspace } from '@/providers/workspace';
 import {
   ACCREDITATION,
@@ -33,7 +35,7 @@ const steps = [
   'School Fees',
 ];
 
-const Workspace = () => {
+const Workspace = ({ schoolFees }) => {
   const { workspace } = useWorkspace();
   const [step, setStep] = useState(0);
   const [agree, setAgree] = useState(false);
@@ -51,9 +53,10 @@ const Workspace = () => {
   const [formerSchoolAddress, setFormerSchoolAddress] = useState('');
   const [program, setProgram] = useState(Program.HOMESCHOOL_PROGRAM);
   const [accreditation, setAccreditation] = useState(null);
+  const [payment, setPayment] = useState(null);
   const [birthDate, setBirthDate] = useState(new Date());
   const age = differenceInCalendarYears(new Date(), birthDate) || 0;
-  const validateNext = !(
+  const validateNext =
     (step === 0 &&
       firstName.length > 0 &&
       middleName.length > 0 &&
@@ -62,8 +65,59 @@ const Workspace = () => {
     (step === 1 &&
       formerSchoolName.length > 0 &&
       formerSchoolAddress.length > 0) ||
-    (step === 2 && accreditation !== null)
-  );
+    (step === 2 && accreditation !== null) ||
+    (step === 3 && payment !== null && agree);
+  const schoolFee = schoolFees.find((fee) => {
+    let gradeLevel = incomingGradeLevel;
+
+    if (program === Program.HOMESCHOOL_PROGRAM) {
+      if (
+        incomingGradeLevel === GradeLevel.GRADE_1 ||
+        incomingGradeLevel === GradeLevel.GRADE_2 ||
+        incomingGradeLevel === GradeLevel.GRADE_3 ||
+        incomingGradeLevel === GradeLevel.GRADE_4 ||
+        incomingGradeLevel === GradeLevel.GRADE_5 ||
+        incomingGradeLevel === GradeLevel.GRADE_6
+      ) {
+        gradeLevel = GradeLevel.GRADE_6;
+      } else if (
+        incomingGradeLevel === GradeLevel.GRADE_7 ||
+        incomingGradeLevel === GradeLevel.GRADE_8 ||
+        incomingGradeLevel === GradeLevel.GRADE_9 ||
+        incomingGradeLevel === GradeLevel.GRADE_10
+      ) {
+        gradeLevel = GradeLevel.GRADE_10;
+      } else if (
+        incomingGradeLevel === GradeLevel.GRADE_11 ||
+        incomingGradeLevel === GradeLevel.GRADE_12
+      ) {
+        gradeLevel = GradeLevel.GRADE_12;
+      }
+    } else if (program === Program.HOMESCHOOL_COTTAGE) {
+      if (
+        accreditation === Accreditation.FORM_ONE &&
+        (incomingGradeLevel === GradeLevel.GRADE_1 ||
+          incomingGradeLevel === GradeLevel.GRADE_2 ||
+          incomingGradeLevel === GradeLevel.GRADE_3)
+      ) {
+        gradeLevel = GradeLevel.GRADE_3;
+      } else if (
+        accreditation === Accreditation.FORM_TWO &&
+        (incomingGradeLevel === GradeLevel.GRADE_4 ||
+          incomingGradeLevel === GradeLevel.GRADE_5 ||
+          incomingGradeLevel === GradeLevel.GRADE_6)
+      ) {
+        gradeLevel = GradeLevel.GRADE_6;
+      }
+    }
+
+    return (
+      fee.accreditation === accreditation &&
+      fee.gradeLevel === gradeLevel &&
+      fee.program === program &&
+      fee.type === enrollmentType
+    );
+  });
 
   const goToStep = (step) => setStep(step);
 
@@ -413,7 +467,8 @@ const Workspace = () => {
               </div>
               <div
                 className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/3 border-dashed ${
-                  incomingGradeLevel !== GradeLevel.PRESCHOOL
+                  incomingGradeLevel !== GradeLevel.PRESCHOOL &&
+                  incomingGradeLevel !== GradeLevel.K1
                     ? accreditation === Accreditation.DUAL
                       ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
                       : 'border rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
@@ -572,37 +627,135 @@ const Workspace = () => {
             {ACCREDITATION[accreditation]}
           </h2>
         </div>
-        <div className="flex flex-row space-x-5">
-          <div className="flex flex-row items-center justify-between w-full px-5 py-3 space-y-3 border rounded-lg hover:shadow-lg">
+        <label className="text-lg font-bold" htmlFor="txtMother">
+          Select Payment Type <span className="ml-1 text-red-600">*</span>
+        </label>
+        <div className="relative flex flex-row space-x-5">
+          <div
+            className={`flex flex-row items-center justify-between w-full px-5 py-3 hover:shadow-lg ${
+              payment === PaymentType.ANNUAL
+                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+            }`}
+            onClick={() => setPayment(PaymentType.ANNUAL)}
+          >
+            {payment === PaymentType.ANNUAL && (
+              <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                <CheckIcon className="w-5 h-5" />
+              </div>
+            )}
             <div>
               <h3 className="text-xl font-bold">Full Payment</h3>
               <div>
-                <span className="font-medium">Breakdown: </span>
+                <span>
+                  Initial Payment:{' '}
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(schoolFee?.fees[0]?.totalFee || 0)}
+                </span>
               </div>
             </div>
-            <h3 className="text-xl font-bold"></h3>
+            <h3 className="text-xl font-bold">
+              <span>
+                {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(schoolFee?.fees[0]?.totalFee || 0)}
+              </span>
+            </h3>
           </div>
         </div>
-        <div className="flex flex-row space-x-5">
-          <div className="flex flex-row items-center justify-between w-full px-5 py-3 space-y-3 border rounded-lg hover:shadow-lg">
+        <div className="relative flex flex-row space-x-5">
+          <div
+            className={`flex flex-row items-center justify-between w-full px-5 py-3 hover:shadow-lg ${
+              payment === PaymentType.SEMI_ANNUAL
+                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+            }`}
+            onClick={() => setPayment(PaymentType.SEMI_ANNUAL)}
+          >
+            {payment === PaymentType.SEMI_ANNUAL && (
+              <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                <CheckIcon className="w-5 h-5" />
+              </div>
+            )}
             <div>
               <h3 className="text-xl font-bold">Semi Annual</h3>
               <div>
-                <span className="font-medium">Breakdown: </span>
+                <span>
+                  Initial Fee:{' '}
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(schoolFee?.fees[1]?.initialFee || 0)}{' '}
+                  +
+                </span>
+                <span>
+                  (
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(schoolFee?.fees[1]?.semiAnnualFee || 0)}{' '}
+                  semi-annually)
+                </span>
               </div>
             </div>
-            <h3 className="text-xl font-bold"></h3>
+            <h3 className="text-xl font-bold">
+              {new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'PHP',
+              }).format(
+                schoolFee?.fees[1]?.initialFee +
+                  schoolFee?.fees[1]?.semiAnnualFee * 2 || 0
+              )}
+            </h3>
           </div>
         </div>
-        <div className="flex flex-row space-x-5">
-          <div className="flex flex-row items-center justify-between w-full px-5 py-3 space-y-3 border rounded-lg hover:shadow-lg">
+        <div className="relative flex flex-row space-x-5">
+          <div
+            className={`flex flex-row items-center justify-between w-full px-5 py-3 hover:shadow-lg ${
+              payment === PaymentType.QUARTERLY
+                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+            }`}
+            onClick={() => setPayment(PaymentType.QUARTERLY)}
+          >
+            {payment === PaymentType.QUARTERLY && (
+              <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                <CheckIcon className="w-5 h-5" />
+              </div>
+            )}
             <div>
               <h3 className="text-xl font-bold">Quarterly</h3>
               <div>
-                <span className="font-medium">Breakdown: </span>
+                <span>
+                  Initial Fee:{' '}
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(schoolFee?.fees[2]?.initialFee || 0)}{' '}
+                  +
+                </span>
+                <span>
+                  (
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(schoolFee?.fees[2]?.quarterlyFee || 0)}{' '}
+                  quarterly)
+                </span>
               </div>
             </div>
-            <h3 className="text-xl font-bold"></h3>
+            <h3 className="text-xl font-bold">
+              {new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'PHP',
+              }).format(
+                schoolFee?.fees[2]?.initialFee +
+                  schoolFee?.fees[2]?.quarterlyFee * 3 || 0
+              )}
+            </h3>
           </div>
         </div>
         <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded">
@@ -758,7 +911,7 @@ const Workspace = () => {
               )}
               <Button
                 className="text-white bg-primary-600 hover:bg-primary-500"
-                // disabled={validateNext}
+                disabled={!validateNext}
                 onClick={next}
               >
                 {step === steps.length - 1 ? 'Proceed' : 'Next'}
@@ -769,6 +922,11 @@ const Workspace = () => {
       </AccountLayout>
     )
   );
+};
+
+export const getServerSideProps = async () => {
+  const schoolFees = await sanityClient.fetch(`*[_type == 'schoolFees']{...}`);
+  return { props: { schoolFees } };
 };
 
 export default Workspace;
