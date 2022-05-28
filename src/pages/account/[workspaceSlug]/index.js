@@ -36,6 +36,7 @@ const steps = [
 const Workspace = () => {
   const { workspace } = useWorkspace();
   const [step, setStep] = useState(0);
+  const [agree, setAgree] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [middleName, setMiddleName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -530,6 +531,32 @@ const Workspace = () => {
               the annual homeschool fee.
             </li>
           </ol>
+          <h3 className="text-sm font-bold">
+            Student's Duties and Expectations
+          </h3>
+          <p>We understand that:</p>
+          <ol className="px-5 list-decimal">
+            <li>
+              The student is required and expected to join the Bi Annual
+              portfolio presentation and other coop class/meet ups when the
+              health and safety of students are no longer at risk due to COVID.
+              Students outside Cebu City is expected to join the virtually.
+            </li>
+            <li>
+              The student (residing in Cebu/Cebu City) is required to
+              participate in every Commencement Exercises (only when COVID
+              pandemic is already flattened and the Government declares it is
+              now safe to do so) organized by the school with corresponding
+              fees. Graduation fees are non-refundable.
+            </li>
+            <li>
+              In instances wherein a student is directly negligent with his
+              academic responsibilities, an immediate conference with the
+              child’s parents will be secured. It is the responsibility of the
+              parent to attend to this meeting so that an immediate solution to
+              the challenge will be agreed upon.
+            </li>
+          </ol>
         </div>
       </div>
     );
@@ -653,6 +680,28 @@ const Workspace = () => {
               released.
             </li>
           </ol>
+        </div>
+        <div>
+          <p>
+            By completing and submitting this form, I understand that I am
+            applying to be a part of Living Pupil Homeschool for SY
+            {new Date().getFullYear()} - {new Date().getFullYear() + 1}. I have
+            thoroughly reviewed the forms, and I agree with everything
+            stipulated in the student form. I agree to the rates as indicated
+            for this enrollment period. Lastly, I understand that this agreement
+            is absolute and will be enforced.
+          </p>
+          <label className="flex items-center mt-10 space-x-3 font-medium cursor-pointer">
+            <input
+              checked={agree}
+              type="checkbox"
+              onChange={() => setAgree(!agree)}
+            />
+            <span>
+              Yes, I agree. My responses will be saved in Living Pupil
+              Homeschool's Database
+            </span>
+          </label>
         </div>
       </div>
     );
