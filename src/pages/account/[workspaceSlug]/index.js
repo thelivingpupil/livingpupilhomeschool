@@ -1,5 +1,13 @@
 import { useState } from 'react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/outline';
+import {
+  Accreditation,
+  Enrollment,
+  Gender,
+  GradeLevel,
+  Program,
+  Religion,
+} from '@prisma/client';
 import differenceInCalendarYears from 'date-fns/differenceInCalendarYears';
 import DatePicker from 'react-datepicker';
 
@@ -9,18 +17,45 @@ import Content from '@/components/Content/index';
 import Meta from '@/components/Meta/index';
 import { AccountLayout } from '@/layouts/index';
 import { useWorkspace } from '@/providers/workspace';
+import { GRADE_LEVEL, GRADE_LEVEL_GROUPS, RELIGION } from '@/utils/constants';
 
 const steps = [
   'Personal Information',
   'Educational Background',
-  'Curriculum',
+  'Program and Accreditation',
   'School Fees',
 ];
 
 const Workspace = () => {
   const { workspace } = useWorkspace();
   const [step, setStep] = useState(0);
+  const [firstName, setFirstName] = useState('');
+  const [middleName, setMiddleName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [gender, setGender] = useState(Gender.FEMALE);
+  const [religion, setReligion] = useState(Religion.ROMAN_CATHOLIC);
+  const [reason, setReason] = useState('');
+  const [enrollmentType, setEnrollmentType] = useState(Enrollment.NEW);
+  const [incomingGradeLevel, setIncomingGradeLevel] = useState(
+    GradeLevel.PRESCHOOL
+  );
+  const [formerSchoolName, setFormerSchoolName] = useState('');
+  const [formerSchoolAddress, setFormerSchoolAddress] = useState('');
+  const [program, setProgram] = useState(Program.HOMESCHOOL_PROGRAM);
+  const [accreditation, setAccreditation] = useState(null);
   const [birthDate, setBirthDate] = useState(new Date());
+  const age = differenceInCalendarYears(new Date(), birthDate) || 0;
+  const validateNext = !(
+    (step === 0 &&
+      firstName.length > 0 &&
+      middleName.length > 0 &&
+      lastName.length > 0 &&
+      reason.length > 0) ||
+    (step === 1 &&
+      formerSchoolName.length > 0 &&
+      formerSchoolAddress.length > 0) ||
+    (step === 2 && accreditation !== null)
+  );
 
   const goToStep = (step) => setStep(step);
 
@@ -43,27 +78,33 @@ const Workspace = () => {
       <div className="flex flex-col p-5 space-y-3 overflow-auto">
         <div className="flex flex-col">
           <label className="text-lg font-bold" htmlFor="txtMother">
-            Full Name
+            Full Name <span className="ml-1 text-red-600">*</span>
           </label>
           <div className="flex flex-row space-x-5">
             <input
               className="px-3 py-2 border rounded md:w-1/3"
+              onChange={(e) => setFirstName(e.target.value)}
               placeholder="Given Name"
+              value={firstName}
             />
             <input
               className="px-3 py-2 border rounded md:w-1/3"
+              onChange={(e) => setMiddleName(e.target.value)}
               placeholder="Middle Name"
+              value={middleName}
             />
             <input
               className="px-3 py-2 border rounded md:w-1/3"
+              onChange={(e) => setLastName(e.target.value)}
               placeholder="Last Name"
+              value={lastName}
             />
           </div>
         </div>
         <div className="flex flex-row space-x-5">
           <div className="flex flex-col">
             <label className="text-lg font-bold" htmlFor="txtMother">
-              Birthday
+              Birthday <span className="ml-1 text-red-600">*</span>
             </label>
             <div className="relative flex flex-row">
               <DatePicker
@@ -85,9 +126,7 @@ const Workspace = () => {
               <input
                 className="w-full px-3 py-2 border rounded"
                 disabled
-                value={`${
-                  differenceInCalendarYears(new Date(), birthDate) || 0
-                } years old`}
+                value={`${age} years old`}
               />
             </div>
           </div>
@@ -95,13 +134,20 @@ const Workspace = () => {
         <div className="flex flex-row space-x-5">
           <div className="flex flex-col w-full md:w-1/2">
             <label className="text-lg font-bold" htmlFor="txtMother">
-              Gender
+              Gender <span className="ml-1 text-red-600">*</span>
             </label>
             <div className="flex flex-row">
               <div className="relative inline-block w-full border rounded">
-                <select className="w-full px-3 py-2 capitalize rounded appearance-none">
-                  <option>Female</option>
-                  <option>Male</option>
+                <select
+                  className="w-full px-3 py-2 capitalize rounded appearance-none"
+                  onChange={(e) => setGender(e.target.value)}
+                  value={gender}
+                >
+                  {Object.keys(Gender).map((entry, index) => (
+                    <option key={index} value={entry}>
+                      {entry.toLowerCase()}
+                    </option>
+                  ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                   <ChevronDownIcon className="w-5 h-5" />
@@ -111,23 +157,38 @@ const Workspace = () => {
           </div>
           <div className="flex flex-col w-full md:w-1/2">
             <label className="text-lg font-bold" htmlFor="txtMother">
-              Religion
+              Religion <span className="ml-1 text-red-600">*</span>
             </label>
-            <input
-              className="px-3 py-2 border rounded"
-              placeholder="Religion"
-            />
+            <div className="relative inline-block w-full border rounded">
+              <select
+                className="w-full px-3 py-2 capitalize rounded appearance-none"
+                onChange={(e) => setReligion(e.target.value)}
+                value={religion}
+              >
+                {Object.keys(Religion).map((entry, index) => (
+                  <option key={index} value={entry}>
+                    {RELIGION[entry]}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                <ChevronDownIcon className="w-5 h-5" />
+              </div>
+            </div>
           </div>
         </div>
         <div className="flex flex-col">
           <label className="text-lg font-bold" htmlFor="txtMother">
             Reason for Homeschooling
+            <span className="ml-1 text-red-600">*</span>
           </label>
           <div className="relative flex flex-row space-x-5">
             <textarea
               className="w-full px-3 py-2 border rounded"
+              onChange={(e) => setReason(e.target.value)}
               placeholder="Why did you choose to homeschool your child?"
               rows={5}
+              value={reason}
             ></textarea>
           </div>
         </div>
@@ -137,30 +198,61 @@ const Workspace = () => {
 
   const renderEducationalBackground = () => {
     return (
-      <div className="flex flex-col p-5 space-y-3 overflow-auto">
+      <div className="flex flex-col p-5 space-y-5 overflow-auto">
+        <div className="flex flex-row space-x-5">
+          <div
+            className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 ${
+              enrollmentType === Enrollment.NEW
+                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+            }`}
+            onClick={() => setEnrollmentType(Enrollment.NEW)}
+          >
+            {enrollmentType === Enrollment.NEW && (
+              <div className="absolute flex items-center justify-center w-10 h-10 text-white rounded-full -right-3 -top-3 bg-primary-400">
+                <CheckIcon className="w-5 h-5" />
+              </div>
+            )}
+            <h3 className="text-xl font-bold text-center">New Family</h3>
+          </div>
+          <div
+            className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 ${
+              enrollmentType === Enrollment.CONTINUING
+                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+            }`}
+            onClick={() => setEnrollmentType(Enrollment.CONTINUING)}
+          >
+            {enrollmentType === Enrollment.CONTINUING && (
+              <div className="absolute flex items-center justify-center w-10 h-10 text-white rounded-full -right-3 -top-3 bg-primary-400">
+                <CheckIcon className="w-5 h-5" />
+              </div>
+            )}
+            <h3 className="text-xl font-bold text-center">Continuing Family</h3>
+          </div>
+        </div>
+        <hr className="border border-dashed" />
         <div className="flex flex-row space-x-5">
           <div className="flex flex-col w-full">
             <label className="text-lg font-bold" htmlFor="txtMother">
-              Incoming Grade Level
+              Incoming Grade Level <span className="ml-1 text-red-600">*</span>
             </label>
             <div className="flex flex-row">
               <div className="relative inline-block w-full border rounded">
-                <select className="w-full px-3 py-2 capitalize rounded appearance-none">
-                  <option>Preschool</option>
-                  <option>K1</option>
-                  <option>K2</option>
-                  <option>Grade 1</option>
-                  <option>Grade 2</option>
-                  <option>Grade 3</option>
-                  <option>Grade 4</option>
-                  <option>Grade 5</option>
-                  <option>Grade 6</option>
-                  <option>Grade 7</option>
-                  <option>Grade 8</option>
-                  <option>Grade 9</option>
-                  <option>Grade 10</option>
-                  <option>Grade 11</option>
-                  <option>Grade 12</option>
+                <select
+                  className="w-full px-3 py-2 capitalize rounded appearance-none"
+                  onChange={(e) => setIncomingGradeLevel(e.target.value)}
+                  value={incomingGradeLevel}
+                >
+                  {GRADE_LEVEL_GROUPS.map((group, index) => (
+                    <optgroup key={index} label={group.name}>
+                      {group.levels.map((level, index) => (
+                        <option key={index} value={level}>
+                          {GRADE_LEVEL[level]}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                   <ChevronDownIcon className="w-5 h-5" />
@@ -171,24 +263,28 @@ const Workspace = () => {
         </div>
         <div className="flex flex-col">
           <label className="text-lg font-bold" htmlFor="txtMother">
-            Former School Name
+            Former School Name <span className="ml-1 text-red-600">*</span>
           </label>
           <div className="flex flex-row space-x-5">
             <input
-              className="px-3 py-2 border rounded md:w-1/3"
+              className="px-3 py-2 border rounded md:w-2/3"
+              onChange={(e) => setFormerSchoolName(e.target.value)}
               placeholder="Former School Name"
+              value={formerSchoolName}
             />
           </div>
         </div>
         <div className="flex flex-col">
           <label className="text-lg font-bold" htmlFor="txtMother">
-            Former School Address
+            Former School Address <span className="ml-1 text-red-600">*</span>
           </label>
           <div className="relative flex flex-row space-x-5">
             <textarea
               className="w-full px-3 py-2 border rounded"
+              onChange={(e) => setFormerSchoolAddress(e.target.value)}
               placeholder="Former School Address"
               rows={3}
+              value={formerSchoolAddress}
             ></textarea>
           </div>
         </div>
@@ -198,32 +294,207 @@ const Workspace = () => {
 
   const renderCurriculum = () => {
     return (
-      <div className="flex flex-col p-5 space-y-3 overflow-auto">
+      <div className="flex flex-col p-5 space-y-5 overflow-auto">
         <div className="flex flex-row space-x-5">
-          <div className="relative flex flex-col w-full p-5 space-y-3 border-4 rounded-xl md:w-1/2 border-primary-400">
-            <div className="absolute flex items-center justify-center w-10 h-10 text-white rounded-full -right-3 -top-3 bg-primary-400">
-              <CheckIcon className="w-5 h-5" />
-            </div>
-            <h3 className="text-xl font-bold">Charlotte Mason</h3>
-            <p>
-              The Charlotte Mason method is a gentle, rich, and well-rounded
-              philosophy of education established by British educational
-              reformer Charlotte Mason in the twentieth century. The method is
-              gaining popularity in the homeschooling world in recent years
-              because it offers an educational feast that focuses on educating
-              the whole child and not just his mind.
-            </p>
+          <div
+            className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 ${
+              program === Program.HOMESCHOOL_PROGRAM
+                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+            }`}
+            onClick={() => {
+              setProgram(Program.HOMESCHOOL_PROGRAM);
+              setAccreditation(null);
+            }}
+          >
+            {program === Program.HOMESCHOOL_PROGRAM && (
+              <div className="absolute flex items-center justify-center w-10 h-10 text-white rounded-full -right-3 -top-3 bg-primary-400">
+                <CheckIcon className="w-5 h-5" />
+              </div>
+            )}
+            <h3 className="text-xl font-bold text-center">
+              Homeschool Program
+            </h3>
           </div>
-          <div className="relative flex flex-col w-full p-5 space-y-3 border rounded md:w-1/2">
-            <h3 className="text-xl font-bold">Eclectic</h3>
-            <p>
-              Although we highly recommend the Charlotte Mason method, we
-              understand that not all families are able to implement it in their
-              specific life season. As such we also allow homeschool families to
-              use an eclectic curriculum, wherein they can mix and match
-              resources for their children’s education.
-            </p>
+          <div
+            className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 ${
+              incomingGradeLevel === GradeLevel.GRADE_1 ||
+              incomingGradeLevel === GradeLevel.GRADE_2 ||
+              incomingGradeLevel === GradeLevel.GRADE_3 ||
+              incomingGradeLevel === GradeLevel.GRADE_4 ||
+              incomingGradeLevel === GradeLevel.GRADE_5 ||
+              incomingGradeLevel === GradeLevel.GRADE_6
+                ? program === Program.HOMESCHOOL_COTTAGE
+                  ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                  : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                : 'bg-gray-300 opacity-50 rounded'
+            }`}
+            onClick={() => {
+              if (
+                incomingGradeLevel === GradeLevel.GRADE_1 ||
+                incomingGradeLevel === GradeLevel.GRADE_2 ||
+                incomingGradeLevel === GradeLevel.GRADE_3 ||
+                incomingGradeLevel === GradeLevel.GRADE_4 ||
+                incomingGradeLevel === GradeLevel.GRADE_5 ||
+                incomingGradeLevel === GradeLevel.GRADE_6
+              ) {
+                setProgram(Program.HOMESCHOOL_COTTAGE);
+                setAccreditation(null);
+              }
+            }}
+          >
+            {program === Program.HOMESCHOOL_COTTAGE && (
+              <div className="absolute flex items-center justify-center w-10 h-10 text-white rounded-full -right-3 -top-3 bg-primary-400">
+                <CheckIcon className="w-5 h-5" />
+              </div>
+            )}
+            <h3 className="text-xl font-bold text-center">
+              Homeschool Cottage
+            </h3>
           </div>
+        </div>
+        <hr className="border border-dashed" />
+        <div className="flex flex-row space-x-5">
+          {program === Program.HOMESCHOOL_PROGRAM && (
+            <>
+              <div
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/3 ${
+                  accreditation === Accreditation.LOCAL
+                    ? 'border-4 border-dashed rounded-xl border-primary-200 bg-primary-50/50'
+                    : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
+                }`}
+                onClick={() => setAccreditation(Accreditation.LOCAL)}
+              >
+                {accreditation === Accreditation.LOCAL && (
+                  <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                    <CheckIcon className="w-5 h-5" />
+                  </div>
+                )}
+                <h3 className="flex flex-col font-medium text-center">
+                  <span className="text-lg">Local Accreditation</span>
+                  <span className="text-sm">(DepEd Accreditation)</span>
+                </h3>
+              </div>
+              <div
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/3 border-dashed ${
+                  incomingGradeLevel !== GradeLevel.PRESCHOOL &&
+                  incomingGradeLevel !== GradeLevel.K1
+                    ? accreditation === Accreditation.INTERNATIONAL
+                      ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
+                      : 'border rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
+                    : 'bg-gray-300 opacity-50 rounded'
+                }`}
+                onClick={() => {
+                  if (
+                    incomingGradeLevel !== GradeLevel.PRESCHOOL &&
+                    incomingGradeLevel !== GradeLevel.K1
+                  ) {
+                    setAccreditation(Accreditation.INTERNATIONAL);
+                  }
+                }}
+              >
+                {accreditation === Accreditation.INTERNATIONAL && (
+                  <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                    <CheckIcon className="w-5 h-5" />
+                  </div>
+                )}
+                <h3 className="flex flex-col font-medium text-center">
+                  <span className="text-lg">International Accreditation</span>
+                  <span className="text-sm">(US Accreditation)</span>
+                </h3>
+              </div>
+              <div
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/3 ${
+                  incomingGradeLevel !== GradeLevel.PRESCHOOL
+                    ? accreditation === Accreditation.DUAL
+                      ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
+                      : 'border rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
+                    : 'bg-gray-300 opacity-50 rounded'
+                }`}
+                onClick={() => {
+                  if (incomingGradeLevel !== GradeLevel.PRESCHOOL) {
+                    setAccreditation(Accreditation.DUAL);
+                  }
+                }}
+              >
+                {accreditation === Accreditation.DUAL && (
+                  <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                    <CheckIcon className="w-5 h-5" />
+                  </div>
+                )}
+                <h3 className="flex flex-col font-medium text-center">
+                  <span className="text-lg">
+                    Local and International Accreditation
+                  </span>
+                  <span className="text-sm">(Dual Accreditation)</span>
+                </h3>
+              </div>
+            </>
+          )}
+          {program === Program.HOMESCHOOL_COTTAGE && (
+            <>
+              <div
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-dashed ${
+                  incomingGradeLevel === GradeLevel.GRADE_1 ||
+                  incomingGradeLevel === GradeLevel.GRADE_2 ||
+                  incomingGradeLevel === GradeLevel.GRADE_3
+                    ? accreditation === Accreditation.FORM_ONE
+                      ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
+                      : 'border rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
+                    : 'bg-gray-300 opacity-50 rounded'
+                }`}
+                onClick={() => {
+                  if (
+                    incomingGradeLevel === GradeLevel.GRADE_1 ||
+                    incomingGradeLevel === GradeLevel.GRADE_2 ||
+                    incomingGradeLevel === GradeLevel.GRADE_3
+                  ) {
+                    setAccreditation(Accreditation.FORM_ONE);
+                  }
+                }}
+              >
+                {accreditation === Accreditation.FORM_ONE && (
+                  <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                    <CheckIcon className="w-5 h-5" />
+                  </div>
+                )}
+                <h3 className="flex flex-col font-medium text-center">
+                  <span className="text-lg">Form 1</span>
+                  <span className="text-sm">(Grades 1 - 3)</span>
+                </h3>
+              </div>
+              <div
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-dashed ${
+                  incomingGradeLevel === GradeLevel.GRADE_4 ||
+                  incomingGradeLevel === GradeLevel.GRADE_5 ||
+                  incomingGradeLevel === GradeLevel.GRADE_6
+                    ? accreditation === Accreditation.FORM_TWO
+                      ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
+                      : 'border rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
+                    : 'bg-gray-300 opacity-50 rounded'
+                }`}
+                onClick={() => {
+                  if (
+                    incomingGradeLevel === GradeLevel.GRADE_4 ||
+                    incomingGradeLevel === GradeLevel.GRADE_5 ||
+                    incomingGradeLevel === GradeLevel.GRADE_6
+                  ) {
+                    setAccreditation(Accreditation.FORM_TWO);
+                  }
+                }}
+              >
+                {accreditation === Accreditation.FORM_TWO && (
+                  <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                    <CheckIcon className="w-5 h-5" />
+                  </div>
+                )}
+                <h3 className="flex flex-col font-medium text-center">
+                  <span className="text-lg">Form 2</span>
+                  <span className="text-sm">(Grades 4 - 6)</span>
+                </h3>
+              </div>
+            </>
+          )}
         </div>
       </div>
     );
@@ -284,6 +555,7 @@ const Workspace = () => {
               )}
               <Button
                 className="text-white bg-primary-600 hover:bg-primary-500"
+                disabled={validateNext}
                 onClick={next}
               >
                 {step === steps.length - 1 ? 'Proceed' : 'Next'}
