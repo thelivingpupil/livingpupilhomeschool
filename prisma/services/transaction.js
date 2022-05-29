@@ -10,7 +10,8 @@ export const createTransaction = async (
   transactionId,
   amount,
   description,
-  purchaseId
+  purchaseId,
+  source
 ) => {
   const response = await api(
     `${process.env.PAYMENTS_BASE_URL}/${transactionId}/post`,
@@ -39,7 +40,7 @@ export const createTransaction = async (
       referenceNumber,
       amount,
       transactionStatus,
-      source: description,
+      source: source || description,
       description,
       message,
       url,

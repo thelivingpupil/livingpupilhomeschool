@@ -154,6 +154,7 @@ const Workspace = ({ schoolFees }) => {
         accreditation,
         payment,
         birthDate,
+        slug: workspace.slug,
       },
       method: 'POST',
     }).then((response) => {
@@ -167,7 +168,6 @@ const Workspace = ({ schoolFees }) => {
         toast.success('Student information successfully submitted!');
       }
     });
-    setSubmittingState(false);
   };
 
   const toggleReview = () => setReviewVisibility(!review);

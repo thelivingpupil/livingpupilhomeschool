@@ -1,7 +1,7 @@
-import crypto from 'crypto';
-
 import { validateSession } from '@/config/api-validation';
-import { createTransaction } from '@/prisma/services/transaction';
+import { createSchoolFees } from '@/prisma/services/school-fee';
+import { createStudentRecord } from '@/prisma/services/student-record';
+import { getOwnWorkspace } from '@/prisma/services/workspace';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -21,11 +21,44 @@ const handler = async (req, res) => {
       formerSchoolAddress,
       program,
       accreditation,
-      payment,
       birthDate,
+      payment,
+      slug,
     } = req.body;
-
-    res.status(200).json({ data: {} });
+    const workspace = await getOwnWorkspace(
+      session.user.userId,
+      session.user.email,
+      slug
+    );
+    const [studentRecord] = await Promise.all([
+      createStudentRecord(
+        workspace.id,
+        firstName,
+        middleName,
+        lastName,
+        birthDate,
+        gender,
+        religion,
+        incomingGradeLevel,
+        enrollmentType,
+        program,
+        accreditation,
+        reason,
+        formerSchoolName,
+        formerSchoolAddress
+      ),
+      createSchoolFees(
+        session.user.userId,
+        session.user.email,
+        workspace.id,
+        payment,
+        enrollmentType,
+        incomingGradeLevel,
+        program,
+        accreditation
+      ),
+    ]);
+    res.status(200).json({ data: { studentRecord } });
   } else {
     res
       .status(405)
