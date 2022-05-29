@@ -141,14 +141,15 @@ model PurchaseHistory {
 model SchoolFee {
   id            String      @id @default(cuid())
   studentId     String      @default(cuid())
-  transactionId String
+  transactionId String      @unique
+  order         Int
   paymentType   PaymentType
   createdAt     DateTime?   @default(now())
   deletedAt     DateTime?
   updatedAt     DateTime?   @updatedAt
 
   student     Workspace    @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  transaction Transaction? @relation(fields: [transactionId], references: [id])
+  transaction Transaction? @relation(fields: [transactionId], references: [transactionId])
 
   @@unique([studentId, transactionId])
   @@map("schoolFee")
@@ -181,6 +182,9 @@ model StudentRecord {
   reason              String?
   formerSchoolName    String
   formerSchoolAddress String
+  createdAt           DateTime?     @default(now())
+  deletedAt           DateTime?
+  updatedAt           DateTime?     @updatedAt
 
   student Workspace @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
@@ -208,7 +212,7 @@ model Transaction {
 
   user            User             @relation(fields: [userId], references: [id])
   purchaseHistory PurchaseHistory? @relation(fields: [purchaseHistoryId], references: [id])
-  schoolFees      SchoolFee[]
+  schoolFee       SchoolFee?
 
   @@unique([transactionId, referenceNumber])
   @@map("transactions")

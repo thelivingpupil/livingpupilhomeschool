@@ -11,7 +11,7 @@ const handler = async (req, res) => {
     const session = await validateSession(req, res);
     const { items } = req.body;
     const { id, transactionId, total } = await createPurchase(items);
-    const paymentLink = await createTransaction(
+    const transaction = await createTransaction(
       session.user.userId,
       session.user.email,
       transactionId,
@@ -19,7 +19,7 @@ const handler = async (req, res) => {
       TransactionSource.STORE,
       id
     );
-    res.status(200).json({ data: { paymentLink } });
+    res.status(200).json({ data: { paymentLink: transaction?.url } });
   } else {
     res
       .status(405)

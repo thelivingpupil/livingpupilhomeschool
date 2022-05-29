@@ -9,14 +9,14 @@ const handler = async (req, res) => {
   if (method === 'POST') {
     const session = await validateSession(req, res);
     const { amount, description } = req.body;
-    const paymentLink = await createTransaction(
+    const transaction = await createTransaction(
       session.user.userId,
       session.user.email,
       crypto.randomUUID(),
       amount,
       description
     );
-    res.status(200).json({ data: { paymentLink } });
+    res.status(200).json({ data: { paymentLink: transaction?.url } });
   } else {
     res
       .status(405)

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckIcon, ChevronDownIcon } from '@heroicons/react/outline';
+import { CheckIcon, ChevronDownIcon, UserIcon } from '@heroicons/react/outline';
 import {
   Accreditation,
   Enrollment,
@@ -10,6 +10,7 @@ import {
   Religion,
 } from '@prisma/client';
 import differenceInCalendarYears from 'date-fns/differenceInCalendarYears';
+import Link from 'next/link';
 import DatePicker from 'react-datepicker';
 import toast from 'react-hot-toast';
 
@@ -30,6 +31,7 @@ import {
   PROGRAM,
   RELIGION,
 } from '@/utils/constants';
+import format from 'date-fns/format';
 
 const steps = [
   'Personal Information',
@@ -41,6 +43,7 @@ const steps = [
 const Workspace = ({ schoolFees }) => {
   const { workspace } = useWorkspace();
   const [step, setStep] = useState(0);
+  const [viewFees, setViewFees] = useState(false);
   const [isSubmitting, setSubmittingState] = useState(false);
   const [review, setReviewVisibility] = useState(false);
   const [agree, setAgree] = useState(false);
@@ -165,6 +168,7 @@ const Workspace = ({ schoolFees }) => {
           toast.error(response.errors[error].msg)
         );
       } else {
+        setViewFees(true);
         toast.success('Student information successfully submitted!');
       }
     });
@@ -925,56 +929,150 @@ const Workspace = ({ schoolFees }) => {
           subtitle="This is the student record information"
         />
         <Content.Divider />
-        <Content.Container>
-          <div className="flex flex-wrap justify-between w-full space-x-5">
-            {steps.map((name, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center justify-center space-y-3 cursor-pointer"
-                onClick={() => goToStep(index)}
-              >
+        {!workspace.studentRecord ? (
+          <Content.Container>
+            <div className="flex flex-wrap justify-between w-full space-x-5">
+              {steps.map((name, index) => (
                 <div
-                  className={`w-8 h-8 flex items-center justify-center rounded-full ${
-                    step === index
-                      ? 'bg-secondary-400'
-                      : index < step
-                      ? 'bg-green-400'
-                      : 'bg-gray-200'
-                  }`}
+                  key={index}
+                  className="flex flex-col items-center justify-center space-y-3 cursor-pointer"
+                  onClick={() => goToStep(index)}
                 >
-                  {index < step ? (
-                    <CheckIcon className="w-5 h-5 text-white" />
-                  ) : (
-                    <div className="w-3 h-3 bg-white rounded-full" />
-                  )}
+                  <div
+                    className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                      step === index
+                        ? 'bg-secondary-400'
+                        : index < step
+                        ? 'bg-green-400'
+                        : 'bg-gray-200'
+                    }`}
+                  >
+                    {index < step ? (
+                      <CheckIcon className="w-5 h-5 text-white" />
+                    ) : (
+                      <div className="w-3 h-3 bg-white rounded-full" />
+                    )}
+                  </div>
+                  <span className="text-xs">{name}</span>
                 </div>
-                <span className="text-xs">{name}</span>
-              </div>
-            ))}
-          </div>
-          <Card>
-            <Card.Body title={steps[step]}>{renderTab()}</Card.Body>
-            <Card.Footer>
-              {step > 0 ? (
+              ))}
+            </div>
+            <Card>
+              <Card.Body title={steps[step]}>{renderTab()}</Card.Body>
+              <Card.Footer>
+                {step > 0 ? (
+                  <Button
+                    className="text-white bg-primary-600 hover:bg-primary-500"
+                    onClick={previous}
+                  >
+                    Previous
+                  </Button>
+                ) : (
+                  <span />
+                )}
                 <Button
                   className="text-white bg-primary-600 hover:bg-primary-500"
-                  onClick={previous}
+                  disabled={!validateNext}
+                  onClick={next}
                 >
-                  Previous
+                  {step === steps.length - 1 ? 'Proceed' : 'Next'}
                 </Button>
-              ) : (
-                <span />
-              )}
-              <Button
-                className="text-white bg-primary-600 hover:bg-primary-500"
-                disabled={!validateNext}
-                onClick={next}
+              </Card.Footer>
+            </Card>
+          </Content.Container>
+        ) : (
+          <Content.Container>
+            <Card>
+              <Card.Body
+                title="Student Record Information"
+                // subtitle={`Last Updated: ${workspace.studentRecord.updatedAt}`}
               >
-                {step === steps.length - 1 ? 'Proceed' : 'Next'}
-              </Button>
-            </Card.Footer>
-          </Card>
-        </Content.Container>
+                <div className="flex flex-row items-center py-5 space-x-10">
+                  <div className="flex items-center justify-center w-32 h-32 text-white bg-gray-400 rounded-full">
+                    <UserIcon className="w-20 h-20" />
+                  </div>
+                  <div className="space-y-3">
+                    <h2 className="text-4xl font-medium">
+                      {workspace.studentRecord.firstName}{' '}
+                      {workspace.studentRecord.middleName}{' '}
+                      {workspace.studentRecord.lastName}
+                    </h2>
+                    <div>
+                      <h3 className="text-sm text-gray-400">
+                        <span className="font-bold">Student Record ID: </span>
+                        <span>
+                          {workspace.studentRecord.studentId.toUpperCase()}
+                        </span>
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+                <hr className="border-dashed" />
+                <div className="flex flex-row space-x-10">
+                  <div className="w-1/2 space-y-10">
+                    <div>
+                      <h4 className="font-bold text-gray-600">
+                        Program and Accreditation
+                      </h4>
+                      <p className="text-2xl">
+                        {PROGRAM[workspace.studentRecord.program]} -{' '}
+                        {ACCREDITATION[workspace.studentRecord.accreditation]}
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-600">Birth Date</h4>
+                      <p className="text-2xl">
+                        {format(
+                          new Date(workspace.studentRecord.birthDate),
+                          'MMMM dd, yyyy'
+                        )}{' '}
+                        (
+                        {differenceInCalendarYears(
+                          new Date(),
+                          workspace.studentRecord.birthDate
+                        )}
+                        )
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-600">Former School</h4>
+                      <p className="text-2xl capitalize">
+                        {workspace.studentRecord.formerSchoolName}
+                      </p>
+                      <p className="text-lg">
+                        {workspace.studentRecord.formerSchoolAddress}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="w-1/2 space-y-10">
+                    <div>
+                      <h4 className="font-bold text-gray-600">Grade Level</h4>
+                      <p className="text-2xl">
+                        {
+                          GRADE_LEVEL[
+                            workspace.studentRecord.incomingGradeLevel
+                          ]
+                        }
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-600">Gender</h4>
+                      <p className="text-2xl capitalize">
+                        {workspace.studentRecord.gender.toLowerCase()}
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-600">Religion</h4>
+                      <p className="text-2xl capitalize">
+                        {RELIGION[workspace.studentRecord.religion]}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
+          </Content.Container>
+        )}
         <Modal
           show={review}
           toggle={toggleReview}
@@ -995,8 +1093,8 @@ const Workspace = ({ schoolFees }) => {
               {GRADE_LEVEL[incomingGradeLevel].toLowerCase()}
             </p>
             <p>
-              <strong>Birth Date:</strong> {birthDate.toDateString()} ({age}{' '}
-              years old)
+              <strong>Birth Date:</strong> {birthDate?.toDateString() || 0} (
+              {age} years old)
             </p>
             <p className="capitalize">
               <strong>Gender:</strong> {gender.toLowerCase()}
@@ -1095,13 +1193,21 @@ const Workspace = ({ schoolFees }) => {
               </span>
             </h4>
           </div>
-          <button
-            className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
-            disabled={isSubmitting}
-            onClick={submit}
-          >
-            {isSubmitting ? 'Processing...' : 'Submit'}
-          </button>
+          {viewFees ? (
+            <Link href={`/account/${workspace.slug}/fees`}>
+              <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-50">
+                Pay School Fees
+              </a>
+            </Link>
+          ) : (
+            <button
+              className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
+              disabled={isSubmitting}
+              onClick={submit}
+            >
+              {isSubmitting ? 'Processing...' : 'Submit'}
+            </button>
+          )}
         </Modal>
       </AccountLayout>
     )

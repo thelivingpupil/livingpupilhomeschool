@@ -5,7 +5,6 @@ import {
   Program,
   TransactionSource,
 } from '@prisma/client';
-import crypto from 'crypto';
 
 import sanityClient from '@/lib/server/sanity';
 import prisma from '@/prisma/index';
@@ -77,29 +76,36 @@ export const createSchoolFees = async (
 
   if (payment === PaymentType.ANNUAL) {
     const fee = schoolFee.fees[0];
-    const transactionIds = await Promise.all([
-      prisma.purchaseHistory.create({
-        data: { total: fee.totalFee },
-        select: { id: true, transactionId: true },
-      }),
-    ]);
+    const transaction = await prisma.purchaseHistory.create({
+      data: { total: fee.totalFee },
+      select: { id: true, transactionId: true },
+    });
+    const reference = await createTransaction(
+      userId,
+      email,
+      transaction.transactionId,
+      fee.totalFee,
+      description,
+      transaction.id,
+      TransactionSource.ENROLLMENT
+    );
     await Promise.all([
       prisma.schoolFee.create({
         data: {
-          studentId: workspaceId,
-          transactionId: transactionIds[0].transactionId,
+          order: 0,
           paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transaction.transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
         },
       }),
-      createTransaction(
-        userId,
-        email,
-        transactionIds[0].transactionId,
-        fee.totalFee,
-        description,
-        transactionIds[0].id,
-        TransactionSource.ENROLLMENT
-      ),
     ]);
   } else if (payment === PaymentType.SEMI_ANNUAL) {
     const fee = schoolFee.fees[1];
@@ -117,27 +123,7 @@ export const createSchoolFees = async (
         select: { id: true, transactionId: true },
       }),
     ]);
-    await Promise.all([
-      prisma.schoolFee.createMany({
-        data: [
-          {
-            studentId: workspaceId,
-            transactionId: transactionIds[0].transactionId,
-            paymentType: payment,
-          },
-          {
-            studentId: workspaceId,
-            transactionId: transactionIds[1].transactionId,
-            paymentType: payment,
-          },
-          {
-            studentId: workspaceId,
-            transactionId: transactionIds[2].transactionId,
-            paymentType: payment,
-          },
-        ],
-        skipDuplicates: true,
-      }),
+    const reference = await Promise.all([
       createTransaction(
         userId,
         email,
@@ -166,6 +152,56 @@ export const createSchoolFees = async (
         TransactionSource.ENROLLMENT
       ),
     ]);
+    await Promise.all([
+      prisma.schoolFee.create({
+        data: {
+          order: 0,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[0].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+      prisma.schoolFee.create({
+        data: {
+          order: 1,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[1].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+      prisma.schoolFee.create({
+        data: {
+          order: 2,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[2].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+    ]);
   } else if (payment === PaymentType.QUARTERLY) {
     const fee = schoolFee.fees[2];
     const transactionIds = await Promise.all([
@@ -186,33 +222,7 @@ export const createSchoolFees = async (
         select: { id: true, transactionId: true },
       }),
     ]);
-    console.log(transactionIds);
-    await Promise.all([
-      prisma.schoolFee.createMany({
-        data: [
-          {
-            studentId: workspaceId,
-            transactionId: transactionIds[0].transactionId,
-            paymentType: payment,
-          },
-          {
-            studentId: workspaceId,
-            transactionId: transactionIds[1].transactionId,
-            paymentType: payment,
-          },
-          {
-            studentId: workspaceId,
-            transactionId: transactionIds[2].transactionId,
-            paymentType: payment,
-          },
-          {
-            studentId: workspaceId,
-            transactionId: transactionIds[3].transactionId,
-            paymentType: payment,
-          },
-        ],
-        skipDuplicates: true,
-      }),
+    const reference = await Promise.all([
       createTransaction(
         userId,
         email,
@@ -249,6 +259,72 @@ export const createSchoolFees = async (
         transactionIds[3].id,
         TransactionSource.ENROLLMENT
       ),
+    ]);
+    await Promise.all([
+      prisma.schoolFee.create({
+        data: {
+          order: 0,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[0].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+      prisma.schoolFee.create({
+        data: {
+          order: 1,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[1].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+      prisma.schoolFee.create({
+        data: {
+          order: 2,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[2].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+      prisma.schoolFee.create({
+        data: {
+          order: 3,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[3].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
     ]);
   }
 };

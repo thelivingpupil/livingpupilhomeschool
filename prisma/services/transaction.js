@@ -56,7 +56,7 @@ export const createTransaction = async (
       },
     },
   });
-  return url;
+  return { url, referenceNumber };
 };
 
 export const updateTransaction = async (
