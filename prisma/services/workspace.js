@@ -165,6 +165,8 @@ export const getWorkspace = async (id, email, slug) =>
         select: {
           studentId: true,
           transactionId: true,
+          order: true,
+          gradeLevel: true,
           paymentType: true,
           transaction: {
             select: {
@@ -255,6 +257,8 @@ export const getWorkspaces = async (id, email) =>
         select: {
           studentId: true,
           transactionId: true,
+          order: true,
+          gradeLevel: true,
           paymentType: true,
           transaction: {
             select: {

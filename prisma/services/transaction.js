@@ -3,6 +3,7 @@ import { Currency } from '@prisma/client';
 import api from '@/lib/common/api';
 import { getBasicAuthorization } from '@/lib/server/dragonpay';
 import prisma from '@/prisma/index';
+import { add } from 'date-fns';
 
 export const createTransaction = async (
   userId,
@@ -21,6 +22,7 @@ export const createTransaction = async (
         Currency: Currency.PHP,
         Description: description,
         Email: email,
+        Expiry: add(new Date(), { years: 1 }),
       },
       headers: {
         Authorization: `${getBasicAuthorization()}`,

@@ -80,18 +80,21 @@ export const createSchoolFees = async (
       data: { total: fee.totalFee },
       select: { id: true, transactionId: true },
     });
-    const reference = await createTransaction(
-      userId,
-      email,
-      transaction.transactionId,
-      fee.totalFee,
-      description,
-      transaction.id,
-      TransactionSource.ENROLLMENT
-    );
+    await Promise.all([
+      createTransaction(
+        userId,
+        email,
+        transaction.transactionId,
+        fee.totalFee,
+        description,
+        transaction.id,
+        TransactionSource.ENROLLMENT
+      ),
+    ]);
     await Promise.all([
       prisma.schoolFee.create({
         data: {
+          incomingGradeLevel,
           order: 0,
           paymentType: payment,
           transaction: {
@@ -123,7 +126,7 @@ export const createSchoolFees = async (
         select: { id: true, transactionId: true },
       }),
     ]);
-    const reference = await Promise.all([
+    await Promise.all([
       createTransaction(
         userId,
         email,
@@ -155,6 +158,7 @@ export const createSchoolFees = async (
     await Promise.all([
       prisma.schoolFee.create({
         data: {
+          incomingGradeLevel,
           order: 0,
           paymentType: payment,
           transaction: {
@@ -171,6 +175,7 @@ export const createSchoolFees = async (
       }),
       prisma.schoolFee.create({
         data: {
+          incomingGradeLevel,
           order: 1,
           paymentType: payment,
           transaction: {
@@ -187,6 +192,7 @@ export const createSchoolFees = async (
       }),
       prisma.schoolFee.create({
         data: {
+          incomingGradeLevel,
           order: 2,
           paymentType: payment,
           transaction: {
@@ -222,7 +228,7 @@ export const createSchoolFees = async (
         select: { id: true, transactionId: true },
       }),
     ]);
-    const reference = await Promise.all([
+    await Promise.all([
       createTransaction(
         userId,
         email,
@@ -263,6 +269,7 @@ export const createSchoolFees = async (
     await Promise.all([
       prisma.schoolFee.create({
         data: {
+          incomingGradeLevel,
           order: 0,
           paymentType: payment,
           transaction: {
@@ -279,6 +286,7 @@ export const createSchoolFees = async (
       }),
       prisma.schoolFee.create({
         data: {
+          incomingGradeLevel,
           order: 1,
           paymentType: payment,
           transaction: {
@@ -295,6 +303,7 @@ export const createSchoolFees = async (
       }),
       prisma.schoolFee.create({
         data: {
+          incomingGradeLevel,
           order: 2,
           paymentType: payment,
           transaction: {
@@ -311,6 +320,7 @@ export const createSchoolFees = async (
       }),
       prisma.schoolFee.create({
         data: {
+          incomingGradeLevel,
           order: 3,
           paymentType: payment,
           transaction: {

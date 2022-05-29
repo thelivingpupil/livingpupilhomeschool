@@ -14,10 +14,10 @@ const menu = (workspaceId) => [
       //   name: 'Grades',
       //   path: `/account/${workspaceId}/grades`,
       // },
-      {
-        name: 'Documents',
-        path: `/account/${workspaceId}/documents`,
-      },
+      // {
+      //   name: 'Documents',
+      //   path: `/account/${workspaceId}/documents`,
+      // },
       {
         name: 'School Fees',
         path: `/account/${workspaceId}/fees`,

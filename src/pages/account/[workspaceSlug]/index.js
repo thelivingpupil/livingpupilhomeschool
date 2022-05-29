@@ -1029,9 +1029,9 @@ const Workspace = ({ schoolFees }) => {
                         (
                         {differenceInCalendarYears(
                           new Date(),
-                          workspace.studentRecord.birthDate
-                        )}
-                        )
+                          new Date(workspace.studentRecord.birthDate)
+                        )}{' '}
+                        years old )
                       </p>
                     </div>
                     <div>

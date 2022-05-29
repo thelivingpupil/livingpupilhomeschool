@@ -143,6 +143,7 @@ model SchoolFee {
   studentId     String      @default(cuid())
   transactionId String      @unique
   order         Int
+  gradeLevel    GradeLevel  @default(PRESCHOOL)
   paymentType   PaymentType
   createdAt     DateTime?   @default(now())
   deletedAt     DateTime?
