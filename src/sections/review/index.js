@@ -20,7 +20,6 @@ const Review = ({ items, more }) => {
       </div>
       <div className="space-y-20 bg-water-500/50">
         {items.map((item, index) => {
-          console.log(item);
           const imageAsset = builder.image(item?.image?.asset);
           return (
             <section key={index} className="relative w-full">
