@@ -28,7 +28,6 @@ const Fees = () => {
     [GradeLevel.GRADE_12]: { schoolFees: [] },
   };
   workspace?.schoolFees.map((fee) => {
-    console.log(fee);
     fees[fee.gradeLevel].schoolFees[fee.order] = fee;
   });
 

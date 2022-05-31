@@ -1,3 +1,4 @@
+import { TransactionStatus } from '@prisma/client';
 import { createHash } from 'crypto';
 
 import Meta from '@/components/Meta';
@@ -16,10 +17,19 @@ const Callback = ({ success, transaction }) => {
             </h1>
             <h2
               className={`text-4xl font-bold text-center ${
-                success ? 'text-emerald-600' : 'text-red-600'
+                transaction?.paymentStatus === TransactionStatus.S
+                  ? 'text-emerald-600'
+                  : transaction?.paymentStatus === TransactionStatus.P
+                  ? 'text-amber-600'
+                  : 'text-red-600'
               }`}
             >
-              Payment {success ? 'Successful' : 'Failed'}
+              Payment{' '}
+              {transaction?.paymentStatus === TransactionStatus.S
+                ? 'Successful'
+                : transaction?.paymentStatus === TransactionStatus.P
+                ? 'Pending'
+                : 'Failed'}
             </h2>
           </div>
           {success ? (
@@ -87,8 +97,6 @@ export const getServerSideProps = async ({ query }) => {
     success = true;
     transaction = await updateTransaction(txnid, refno, status, message);
   }
-
-  console.log(transaction);
 
   return {
     props: {

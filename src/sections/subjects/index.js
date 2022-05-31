@@ -1,7 +1,6 @@
 import { PortableText } from '@portabletext/react';
 
 const Review = ({ content }) => {
-  console.log(content);
   return (
     <div className="bg-white">
       {content.map((item, index) => {

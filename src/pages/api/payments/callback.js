@@ -5,7 +5,7 @@ import { updateTransaction } from '@/prisma/services/transaction';
 const handler = async (req, res) => {
   const { method } = req;
 
-  if (method === 'GET') {
+  if (method === 'POST') {
     const { txnid, refno, status, message, digest } = req.query;
     let result = 'FAIL_DIGEST_MISMATCH';
     const hash = createHash('sha1')
@@ -19,9 +19,7 @@ const handler = async (req, res) => {
       await updateTransaction(txnid, refno, status, message);
     }
 
-    res
-      .status(200)
-      .send(`Payment Result: ${result}. You may now close this window.`);
+    res.status(200).send(`result=${result}`);
   } else {
     res
       .status(405)
