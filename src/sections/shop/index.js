@@ -206,7 +206,7 @@ const Shop = ({ items }) => {
           <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-3 md:w-2/3">
             {items ? (
               items.map(({ _id, code, image, name, price }, index) => {
-                const imageAsset = builder.image(image.asset);
+                const imageAsset = builder.image(image?.asset);
                 return (
                   <Item
                     key={index}
@@ -214,7 +214,7 @@ const Shop = ({ items }) => {
                     addToCart={addToCart}
                     code={code}
                     count={cart.find((x) => x.id === _id)?.quantity || 0}
-                    image={imageAsset.url()}
+                    image={imageAsset.options.source ? imageAsset?.url() : null}
                     name={name}
                     price={price}
                   />

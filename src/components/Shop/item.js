@@ -24,8 +24,8 @@ const Item = ({ id, addToCart, code, count, image, name, price }) => {
               className="rounded-lg"
               layout="fill"
               loading="lazy"
-              objectFit="cover"
-              src={image}
+              objectFit={image ? 'cover' : 'contain'}
+              src={image ? image : '/images/livingpupil-homeschool-logo.png'}
             />
           </div>
           <h3 className="font-bold">{name}</h3>
