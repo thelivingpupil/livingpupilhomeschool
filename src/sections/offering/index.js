@@ -8,7 +8,6 @@ const Offering = ({ title, offering }) => {
         <div className="relative w-full h-80 md:h-auto md:w-1/2">
           <Image
             alt="Actual Image"
-            className="rounded-full"
             layout="fill"
             loading="lazy"
             objectFit="contain"

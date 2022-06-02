@@ -21,10 +21,10 @@ const Item = ({ id, addToCart, code, count, image, name, price }) => {
           <div className="relative inline-block w-full h-40">
             <Image
               alt={name}
-              className="rounded-lg"
+              // className="rounded-lg"
               layout="fill"
               loading="lazy"
-              objectFit={image ? 'cover' : 'contain'}
+              objectFit="contain"
               src={image ? image : '/images/livingpupil-homeschool-logo.png'}
             />
           </div>
