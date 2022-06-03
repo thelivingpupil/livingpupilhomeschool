@@ -125,7 +125,9 @@ const Shop = ({ items }) => {
                             width={30}
                             height={30}
                             objectFit="cover"
-                            src={image}
+                            src={
+                              image || '/images/livingpupil-homeschool-logo.png'
+                            }
                           />
                           <div className="flex flex-col">
                             <p className="font-bold">{name}</p>
@@ -168,6 +170,28 @@ const Shop = ({ items }) => {
                     currency: 'PHP',
                   }).format(total)}
                 </div>
+              </div>
+              <div className="text-xs">
+                <p>
+                  Please be informed of the following expiry time of each
+                  transaction:
+                </p>
+                <ul className="px-5 list-disc">
+                  <li>
+                    Online Banking - <strong>1 hour</strong>
+                  </li>
+                  <li>
+                    OTC (Bank and Non-Bank) - <strong>2 days</strong>
+                  </li>
+                </ul>
+                <p>
+                  The payment link will expire beyond the allocated transaction
+                  allowance.
+                </p>
+                <p>
+                  If the link is expired, you will be required to send another
+                  checkout request.
+                </p>
               </div>
               <button
                 className="w-full py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
@@ -241,7 +265,9 @@ const Shop = ({ items }) => {
                             width={30}
                             height={30}
                             objectFit="cover"
-                            src={image}
+                            src={
+                              image || '/images/livingpupil-homeschool-logo.png'
+                            }
                           />
                           <div className="flex flex-col">
                             <p className="font-bold">{name}</p>

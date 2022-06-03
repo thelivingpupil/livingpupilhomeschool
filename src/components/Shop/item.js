@@ -25,7 +25,7 @@ const Item = ({ id, addToCart, code, count, image, name, price }) => {
               layout="fill"
               loading="lazy"
               objectFit="contain"
-              src={image ? image : '/images/livingpupil-homeschool-logo.png'}
+              src={image || '/images/livingpupil-homeschool-logo.png'}
             />
           </div>
           <h3 className="font-bold">{name}</h3>

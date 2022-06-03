@@ -113,6 +113,11 @@ const Information = ({ guardian }) => {
         subtitle="Provide the information of a parent or guardian responsible for the student's records"
       />
       <Content.Divider />
+      <div className="px-3 py-3 text-sm border-2 rounded-lg text-primary-500 border-primary-600 bg-primary-50/50">
+        <p>
+          Complete this <strong>Guardian Information</strong> form
+        </p>
+      </div>
       <Content.Container>
         <Card>
           <form>
