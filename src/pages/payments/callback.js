@@ -3,10 +3,7 @@ import { createHash } from 'crypto';
 
 import Meta from '@/components/Meta';
 import { PublicLayout } from '@/layouts/index';
-import {
-  getTransaction,
-  updateTransaction,
-} from '@/prisma/services/transaction';
+import { updateTransaction } from '@/prisma/services/transaction';
 
 const Callback = ({ success, transaction }) => {
   return (
@@ -98,7 +95,7 @@ export const getServerSideProps = async ({ query }) => {
 
   if (hash === digest) {
     success = true;
-    transaction = await getTransaction(txnid, refno);
+    transaction = await updateTransaction(txnid, refno, status, message);
   }
 
   return {

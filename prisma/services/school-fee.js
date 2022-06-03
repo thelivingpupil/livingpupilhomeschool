@@ -94,7 +94,7 @@ export const createSchoolFees = async (
     await Promise.all([
       prisma.schoolFee.create({
         data: {
-          incomingGradeLevel,
+          gradeLevel: incomingGradeLevel,
           order: 0,
           paymentType: payment,
           transaction: {
@@ -158,7 +158,7 @@ export const createSchoolFees = async (
     await Promise.all([
       prisma.schoolFee.create({
         data: {
-          incomingGradeLevel,
+          gradeLevel: incomingGradeLevel,
           order: 0,
           paymentType: payment,
           transaction: {
@@ -175,7 +175,7 @@ export const createSchoolFees = async (
       }),
       prisma.schoolFee.create({
         data: {
-          incomingGradeLevel,
+          gradeLevel: incomingGradeLevel,
           order: 1,
           paymentType: payment,
           transaction: {
@@ -192,7 +192,7 @@ export const createSchoolFees = async (
       }),
       prisma.schoolFee.create({
         data: {
-          incomingGradeLevel,
+          gradeLevel: incomingGradeLevel,
           order: 2,
           paymentType: payment,
           transaction: {
@@ -269,7 +269,7 @@ export const createSchoolFees = async (
     await Promise.all([
       prisma.schoolFee.create({
         data: {
-          incomingGradeLevel,
+          gradeLevel: incomingGradeLevel,
           order: 0,
           paymentType: payment,
           transaction: {
@@ -286,7 +286,7 @@ export const createSchoolFees = async (
       }),
       prisma.schoolFee.create({
         data: {
-          incomingGradeLevel,
+          gradeLevel: incomingGradeLevel,
           order: 1,
           paymentType: payment,
           transaction: {
@@ -303,7 +303,7 @@ export const createSchoolFees = async (
       }),
       prisma.schoolFee.create({
         data: {
-          incomingGradeLevel,
+          gradeLevel: incomingGradeLevel,
           order: 2,
           paymentType: payment,
           transaction: {
@@ -320,7 +320,7 @@ export const createSchoolFees = async (
       }),
       prisma.schoolFee.create({
         data: {
-          incomingGradeLevel,
+          gradeLevel: incomingGradeLevel,
           order: 3,
           paymentType: payment,
           transaction: {

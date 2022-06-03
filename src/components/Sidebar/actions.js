@@ -52,7 +52,7 @@ const Actions = () => {
   return (
     <div className="flex flex-col items-stretch justify-center px-5 space-y-3">
       <Button
-        className="text-gray-800 hover:text-white bg-secondary-500 hover:bg-primary-500"
+        className="text-gray-800 bg-secondary-500 hover:bg-secondary-400"
         onClick={toggleModal}
       >
         <PlusIcon className="w-5 h-5" aria-hidden="true" />
