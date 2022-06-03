@@ -4,7 +4,7 @@ import { signIn, useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import isEmail from 'validator/lib/isEmail';
 
-const Presentation = ({ title, video }) => {
+const Presentation = ({ title, video, secondaryVideo }) => {
   const { data } = useSession();
   const [isSubmitting, setSubmittingState] = useState(false);
   const [isSubmitted, setSubmittedState] = useState(false);
@@ -49,13 +49,23 @@ const Presentation = ({ title, video }) => {
                         </h2>
                       </div>
                       {isSubmitted || data ? (
-                        <div className="aspect-w-16 aspect-h-9 rounded-xl overflow-clip">
-                          <iframe
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                            frameBorder="0"
-                            src={video.url}
-                          ></iframe>
+                        <div>
+                          <div className="mb-5 aspect-w-16 aspect-h-9 rounded-xl overflow-clip">
+                            <iframe
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                              frameBorder="0"
+                              src={video.url}
+                            ></iframe>
+                          </div>
+                          <div className="aspect-w-16 aspect-h-9 rounded-xl overflow-clip">
+                            <iframe
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                              frameBorder="0"
+                              src={secondaryVideo.url}
+                            ></iframe>
+                          </div>
                         </div>
                       ) : (
                         <div className="flex flex-col items-center justify-center py-10 space-y-3 md:py-20">
