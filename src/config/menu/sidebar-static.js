@@ -10,10 +10,10 @@ const sidebarMenu = () => [
         name: 'Guardian Information',
         path: `/account/information`,
       },
-      {
-        name: 'Shop Purchases',
-        path: `/account/purchase-history`,
-      },
+      // {
+      //   name: 'Shop Purchases',
+      //   path: `/account/purchase-history`,
+      // },
       // {
       //   name: 'Billing',
       //   path: `/account/billing`,
