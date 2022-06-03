@@ -4,9 +4,9 @@ const html = ({ code, name }) => {
   return `
 <body>
     <p>Hello there!</p>
-    <p>You have created <strong>${name}</strong> workspace.</p>
-    <p>Workspaces encapsulates your project's activities with your dedicated teammates.</p>
-    <p>Start inviting your teammates by sharing this link: <a href="${link}">${link}</a></p>
+    <p>You have created a student record for <strong>${name}</strong>.</p>
+    <p>This record encapsulates the student's activities with your dedicated invited teachers or family members.</p>
+    <p>Start inviting your tutors and family members by sharing this link: <a href="${link}">${link}</a></p>
     <p>In case you need any assistance, just hit reply.</p>
     <p>Cheers,<br />${process.env.EMAIL_FROM}</p>
 </body>
@@ -19,10 +19,10 @@ const text = ({ code, name }) => {
   return `
 Hello there!
 
-You have created ${name} workspace.
-Workspaces encapsulates your project's activities with your dedicated teammates.
+You have created a student record for ${name}.
+This record encapsulates the student's activities with your dedicated invited teachers or family members.
 
-Start inviting your teammates by sharing this link: ${link}
+Start inviting your tutors and family members by sharing this lin: ${link}
 
 In case you need any assistance, just hit reply.
 

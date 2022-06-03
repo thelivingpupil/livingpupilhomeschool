@@ -1,4 +1,4 @@
-import { Currency, PrismaClient } from '@prisma/client';
+import { Currency } from '@prisma/client';
 
 import api from '@/lib/common/api';
 import { getBasicAuthorization } from '@/lib/server/dragonpay';
