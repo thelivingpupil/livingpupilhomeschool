@@ -229,21 +229,26 @@ const Shop = ({ items }) => {
           </div>
           <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-3 md:w-2/3">
             {items ? (
-              items.map(({ _id, code, image, name, price }, index) => {
-                const imageAsset = builder.image(image?.asset);
-                return (
-                  <Item
-                    key={index}
-                    id={_id}
-                    addToCart={addToCart}
-                    code={code}
-                    count={cart.find((x) => x.id === _id)?.quantity || 0}
-                    image={imageAsset.options.source ? imageAsset?.url() : null}
-                    name={name}
-                    price={price}
-                  />
-                );
-              })
+              items.map(
+                ({ _id, code, image, name, price, categories }, index) => {
+                  const imageAsset = builder.image(image?.asset);
+                  return (
+                    <Item
+                      key={index}
+                      id={_id}
+                      addToCart={addToCart}
+                      categories={categories}
+                      code={code}
+                      count={cart.find((x) => x.id === _id)?.quantity || 0}
+                      image={
+                        imageAsset.options.source ? imageAsset?.url() : null
+                      }
+                      name={name}
+                      price={price}
+                    />
+                  );
+                }
+              )
             ) : (
               <div>No items in store...</div>
             )}
@@ -254,7 +259,6 @@ const Shop = ({ items }) => {
               <div className="flex flex-col items-start justify-between w-full h-full space-y-3">
                 {cart.length ? (
                   cart.map(({ image, name, price, quantity }, index) => {
-                    // const imageAsset = builder.image(image.asset);
                     return (
                       <div
                         key={index}

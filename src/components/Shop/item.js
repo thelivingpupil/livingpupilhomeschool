@@ -3,7 +3,16 @@ import Image from 'next/image';
 
 import { MinusIcon, PlusIcon } from '@heroicons/react/outline';
 
-const Item = ({ id, addToCart, code, count, image, name, price }) => {
+const Item = ({
+  id,
+  addToCart,
+  code,
+  count,
+  image,
+  name,
+  price,
+  categories,
+}) => {
   const [quantity, setQuantity] = useState(count);
 
   const decrease = () => setQuantity(quantity - 1);
@@ -15,27 +24,39 @@ const Item = ({ id, addToCart, code, count, image, name, price }) => {
   }, [count]);
 
   return (
-    <div>
-      <div className="p-3 space-y-5 border rounded-lg hover:shadow-xl">
-        <div>
-          <div className="relative inline-block w-full h-40">
-            <Image
-              alt={name}
-              // className="rounded-lg"
-              layout="fill"
-              loading="lazy"
-              objectFit="contain"
-              src={image || '/images/livingpupil-homeschool-logo.png'}
-            />
-          </div>
-          <h3 className="font-bold">{name}</h3>
-          <p className="text-gray-600">
-            {new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: 'PHP',
-            }).format(price)}
-          </p>
+    <div className="flex flex-col justify-between p-3 space-y-5 border rounded-lg hover:shadow-xl item">
+      <div>
+        <div className="relative inline-block w-full h-40">
+          <Image
+            alt={name}
+            // className="rounded-lg"
+            layout="fill"
+            loading="lazy"
+            objectFit="contain"
+            src={image || '/images/livingpupil-homeschool-logo.png'}
+          />
         </div>
+        <h3 className="font-bold">{name}</h3>
+        <p className="text-gray-600">
+          {new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'PHP',
+          }).format(price)}
+        </p>
+        <div className="flex flex-wrap py-2">
+          {categories?.map((c, index) =>
+            c ? (
+              <span
+                key={index}
+                className="px-3 py-1 mb-2 mr-3 text-xs text-gray-600 bg-gray-100 rounded-full"
+              >
+                {c}
+              </span>
+            ) : null
+          )}
+        </div>
+      </div>
+      <div className="space-y-3">
         <div className="flex flex-row justify-between space-x-3">
           <button
             className="p-2 text-white rounded bg-primary-400 disabled:opacity-50"

@@ -1,4 +1,4 @@
-import { Currency } from '@prisma/client';
+import { Currency, PrismaClient } from '@prisma/client';
 
 import api from '@/lib/common/api';
 import { getBasicAuthorization } from '@/lib/server/dragonpay';
@@ -60,6 +60,16 @@ export const createTransaction = async (
   });
   return { url, referenceNumber };
 };
+
+export const getTransaction = async (transactionId, paymentReference) =>
+  await prisma.transaction.findUnique({
+    where: {
+      transactionId_referenceNumber: {
+        referenceNumber: paymentReference,
+        transactionId,
+      },
+    },
+  });
 
 export const updateTransaction = async (
   transactionId,
