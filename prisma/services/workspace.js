@@ -41,7 +41,7 @@ export const createWorkspace = async (creatorId, email, name, slug) => {
   });
   await sendMail({
     html: createHtml({ code: workspace.inviteCode, name }),
-    subject: `[Nextacular] Workspace created: ${name}`,
+    subject: `[Living Pupil Homeschool] Student Record Created: ${name}`,
     text: createText({ code: workspace.inviteCode, name }),
     to: email,
   });
@@ -350,7 +350,7 @@ export const inviteUsers = async (id, email, members, slug) => {
       }),
       sendMail({
         html: inviteHtml({ code: workspace.inviteCode, name: workspace.name }),
-        subject: `[Nextacular] You have been invited to join ${workspace.name} workspace`,
+        subject: `[Living Pupil Homeschool] You have been invited to view ${workspace.name}'s student records`,
         text: inviteText({ code: workspace.inviteCode, name: workspace.name }),
         to: members.map((member) => member.email),
       }),

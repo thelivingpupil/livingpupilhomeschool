@@ -9,7 +9,7 @@ const Payment = () => {
 
   return (
     <PublicLayout>
-      <Meta title="Nextacular - Subscription Status" />
+      <Meta title="Living Pupil Homeschool - Subscription Status" />
       <div className="w-full py-5">
         <div className="relative flex flex-col mx-auto space-y-5">
           <div className="flex flex-col items-center justify-center pt-10 pb-5 mx-auto">
@@ -31,7 +31,7 @@ const Payment = () => {
           </div>
           <div className="flex flex-row items-center justify-center space-x-5">
             <Link href="/account/billing">
-              <a className="px-10 py-3 text-white bg-primary-600 rounded shadow hover:bg-primary-600">
+              <a className="px-10 py-3 text-white rounded shadow bg-primary-600 hover:bg-primary-600">
                 Go Back
               </a>
             </Link>

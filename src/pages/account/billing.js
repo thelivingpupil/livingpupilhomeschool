@@ -40,7 +40,7 @@ const Billing = ({ invoices, products }) => {
 
   return (
     <AccountLayout>
-      <Meta title="Nextacular - Billing" />
+      <Meta title="Living Pupil Homeschool - Billing" />
       <Content.Title
         title="Billing"
         subtitle="Manage your billing and preferences"
@@ -152,8 +152,8 @@ const Billing = ({ invoices, products }) => {
         </Content.Container>
       ) : (
         <Content.Empty>
-          Once you&apos;ve paid for something on Nextacular, invoices will show
-          up here
+          Once you&apos;ve paid for something on Living Pupil Homeschool,
+          invoices will show up here
         </Content.Empty>
       )}
     </AccountLayout>
