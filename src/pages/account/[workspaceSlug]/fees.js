@@ -88,7 +88,9 @@ const Fees = () => {
                               </td>
                               <td className="px-3 py-2 text-center">
                                 {f.transaction.paymentStatus ===
-                                TransactionStatus.U ? (
+                                  TransactionStatus.U ||
+                                f.transaction.paymentStatus ===
+                                  TransactionStatus.P ? (
                                   <Link href={f.transaction.url}>
                                     <a
                                       className="inline-block px-3 py-2 rounded bg-secondary-500 hover:bg-secondary-400"
