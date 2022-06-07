@@ -1,0 +1,12 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 200" width="1920" height="200">
+	<title>New Project</title>
+	<defs>
+		<image  width="1920" height="400" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB4AAAAGQAQMAAAB1au8kAAAAAXNSR0IB2cksfwAAAANQTFRF4u33xRXTCgAAAHRJREFUeJztwQENAAAAwqD3T20ON6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4MHifAAGC6Sx8AAAAAElFTkSuQmCC"/>
+	</defs>
+	<style>
+		.s0 { fill: #fac84f } 
+	</style>
+	<use id="Layer 1" href="#img1" x="0" y="-100"/>
+	<path id="Rectangle 1 copy 2" class="s0" d="m0-609h1920v678h-1920z"/>
+	<path id="Shape 1" class="s0" d="m1967 53.2c0 0-114.2 56.8-456.9 56.8-245.5 0-292.7-83.7-705.9 1.4-275.1 56.7-848.1 36.8-871.9-57.5-27.2-107.7 1834.7 0 1834.7 0z"/>
+</svg>

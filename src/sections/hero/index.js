@@ -11,7 +11,7 @@ const builder = imageUrlBuilder(sanityClient);
 const Hero = ({ items }) => {
   return (
     <section className="relative w-full bg-secondary-500">
-      <div className="w-full pt-20 pb-40 bg-bottom bg-no-repeat shadow-inner bg-wave-2">
+      <div className="w-full pt-20 pb-40 bg-bottom bg-no-repeat shadow-inner bg-wave-5">
         <Splide
           options={{
             autoplay: true,

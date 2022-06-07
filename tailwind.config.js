@@ -13,6 +13,8 @@ module.exports = {
         'wave-2-1': "url('/images/wave-2-1.svg')",
         'wave-3': "url('/images/wave-3.svg')",
         'wave-4': "url('/images/wave-4.svg')",
+        'wave-5': "url('/images/wave-5.svg')",
+        'wave-6': "url('/images/wave-6.svg')",
         'asset-1': "url('/images/asset-1.png')",
         'asset-2': "url('/images/asset-2.png')",
         'asset-3': "url('/images/asset-3.png')",
