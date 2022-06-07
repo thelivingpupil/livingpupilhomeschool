@@ -316,7 +316,8 @@ const Shop = ({ items }) => {
                 </div>
               </div>
               <button
-                className="py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400"
+                className="py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
+                disabled={total === 0}
                 onClick={toggleCart}
               >
                 Review Shopping Cart
