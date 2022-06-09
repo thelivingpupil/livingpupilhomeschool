@@ -88,7 +88,7 @@ const HomeschoolProgram = ({ page, fees }) => {
         </div>
         <div className="container mx-auto space-y-3">
           <h3 className="text-lg font-bold text-center">with a</h3>
-          <div className="flex flex-row items-center justify-center space-x-3">
+          <div className="flex flex-col items-center justify-center space-x-0 space-y-3 md:space-y-0 md:space-x-3 md:flex-row">
             <button
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
                 accreditation === Accreditation.LOCAL &&
@@ -124,7 +124,7 @@ const HomeschoolProgram = ({ page, fees }) => {
             </button>
           </div>
         </div>
-        <div className="container w-1/4 mx-auto space-y-3">
+        <div className="container w-full mx-auto space-y-3 md:w-1/4">
           <div className="relative inline-block w-full border rounded">
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -157,8 +157,8 @@ const HomeschoolProgram = ({ page, fees }) => {
         </div>
       </section>
       <section className="px-5 py-10">
-        <div className="container flex flex-row w-3/4 mx-auto space-x-5">
-          <div className="w-1/3 p-5 space-y-5 text-center border rounded-lg border-primary-500">
+        <div className="container flex flex-col w-3/4 mx-auto space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
+          <div className="w-full p-5 space-y-5 text-center border rounded-lg md:w-1/3 border-primary-500">
             <h2 className="text-xl font-medium">Full Payment</h2>
             <h3 className="text-3xl font-bold font-display">
               {new Intl.NumberFormat('en-US', {
@@ -167,7 +167,7 @@ const HomeschoolProgram = ({ page, fees }) => {
               }).format(schoolFee?.fees[0]?.totalFee || 0)}
             </h3>
           </div>
-          <div className="w-1/3 p-5 space-y-5 text-center border rounded-lg border-primary-500">
+          <div className="w-full p-5 space-y-5 text-center border rounded-lg md:w-1/3 border-primary-500">
             <h2 className="text-xl font-medium">Semi-Annual Payment</h2>
             <h3 className="text-3xl font-bold font-display">
               {new Intl.NumberFormat('en-US', {
@@ -179,7 +179,7 @@ const HomeschoolProgram = ({ page, fees }) => {
               )}
             </h3>
           </div>
-          <div className="w-1/3 p-5 space-y-5 text-center border rounded-lg border-primary-500">
+          <div className="w-full p-5 space-y-5 text-center border rounded-lg md:w-1/3 border-primary-500">
             <h2 className="text-xl font-medium">Quarterly Payment</h2>
             <h3 className="text-3xl font-bold font-display">
               {new Intl.NumberFormat('en-US', {
