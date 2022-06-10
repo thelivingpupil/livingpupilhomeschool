@@ -1,7 +1,19 @@
+import sanityClient from '@/lib/server/sanity';
+
 const Sitemap = () => {};
 
 export const getServerSideProps = async ({ res }) => {
-  const publicPages = ['index', 'auth/login'];
+  const publicPages = [
+    'index',
+    'homeschool-cottage',
+    'homeschool-program',
+    'shop',
+    'auth/login',
+  ];
+  const pages = await sanityClient.fetch(
+    `*[_type == 'pages' && index != true]{slug}`
+  );
+  publicPages.push(...pages.map((page) => page.slug.current));
   const staticPages = publicPages.map(
     (staticPagePath) =>
       `${process.env.APP_URL}${
