@@ -18,6 +18,7 @@ const Contact = ({ title, subtitle, address, phone, email, hours }) => {
   const [txtEmail, setEmail] = useState('');
   const [txtSubject, setSubject] = useState('');
   const [txtMessage, setMessage] = useState('');
+  const [captcha, setCaptcha] = useState(null);
   const [wasValidated, setValidated] = useState(true);
 
   const handleNameChange = (e) => setName(e.target.value);
@@ -30,39 +31,37 @@ const Contact = ({ title, subtitle, address, phone, email, hours }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    recaptchaRef.current.execute();
+    setSubmittingState(true);
+    api('/api/public/inquiry', {
+      body: {
+        captcha,
+        name: txtName,
+        email: txtEmail,
+        subject: txtSubject,
+        message: txtMessage,
+      },
+      method: 'POST',
+    }).then((response) => {
+      setSubmittingState(false);
+
+      if (response.errors) {
+        Object.keys(response.errors).forEach((error) =>
+          toast.error(response.errors[error].msg)
+        );
+        setValidated(false);
+      } else {
+        setName('');
+        setEmail('');
+        setSubject('');
+        setMessage('');
+        toast.success('Inquiry successfully sent!');
+      }
+    });
   };
 
   const onReCAPTCHAChange = (captchaCode) => {
-    console.log(captchaCode);
     if (captchaCode) {
-      api('/api/public/inquiry', {
-        body: {
-          captcha: captchaCode,
-          name: txtName,
-          email: txtEmail,
-          subject: txtSubject,
-          message: txtMessage,
-        },
-        method: 'POST',
-      })
-        .then((response) => {
-          setSubmittingState(false);
-
-          if (response.errors) {
-            Object.keys(response.errors).forEach((error) =>
-              toast.error(response.errors[error].msg)
-            );
-          } else {
-            setName('');
-            setEmail('');
-            setSubject('');
-            setMessage('');
-            toast.success('Workspace successfully created!');
-          }
-        })
-        .catch(console.log)
-        .finally(() => recaptchaRef.current.reset());
+      setCaptcha(captchaCode);
     }
   };
 
@@ -137,12 +136,6 @@ const Contact = ({ title, subtitle, address, phone, email, hours }) => {
                 </div>
               </div>
               <form className="relative z-10 flex flex-col w-full p-8 mt-10 space-y-5 bg-white rounded-lg shadow-md md:w-1/2 md:ml-auto md:mt-0">
-                <ReCAPTCHA
-                  ref={recaptchaRef}
-                  size="invisible"
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                  onChange={onReCAPTCHAChange}
-                />
                 <div className="relative">
                   <input
                     id="txtName"
@@ -194,6 +187,12 @@ const Contact = ({ title, subtitle, address, phone, email, hours }) => {
                     concerns.
                   </span>
                 )}
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  size="normal"
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                  onChange={onReCAPTCHAChange}
+                />
                 <button
                   className="px-6 py-2 text-lg border-0 rounded text-secondary-500 bg-primary-500 focus:outline-none hover:bg-primary-600 disabled:opacity-50"
                   disabled={!validate || isSubmitting}
