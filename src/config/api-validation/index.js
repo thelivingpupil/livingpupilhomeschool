@@ -1,4 +1,5 @@
 import validateAddDomain from './add-domain';
+import validateCreateInquiry from './create-inquiry';
 import validateCreateWorkspace from './create-workspace';
 import validateSession from './session';
 import validateUpdateEmail from './update-email';
@@ -9,6 +10,7 @@ import validateWorkspaceInvite from './workspace-invite';
 
 export {
   validateAddDomain,
+  validateCreateInquiry,
   validateCreateWorkspace,
   validateSession,
   validateUpdateName,

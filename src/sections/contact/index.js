@@ -1,11 +1,81 @@
+import { createRef, useState } from 'react';
 import {
   ClockIcon,
   MailIcon,
   MapIcon,
   PhoneIcon,
 } from '@heroicons/react/solid';
+import ReCAPTCHA from 'react-google-recaptcha';
+import toast from 'react-hot-toast';
+import isEmail from 'validator/lib/isEmail';
+
+import api from '@/lib/common/api';
 
 const Contact = ({ title, subtitle, address, phone, email, hours }) => {
+  const recaptchaRef = createRef();
+  const [isSubmitting, setSubmittingState] = useState(false);
+  const [txtName, setName] = useState('');
+  const [txtEmail, setEmail] = useState('');
+  const [txtSubject, setSubject] = useState('');
+  const [txtMessage, setMessage] = useState('');
+  const [wasValidated, setValidated] = useState(true);
+
+  const handleNameChange = (e) => setName(e.target.value);
+
+  const handleEmailChange = (e) => setEmail(e.target.value);
+
+  const handleSubjectChange = (e) => setSubject(e.target.value);
+
+  const handleMessageChange = (e) => setMessage(e.target.value);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    recaptchaRef.current.execute();
+  };
+
+  const onReCAPTCHAChange = (captchaCode) => {
+    console.log(captchaCode);
+    if (captchaCode) {
+      api('/api/public/inquiry', {
+        body: {
+          captcha: captchaCode,
+          name: txtName,
+          email: txtEmail,
+          subject: txtSubject,
+          message: txtMessage,
+        },
+        method: 'POST',
+      })
+        .then((response) => {
+          setSubmittingState(false);
+
+          if (response.errors) {
+            Object.keys(response.errors).forEach((error) =>
+              toast.error(response.errors[error].msg)
+            );
+          } else {
+            setName('');
+            setEmail('');
+            setSubject('');
+            setMessage('');
+            toast.success('Workspace successfully created!');
+          }
+        })
+        .catch(console.log)
+        .finally(() => recaptchaRef.current.reset());
+    }
+  };
+
+  const validName = txtName.length > 1 && txtName.length < 32;
+
+  const validEmail = isEmail(txtEmail);
+
+  const validSubject = txtSubject.length > 1 && txtSubject.length < 32;
+
+  const validMessage = txtMessage.length > 5 && txtMessage.length < 1000;
+
+  const validate = validName && validEmail && validSubject && validMessage;
+
   return (
     <section className="relative body-font bg-secondary-500">
       <div className="relative w-full bg-[right_-50px_top_1rem] md:bg-[right_-100px_top_1rem] bg-no-repeat bg-[length:100px_100px] md:bg-[length:300px_300px] bg-asset-10">
@@ -66,58 +136,72 @@ const Contact = ({ title, subtitle, address, phone, email, hours }) => {
                   </div>
                 </div>
               </div>
-              <div className="relative z-10 flex flex-col w-full p-8 mt-10 space-y-5 bg-white rounded-lg shadow-md md:w-1/2 md:ml-auto md:mt-0">
+              <form className="relative z-10 flex flex-col w-full p-8 mt-10 space-y-5 bg-white rounded-lg shadow-md md:w-1/2 md:ml-auto md:mt-0">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  size="invisible"
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                  onChange={onReCAPTCHAChange}
+                />
                 <div className="relative">
-                  {/* <label htmlFor="email" className="text-sm leading-7 ">
-                Name
-              </label> */}
                   <input
-                    type="email"
-                    id="email"
-                    name="email"
+                    id="txtName"
+                    className="w-full px-5 py-3 text-base leading-8 transition-colors duration-200 ease-in-out bg-white border border-gray-300 rounded outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                    name="txtName"
+                    onChange={handleNameChange}
                     placeholder="Name"
-                    className="w-full px-5 py-3 text-base leading-8 transition-colors duration-200 ease-in-out bg-white border border-gray-300 rounded outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                    type="text"
+                    value={txtName}
                   />
                 </div>
                 <div className="relative">
-                  {/* <label htmlFor="email" className="text-sm leading-7 ">
-                Email Address
-              </label> */}
                   <input
-                    type="email"
-                    id="email"
-                    name="email"
+                    id="txtEmail"
+                    className="w-full px-5 py-3 text-base leading-8 transition-colors duration-200 ease-in-out bg-white border border-gray-300 rounded outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                    name="txtEmail"
+                    onChange={handleEmailChange}
                     placeholder="Email Address"
-                    className="w-full px-5 py-3 text-base leading-8 transition-colors duration-200 ease-in-out bg-white border border-gray-300 rounded outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
-                  />
-                </div>
-                <div className="relative">
-                  {/* <label htmlFor="email" className="text-sm leading-7 ">
-                Subject
-              </label> */}
-                  <input
                     type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Subject"
-                    className="w-full px-5 py-3 text-base leading-8 transition-colors duration-200 ease-in-out bg-white border border-gray-300 rounded outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                    value={txtEmail}
                   />
                 </div>
                 <div className="relative">
-                  {/* <label htmlFor="message" className="text-sm leading-7 ">
-                Message
-              </label> */}
+                  <input
+                    id="txtSubject"
+                    className="w-full px-5 py-3 text-base leading-8 transition-colors duration-200 ease-in-out bg-white border border-gray-300 rounded outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                    name="txtSubject"
+                    onChange={handleSubjectChange}
+                    placeholder="Subject"
+                    type="text"
+                    value={txtSubject}
+                  />
+                </div>
+                <div className="relative">
                   <textarea
-                    id="message"
-                    name="message"
-                    placeholder="Message"
+                    id="txtMessage"
                     className="w-full h-32 p-5 text-base leading-6 transition-colors duration-200 ease-in-out bg-white border border-gray-300 rounded outline-none resize-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                    name="txtMessage"
+                    onChange={handleMessageChange}
+                    placeholder="Message"
+                    value={txtMessage}
                   ></textarea>
                 </div>
-                <button className="px-6 py-2 text-lg border-0 rounded text-secondary-500 bg-primary-500 focus:outline-none hover:bg-primary-600">
+                {!wasValidated && (
+                  <span className="text-xs text-red-600">
+                    Please provide your <strong>name</strong>,{' '}
+                    <strong>email</strong>, <strong>subject of inquiry</strong>,
+                    and a brief <strong>message</strong> detailing your
+                    concerns.
+                  </span>
+                )}
+                <button
+                  className="px-6 py-2 text-lg border-0 rounded text-secondary-500 bg-primary-500 focus:outline-none hover:bg-primary-600 disabled:opacity-50"
+                  disabled={!validate || isSubmitting}
+                  onClick={handleSubmit}
+                >
                   Submit
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         </div>
