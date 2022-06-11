@@ -5,8 +5,8 @@ import { updateTransaction } from '@/prisma/services/transaction';
 const handler = async (req, res) => {
   const { method } = req;
 
-  if (method === 'GET') {
-    const { txnid, refno, status, message, digest } = req.query;
+  if (method === 'POST') {
+    const { txnid, refno, status, message, digest } = req.body;
     let result = 'FAIL_DIGEST_MISMATCH';
     const hash = createHash('sha1')
       .update(
