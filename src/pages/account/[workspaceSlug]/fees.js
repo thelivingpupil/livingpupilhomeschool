@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { GradeLevel, PaymentType, TransactionStatus } from '@prisma/client';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 import Card from '@/components/Card';
 import Content from '@/components/Content';
@@ -7,9 +9,11 @@ import Meta from '@/components/Meta';
 import AccountLayout from '@/layouts/AccountLayout';
 import { useWorkspace } from '@/providers/workspace';
 import { GRADE_LEVEL } from '@/utils/constants';
+import api from '@/lib/common/api';
 
 const Fees = () => {
   const { workspace } = useWorkspace();
+  const [isSubmitting, setSubmittingState] = useState(false);
   const fees = {
     [GradeLevel.PRESCHOOL]: { schoolFees: [] },
     [GradeLevel.K1]: { schoolFees: [] },
@@ -31,6 +35,28 @@ const Fees = () => {
     fees[fee.gradeLevel].schoolFees[fee.order] = fee;
   });
 
+  const renew = (transactionId, referenceNumber) => {
+    setSubmittingState(true);
+    api(`/api/payments/transaction`, {
+      body: {
+        transactionId,
+        referenceNumber,
+      },
+      method: 'PUT',
+    }).then((response) => {
+      setSubmittingState(false);
+
+      if (response.errors) {
+        Object.keys(response.errors).forEach((error) =>
+          toast.error(response.errors[error].msg)
+        );
+      } else {
+        window.open(response.data.paymentLink, '_blank');
+        toast.success('Payment link has been updated!');
+      }
+    });
+  };
+
   return (
     workspace && (
       <AccountLayout>
@@ -46,7 +72,10 @@ const Fees = () => {
               if (fees[level].schoolFees.length > 0) {
                 return (
                   <Card key={level}>
-                    <Card.Body title={GRADE_LEVEL[level]} subtitle="">
+                    <Card.Body
+                      title={GRADE_LEVEL[level]}
+                      subtitle="Payment links will only be available withing a certain time period (1 hour for online payment and 2 days for OTC transactions). For further assistance please contact our administrators."
+                    >
                       <table className="border">
                         <thead>
                           <tr className="text-left">
@@ -59,7 +88,7 @@ const Fees = () => {
                         </thead>
                         <tbody>
                           {fees[level].schoolFees.map((f, index) => (
-                            <tr>
+                            <tr key={index}>
                               <td className="px-3 py-2">
                                 <p>
                                   {index === 0 &&
@@ -88,14 +117,33 @@ const Fees = () => {
                                   currency: 'PHP',
                                 }).format(f.transaction.amount)}
                               </td>
-                              <td className="px-3 py-2 text-center">
+                              <td className="px-3 py-2 space-x-3 text-center">
                                 {f.transaction.paymentStatus ===
                                   TransactionStatus.U ||
                                 f.transaction.paymentStatus ===
                                   TransactionStatus.P ? (
-                                  <button className="inline-block px-3 py-2 text-xs rounded bg-secondary-500 hover:bg-secondary-400">
-                                    Process
-                                  </button>
+                                  <>
+                                    <button
+                                      className="inline-block px-3 py-2 text-xs text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-50"
+                                      disabled={isSubmitting}
+                                      onClick={() =>
+                                        renew(
+                                          f.transaction.transactionId,
+                                          f.transaction.referenceNumber
+                                        )
+                                      }
+                                    >
+                                      Get New Link
+                                    </button>
+                                    {/* <Link href={f.transaction.url}>
+                                      <a
+                                        className="inline-block px-3 py-2 text-xs rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
+                                        target="_blank"
+                                      >
+                                        Pay Now
+                                      </a>
+                                    </Link> */}
+                                  </>
                                 ) : (
                                   <div>
                                     <span className="inline-block px-3 py-1 text-xs text-white bg-green-600 rounded-full">

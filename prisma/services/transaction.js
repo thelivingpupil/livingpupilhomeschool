@@ -84,12 +84,12 @@ export const createTransaction = async (
   return { url, referenceNumber };
 };
 
-export const getTransaction = async (transactionId, paymentReference) =>
+export const getTransaction = async (transactionId, referenceNumber) =>
   await prisma.transaction.findUnique({
     where: {
       transactionId_referenceNumber: {
-        referenceNumber: paymentReference,
         transactionId,
+        referenceNumber,
       },
     },
   });
