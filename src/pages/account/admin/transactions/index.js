@@ -17,8 +17,6 @@ const Transactions = () => {
 
   const toggleModal = () => setModalVisibility(!showModal);
 
-  console.log(data);
-
   const renew = () => {};
 
   return (

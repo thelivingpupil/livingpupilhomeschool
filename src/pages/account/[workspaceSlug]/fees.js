@@ -46,7 +46,7 @@ const Fees = () => {
               if (fees[level].schoolFees.length > 0) {
                 return (
                   <Card key={level}>
-                    <Card.Body title={GRADE_LEVEL[level]}>
+                    <Card.Body title={GRADE_LEVEL[level]} subtitle="">
                       <table className="border">
                         <thead>
                           <tr className="text-left">
@@ -66,7 +66,7 @@ const Fees = () => {
                                   f.paymentType === PaymentType.ANNUAL
                                     ? 'Total School Fee'
                                     : index === 0 &&
-                                      f.paymentType !== PaymentType.ANNUL
+                                      f.paymentType !== PaymentType.ANNUAL
                                     ? 'Initial School Fee'
                                     : index > 0 &&
                                       f.paymentType === PaymentType.SEMI_ANNUAL
@@ -77,7 +77,9 @@ const Fees = () => {
                                   <span className="font-medium">
                                     Reference Number:{' '}
                                   </span>
-                                  {f.transaction.referenceNumber}
+                                  <strong>
+                                    {f.transaction.paymentReference}
+                                  </strong>
                                 </p>
                               </td>
                               <td className="px-3 py-2">
@@ -91,14 +93,9 @@ const Fees = () => {
                                   TransactionStatus.U ||
                                 f.transaction.paymentStatus ===
                                   TransactionStatus.P ? (
-                                  <Link href={f.transaction.url}>
-                                    <a
-                                      className="inline-block px-3 py-2 rounded bg-secondary-500 hover:bg-secondary-400"
-                                      target="_blank"
-                                    >
-                                      Pay Now
-                                    </a>
-                                  </Link>
+                                  <button className="inline-block px-3 py-2 text-xs rounded bg-secondary-500 hover:bg-secondary-400">
+                                    Process
+                                  </button>
                                 ) : (
                                   <div>
                                     <span className="inline-block px-3 py-1 text-xs text-white bg-green-600 rounded-full">
