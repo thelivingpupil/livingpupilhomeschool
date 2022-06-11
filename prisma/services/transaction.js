@@ -1,9 +1,32 @@
-import { Currency } from '@prisma/client';
+import { Currency, TransactionSource, TransactionStatus } from '@prisma/client';
+import { add } from 'date-fns';
 
 import api from '@/lib/common/api';
 import { getBasicAuthorization } from '@/lib/server/dragonpay';
 import prisma from '@/prisma/index';
-import { add } from 'date-fns';
+
+export const cancelTransaction = async (transactionId) => {
+  const response = await api(
+    `${process.env.PAYMENTS_BASE_URL}/void/${transactionId}`,
+    {
+      headers: {
+        Authorization: `${getBasicAuthorization()}`,
+      },
+      method: 'GET',
+    }
+  );
+  const { Status: status, Message: message } = response;
+
+  if (status === 0) {
+    await prisma.transaction.update({
+      data: {
+        message,
+        transactionStatus: TransactionStatus.V,
+      },
+      where: { transactionId },
+    });
+  }
+};
 
 export const createTransaction = async (
   userId,
@@ -70,6 +93,96 @@ export const getTransaction = async (transactionId, paymentReference) =>
       },
     },
   });
+
+export const getTransactions = async () =>
+  await prisma.transaction.findMany({
+    orderBy: [{ createdAt: 'desc' }],
+    select: {
+      transactionId: true,
+      amount: true,
+      currency: true,
+      paymentStatus: true,
+      paymentReference: true,
+      createdAt: true,
+      user: {
+        select: {
+          name: true,
+          email: true,
+          guardianInformation: {
+            select: {
+              primaryGuardianName: true,
+            },
+          },
+        },
+      },
+      schoolFee: {
+        select: {
+          student: {
+            select: {
+              studentRecord: {
+                select: {
+                  firstName: true,
+                  middleName: true,
+                  lastName: true,
+                  incomingGradeLevel: true,
+                  enrollmentType: true,
+                  program: true,
+                  accreditation: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    where: {
+      deletedAt: null,
+      source: TransactionSource.ENROLLMENT,
+    },
+  });
+
+export const renewTransaction = async (
+  email,
+  transactionId,
+  amount,
+  description,
+  source
+) => {
+  const response = await api(
+    `${process.env.PAYMENTS_BASE_URL}/${transactionId}/post`,
+    {
+      body: {
+        Amount: amount,
+        Currency: Currency.PHP,
+        Description: description,
+        Email: email,
+      },
+      headers: {
+        Authorization: `${getBasicAuthorization()}`,
+      },
+      method: 'POST',
+    }
+  );
+  const {
+    RefNo: referenceNumber,
+    Status: transactionStatus,
+    Message: message,
+    Url: url,
+  } = response;
+  await prisma.transaction.update({
+    data: {
+      referenceNumber,
+      amount,
+      transactionStatus,
+      source: source || description,
+      description,
+      message,
+      url,
+    },
+    where: { transactionId },
+  });
+  return { url, referenceNumber };
+};
 
 export const updateTransaction = async (
   transactionId,

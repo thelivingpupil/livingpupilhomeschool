@@ -80,3 +80,25 @@ export const RELIGION = {
   LATTER_DAY_SAINTS_MORMONS: 'Latter Day Saint (Mormons)',
   OTHERS: 'Others',
 };
+
+export const STATUS_TEXT_COLOR = {
+  S: 'text-green-600',
+  F: 'text-red-600',
+  P: 'text-cyan-600',
+  U: 'text-gray-400',
+  R: 'text-purple-600',
+  K: 'text-blue-600',
+  V: 'text-primary-500',
+  A: 'text-secondary-500',
+};
+
+export const STATUS_BG_COLOR = {
+  S: 'bg-green-600 text-white',
+  F: 'bg-red-600',
+  P: 'bg-cyan-600 text-white',
+  U: 'bg-gray-400',
+  R: 'bg-purple-600',
+  K: 'bg-blue-600',
+  V: 'bg-primary-500',
+  A: 'bg-secondary-500',
+};
