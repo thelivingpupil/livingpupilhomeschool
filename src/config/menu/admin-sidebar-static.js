@@ -1,6 +1,7 @@
 import {
   AcademicCapIcon,
   AdjustmentsIcon,
+  CashIcon,
   CreditCardIcon,
   HomeIcon,
   NewspaperIcon,
@@ -54,6 +55,12 @@ const adminSidebarMenu = () => [
   {
     name: 'External Links',
     menuItems: [
+      {
+        name: 'DragonPay',
+        icon: CashIcon,
+        isExternal: true,
+        path: `https://gw.dragonpay.ph`,
+      },
       {
         name: 'CMS',
         icon: NewspaperIcon,
