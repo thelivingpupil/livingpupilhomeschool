@@ -1,5 +1,5 @@
 User-agent: *
-Disallow: /accounts
+Disallow: /account
 
 User-agent: *
 Disallow: /api

@@ -25,3 +25,18 @@ export const createInquiry = async (captcha, name, email, subject, message) => {
 
   return success;
 };
+
+export const getInquiries = async () =>
+  await prisma.inquiry.findMany({
+    orderBy: [{ createdAt: 'desc' }],
+    select: {
+      name: true,
+      email: true,
+      subject: true,
+      message: true,
+      createdAt: true,
+    },
+    where: {
+      deletedAt: null,
+    },
+  });

@@ -33,8 +33,11 @@ const SideModal = ({ children, show, title, toggle }) => {
             leaveFrom="opacity-100 translate-x-0"
             leaveTo="opacity-0 translate-x-10"
           >
-            <div className="fixed top-0 bottom-0 right-0 inline-block w-1/3 p-10 space-y-5 overflow-scroll text-left align-middle transition-all transform bg-white shadow-xl">
-              <Dialog.Title as="h2" className="text-2xl font-bold leading-5">
+            <div className="fixed top-0 bottom-0 right-0 inline-block w-2/3 p-10 space-y-5 overflow-scroll text-left align-middle transition-all transform bg-white shadow-xl md:w-1/3">
+              <Dialog.Title
+                as="h2"
+                className="text-2xl font-bold leading-5 capitalize"
+              >
                 {title}
               </Dialog.Title>
               {children}
