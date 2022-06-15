@@ -38,6 +38,20 @@ export const getUser = async (id) =>
     where: { id },
   });
 
+export const getUsers = async () =>
+  await prisma.user.findMany({
+    orderBy: [{ createdAt: 'desc' }],
+    select: {
+      name: true,
+      email: true,
+      emailVerified: true,
+      image: true,
+      userType: true,
+      createdAt: true,
+    },
+    where: { deletedAt: null },
+  });
+
 export const updateEmail = async (id, email, previousEmail) => {
   await prisma.user.update({
     data: {

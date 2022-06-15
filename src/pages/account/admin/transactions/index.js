@@ -47,102 +47,110 @@ const Transactions = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data ? (
-                    data.transactions.map((transaction, index) => (
-                      <tr
-                        key={index}
-                        className="text-sm border-t border-b hover:bg-gray-100 border-b-gray-300"
-                      >
-                        <td className="p-2 text-left">
-                          <div>
-                            <h4 className="text-xl font-medium capitalize text-primary-500">
-                              {`${transaction.schoolFee.student.studentRecord.firstName}`}
-                            </h4>
-                            <h5 className="font-bold">
-                              <span className="text-xs">{`${
-                                PROGRAM[
-                                  transaction.schoolFee.student.studentRecord
-                                    .program
-                                ]
-                              } - ${
-                                GRADE_LEVEL[
-                                  transaction.schoolFee.student.studentRecord
-                                    .incomingGradeLevel
-                                ]
-                              }`}</span>
-                            </h5>
-                            <p className="text-xs text-gray-400">
-                              Created{' '}
-                              {formatDistance(
-                                new Date(transaction.createdAt),
-                                new Date(),
-                                {
-                                  addSuffix: true,
-                                }
-                              )}{' '}
-                              by{' '}
-                              <strong>
-                                {transaction.user.guardianInformation
-                                  ? transaction.user.guardianInformation
-                                      .primaryGuardianName
-                                  : transaction.user.email}
-                              </strong>
-                            </p>
-                          </div>
-                        </td>
-                        <td className="p-2 text-left">
-                          <div>
-                            {transaction.paymentReference ? (
-                              <h4 className="font-bold uppercase">
-                                {transaction.paymentReference}
+                  {!isLoading ? (
+                    data ? (
+                      data.transactions.map((transaction, index) => (
+                        <tr
+                          key={index}
+                          className="text-sm border-t border-b hover:bg-gray-100 border-b-gray-300"
+                        >
+                          <td className="p-2 text-left">
+                            <div>
+                              <h4 className="text-xl font-medium capitalize text-primary-500">
+                                {`${transaction.schoolFee.student.studentRecord.firstName}`}
                               </h4>
-                            ) : (
-                              <h4 className="text-lg font-bold text-gray-300">
-                                -
-                              </h4>
-                            )}
-                            <p className="text-xs text-gray-400 lowercase">
-                              {transaction.transactionId}
-                            </p>
-                          </div>
-                        </td>
-                        <td className={`p-2 text-center`}>
-                          <div
-                            className={`rounded-full py-1 text-xs px-2 ${
-                              STATUS_BG_COLOR[transaction.paymentStatus]
-                            }`}
-                          >
-                            {STATUS_CODES[transaction.paymentStatus]}
-                          </div>
-                        </td>
-                        <td className="p-2 text-right">
-                          {new Intl.NumberFormat('en-US', {
-                            style: 'currency',
-                            currency: transaction.currency,
-                          }).format(transaction.amount)}
-                        </td>
-                        <td className="p-2 space-x-2 text-xs text-center">
-                          {transaction.paymentStatus !==
-                            TransactionStatus.S && (
-                            <button
-                              className="px-3 py-1 text-white rounded bg-amber-600"
-                              onClick={renew}
+                              <h5 className="font-bold">
+                                <span className="text-xs">{`${
+                                  PROGRAM[
+                                    transaction.schoolFee.student.studentRecord
+                                      .program
+                                  ]
+                                } - ${
+                                  GRADE_LEVEL[
+                                    transaction.schoolFee.student.studentRecord
+                                      .incomingGradeLevel
+                                  ]
+                                }`}</span>
+                              </h5>
+                              <p className="text-xs text-gray-400">
+                                Created{' '}
+                                {formatDistance(
+                                  new Date(transaction.createdAt),
+                                  new Date(),
+                                  {
+                                    addSuffix: true,
+                                  }
+                                )}{' '}
+                                by{' '}
+                                <strong>
+                                  {transaction.user.guardianInformation
+                                    ? transaction.user.guardianInformation
+                                        .primaryGuardianName
+                                    : transaction.user.email}
+                                </strong>
+                              </p>
+                            </div>
+                          </td>
+                          <td className="p-2 text-left">
+                            <div>
+                              {transaction.paymentReference ? (
+                                <h4 className="font-bold uppercase">
+                                  {transaction.paymentReference}
+                                </h4>
+                              ) : (
+                                <h4 className="text-lg font-bold text-gray-300">
+                                  -
+                                </h4>
+                              )}
+                              <p className="text-xs text-gray-400 lowercase">
+                                {transaction.transactionId}
+                              </p>
+                            </div>
+                          </td>
+                          <td className={`p-2 text-center`}>
+                            <div
+                              className={`rounded-full py-1 text-xs px-2 ${
+                                STATUS_BG_COLOR[transaction.paymentStatus]
+                              }`}
                             >
-                              Renew
-                            </button>
-                          )}
-                          {/* <button
+                              {STATUS_CODES[transaction.paymentStatus]}
+                            </div>
+                          </td>
+                          <td className="p-2 text-right">
+                            {new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: transaction.currency,
+                            }).format(transaction.amount)}
+                          </td>
+                          <td className="p-2 space-x-2 text-xs text-center">
+                            {transaction.paymentStatus !==
+                              TransactionStatus.S && (
+                              <button
+                                className="px-3 py-1 text-white rounded bg-amber-600"
+                                onClick={renew}
+                              >
+                                Renew
+                              </button>
+                            )}
+                            {/* <button
                             className="px-3 py-1 text-white rounded bg-cyan-600"
                             onClick={renew}
                           >
                             View
                           </button> */}
-                        </td>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5}>No records found...</td>
                       </tr>
-                    ))
+                    )
                   ) : (
                     <tr>
-                      <td colSpan={5}>No records found...</td>
+                      <td className="px-3 py-1 text-center" colSpan={5}>
+                        Fetching records
+                      </td>
                     </tr>
                   )}
                 </tbody>

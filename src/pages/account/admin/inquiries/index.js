@@ -72,50 +72,58 @@ const Inquiries = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data ? (
-                    data.inquiries.map((inquiry, index) => (
-                      <tr
-                        key={index}
-                        className="text-sm border-t border-b hover:bg-gray-100 border-b-gray-300"
-                      >
-                        <td className="p-2 text-left">
-                          <div>
-                            <h4 className="text-xl font-medium capitalize text-primary-500">
-                              {`${inquiry.name}`}
-                            </h4>
-                            <h5 className="font-bold">
-                              <span className="text-xs">{inquiry.email}</span>
-                            </h5>
-                          </div>
-                        </td>
-                        <td className="p-2 text-left">
-                          <p className="font-medium capitalize">
-                            {inquiry.subject.trim().substring(0, 32)}...
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            Messaged{' '}
-                            {formatDistance(
-                              new Date(inquiry.createdAt),
-                              new Date(),
-                              {
-                                addSuffix: true,
-                              }
-                            )}
-                          </p>
-                        </td>
-                        <td className="p-2 space-x-2 text-xs text-center">
-                          <button
-                            className="px-3 py-1 text-white rounded bg-primary-500"
-                            onClick={() => view(inquiry)}
-                          >
-                            View Message
-                          </button>
-                        </td>
+                  {!isLoading ? (
+                    data ? (
+                      data.inquiries.map((inquiry, index) => (
+                        <tr
+                          key={index}
+                          className="text-sm border-t border-b hover:bg-gray-100 border-b-gray-300"
+                        >
+                          <td className="p-2 text-left">
+                            <div>
+                              <h4 className="text-xl font-medium capitalize text-primary-500">
+                                {`${inquiry.name}`}
+                              </h4>
+                              <h5 className="font-bold">
+                                <span className="text-xs">{inquiry.email}</span>
+                              </h5>
+                            </div>
+                          </td>
+                          <td className="p-2 text-left">
+                            <p className="font-medium capitalize">
+                              {inquiry.subject.trim().substring(0, 32)}...
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              Messaged{' '}
+                              {formatDistance(
+                                new Date(inquiry.createdAt),
+                                new Date(),
+                                {
+                                  addSuffix: true,
+                                }
+                              )}
+                            </p>
+                          </td>
+                          <td className="p-2 space-x-2 text-xs text-center">
+                            <button
+                              className="px-3 py-1 text-white rounded bg-primary-500"
+                              onClick={() => view(inquiry)}
+                            >
+                              View Message
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={3}>No records found...</td>
                       </tr>
-                    ))
+                    )
                   ) : (
                     <tr>
-                      <td colSpan={3}>No records found...</td>
+                      <td className="px-3 py-1 text-center" colSpan={5}>
+                        Fetching records
+                      </td>
                     </tr>
                   )}
                 </tbody>

@@ -4,7 +4,6 @@ import { add } from 'date-fns';
 import api from '@/lib/common/api';
 import { getBasicAuthorization } from '@/lib/server/dragonpay';
 import prisma from '@/prisma/index';
-
 export const cancelTransaction = async (transactionId) => {
   const response = await api(
     `${process.env.PAYMENTS_BASE_URL}/void/${transactionId}`,
@@ -136,6 +135,9 @@ export const getTransactions = async () =>
       },
     },
     where: {
+      paymentStatus: {
+        not: TransactionStatus.U,
+      },
       deletedAt: null,
       source: TransactionSource.ENROLLMENT,
     },
