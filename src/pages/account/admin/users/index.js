@@ -70,13 +70,13 @@ const Users = () => {
                                   <LightningBoltIcon className="w-3 h-3 text-white" />
                                 </span>
                               )}
-                            </h4>
-                            <h5 className="flex items-center font-bold">
                               {user.emailVerified && (
-                                <span className="mr-0.5">
-                                  <BadgeCheckIcon className="w-3 h-3 text-green-600" />
+                                <span className="ml-1">
+                                  <BadgeCheckIcon className="w-5 h-5 text-green-600" />
                                 </span>
                               )}
+                            </h4>
+                            <h5 className="flex items-center font-bold">
                               <span className="text-xs">{user.email}</span>
                             </h5>
                           </div>
