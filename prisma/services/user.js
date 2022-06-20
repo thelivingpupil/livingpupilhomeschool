@@ -2,6 +2,11 @@ import { html, text } from '@/config/email-templates/email-update';
 import { sendMail } from '@/lib/server/mail';
 import prisma from '@/prisma/index';
 
+export const countUsers = async () =>
+  await prisma.user.count({
+    where: { deletedAt: null },
+  });
+
 export const deactivate = async (id) =>
   await prisma.user.update({
     data: { deletedAt: new Date() },

@@ -4,18 +4,15 @@ import Meta from '@/components/Meta';
 import SideModal from '@/components/Modal/side-modal';
 import { AdminLayout } from '@/layouts/index';
 import Content from '@/components/Content';
-import useStudents from '@/hooks/data/useStudents';
 import Card from '@/components/Card';
 import { GRADE_LEVEL } from '@/utils/constants';
-import { UserAddIcon } from '@heroicons/react/outline';
+import useStudents from '@/hooks/data';
 
 const Students = () => {
   const { data, isLoading } = useStudents();
   const [showModal, setModalVisibility] = useState(false);
 
   const toggleModal = () => setModalVisibility(!showModal);
-
-  console.log(data);
 
   return (
     <AdminLayout>

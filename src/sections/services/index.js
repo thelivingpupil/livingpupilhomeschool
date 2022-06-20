@@ -18,7 +18,7 @@ const Services = ({ title, content }) => {
   return (
     <section className="relative w-full">
       <div className="w-full bg-bottom bg-no-repeat bg-wave-2">
-        <div className="container px-5 py-10 mx-auto md:p-20">
+        <div className="container px-5 pb-10 mx-auto md:px-20">
           <div className="mb-20 text-center">
             <h2 className="py-5 mb-4 text-4xl md:text-5xl text-primary-500 bg-clip-text font-display sm:text-5xl title-font">
               {title}

@@ -5,7 +5,7 @@ const Video = ({ title, description, action, video }) => {
   return (
     <section className="relative w-full bg-water-500 bg-asset-2 bg-[length:300px_300px] bg-no-repeat bg-left-top">
       <div className="w-full bg-bottom bg-no-repeat bg-wave-2-1">
-        <div className="container flex flex-col items-center justify-center px-5 pt-10 mx-auto md:space-x-10 md:px-20 md:flex-row pb-60">
+        <div className="container flex flex-col items-center justify-center px-5 pt-10 mx-auto pb-60 md:space-x-10 md:px-20 md:flex-row">
           <div className="flex flex-col w-full space-y-5 md:space-y-10 md:w-1/2">
             {title && (!description || !action) && (
               <div>

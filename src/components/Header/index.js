@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 const Header = () => {
   const router = useRouter();
   const { data } = useSession();
-  const { theme, setTheme } = useTheme();
+  // const { theme, setTheme } = useTheme();
 
   const logOut = () => {
     const result = confirm('Are you sure you want to logout?');
@@ -28,10 +28,10 @@ const Header = () => {
     }
   };
 
-  const toggleTheme = (event) => {
-    event.preventDefault();
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
+  // const toggleTheme = (event) => {
+  //   event.preventDefault();
+  //   setTheme(theme === 'dark' ? 'light' : 'dark');
+  // };
 
   return (
     <div className="flex flex-row items-center justify-between">
@@ -124,7 +124,7 @@ const Header = () => {
                 <Menu.Item>
                   <Link
                     href={
-                      router.pathname === '/account/admin'
+                      router.pathname.includes('/account/admin')
                         ? '/account'
                         : '/account/admin'
                     }
@@ -135,7 +135,7 @@ const Header = () => {
                         className="w-5 h-5"
                       />
                       <span>
-                        {router.pathname === '/account/admin'
+                        {router.pathname.includes('/account/admin')
                           ? 'Parent Portal'
                           : 'Administration'}
                       </span>

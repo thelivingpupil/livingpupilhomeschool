@@ -1,4 +1,44 @@
-import prisma from '@/prisma/index';
+// import prisma from '@/prisma/index';
+import { PrismaClient, TransactionStatus } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+export const countEnrolledStudents = async () =>
+  await prisma.studentRecord.count({
+    where: {
+      deletedAt: null,
+      student: {
+        deletedAt: null,
+        schoolFees: {
+          every: {
+            transaction: {
+              deletedAt: null,
+              transactionStatus: TransactionStatus.S,
+            },
+          },
+        },
+      },
+    },
+  });
+
+export const countStudents = async () =>
+  await prisma.studentRecord.count({
+    where: { deletedAt: null },
+  });
+
+export const countStudentsByGradeLevel = async () =>
+  await prisma.studentRecord.groupBy({
+    by: ['incomingGradeLevel'],
+    _count: true,
+    where: { deletedAt: null },
+  });
+
+export const countStudentsByProgram = async () =>
+  await prisma.studentRecord.groupBy({
+    by: ['program'],
+    _count: true,
+    where: { deletedAt: null },
+  });
 
 export const createStudentRecord = async (
   id,

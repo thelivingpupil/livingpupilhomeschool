@@ -5,7 +5,7 @@ import Meta from '@/components/Meta';
 import SideModal from '@/components/Modal/side-modal';
 import { AdminLayout } from '@/layouts/index';
 import Content from '@/components/Content';
-import useInquiries from '@/hooks/data/useInquiries';
+import useInquiries from '@/hooks/data';
 import Card from '@/components/Card';
 
 const Inquiries = () => {
