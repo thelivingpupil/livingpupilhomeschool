@@ -66,6 +66,12 @@ export const GRADE_LEVEL_GROUPS = [
   },
 ];
 
+export const PAYMENT_TYPE = {
+  ANNUAL: 'Annual',
+  SEMI_ANNUAL: 'Semi-Annual',
+  QUARTERLY: 'Quarterly',
+};
+
 export const PROGRAM = {
   HOMESCHOOL_PROGRAM: 'Homeschool Program',
   HOMESCHOOL_COTTAGE: ' Homeschool Cottage',

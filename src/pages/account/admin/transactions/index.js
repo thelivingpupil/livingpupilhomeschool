@@ -9,7 +9,13 @@ import Card from '@/components/Card';
 import { useTransactions } from '@/hooks/data';
 import { STATUS_CODES } from '@/lib/server/dragonpay';
 import { TransactionStatus } from '@prisma/client';
-import { GRADE_LEVEL, PROGRAM, STATUS_BG_COLOR } from '@/utils/constants';
+import {
+  ACCREDITATION,
+  GRADE_LEVEL,
+  PAYMENT_TYPE,
+  PROGRAM,
+  STATUS_BG_COLOR,
+} from '@/utils/constants';
 
 const Transactions = () => {
   const { data, isLoading } = useTransactions();
@@ -38,10 +44,12 @@ const Transactions = () => {
                     <th className="p-2 font-medium text-left">
                       Student Information
                     </th>
+                    <th className="p-2 font-medium text-center">
+                      Payment Terms
+                    </th>
                     <th className="p-2 font-medium text-left">
                       Transaction Details
                     </th>
-                    <th className="p-2 font-medium text-center">Status</th>
                     <th className="p-2 font-medium text-right">Amount</th>
                     <th className="p-2 font-medium text-center">Actions</th>
                   </tr>
@@ -56,8 +64,14 @@ const Transactions = () => {
                         >
                           <td className="p-2 text-left">
                             <div>
-                              <h4 className="text-xl font-medium capitalize text-primary-500">
-                                {`${transaction.schoolFee.student.studentRecord.firstName}`}
+                              <h4 className="flex items-center space-x-3 text-xl font-medium capitalize text-primary-500">
+                                <span>{`${transaction.schoolFee.student.studentRecord.firstName}`}</span>
+                                <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${
+                                  GRADE_LEVEL[
+                                    transaction.schoolFee.student.studentRecord
+                                      .incomingGradeLevel
+                                  ]
+                                }`}</span>
                               </h4>
                               <h5 className="font-bold">
                                 <span className="text-xs">{`${
@@ -66,9 +80,9 @@ const Transactions = () => {
                                       .program
                                   ]
                                 } - ${
-                                  GRADE_LEVEL[
+                                  ACCREDITATION[
                                     transaction.schoolFee.student.studentRecord
-                                      .incomingGradeLevel
+                                      .accreditation
                                   ]
                                 }`}</span>
                               </h5>
@@ -91,29 +105,32 @@ const Transactions = () => {
                               </p>
                             </div>
                           </td>
+                          <td className="p-2 text-center">
+                            {PAYMENT_TYPE[transaction.schoolFee.paymentType]}
+                          </td>
                           <td className="p-2 text-left">
                             <div>
                               {transaction.paymentReference ? (
-                                <h4 className="font-bold uppercase">
-                                  {transaction.paymentReference}
+                                <h4 className="flex space-x-3">
+                                  <span className="font-mono font-bold uppercase">
+                                    {transaction.paymentReference}
+                                  </span>
+                                  <span
+                                    className={`rounded-full py-0.5 text-xs px-2 ${
+                                      STATUS_BG_COLOR[transaction.paymentStatus]
+                                    }`}
+                                  >
+                                    {STATUS_CODES[transaction.paymentStatus]}
+                                  </span>
                                 </h4>
                               ) : (
                                 <h4 className="text-lg font-bold text-gray-300">
                                   -
                                 </h4>
                               )}
-                              <p className="text-xs text-gray-400 lowercase">
+                              <p className="font-mono text-xs text-gray-400 lowercase">
                                 {transaction.transactionId}
                               </p>
-                            </div>
-                          </td>
-                          <td className={`p-2 text-center`}>
-                            <div
-                              className={`rounded-full py-1 text-xs px-2 ${
-                                STATUS_BG_COLOR[transaction.paymentStatus]
-                              }`}
-                            >
-                              {STATUS_CODES[transaction.paymentStatus]}
                             </div>
                           </td>
                           <td className="p-2 text-right">
