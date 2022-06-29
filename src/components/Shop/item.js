@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
 
 import { MinusIcon, PlusIcon } from '@heroicons/react/outline';
@@ -12,12 +13,16 @@ const Item = ({
   name,
   price,
   categories,
+  description,
 }) => {
+  const [showDescription, setDescriptionVisibility] = useState(false);
   const [quantity, setQuantity] = useState(count);
 
   const decrease = () => setQuantity(quantity - 1);
 
   const increase = () => setQuantity(quantity + 1);
+
+  const toggle = () => setDescriptionVisibility(!showDescription);
 
   useEffect(() => {
     setQuantity(count);
@@ -55,6 +60,19 @@ const Item = ({
             ) : null
           )}
         </div>
+        <button
+          className="px-3 py-1 text-sm underline bg-gray-100 rounded text-secondary-800 hover:text-secondary-600"
+          onClick={toggle}
+        >
+          {showDescription ? 'Hide' : 'Read'} Item Description &raquo;
+        </button>
+        {showDescription
+          ? description && (
+              <div className="flex flex-col items-start justify-center py-2 space-y-3 text-sm">
+                <PortableText value={description} />
+              </div>
+            )
+          : null}
       </div>
       <div className="space-y-3">
         <div className="flex flex-row justify-between space-x-3">

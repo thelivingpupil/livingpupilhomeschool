@@ -378,7 +378,10 @@ const Shop = ({ categories, items }) => {
             <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
               {shopItems ? (
                 shopItems.map(
-                  ({ _id, code, image, name, price, categories }, index) => {
+                  (
+                    { _id, code, image, name, price, categories, description },
+                    index
+                  ) => {
                     const imageAsset = builder.image(image?.asset);
                     return price ? (
                       <Item
@@ -388,6 +391,7 @@ const Shop = ({ categories, items }) => {
                         categories={categories}
                         code={code}
                         count={cart.find((x) => x.id === _id)?.quantity || 0}
+                        description={description}
                         image={
                           imageAsset.options.source ? imageAsset?.url() : null
                         }
