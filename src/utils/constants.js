@@ -87,6 +87,17 @@ export const RELIGION = {
   OTHERS: 'Others',
 };
 
+export const STATUS = {
+  S: 'Success',
+  F: 'Failure',
+  P: 'Pending',
+  U: 'Future',
+  R: 'Refund',
+  K: 'Chargeback',
+  V: 'Void',
+  A: 'Authorized',
+};
+
 export const STATUS_TEXT_COLOR = {
   S: 'text-green-600',
   F: 'text-red-600',

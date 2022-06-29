@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { XIcon } from '@heroicons/react/outline';
+import { useEffect, useMemo, useState } from 'react';
+import { ChevronDownIcon, XIcon } from '@heroicons/react/outline';
 import imageUrlBuilder from '@sanity/image-url';
+import debounce from 'lodash.debounce';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,14 +15,18 @@ import sanityClient from '@/lib/server/sanity';
 const builder = imageUrlBuilder(sanityClient);
 const LPH_CART_KEY = 'LPHCART';
 
-const Shop = ({ items }) => {
+const Shop = ({ categories, items }) => {
   const { data } = useSession();
+  const [sortBy, setSortBy] = useState('alphaAsc');
+  const [categoryFilter, setCategoryFilter] = useState('all');
   const [isSubmitting, setSubmittingState] = useState(false);
   const [showCart, setCartVisibility] = useState(false);
   const [showPaymentLink, setPaymentLinkVisibility] = useState(false);
   const [paymentLink, setPaymentLink] = useState('');
   const [total, setTotal] = useState(0);
+  const [shopItems, setShopItems] = useState(items);
   const [cart, setCart] = useState([]);
+  const [query, setQuery] = useState('');
 
   const addToCart = (item) => {
     const index = cart.map((x) => x.id).indexOf(item.id);
@@ -67,6 +72,94 @@ const Shop = ({ items }) => {
     setTotal(total);
   };
 
+  const onChangeFilter = (e) => {
+    const category = e.target.value;
+    setCategoryFilter(category);
+    setQuery('');
+
+    if (category !== 'all') {
+      shopItems = [
+        ...items.filter((item) => item?.categories?.includes(category)),
+      ];
+    } else {
+      shopItems = [...items];
+    }
+
+    handleSort(sortBy);
+  };
+
+  const onSort = (e) => {
+    const sortBy = e.target.value;
+    setSortBy(sortBy);
+    handleSort(sortBy);
+  };
+
+  const handleSearch = (e) => {
+    const query = e.target.value;
+    setQuery(query);
+
+    if (query !== '') {
+      shopItems = [
+        ...items.filter(
+          (item) =>
+            (categoryFilter === 'all' ||
+              item?.categories?.includes(categoryFilter)) &&
+            item?.name?.toLowerCase().includes(query)
+        ),
+      ];
+    } else {
+      shopItems = [...items];
+    }
+
+    handleSort(sortBy);
+  };
+
+  const handleSort = (sortBy) => {
+    let sort = (a, b) => {
+      const first = a.name.toUpperCase();
+      const second = b.name.toUpperCase();
+      let comparison = 0;
+
+      if (first > second) {
+        comparison = 1;
+      } else if (first < second) {
+        comparison = -1;
+      }
+
+      return comparison;
+    };
+
+    switch (sortBy) {
+      case 'alphaDesc': {
+        sort = (a, b) => {
+          const first = b.name.toUpperCase();
+          const second = a.name.toUpperCase();
+          let comparison = 0;
+
+          if (first > second) {
+            comparison = 1;
+          } else if (first < second) {
+            comparison = -1;
+          }
+
+          return comparison;
+        };
+        break;
+      }
+      case 'priceAsc': {
+        sort = (a, b) => b.price - a.price;
+        break;
+      }
+      case 'priceDesc': {
+        sort = (a, b) => a.price - b.price;
+        break;
+      }
+    }
+
+    shopItems.sort(sort);
+    setShopItems([...shopItems]);
+  };
+
   const removeFromCart = (index) => {
     cart.splice(index, 1);
     setCart([...cart]);
@@ -78,6 +171,11 @@ const Shop = ({ items }) => {
 
   const togglePaymentLink = () => setPaymentLinkVisibility(!showPaymentLink);
 
+  const debouncedChangeHandler = useMemo(
+    () => debounce(handleSearch, 300),
+    [items, categories]
+  );
+
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem(LPH_CART_KEY));
 
@@ -85,6 +183,10 @@ const Shop = ({ items }) => {
       setCart([...items]);
       computeTotal(items);
     }
+
+    return () => {
+      debouncedChangeHandler.cancel();
+    };
   }, []);
 
   return (
@@ -227,34 +329,81 @@ const Shop = ({ items }) => {
               </Link>
             </Modal>
           </div>
-          <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-3 md:w-2/3">
-            {items ? (
-              items.map(
-                ({ _id, code, image, name, price, categories }, index) => {
-                  const imageAsset = builder.image(image?.asset);
-                  return (
-                    <Item
-                      key={index}
-                      id={_id}
-                      addToCart={addToCart}
-                      categories={categories}
-                      code={code}
-                      count={cart.find((x) => x.id === _id)?.quantity || 0}
-                      image={
-                        imageAsset.options.source ? imageAsset?.url() : null
-                      }
-                      name={name}
-                      price={price}
-                    />
-                  );
-                }
-              )
-            ) : (
-              <div>No items in store...</div>
-            )}
+          <div className="w-full space-y-5 md:w-2/3">
+            <div className="flex space-x-5 space-between">
+              <div className="relative inline-block w-1/2 border rounded">
+                <select
+                  className="w-full py-2 pl-3 pr-10 capitalize rounded appearance-none"
+                  onChange={onSort}
+                  value={sortBy}
+                >
+                  <option value="alphaAsc">
+                    Sort Alphabetical: A &rarr; Z
+                  </option>
+                  <option value="alphaDesc">
+                    Sort Alphabetical: Z &rarr; A
+                  </option>
+                  <option value="priceAsc">Sort Price: Low &rarr; High</option>
+                  <option value="priceDesc">Sort Price: High &rarr; Low</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
+                </div>
+              </div>
+              <div className="relative inline-block w-1/2 border rounded">
+                <select
+                  className="w-full py-2 pl-3 pr-10 capitalize rounded appearance-none"
+                  onChange={onChangeFilter}
+                  value={categoryFilter}
+                >
+                  <option value="all">All Categories</option>
+                  {categories.map((c, index) => (
+                    <option key={index} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+            <div className="flex space-x-5 space-between">
+              <input
+                className="w-full py-2 pl-3 border rounded"
+                onChange={debouncedChangeHandler}
+                placeholder="Looking for something?"
+              />
+            </div>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+              {shopItems ? (
+                shopItems.map(
+                  ({ _id, code, image, name, price, categories }, index) => {
+                    const imageAsset = builder.image(image?.asset);
+                    return price ? (
+                      <Item
+                        key={index}
+                        id={_id}
+                        addToCart={addToCart}
+                        categories={categories}
+                        code={code}
+                        count={cart.find((x) => x.id === _id)?.quantity || 0}
+                        image={
+                          imageAsset.options.source ? imageAsset?.url() : null
+                        }
+                        name={name}
+                        price={price}
+                      />
+                    ) : null;
+                  }
+                )
+              ) : (
+                <div>No items in store...</div>
+              )}
+            </div>
           </div>
-          <div className="">
-            <div className="flex-col justify-between hidden p-5 space-y-5 border-4 rounded-lg md:flex border-primary-500">
+          <div className="w-1/4">
+            <div className="sticky flex-col justify-between hidden p-5 space-y-5 border-4 rounded-lg md:flex border-primary-500">
               <h2 className="text-3xl font-bold">Shopping Cart</h2>
               <div className="flex flex-col items-start justify-between w-full h-full space-y-3">
                 {cart.length ? (
@@ -292,7 +441,7 @@ const Shop = ({ items }) => {
                             }).format(price * quantity)}
                           </span>
                           <button
-                            className="p-2 hover:text-red-500"
+                            className="w-5 h-5 p-2 hover:text-red-500"
                             onClick={() => removeFromCart(index)}
                           >
                             <XIcon className="w-3 h-3" />

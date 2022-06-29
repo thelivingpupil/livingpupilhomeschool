@@ -8,6 +8,7 @@ import useStudentsByGradeLevel from './useStudentsByGradeLevel';
 import useStudentsByProgram from './useStudentsByProgram';
 import useStudentsCount from './useStudentsCount';
 import useTransactions from './useTransactions';
+import useTransactionSales from './useTransactionSales';
 import useUsers from './useUsers';
 import useUsersCount from './useUsersCount';
 import useWorkspaces from './useWorkspaces';
@@ -23,6 +24,7 @@ export {
   useStudentsByProgram,
   useStudentsCount,
   useTransactions,
+  useTransactionSales,
   useUsers,
   useUsersCount,
   useWorkspaces,

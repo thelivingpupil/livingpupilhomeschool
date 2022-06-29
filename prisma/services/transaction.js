@@ -3,7 +3,81 @@ import { add } from 'date-fns';
 
 import api from '@/lib/common/api';
 import { getBasicAuthorization } from '@/lib/server/dragonpay';
+import { STATUS } from '@/utils/constants';
 import prisma from '@/prisma/index';
+
+export const getTotalEnrollmentRevenuesByStatus = async () => {
+  const result = await prisma.transaction.groupBy({
+    by: ['paymentStatus'],
+    where: {
+      deletedAt: null,
+      source: TransactionSource.ENROLLMENT,
+    },
+    _sum: { amount: true },
+  });
+  const data = {
+    [TransactionStatus.S]: 0,
+    [TransactionStatus.F]: 0,
+    [TransactionStatus.P]: 0,
+    [TransactionStatus.U]: 0,
+    [TransactionStatus.R]: 0,
+    [TransactionStatus.K]: 0,
+    [TransactionStatus.V]: 0,
+    [TransactionStatus.A]: 0,
+  };
+  result.forEach((status) => {
+    data[status.paymentStatus] = status._sum.amount;
+  });
+  return data;
+};
+
+export const getTotalStoreRevenuesByStatus = async () => {
+  const result = await prisma.transaction.groupBy({
+    by: ['paymentStatus'],
+    where: {
+      deletedAt: null,
+      source: TransactionSource.STORE,
+    },
+    _sum: { amount: true },
+  });
+  const data = {
+    [TransactionStatus.S]: 0,
+    [TransactionStatus.F]: 0,
+    [TransactionStatus.P]: 0,
+    [TransactionStatus.U]: 0,
+    [TransactionStatus.R]: 0,
+    [TransactionStatus.K]: 0,
+    [TransactionStatus.V]: 0,
+    [TransactionStatus.A]: 0,
+  };
+  result.forEach((status) => {
+    data[status.paymentStatus] = status._sum.amount;
+  });
+  return data;
+};
+
+export const getTotalSales = async () => {
+  const total = await prisma.transaction.aggregate({
+    _sum: { amount: true },
+    where: {
+      deletedAt: null,
+      paymentStatus: TransactionStatus.S,
+    },
+  });
+  return total?._sum.amount || 0;
+};
+
+export const getPendingSales = async () => {
+  const total = await prisma.transaction.aggregate({
+    _sum: { amount: true },
+    where: {
+      deletedAt: null,
+      NOT: { paymentStatus: TransactionStatus.S },
+    },
+  });
+  return total?._sum.amount || 0;
+};
+
 export const cancelTransaction = async (transactionId) => {
   const response = await api(
     `${process.env.PAYMENTS_BASE_URL}/void/${transactionId}`,

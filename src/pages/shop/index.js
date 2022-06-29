@@ -26,12 +26,23 @@ export const getStaticProps = async () => {
     sanityClient.fetch(
       `*[_type == 'sections' && (name == 'Common Header' || name == 'Common Footer')]`
     ),
-    sanityClient.fetch(`*[_type == 'shopItems']`),
+    sanityClient.fetch(`*[_type == 'shopItems'] | order(name asc)`),
   ]);
+  const categories = [];
+  items.forEach((item) => {
+    if (item.categories) {
+      categories.push(...item.categories);
+    }
+  });
+  const uniqueCategories = categories
+    .sort()
+    .filter(
+      (value, index, self) => self.indexOf(value) === index && value !== ''
+    );
   return {
     props: {
       page: { footer, header },
-      shop: { items },
+      shop: { categories: uniqueCategories, items },
     },
     revalidate: 10,
   };

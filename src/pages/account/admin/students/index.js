@@ -6,7 +6,7 @@ import { AdminLayout } from '@/layouts/index';
 import Content from '@/components/Content';
 import Card from '@/components/Card';
 import { GRADE_LEVEL } from '@/utils/constants';
-import useStudents from '@/hooks/data';
+import { useStudents } from '@/hooks/data';
 
 const Students = () => {
   const { data, isLoading } = useStudents();

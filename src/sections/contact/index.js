@@ -77,16 +77,16 @@ const Contact = ({ title, subtitle, address, phone, email, hours }) => {
 
   return (
     <section className="relative body-font bg-secondary-500">
-      <div className="relative w-full bg-[right_-50px_top_1rem] md:bg-[right_-100px_top_1rem] bg-no-repeat bg-[length:100px_100px] md:bg-[length:300px_300px] bg-asset-10">
-        <div className="relative w-full bg-[left_-50px_top_20rem] md:bg-[left_75px_top_20rem] bg-no-repeat bg-[length:100px_100px] md:bg-[length:300px_300px] bg-asset-11">
+      <div className="relative bg-[right_-50px_top_1rem] md:bg-[right_-100px_top_1rem] bg-no-repeat bg-[length:100px_100px] md:bg-[length:300px_300px] bg-asset-10">
+        <div className="relative bg-[left_-50px_top_20rem] md:bg-[left_75px_top_20rem] bg-no-repeat bg-[length:100px_100px] md:bg-[length:300px_300px] bg-asset-11">
           <div className="w-full bg-bottom bg-no-repeat shadow-inner bg-wave-6">
-            <div className="container flex flex-col pt-10 mx-auto space-x-0 pb-52 md:space-x-10 md:px-20 md:pt-20 md:flex-row">
+            <div className="container flex flex-col px-5 pt-10 mx-auto space-x-0 pb-52 md:space-x-10 md:px-20 md:pt-20 md:flex-row">
               <div className="space-y-5 md:w-1/2">
                 <h2 className="mb-1 text-5xl font-display title-font">
                   {title}
                 </h2>
-                <p>{subtitle}</p>
-                <div className="flex items-center space-x-5">
+                <p className="text-sm md:text-base">{subtitle}</p>
+                <div className="flex items-center space-x-3 md:space-x-5">
                   <span>
                     <MapIcon className="w-5 h-5" />
                   </span>
@@ -95,7 +95,7 @@ const Contact = ({ title, subtitle, address, phone, email, hours }) => {
                     <p className="text-sm text-gray-800">{address}</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-5">
+                <div className="flex items-center space-x-3 md:space-x-5">
                   <span>
                     <PhoneIcon className="w-5 h-5" />
                   </span>
@@ -108,7 +108,7 @@ const Contact = ({ title, subtitle, address, phone, email, hours }) => {
                     ))}
                   </div>
                 </div>
-                <div className="flex items-center space-x-5">
+                <div className="flex items-center space-x-3 md:space-x-5">
                   <span>
                     <MailIcon className="w-5 h-5" />
                   </span>
@@ -121,7 +121,7 @@ const Contact = ({ title, subtitle, address, phone, email, hours }) => {
                     ))}
                   </div>
                 </div>
-                <div className="flex items-center space-x-5">
+                <div className="flex items-center space-x-3 md:space-x-5">
                   <span>
                     <ClockIcon className="w-5 h-5" />
                   </span>
@@ -189,6 +189,7 @@ const Contact = ({ title, subtitle, address, phone, email, hours }) => {
                 )}
                 <ReCAPTCHA
                   ref={recaptchaRef}
+                  className="overflow-hidden"
                   size="normal"
                   sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
                   onChange={onReCAPTCHAChange}

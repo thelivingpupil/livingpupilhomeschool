@@ -82,13 +82,15 @@ const Users = () => {
                           </div>
                         </td>
                         <td className="p-2 space-x-3 text-xs text-center">
-                          {formatDistance(
-                            new Date(user.createdAt),
-                            new Date(),
-                            {
-                              addSuffix: true,
-                            }
-                          )}
+                          {user.createdAt
+                            ? formatDistance(
+                                new Date(user.createdAt),
+                                new Date(),
+                                {
+                                  addSuffix: true,
+                                }
+                              )
+                            : 'Invited'}
                         </td>
                       </tr>
                     ))

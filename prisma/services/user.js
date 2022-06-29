@@ -7,6 +7,14 @@ export const countUsers = async () =>
     where: { deletedAt: null },
   });
 
+export const countVerifiedUsers = async () =>
+  await prisma.user.count({
+    where: {
+      deletedAt: null,
+      NOT: { emailVerified: null },
+    },
+  });
+
 export const deactivate = async (id) =>
   await prisma.user.update({
     data: { deletedAt: new Date() },

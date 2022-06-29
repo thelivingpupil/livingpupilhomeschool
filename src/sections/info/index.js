@@ -31,7 +31,7 @@ const Info = ({ title, description, highlight, image }) => {
             </h3>
           )}
         </div>
-        <div className="relative w-full md:w-1/2 h-[500px]">
+        <div className="relative w-full h-[250px] md:w-1/2 md:h-[500px]">
           <Image
             alt={image.alt}
             className="rounded-xl"
