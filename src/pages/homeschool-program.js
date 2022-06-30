@@ -186,8 +186,10 @@ const HomeschoolProgram = ({ page, fees }) => {
                 style: 'currency',
                 currency: 'PHP',
               }).format(
-                schoolFee?.fees[2]?.initialFee +
-                  schoolFee?.fees[2]?.quarterlyFee * 3 || 0
+                Math.ceil(
+                  schoolFee?.fees[2]?.initialFee +
+                    schoolFee?.fees[2]?.quarterlyFee * 3
+                ) || 0
               )}
             </h3>
           </div>

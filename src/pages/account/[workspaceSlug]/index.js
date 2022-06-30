@@ -34,8 +34,7 @@ import {
 import format from 'date-fns/format';
 
 const steps = [
-  'Personal Information',
-  'Educational Background',
+  'Student Information',
   'Program and Accreditation',
   'School Fees',
 ];
@@ -69,12 +68,11 @@ const Workspace = ({ schoolFees }) => {
     (step === 0 &&
       firstName.length > 0 &&
       lastName.length > 0 &&
-      reason.length > 0) ||
-    (step === 1 &&
+      reason.length > 0 &&
       formerSchoolName.length > 0 &&
       formerSchoolAddress.length > 0) ||
-    (step === 2 && accreditation !== null) ||
-    (step === 3 && payment !== null && agree);
+    (step === 1 && accreditation !== null) ||
+    (step === 2 && payment !== null && agree);
   const schoolFee = schoolFees.find((fee) => {
     let gradeLevel = incomingGradeLevel;
 
@@ -127,7 +125,7 @@ const Workspace = ({ schoolFees }) => {
     );
   });
 
-  const goToStep = (step) => setStep(step);
+  const goToStep = (step) => validateNext && setStep(step);
 
   const next = () => {
     if (step < steps.length - 1) {
@@ -179,7 +177,6 @@ const Workspace = ({ schoolFees }) => {
   const renderTab = () => {
     const tabs = [
       renderPersonalInformation,
-      renderEducationalBackground,
       renderCurriculum,
       renderSchoolFees,
     ];
@@ -188,77 +185,100 @@ const Workspace = ({ schoolFees }) => {
 
   const renderPersonalInformation = () => {
     return (
-      <div className="flex flex-col p-5 space-y-3 overflow-auto">
-        <div className="flex flex-col">
-          <label className="text-lg font-bold" htmlFor="txtMother">
-            Full Name <span className="ml-1 text-red-600">*</span>
-          </label>
-          <div className="flex flex-row space-x-5">
-            <input
-              className="px-3 py-2 border rounded md:w-1/3"
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="Given Name"
-              value={firstName}
-            />
-            <input
-              className="px-3 py-2 border rounded md:w-1/3"
-              onChange={(e) => setMiddleName(e.target.value)}
-              placeholder="Middle Name (Optional)"
-              value={middleName}
-            />
-            <input
-              className="px-3 py-2 border rounded md:w-1/3"
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Last Name"
-              value={lastName}
-            />
-          </div>
-        </div>
-        <div className="flex flex-row space-x-5">
+      <>
+        <div className="flex flex-col p-5 space-y-3 overflow-auto">
           <div className="flex flex-col">
             <label className="text-lg font-bold" htmlFor="txtMother">
-              Birthday <span className="ml-1 text-red-600">*</span>
+              Full Name <span className="ml-1 text-red-600">*</span>
             </label>
-            <div className="relative flex flex-row">
-              <DatePicker
-                selected={birthDate}
-                onChange={(date) => setBirthDate(date)}
-                selectsStart
-                startDate={birthDate}
-                nextMonthButtonLabel=">"
-                previousMonthButtonLabel="<"
-                popperClassName="react-datepicker-left"
-              />
-            </div>
-          </div>
-          <div className="flex flex-col w-full md:w-1/3">
-            <label className="text-lg font-bold" htmlFor="txtMother">
-              Age
-            </label>
-            <div className="relative flex flex-row space-x-5">
+            <div className="flex flex-row space-x-5">
               <input
-                className="w-full px-3 py-2 border rounded"
-                disabled
-                value={`${age} years old`}
+                className="px-3 py-2 border rounded md:w-1/3"
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Given Name"
+                value={firstName}
+              />
+              <input
+                className="px-3 py-2 border rounded md:w-1/3"
+                onChange={(e) => setMiddleName(e.target.value)}
+                placeholder="Middle Name (Optional)"
+                value={middleName}
+              />
+              <input
+                className="px-3 py-2 border rounded md:w-1/3"
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Last Name"
+                value={lastName}
               />
             </div>
           </div>
-        </div>
-        <div className="flex flex-row space-x-5">
-          <div className="flex flex-col w-full md:w-1/2">
-            <label className="text-lg font-bold" htmlFor="txtMother">
-              Gender <span className="ml-1 text-red-600">*</span>
-            </label>
-            <div className="flex flex-row">
+          <div className="flex flex-row space-x-5">
+            <div className="flex flex-col">
+              <label className="text-lg font-bold" htmlFor="txtMother">
+                Birthday <span className="ml-1 text-red-600">*</span>
+              </label>
+              <div className="relative flex flex-row">
+                <DatePicker
+                  selected={birthDate}
+                  onChange={(date) => setBirthDate(date)}
+                  selectsStart
+                  startDate={birthDate}
+                  nextMonthButtonLabel=">"
+                  previousMonthButtonLabel="<"
+                  popperClassName="react-datepicker-left"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col w-full md:w-1/3">
+              <label className="text-lg font-bold" htmlFor="txtMother">
+                Age
+              </label>
+              <div className="relative flex flex-row space-x-5">
+                <input
+                  className="w-full px-3 py-2 border rounded"
+                  disabled
+                  value={`${age} years old`}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-row space-x-5">
+            <div className="flex flex-col w-full md:w-1/2">
+              <label className="text-lg font-bold" htmlFor="txtMother">
+                Gender <span className="ml-1 text-red-600">*</span>
+              </label>
+              <div className="flex flex-row">
+                <div className="relative inline-block w-full border rounded">
+                  <select
+                    className="w-full px-3 py-2 capitalize rounded appearance-none"
+                    onChange={(e) => setGender(e.target.value)}
+                    value={gender}
+                  >
+                    {Object.keys(Gender).map((entry, index) => (
+                      <option key={index} value={entry}>
+                        {entry.toLowerCase()}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <ChevronDownIcon className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col w-full md:w-1/2">
+              <label className="text-lg font-bold" htmlFor="txtMother">
+                Religion <span className="ml-1 text-red-600">*</span>
+              </label>
               <div className="relative inline-block w-full border rounded">
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
-                  onChange={(e) => setGender(e.target.value)}
-                  value={gender}
+                  onChange={(e) => setReligion(e.target.value)}
+                  value={religion}
                 >
-                  {Object.keys(Gender).map((entry, index) => (
+                  {Object.keys(Religion).map((entry, index) => (
                     <option key={index} value={entry}>
-                      {entry.toLowerCase()}
+                      {RELIGION[entry]}
                     </option>
                   ))}
                 </select>
@@ -268,50 +288,35 @@ const Workspace = ({ schoolFees }) => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col w-full md:w-1/2">
+          <div className="flex flex-col">
             <label className="text-lg font-bold" htmlFor="txtMother">
-              Religion <span className="ml-1 text-red-600">*</span>
+              Reason for Homeschooling
+              <span className="ml-1 text-red-600">*</span>
             </label>
-            <div className="relative inline-block w-full border rounded">
-              <select
-                className="w-full px-3 py-2 capitalize rounded appearance-none"
-                onChange={(e) => setReligion(e.target.value)}
-                value={religion}
-              >
-                {Object.keys(Religion).map((entry, index) => (
-                  <option key={index} value={entry}>
-                    {RELIGION[entry]}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <ChevronDownIcon className="w-5 h-5" />
-              </div>
+            <div className="relative flex flex-row space-x-5">
+              <textarea
+                className="w-full px-3 py-2 border rounded"
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="Why did you choose to homeschool your child?"
+                rows={5}
+                value={reason}
+              ></textarea>
             </div>
           </div>
         </div>
-        <div className="flex flex-col">
-          <label className="text-lg font-bold" htmlFor="txtMother">
-            Reason for Homeschooling
-            <span className="ml-1 text-red-600">*</span>
-          </label>
-          <div className="relative flex flex-row space-x-5">
-            <textarea
-              className="w-full px-3 py-2 border rounded"
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="Why did you choose to homeschool your child?"
-              rows={5}
-              value={reason}
-            ></textarea>
-          </div>
-        </div>
-      </div>
+        <Card.Body title="Educational Background">
+          {renderEducationalBackground()}
+        </Card.Body>
+      </>
     );
   };
 
   const renderEducationalBackground = () => {
     return (
       <div className="flex flex-col p-5 space-y-5 overflow-auto">
+        <label className="text-lg font-bold" htmlFor="txtMother">
+          Enrolling as a <span className="ml-1 text-red-600">*</span>
+        </label>
         <div className="flex flex-row space-x-5">
           <div
             className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 ${
@@ -408,6 +413,9 @@ const Workspace = ({ schoolFees }) => {
   const renderCurriculum = () => {
     return (
       <div className="flex flex-col p-5 space-y-5 overflow-auto">
+        <label className="text-lg font-bold" htmlFor="txtMother">
+          Select a Program <span className="ml-1 text-red-600">*</span>
+        </label>
         <div className="flex flex-row space-x-5">
           <div
             className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 ${
@@ -467,6 +475,9 @@ const Workspace = ({ schoolFees }) => {
           </div>
         </div>
         <hr className="border border-dashed" />
+        <label className="text-lg font-bold" htmlFor="txtMother">
+          Select an Accreditation <span className="ml-1 text-red-600">*</span>
+        </label>
         <div className="flex flex-row space-x-5">
           {program === Program.HOMESCHOOL_PROGRAM && (
             <>
