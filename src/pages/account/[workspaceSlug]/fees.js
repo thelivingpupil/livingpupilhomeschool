@@ -74,7 +74,7 @@ const Fees = () => {
                   <Card key={level}>
                     <Card.Body
                       title={GRADE_LEVEL[level]}
-                      subtitle="Payment links will only be available withing a certain time period (1 hour for online payment and 2 days for OTC transactions). For further assistance please contact our administrators."
+                      subtitle="Payment links will only be available within a certain time period (1 hour for online payment and 2 days for OTC transactions). For further assistance please contact our administrators."
                     >
                       <table className="border">
                         <thead>

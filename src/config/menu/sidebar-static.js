@@ -7,6 +7,7 @@ const sidebarMenu = () => [
         path: `/account`,
       },
       {
+        className: 'tourGuardian',
         name: 'Guardian Information',
         path: `/account/information`,
       },

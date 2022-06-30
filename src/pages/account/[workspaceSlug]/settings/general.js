@@ -184,6 +184,18 @@ export const getServerSideProps = async (context) => {
     );
 
     if (workspace) {
+      if (workspace.studentRecord) {
+        workspace.studentRecord.birthDate =
+          workspace.studentRecord.birthDate.toDateString();
+      }
+
+      if (workspace.schoolFees.length > 0) {
+        workspace.schoolFees = workspace.schoolFees.map((item) => ({
+          ...item,
+          transaction: { amount: item.transaction.amount.toNumber() },
+        }));
+      }
+
       isTeamOwner = isWorkspaceOwner(session.user.email, workspace);
     }
   }

@@ -52,7 +52,7 @@ const Actions = () => {
   return (
     <div className="flex flex-col items-stretch justify-center px-5 space-y-3">
       <Button
-        className="text-gray-800 bg-secondary-500 hover:bg-secondary-400"
+        className="text-gray-800 tourCreate bg-secondary-500 hover:bg-secondary-400"
         onClick={toggleModal}
       >
         <PlusIcon className="w-5 h-5" aria-hidden="true" />
@@ -94,7 +94,7 @@ const Actions = () => {
         </div>
       </Modal>
       <Listbox value={workspace} onChange={handleWorkspaceChange}>
-        <div className="relative">
+        <div className="relative tourSelect">
           <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default">
             <span className="block text-gray-600 truncate">
               {isLoading

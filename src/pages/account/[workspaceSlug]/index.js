@@ -802,7 +802,9 @@ const Workspace = ({ schoolFees }) => {
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
-                  }).format(schoolFee?.fees[2]?.quarterlyFee || 0)}{' '}
+                  }).format(
+                    Number(schoolFee?.fees[2]?.quarterlyFee).toFixed(0) || 0
+                  )}{' '}
                   quarterly)
                 </span>
               </div>
@@ -812,8 +814,10 @@ const Workspace = ({ schoolFees }) => {
                 style: 'currency',
                 currency: 'PHP',
               }).format(
-                schoolFee?.fees[2]?.initialFee +
-                  schoolFee?.fees[2]?.quarterlyFee * 3 || 0
+                Number(
+                  schoolFee?.fees[2]?.initialFee +
+                    schoolFee?.fees[2]?.quarterlyFee * 3
+                ).toFixed(0) || 0
               )}
             </h3>
           </div>
@@ -1182,7 +1186,7 @@ const Workspace = ({ schoolFees }) => {
                     (fee?._type === 'annual'
                       ? 0
                       : fee?._type === 'semiAnnual'
-                      ? fee?.semiAnnualFee
+                      ? fee?.semiAnnualFee * 2
                       : fee?.quarterlyFee *
                         (fee?._type === 'annual'
                           ? 1

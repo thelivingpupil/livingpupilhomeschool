@@ -5,7 +5,7 @@ const Item = ({ data, isLoading }) => {
   return isLoading ? (
     <div className="h-6 mb-3 bg-gray-600 rounded animate-pulse" />
   ) : (
-    <li className="flex flex-row items-center">
+    <li className={`flex flex-row items-center ${data.className || ''}`}>
       {data.icon && <data.icon className="w-5 h-5 mr-5 text-white" />}
       <Link href={data.path}>
         <a

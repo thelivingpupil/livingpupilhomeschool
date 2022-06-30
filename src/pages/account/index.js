@@ -70,7 +70,7 @@ const Welcome = () => {
       />
       <Content.Divider />
       <Content.Container>
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3 tourDashboard">
           {isFetchingWorkspaces ? (
             <Card>
               <Card.Body />
