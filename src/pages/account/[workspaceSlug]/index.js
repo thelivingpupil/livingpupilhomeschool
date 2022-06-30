@@ -319,10 +319,10 @@ const Workspace = ({ schoolFees }) => {
         </label>
         <div className="flex flex-row space-x-5">
           <div
-            className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 ${
+            className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
               enrollmentType === Enrollment.NEW
                 ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
             }`}
             onClick={() => setEnrollmentType(Enrollment.NEW)}
           >
@@ -334,10 +334,10 @@ const Workspace = ({ schoolFees }) => {
             <h3 className="text-xl font-bold text-center">New Family</h3>
           </div>
           <div
-            className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 ${
+            className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
               enrollmentType === Enrollment.CONTINUING
                 ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
             }`}
             onClick={() => setEnrollmentType(Enrollment.CONTINUING)}
           >
@@ -418,10 +418,10 @@ const Workspace = ({ schoolFees }) => {
         </label>
         <div className="flex flex-row space-x-5">
           <div
-            className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 ${
+            className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
               program === Program.HOMESCHOOL_PROGRAM
                 ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
             }`}
             onClick={() => {
               setProgram(Program.HOMESCHOOL_PROGRAM);
@@ -438,7 +438,7 @@ const Workspace = ({ schoolFees }) => {
             </h3>
           </div>
           <div
-            className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 ${
+            className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
               incomingGradeLevel === GradeLevel.GRADE_1 ||
               incomingGradeLevel === GradeLevel.GRADE_2 ||
               incomingGradeLevel === GradeLevel.GRADE_3 ||
@@ -447,7 +447,7 @@ const Workspace = ({ schoolFees }) => {
               incomingGradeLevel === GradeLevel.GRADE_6
                 ? program === Program.HOMESCHOOL_COTTAGE
                   ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                  : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                  : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
                 : 'bg-gray-300 opacity-50 rounded'
             }`}
             onClick={() => {
@@ -482,9 +482,9 @@ const Workspace = ({ schoolFees }) => {
           {program === Program.HOMESCHOOL_PROGRAM && (
             <>
               <div
-                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/3 ${
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/3 border-2 border-primary-200 ${
                   accreditation === Accreditation.LOCAL
-                    ? 'border-4 border-dashed rounded-xl border-primary-200 bg-primary-50/50'
+                    ? 'border-4 border-solid rounded-xl border-primary-200 bg-primary-50/50'
                     : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
                 }`}
                 onClick={() => setAccreditation(Accreditation.LOCAL)}
@@ -500,12 +500,12 @@ const Workspace = ({ schoolFees }) => {
                 </h3>
               </div>
               <div
-                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/3 border-dashed ${
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/3 border-2 border-primary-200 ${
                   incomingGradeLevel !== GradeLevel.PRESCHOOL &&
                   incomingGradeLevel !== GradeLevel.K1
                     ? accreditation === Accreditation.INTERNATIONAL
-                      ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
-                      : 'border rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
+                      ? 'border-4 border-solid rounded-xl border-primary-200 bg-primary-50/50'
+                      : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
                     : 'bg-gray-300 opacity-50 rounded'
                 }`}
                 onClick={() => {
@@ -528,12 +528,12 @@ const Workspace = ({ schoolFees }) => {
                 </h3>
               </div>
               <div
-                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/3 border-dashed ${
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/3 border-2 border-primary-200 ${
                   incomingGradeLevel !== GradeLevel.PRESCHOOL &&
                   incomingGradeLevel !== GradeLevel.K1
                     ? accreditation === Accreditation.DUAL
-                      ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
-                      : 'border rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
+                      ? 'border-4 border-solid rounded-xl border-primary-200 bg-primary-50/50'
+                      : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
                     : 'bg-gray-300 opacity-50 rounded'
                 }`}
                 onClick={() => {
@@ -559,13 +559,13 @@ const Workspace = ({ schoolFees }) => {
           {program === Program.HOMESCHOOL_COTTAGE && (
             <>
               <div
-                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-dashed ${
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
                   incomingGradeLevel === GradeLevel.GRADE_1 ||
                   incomingGradeLevel === GradeLevel.GRADE_2 ||
                   incomingGradeLevel === GradeLevel.GRADE_3
                     ? accreditation === Accreditation.FORM_ONE
                       ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
-                      : 'border rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
+                      : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
                     : 'bg-gray-300 opacity-50 rounded'
                 }`}
                 onClick={() => {
@@ -589,13 +589,13 @@ const Workspace = ({ schoolFees }) => {
                 </h3>
               </div>
               <div
-                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-dashed ${
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
                   incomingGradeLevel === GradeLevel.GRADE_4 ||
                   incomingGradeLevel === GradeLevel.GRADE_5 ||
                   incomingGradeLevel === GradeLevel.GRADE_6
                     ? accreditation === Accreditation.FORM_TWO
                       ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
-                      : 'border rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
+                      : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
                     : 'bg-gray-300 opacity-50 rounded'
                 }`}
                 onClick={() => {
@@ -694,10 +694,10 @@ const Workspace = ({ schoolFees }) => {
         </label>
         <div className="relative flex flex-row space-x-5">
           <div
-            className={`flex flex-row items-center justify-between w-full px-5 py-3 hover:shadow-lg ${
+            className={`flex flex-row items-center justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
               payment === PaymentType.ANNUAL
                 ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
             }`}
             onClick={() => {
               setPayment(PaymentType.ANNUAL);
@@ -733,10 +733,10 @@ const Workspace = ({ schoolFees }) => {
         </div>
         <div className="relative flex flex-row space-x-5">
           <div
-            className={`flex flex-row items-center justify-between w-full px-5 py-3 hover:shadow-lg ${
+            className={`flex flex-row items-center justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
               payment === PaymentType.SEMI_ANNUAL
                 ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
             }`}
             onClick={() => {
               setPayment(PaymentType.SEMI_ANNUAL);
@@ -782,10 +782,10 @@ const Workspace = ({ schoolFees }) => {
         </div>
         <div className="relative flex flex-row space-x-5">
           <div
-            className={`flex flex-row items-center justify-between w-full px-5 py-3 hover:shadow-lg ${
+            className={`flex flex-row items-center justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
               payment === PaymentType.QUARTERLY
                 ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                : 'border rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
             }`}
             onClick={() => {
               setPayment(PaymentType.QUARTERLY);
@@ -1200,17 +1200,21 @@ const Workspace = ({ schoolFees }) => {
                   style: 'currency',
                   currency: 'PHP',
                 }).format(
-                  (fee?._type === 'annual' ? fee?.totalFee : fee?.initialFee) +
+                  Math.ceil(
                     (fee?._type === 'annual'
-                      ? 0
-                      : fee?._type === 'semiAnnual'
-                      ? fee?.semiAnnualFee * 2
-                      : fee?.quarterlyFee *
-                        (fee?._type === 'annual'
-                          ? 1
-                          : fee?._type === 'semiAnnual'
-                          ? 2
-                          : 3)) || 0
+                      ? fee?.totalFee
+                      : fee?.initialFee) +
+                      (fee?._type === 'annual'
+                        ? 0
+                        : fee?._type === 'semiAnnual'
+                        ? fee?.semiAnnualFee * 2
+                        : fee?.quarterlyFee *
+                          (fee?._type === 'annual'
+                            ? 1
+                            : fee?._type === 'semiAnnual'
+                            ? 2
+                            : 3))
+                  ) || 0
                 )}
               </span>
             </h4>
