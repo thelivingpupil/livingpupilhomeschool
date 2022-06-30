@@ -972,6 +972,13 @@ const Workspace = ({ schoolFees }) => {
                 </div>
               ))}
             </div>
+            <div className="px-3 py-3 text-sm text-blue-500 border-2 border-blue-600 rounded bg-blue-50">
+              <p>
+                All fields marked with an{' '}
+                <span className="font-bold text-red-600">*</span> are{' '}
+                <strong>required</strong>
+              </p>
+            </div>
             <Card>
               <Card.Body title={steps[step]}>{renderTab()}</Card.Body>
               <Card.Footer>

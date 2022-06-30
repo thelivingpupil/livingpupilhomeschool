@@ -21,10 +21,12 @@ const steps = [
     content: (
       <div className="space-y-3">
         <h3 className="text-sm font-medium text-center text-primary-500">
-          Welcome to the Homeschool Parent Portal
+          Welcome to the Parent Portal
         </h3>
         <h2 className="text-lg font-bold text-center">
-          Let's begin your journey!
+          Let's begin your{' '}
+          <span className="text-primary-500">Living Pupil Homeschool</span>{' '}
+          journey!
         </h2>
       </div>
     ),
