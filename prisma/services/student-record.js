@@ -1,4 +1,5 @@
 import { GradeLevel, Program, TransactionStatus } from '@prisma/client';
+import prisma from '@/prisma/index';
 
 export const countEnrolledStudentsByGradeLevel = async () => {
   const result = await prisma.studentRecord.groupBy({
