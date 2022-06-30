@@ -3,7 +3,6 @@ import { add } from 'date-fns';
 
 import api from '@/lib/common/api';
 import { getBasicAuthorization } from '@/lib/server/dragonpay';
-import { STATUS } from '@/utils/constants';
 import prisma from '@/prisma/index';
 
 export const getTotalEnrollmentRevenuesByStatus = async () => {
