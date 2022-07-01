@@ -7,6 +7,7 @@ export const countEnrolledStudentsByGradeLevel = async () => {
     where: {
       deletedAt: null,
       student: {
+        deletedAt: null,
         schoolFees: {
           some: {
             transaction: {
@@ -47,6 +48,7 @@ export const countEnrolledStudentsByProgram = async () => {
     where: {
       deletedAt: null,
       student: {
+        deletedAt: null,
         schoolFees: {
           some: {
             transaction: {
@@ -73,6 +75,7 @@ export const countEnrolledStudents = async () =>
     where: {
       deletedAt: null,
       student: {
+        deletedAt: null,
         schoolFees: {
           some: {
             transaction: {
@@ -86,21 +89,24 @@ export const countEnrolledStudents = async () =>
 
 export const countStudents = async () =>
   await prisma.studentRecord.count({
-    where: { deletedAt: null },
+    where: {
+      deletedAt: null,
+      student: { deletedAt: null },
+    },
   });
 
 export const countStudentsByGradeLevel = async () =>
   await prisma.studentRecord.groupBy({
     by: ['incomingGradeLevel'],
     _count: true,
-    where: { deletedAt: null },
+    where: { deletedAt: null, student: { deletedAt: null } },
   });
 
 export const countStudentsByProgram = async () =>
   await prisma.studentRecord.groupBy({
     by: ['program'],
     _count: true,
-    where: { deletedAt: null },
+    where: { deletedAt: null, student: { deletedAt: null } },
   });
 
 export const createStudentRecord = async (
@@ -117,7 +123,10 @@ export const createStudentRecord = async (
   accreditation,
   reason,
   formerSchoolName,
-  formerSchoolAddress
+  formerSchoolAddress,
+  image,
+  liveBirthCertificate,
+  reportCard
 ) =>
   await prisma.studentRecord.create({
     data: {
@@ -135,6 +144,9 @@ export const createStudentRecord = async (
       reason,
       formerSchoolName,
       formerSchoolAddress,
+      image,
+      liveBirthCertificate,
+      reportCard,
     },
   });
 
@@ -156,6 +168,9 @@ export const getStudentRecords = async () =>
       reason: true,
       formerSchoolName: true,
       formerSchoolAddress: true,
+      image: true,
+      liveBirthCertificate: true,
+      reportCard: true,
       student: {
         select: {
           creator: {
@@ -166,5 +181,5 @@ export const getStudentRecords = async () =>
         },
       },
     },
-    where: { deletedAt: null },
+    where: { deletedAt: null, student: { deletedAt: null } },
   });

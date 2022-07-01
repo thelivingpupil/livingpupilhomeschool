@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { GradeLevel, PaymentType, TransactionStatus } from '@prisma/client';
-import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 import Card from '@/components/Card';
@@ -81,6 +80,7 @@ const Fees = () => {
                           <tr className="text-left">
                             <th className="px-3 py-2">Name</th>
                             <th className="px-3 py-2">Fee</th>
+                            <th className="px-3 py-2">Deadline</th>
                             <th className="px-3 py-2 text-center">
                               Action / Status
                             </th>
@@ -117,6 +117,7 @@ const Fees = () => {
                                   currency: 'PHP',
                                 }).format(f.transaction.amount)}
                               </td>
+                              <td className="px-3 py-2"></td>
                               <td className="px-3 py-2 space-x-3 text-center">
                                 {f.transaction.paymentStatus ===
                                   TransactionStatus.U ||

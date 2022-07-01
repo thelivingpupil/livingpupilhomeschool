@@ -1,9 +1,16 @@
-import { Currency, TransactionSource, TransactionStatus } from '@prisma/client';
+import {
+  Currency,
+  Fees,
+  TransactionSource,
+  TransactionStatus,
+} from '@prisma/client';
 import { add } from 'date-fns';
 
 import api from '@/lib/common/api';
 import { getBasicAuthorization } from '@/lib/server/dragonpay';
 import prisma from '@/prisma/index';
+
+const modes = { [Fees.ONLINE]: 1, [Fees.OTC]: 2, [Fees.PAYMENT_CENTERS]: 4 };
 
 export const getTotalEnrollmentRevenuesByStatus = async () => {
   const result = await prisma.transaction.groupBy({
@@ -107,7 +114,8 @@ export const createTransaction = async (
   amount,
   description,
   purchaseId,
-  source
+  source,
+  fee
 ) => {
   const response = await api(
     `${process.env.PAYMENTS_BASE_URL}/${transactionId}/post`,
@@ -140,7 +148,8 @@ export const createTransaction = async (
       source: source || description,
       description,
       message,
-      url,
+      url: `${url}&mode=${modes[fee]}`,
+      fee,
       user: {
         connect: {
           id: userId,
@@ -153,7 +162,7 @@ export const createTransaction = async (
       },
     },
   });
-  return { url, referenceNumber };
+  return { url: `${url}&mode=${modes[fee]}`, referenceNumber };
 };
 
 export const getTransaction = async (transactionId, referenceNumber) =>

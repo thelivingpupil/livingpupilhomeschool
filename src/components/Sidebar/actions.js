@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, PlusIcon, SelectorIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
@@ -10,13 +10,14 @@ import { useWorkspaces } from '@/hooks/data/index';
 import api from '@/lib/common/api';
 import { useWorkspace } from '@/providers/workspace';
 
-const Actions = () => {
+const Actions = ({ show }) => {
   const { data, isLoading } = useWorkspaces();
   const { workspace, setWorkspace } = useWorkspace();
   const router = useRouter();
   const [isSubmitting, setSubmittingState] = useState(false);
   const [name, setName] = useState('');
   const [showModal, setModalState] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const validName = name.length > 0 && name.length <= 16;
 
   const createWorkspace = (event) => {
@@ -33,9 +34,15 @@ const Actions = () => {
           toast.error(response.errors[error].msg)
         );
       } else {
-        toggleModal();
+        const { workspace } = response.data;
         setName('');
         toast.success('Workspace successfully created!');
+        setRedirecting(true);
+        setTimeout(() => {
+          setWorkspace(workspace);
+          router.replace(`/account/${workspace?.slug}`);
+          toggleModal();
+        }, 3000);
       }
     });
   };
@@ -49,6 +56,10 @@ const Actions = () => {
 
   const toggleModal = () => setModalState(!showModal);
 
+  useEffect(() => {
+    setModalState(show);
+  }, [show]);
+
   return (
     <div className="flex flex-col items-stretch justify-center px-5 space-y-3">
       <Button
@@ -60,7 +71,7 @@ const Actions = () => {
       </Button>
       <Modal
         show={showModal}
-        title="Create a Student Record"
+        title="Let's Create a Student Record"
         toggle={toggleModal}
       >
         <div className="space-y-0 text-sm text-gray-600">
@@ -89,7 +100,9 @@ const Actions = () => {
             disabled={!validName || isSubmitting}
             onClick={createWorkspace}
           >
-            <span>Create Record</span>
+            <span>
+              {!redirecting ? 'Create Record' : 'Redirecting in 3 seconds...'}
+            </span>
           </Button>
         </div>
       </Modal>

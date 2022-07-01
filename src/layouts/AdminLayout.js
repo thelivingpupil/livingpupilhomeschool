@@ -21,7 +21,7 @@ const AdminLayout = ({ children }) => {
   return (
     <main className="relative flex flex-col w-screen h-screen space-x-0 text-gray-800 dark:text-gray-200 md:space-x-5 md:flex-row bg-gray-50 dark:bg-gray-800">
       <AdminSidebar />
-      <Content>
+      <Content admin>
         <Toaster position="bottom-left" toastOptions={{ duration: 10000 }} />
         <Header />
         {children}

@@ -8,7 +8,7 @@ import {
 
 import sanityClient from '@/lib/server/sanity';
 import prisma from '@/prisma/index';
-import { ACCREDITATION, GRADE_LEVEL, PROGRAM } from '@/utils/constants';
+import { ACCREDITATION, FEES, GRADE_LEVEL, PROGRAM } from '@/utils/constants';
 import { createTransaction } from './transaction';
 
 export const createSchoolFees = async (
@@ -19,7 +19,8 @@ export const createSchoolFees = async (
   enrollmentType,
   incomingGradeLevel,
   program,
-  accreditation
+  accreditation,
+  paymentMethod
 ) => {
   let gradeLevel = incomingGradeLevel;
 
@@ -73,22 +74,24 @@ export const createSchoolFees = async (
     }
   );
   const description = `${PROGRAM[program]} for ${GRADE_LEVEL[incomingGradeLevel]} - ${ACCREDITATION[accreditation]}`;
+  let result = null;
 
   if (payment === PaymentType.ANNUAL) {
     const fee = schoolFee.fees[0];
     const transaction = await prisma.purchaseHistory.create({
-      data: { total: fee.totalFee },
+      data: { total: fee.totalFee + FEES[paymentMethod] },
       select: { id: true, transactionId: true },
     });
-    await Promise.all([
+    const [response] = await Promise.all([
       createTransaction(
         userId,
         email,
         transaction.transactionId,
-        fee.totalFee,
+        fee.totalFee + FEES[paymentMethod],
         description,
         transaction.id,
-        TransactionSource.ENROLLMENT
+        TransactionSource.ENROLLMENT,
+        paymentMethod
       ),
     ]);
     await Promise.all([
@@ -110,49 +113,53 @@ export const createSchoolFees = async (
         },
       }),
     ]);
+    result = response;
   } else if (payment === PaymentType.SEMI_ANNUAL) {
     const fee = schoolFee.fees[1];
     const transactionIds = await Promise.all([
       prisma.purchaseHistory.create({
-        data: { total: fee.initialFee },
+        data: { total: fee.initialFee + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.semiAnnualFee },
+        data: { total: fee.semiAnnualFee + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.semiAnnualFee },
+        data: { total: fee.semiAnnualFee + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
     ]);
-    await Promise.all([
+    const [response] = await Promise.all([
       createTransaction(
         userId,
         email,
         transactionIds[0].transactionId,
-        fee.initialFee,
+        fee.initialFee + FEES[paymentMethod],
         description,
         transactionIds[0].id,
-        TransactionSource.ENROLLMENT
+        TransactionSource.ENROLLMENT,
+        paymentMethod
       ),
       createTransaction(
         userId,
         email,
         transactionIds[1].transactionId,
-        fee.semiAnnualFee,
+        fee.semiAnnualFee + FEES[paymentMethod],
         description,
         transactionIds[1].id,
-        TransactionSource.ENROLLMENT
+        TransactionSource.ENROLLMENT,
+        paymentMethod
       ),
       createTransaction(
         userId,
         email,
         transactionIds[2].transactionId,
-        fee.semiAnnualFee,
+        fee.semiAnnualFee + FEES[paymentMethod],
         description,
         transactionIds[2].id,
-        TransactionSource.ENROLLMENT
+        TransactionSource.ENROLLMENT,
+        paymentMethod
       ),
     ]);
     await Promise.all([
@@ -208,62 +215,67 @@ export const createSchoolFees = async (
         },
       }),
     ]);
+    result = response;
   } else if (payment === PaymentType.QUARTERLY) {
     const fee = schoolFee.fees[2];
     const transactionIds = await Promise.all([
       prisma.purchaseHistory.create({
-        data: { total: fee.initialFee },
+        data: { total: fee.initialFee + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.quarterlyFee },
+        data: { total: fee.quarterlyFee + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.quarterlyFee },
+        data: { total: fee.quarterlyFee + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.quarterlyFee },
+        data: { total: fee.quarterlyFee + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
     ]);
-    await Promise.all([
+    const [response] = await Promise.all([
       createTransaction(
         userId,
         email,
         transactionIds[0].transactionId,
-        fee.initialFee,
+        fee.initialFee + FEES[paymentMethod],
         description,
         transactionIds[0].id,
-        TransactionSource.ENROLLMENT
+        TransactionSource.ENROLLMENT,
+        paymentMethod
       ),
       createTransaction(
         userId,
         email,
         transactionIds[1].transactionId,
-        fee.quarterlyFee,
+        fee.quarterlyFee + FEES[paymentMethod],
         description,
         transactionIds[1].id,
-        TransactionSource.ENROLLMENT
+        TransactionSource.ENROLLMENT,
+        paymentMethod
       ),
       createTransaction(
         userId,
         email,
         transactionIds[2].transactionId,
-        fee.quarterlyFee,
+        fee.quarterlyFee + FEES[paymentMethod],
         description,
         transactionIds[2].id,
-        TransactionSource.ENROLLMENT
+        TransactionSource.ENROLLMENT,
+        paymentMethod
       ),
       createTransaction(
         userId,
         email,
         transactionIds[3].transactionId,
-        fee.quarterlyFee,
+        fee.quarterlyFee + FEES[paymentMethod],
         description,
         transactionIds[3].id,
-        TransactionSource.ENROLLMENT
+        TransactionSource.ENROLLMENT,
+        paymentMethod
       ),
     ]);
     await Promise.all([
@@ -336,5 +348,8 @@ export const createSchoolFees = async (
         },
       }),
     ]);
+    result = response;
   }
+
+  return result;
 };

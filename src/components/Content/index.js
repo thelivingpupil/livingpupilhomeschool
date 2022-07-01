@@ -1,6 +1,11 @@
-const Content = ({ children }) => {
+const Content = ({ admin, children }) => {
   return (
-    <div className="flex flex-col h-full p-5 space-y-5 overflow-y-auto md:p-10 md:w-3/4">
+    <div
+      id="scroller"
+      className={`flex flex-col h-full p-5 space-y-5 overflow-y-auto md:p-10 ${
+        admin ? 'md:w-4/5' : 'md:w-3/4'
+      }`}
+    >
       {children}
     </div>
   );

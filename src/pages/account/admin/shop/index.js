@@ -22,7 +22,6 @@ const Shop = () => {
   const view = (purchase) => {
     toggleModal();
     setPurchase(purchase);
-    console.log(purchase);
   };
 
   return (

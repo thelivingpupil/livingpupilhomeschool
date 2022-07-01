@@ -128,6 +128,99 @@ export const getSiteWorkspace = async (slug, customDomain) =>
     },
   });
 
+export const getSingleWorkspace = async (id, email, slug) =>
+  await prisma.workspace.findFirst({
+    select: {
+      createdAt: true,
+      creator: {
+        select: {
+          email: true,
+          name: true,
+        },
+      },
+      inviteCode: true,
+      members: {
+        select: {
+          member: {
+            select: {
+              email: true,
+              image: true,
+              name: true,
+            },
+          },
+          joinedAt: true,
+          status: true,
+          teamRole: true,
+        },
+      },
+      name: true,
+      slug: true,
+      workspaceCode: true,
+      studentRecord: {
+        select: {
+          studentId: true,
+          firstName: true,
+          middleName: true,
+          lastName: true,
+          birthDate: true,
+          gender: true,
+          religion: true,
+          incomingGradeLevel: true,
+          enrollmentType: true,
+          program: true,
+          accreditation: true,
+          reason: true,
+          formerSchoolName: true,
+          formerSchoolAddress: true,
+        },
+      },
+      schoolFees: {
+        select: {
+          studentId: true,
+          transactionId: true,
+          order: true,
+          gradeLevel: true,
+          paymentType: true,
+          transaction: {
+            select: {
+              transactionId: true,
+              referenceNumber: true,
+              userId: true,
+              amount: true,
+              currency: true,
+              transactionStatus: true,
+              paymentStatus: true,
+              source: true,
+              paymentReference: true,
+              description: true,
+              message: true,
+              url: true,
+              purchaseHistoryId: true,
+            },
+          },
+        },
+      },
+    },
+    where: {
+      OR: [
+        { id },
+        {
+          members: {
+            some: {
+              email,
+              deletedAt: null,
+              status: InvitationStatus.ACCEPTED,
+            },
+          },
+        },
+      ],
+      AND: {
+        deletedAt: null,
+        slug,
+      },
+    },
+  });
+
 export const getWorkspace = async (id, email, slug) =>
   await prisma.workspace.findFirst({
     select: {

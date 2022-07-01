@@ -181,24 +181,27 @@ model Session {
 }
 
 model StudentRecord {
-  id                  String        @id @default(cuid())
-  studentId           String        @unique @default(cuid())
-  firstName           String
-  middleName          String
-  lastName            String
-  birthDate           DateTime
-  gender              Gender
-  religion            Religion
-  incomingGradeLevel  GradeLevel
-  enrollmentType      Enrollment    @default(NEW)
-  program             Program       @default(HOMESCHOOL_PROGRAM)
-  accreditation       Accreditation @default(LOCAL)
-  reason              String?
-  formerSchoolName    String
-  formerSchoolAddress String
-  createdAt           DateTime?     @default(now())
-  deletedAt           DateTime?
-  updatedAt           DateTime?     @updatedAt
+  id                   String        @id @default(cuid())
+  studentId            String        @unique @default(cuid())
+  firstName            String
+  middleName           String
+  lastName             String
+  birthDate            DateTime
+  gender               Gender
+  religion             Religion
+  incomingGradeLevel   GradeLevel
+  enrollmentType       Enrollment    @default(NEW)
+  program              Program       @default(HOMESCHOOL_PROGRAM)
+  accreditation        Accreditation @default(LOCAL)
+  reason               String?
+  formerSchoolName     String
+  formerSchoolAddress  String
+  image                String?
+  liveBirthCertificate String?
+  reportCard           String?
+  createdAt            DateTime?     @default(now())
+  deletedAt            DateTime?
+  updatedAt            DateTime?     @updatedAt
 
   student Workspace @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
@@ -220,6 +223,7 @@ model Transaction {
   message           String?
   url               String?
   purchaseHistoryId String?           @unique
+  fee               Fees              @default(ONLINE)
   createdAt         DateTime?         @default(now())
   deletedAt         DateTime?
   updatedAt         DateTime?         @updatedAt
@@ -305,6 +309,12 @@ enum Currency {
 enum Enrollment {
   CONTINUING
   NEW
+}
+
+enum Fees {
+  ONLINE
+  OTC
+  PAYMENT_CENTERS
 }
 
 enum Gender {

@@ -1,15 +1,26 @@
 import { useState } from 'react';
-import { CheckIcon, ChevronDownIcon, UserIcon } from '@heroicons/react/outline';
+import {
+  CheckCircleIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  InformationCircleIcon,
+  UserIcon,
+} from '@heroicons/react/outline';
+import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/solid';
 import {
   Accreditation,
   Enrollment,
+  Fees,
   Gender,
   GradeLevel,
   PaymentType,
   Program,
   Religion,
 } from '@prisma/client';
+import crypto from 'crypto';
 import differenceInCalendarYears from 'date-fns/differenceInCalendarYears';
+import format from 'date-fns/format';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import Link from 'next/link';
 import DatePicker from 'react-datepicker';
 import toast from 'react-hot-toast';
@@ -20,18 +31,21 @@ import Content from '@/components/Content/index';
 import Meta from '@/components/Meta/index';
 import Modal from '@/components/Modal';
 import { AccountLayout } from '@/layouts/index';
+import { storage } from '@/lib/client/firebase';
 import api from '@/lib/common/api';
 import sanityClient from '@/lib/server/sanity';
 import { useWorkspace } from '@/providers/workspace';
 import {
   ACCREDITATION,
   ENROLLMENT_TYPE,
+  FEES,
   GRADE_LEVEL,
   GRADE_LEVEL_GROUPS,
+  PAYMENT_METHOD,
+  PAYMENT_TYPE,
   PROGRAM,
   RELIGION,
 } from '@/utils/constants';
-import format from 'date-fns/format';
 
 const steps = [
   'Student Information',
@@ -63,6 +77,15 @@ const Workspace = ({ schoolFees }) => {
   const [payment, setPayment] = useState(null);
   const [fee, setFee] = useState(null);
   const [birthDate, setBirthDate] = useState(new Date());
+  const [paymentMethod, setPaymentMethod] = useState(null);
+
+  const [pictureProgress, setPictureProgress] = useState(0);
+  const [birthCertificateProgress, setBirthCertificateProgress] = useState(0);
+  const [reportCardProgress, setReportCardProgress] = useState(0);
+  const [pictureLink, setPictureLink] = useState(null);
+  const [birthCertificateLink, setBirthCertificateLink] = useState(null);
+  const [reportCardLink, setReportCardLink] = useState(null);
+
   const age = differenceInCalendarYears(new Date(), birthDate) || 0;
   const validateNext =
     (step === 0 &&
@@ -72,7 +95,7 @@ const Workspace = ({ schoolFees }) => {
       formerSchoolName.length > 0 &&
       formerSchoolAddress.length > 0) ||
     (step === 1 && accreditation !== null) ||
-    (step === 2 && payment !== null && agree);
+    (step === 2 && payment !== null && paymentMethod && agree);
   const schoolFee = schoolFees.find((fee) => {
     let gradeLevel = incomingGradeLevel;
 
@@ -125,19 +148,156 @@ const Workspace = ({ schoolFees }) => {
     );
   });
 
-  const goToStep = (step) => validateNext && setStep(step);
+  const goToStep = (step) => {
+    validateNext && setStep(step);
+    document.getElementById('scroller').scroll(0, 0);
+  };
+
+  const handlePictureUpload = (e) => {
+    const file = e.target?.files[0];
+
+    if (file) {
+      // 5 MB
+      if (file.size < 5242880) {
+        const extension = file.name.split('.').pop();
+        const storageRef = ref(
+          storage,
+          `files/${workspace.slug}/picture-${crypto
+            .createHash('md5')
+            .update(file.name)
+            .digest('hex')
+            .substring(0, 12)}-${format(
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss'
+          )}.${extension}`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            setPictureProgress(progress);
+          },
+          (error) => {
+            toast.error(error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              setPictureLink(downloadURL);
+            });
+          }
+        );
+      }
+    } else {
+      toast.error('File too large. Size should not exceed 5 MB.');
+    }
+  };
+
+  const handleBirthCertificateUpload = (e) => {
+    const file = e.target?.files[0];
+
+    if (file) {
+      // 5 MB
+      if (file.size < 5242880) {
+        const extension = file.name.split('.').pop();
+        const storageRef = ref(
+          storage,
+          `files/${workspace.slug}/birth-${crypto
+            .createHash('md5')
+            .update(file.name)
+            .digest('hex')
+            .substring(0, 12)}-${format(
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss'
+          )}.${extension}`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            setBirthCertificateProgress(progress);
+          },
+          (error) => {
+            toast.error(error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              setBirthCertificateLink(downloadURL);
+            });
+          }
+        );
+      }
+    } else {
+      toast.error('File too large. Size should not exceed 5 MB.');
+    }
+  };
+
+  const handleReportCardUpload = (e) => {
+    const file = e.target?.files[0];
+
+    if (file) {
+      // 5 MB
+      if (file.size < 5242880) {
+        const extension = file.name.split('.').pop();
+        const storageRef = ref(
+          storage,
+          `files/${workspace.slug}/birth-${crypto
+            .createHash('md5')
+            .update(file.name)
+            .digest('hex')
+            .substring(0, 12)}-${format(
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss'
+          )}.${extension}`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            setReportCardProgress(progress);
+          },
+          (error) => {
+            toast.error(error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              setReportCardLink(downloadURL);
+            });
+          }
+        );
+      }
+    } else {
+      toast.error('File too large. Size should not exceed 5 MB.');
+    }
+  };
 
   const next = () => {
     if (step < steps.length - 1) {
       setStep(step + 1);
+      document.getElementById('scroller').scroll(0, 0);
     } else {
       toggleReview();
     }
   };
 
-  const previous = () => setStep(step - 1);
+  const previous = () => {
+    setStep(step - 1);
+    document.getElementById('scroller').scroll(0, 0);
+  };
 
   const submit = () => {
+    schoolFee;
     setSubmittingState(true);
     api('/api/enroll', {
       body: {
@@ -155,6 +315,10 @@ const Workspace = ({ schoolFees }) => {
         accreditation,
         payment,
         birthDate,
+        pictureLink,
+        birthCertificateLink,
+        reportCardLink,
+        paymentMethod,
         slug: workspace.slug,
       },
       method: 'POST',
@@ -166,6 +330,7 @@ const Workspace = ({ schoolFees }) => {
           toast.error(response.errors[error].msg)
         );
       } else {
+        window.open(response.data.schoolFee.url, '_blank');
         setViewFees(true);
         toast.success('Student information successfully submitted!');
       }
@@ -304,10 +469,155 @@ const Workspace = ({ schoolFees }) => {
             </div>
           </div>
         </div>
+        <Card.Body title="Files and Documents">{renderFileUpload()}</Card.Body>
         <Card.Body title="Educational Background">
           {renderEducationalBackground()}
         </Card.Body>
       </>
+    );
+  };
+
+  const renderFileUpload = () => {
+    return (
+      <div className="flex flex-col p-5 space-y-5 overflow-auto">
+        <label className="text-lg font-bold" htmlFor="txtMother">
+          Optional: You can upload these files at a later time
+        </label>
+        <p className="text-sm text-gray-600">
+          Accepted file formats are <strong>PDF</strong>, <strong>PNG</strong>,
+          <strong>JPEG/JPG</strong>, and <strong>GIF</strong> with a maximum
+          file size of <strong className="text-red-600">5 MB</strong>.
+        </p>
+        <table className="table border border-collapse">
+          <tbody>
+            <tr>
+              <td className="w-1/2 px-3 py-2 border">
+                <h3 className="text-xl font-medium">ID Picture</h3>
+                <p className="text-sm text-gray-400">
+                  Digital copy of the child's latest photo with{' '}
+                  <strong>WHITE</strong> background
+                </p>
+              </td>
+              <td className="w-1/4 px-3 py-2 border">
+                <input
+                  className="text-xs cursor-pointer"
+                  accept=".jpeg,.jpg,.png"
+                  onChange={handlePictureUpload}
+                  type="file"
+                />
+                <div className="w-full mt-2 rounded-full shadow bg-grey-light">
+                  <div
+                    className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
+                    style={{ width: `${pictureProgress}%` }}
+                  >
+                    <span className="px-3">{pictureProgress}%</span>
+                  </div>
+                </div>
+              </td>
+              <td className="w-1/4 px-3 py-2 border">
+                <div className="flex flex-col items-center justify-center space-y-3">
+                  {pictureLink ? (
+                    <Link href={pictureLink}>
+                      <a
+                        className="text-sm text-blue-600 underline"
+                        target="_blank"
+                      >
+                        Preview Image
+                      </a>
+                    </Link>
+                  ) : (
+                    <p>No file selected</p>
+                  )}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td className="w-1/2 px-3 py-2 border">
+                <h3 className="text-xl font-medium">Birth Certificate</h3>
+                <p className="text-sm text-gray-400">
+                  <strong>Philippine Statistics Authority (PSA)</strong> issued
+                  copy of the child's birth certificate
+                </p>
+              </td>
+              <td className="w-1/4 px-3 py-2 border">
+                <input
+                  className="text-xs cursor-pointer"
+                  accept=".gif,.jpeg,.jpg,.png,.pdf"
+                  onChange={handleBirthCertificateUpload}
+                  type="file"
+                />
+                <div className="w-full mt-2 rounded-full shadow bg-grey-light">
+                  <div
+                    className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
+                    style={{ width: `${birthCertificateProgress}%` }}
+                  >
+                    <span className="px-3">{birthCertificateProgress}%</span>
+                  </div>
+                </div>
+              </td>
+              <td className="w-1/4 px-3 py-2 border">
+                <div className="flex flex-col items-center justify-center">
+                  {birthCertificateLink ? (
+                    <Link href={birthCertificateLink}>
+                      <a
+                        className="text-sm text-blue-600 underline"
+                        target="_blank"
+                      >
+                        Preview Document
+                      </a>
+                    </Link>
+                  ) : (
+                    <p>No file selected</p>
+                  )}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td className="w-1/2 px-3 py-2 border">
+                <h3 className="text-xl font-medium">
+                  Report Card / School Card
+                </h3>
+                <p className="text-sm text-gray-400">
+                  Copy of the child's report card or school card from the
+                  previous school
+                </p>
+              </td>
+              <td className="w-1/4 px-3 py-2 border">
+                <input
+                  className="text-xs cursor-pointer"
+                  accept=".gif,.jpeg,.jpg,.png,.pdf"
+                  onChange={handleReportCardUpload}
+                  type="file"
+                />
+                <div className="w-full mt-2 rounded-full shadow bg-grey-light">
+                  <div
+                    className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
+                    style={{ width: `${reportCardProgress}%` }}
+                  >
+                    <span className="px-3">{reportCardProgress}%</span>
+                  </div>
+                </div>
+              </td>
+              <td className="w-1/4 px-3 py-2 border">
+                <div className="flex flex-col items-center justify-center">
+                  {reportCardLink ? (
+                    <Link href={reportCardLink}>
+                      <a
+                        className="text-sm text-blue-600 underline"
+                        target="_blank"
+                      >
+                        Preview Document
+                      </a>
+                    </Link>
+                  ) : (
+                    <p>No file selected</p>
+                  )}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     );
   };
 
@@ -359,7 +669,10 @@ const Workspace = ({ schoolFees }) => {
               <div className="relative inline-block w-full border rounded">
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
-                  onChange={(e) => setIncomingGradeLevel(e.target.value)}
+                  onChange={(e) => {
+                    setIncomingGradeLevel(e.target.value);
+                    setAccreditation(null);
+                  }}
                   value={incomingGradeLevel}
                 >
                   {GRADE_LEVEL_GROUPS.map((group, index) => (
@@ -919,6 +1232,133 @@ const Workspace = ({ schoolFees }) => {
             for this enrollment period. Lastly, I understand that this agreement
             is absolute and will be enforced.
           </p>
+          <hr className="my-5 border border-dashed" />
+          <div className="flex justify-between mt-5 space-x-5">
+            <div className="w-1/2 space-y-3">
+              <label className="text-lg font-bold" htmlFor="txtMother">
+                Select Payment Method
+                <span className="ml-1 text-red-600">*</span>
+              </label>
+              <div
+                className={`flex items-center px-5 py-5 space-x-3 text-gray-600 bg-gray-100 rounded cursor-pointer ${
+                  paymentMethod === Fees.ONLINE
+                    ? 'border-green-600 text-green-500 border-2'
+                    : 'border'
+                }`}
+                onClick={() => setPaymentMethod(Fees.ONLINE)}
+              >
+                {paymentMethod === Fees.ONLINE ? (
+                  <CheckCircleIconSolid className="w-5 h-5 text-green-500" />
+                ) : (
+                  <CheckCircleIcon className="w-5 h-5 text-gray-400" />
+                )}
+                <span>Online Banking (+ Php 10.00)</span>
+              </div>
+              <div
+                className={`flex items-center px-5 py-5 space-x-3 text-gray-600 bg-gray-100 rounded cursor-pointer ${
+                  paymentMethod === Fees.OTC
+                    ? 'border-green-600 text-green-500 border-2'
+                    : 'border'
+                }`}
+                onClick={() => setPaymentMethod(Fees.OTC)}
+              >
+                {paymentMethod === Fees.OTC ? (
+                  <CheckCircleIconSolid className="w-5 h-5 text-green-500" />
+                ) : (
+                  <CheckCircleIcon className="w-5 h-5 text-gray-400" />
+                )}
+                <span>Over-the-Counter Banking (+ Php 15.00)</span>
+              </div>
+              <div
+                className={`flex items-center px-5 py-5 space-x-3 text-gray-600 bg-gray-100 rounded cursor-pointer ${
+                  paymentMethod === Fees.PAYMENT_CENTERS
+                    ? 'border-green-600 text-green-500 border-2'
+                    : 'border'
+                }`}
+                onClick={() => setPaymentMethod(Fees.PAYMENT_CENTERS)}
+              >
+                {paymentMethod === Fees.PAYMENT_CENTERS ? (
+                  <CheckCircleIconSolid className="w-5 h-5 text-green-500" />
+                ) : (
+                  <CheckCircleIcon className="w-5 h-5 text-gray-400" />
+                )}
+                <span>Payment Centers (+ Php 20.00)</span>
+              </div>
+            </div>
+            <div className="flex flex-col w-1/2 space-y-3">
+              <label
+                className="text-lg font-medium text-primary-300"
+                htmlFor="txtMother"
+              >
+                {payment === PaymentType.ANNUAL
+                  ? 'Full Payment'
+                  : 'Initial Fees'}{' '}
+                Summary for <span className="">{PAYMENT_TYPE[payment]}</span>{' '}
+                Payments
+              </label>
+              <div className="flex flex-col justify-between border rounded bg-gray-50">
+                <div className="flex items-center justify-between p-5 space-x-5 border-b">
+                  <div>
+                    <h5 className="font-medium">Enrollment Fee</h5>
+                    <h6 className="text-xs text-gray-400">
+                      Based on payment type selection
+                    </h6>
+                  </div>
+                  <div className="text-right">
+                    <span>
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        (fee?._type === 'annual'
+                          ? fee?.totalFee
+                          : fee?.initialFee) || 0
+                      )}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-5 space-x-5">
+                  <div>
+                    <h5 className="font-medium">Payment Gateway Fee</h5>
+                    <h6 className="text-xs text-gray-400">
+                      Based on payment method selection
+                    </h6>
+                  </div>
+                  <div className="text-right">
+                    <span>
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(FEES[paymentMethod] || 0)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center justify-between p-5 space-x-5 bg-gray-100 border-t border-dashed">
+                  <div>
+                    <h5 className="font-bold">Total Payable</h5>
+                    <h6 className="text-xs text-primary-500">
+                      <strong>NOTE</strong>: Succeeding payments will always
+                      incur payment gateway fees per transaction
+                    </h6>
+                  </div>
+                  <div className="text-right">
+                    <span>
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        (fee?._type === 'annual'
+                          ? fee?.totalFee
+                          : fee?.initialFee) + FEES[paymentMethod] || 0
+                      )}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <label className="flex items-center mt-10 space-x-3 font-medium cursor-pointer">
             <input
               checked={agree}
@@ -1100,6 +1540,15 @@ const Workspace = ({ schoolFees }) => {
           toggle={toggleReview}
           title="Review LPHS Enrollment Details"
         >
+          <div className="flex items-center px-3 py-3 space-x-3 text-sm text-red-500 border-2 border-red-600 rounded bg-red-50">
+            <div className="w-5 h-5">
+              <InformationCircleIcon />
+            </div>
+            <p>
+              Please make sure that all information and documents submitted are
+              correct before proceeding to pay the application fee.
+            </p>
+          </div>
           <h3 className="text-lg font-bold">
             Student Information -{' '}
             <span className="text-primary-500">
@@ -1131,6 +1580,42 @@ const Workspace = ({ schoolFees }) => {
               <strong>Former School:</strong> {formerSchoolName} (
               {formerSchoolAddress})
             </p>
+            <div>
+              <strong>ID Picture:</strong>{' '}
+              {pictureLink ? (
+                <Link href={pictureLink}>
+                  <a className="text-blue-600 underline" target="_blank">
+                    Link Preview
+                  </a>
+                </Link>
+              ) : (
+                'N/A'
+              )}
+            </div>
+            <div>
+              <strong>Birth Certificate:</strong>{' '}
+              {birthCertificateLink ? (
+                <Link href={birthCertificateLink}>
+                  <a className="text-blue-600 underline" target="_blank">
+                    Link Preview
+                  </a>
+                </Link>
+              ) : (
+                'N/A'
+              )}
+            </div>
+            <div>
+              <strong>Report Card:</strong>{' '}
+              {reportCardLink ? (
+                <Link href={reportCardLink}>
+                  <a className="text-blue-600 underline" target="_blank">
+                    Link Preview
+                  </a>
+                </Link>
+              ) : (
+                'N/A'
+              )}
+            </div>
           </div>
           <h3 className="text-lg font-bold">
             {PROGRAM[program]} for {GRADE_LEVEL[incomingGradeLevel]} -{' '}
@@ -1139,7 +1624,7 @@ const Workspace = ({ schoolFees }) => {
           <div className="px-3 text-sm">
             <div>
               <p>
-                <strong>Payment Breakdown</strong>
+                <strong>School Fees Breakdown</strong>
               </p>
               <table className="w-full my-5 border ">
                 <tbody>
@@ -1219,6 +1704,15 @@ const Workspace = ({ schoolFees }) => {
               </span>
             </h4>
           </div>
+          <div className="flex items-center px-3 py-3 space-x-3 text-sm text-blue-500 border-2 border-blue-600 rounded bg-blue-50">
+            <div className="w-5 h-5">
+              <InformationCircleIcon />
+            </div>
+            <p>
+              <strong>NOTE</strong>: Succeeding payments will always incur
+              payment gateway fees per transaction.
+            </p>
+          </div>
           {viewFees ? (
             <Link href={`/account/${workspace.slug}/fees`}>
               <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-50">
@@ -1231,7 +1725,7 @@ const Workspace = ({ schoolFees }) => {
               disabled={isSubmitting}
               onClick={submit}
             >
-              {isSubmitting ? 'Processing...' : 'Submit'}
+              {isSubmitting ? 'Processing...' : 'Submit & Pay Now'}
             </button>
           )}
         </Modal>

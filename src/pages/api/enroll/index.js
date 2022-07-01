@@ -23,6 +23,10 @@ const handler = async (req, res) => {
       accreditation,
       birthDate,
       payment,
+      paymentMethod,
+      pictureLink,
+      birthCertificateLink,
+      reportCardLink,
       slug,
     } = req.body;
     const workspace = await getOwnWorkspace(
@@ -30,7 +34,7 @@ const handler = async (req, res) => {
       session.user.email,
       slug
     );
-    const [studentRecord] = await Promise.all([
+    const [studentRecord, schoolFee] = await Promise.all([
       createStudentRecord(
         workspace.id,
         firstName,
@@ -45,7 +49,10 @@ const handler = async (req, res) => {
         accreditation,
         reason,
         formerSchoolName,
-        formerSchoolAddress
+        formerSchoolAddress,
+        pictureLink,
+        birthCertificateLink,
+        reportCardLink
       ),
       createSchoolFees(
         session.user.userId,
@@ -55,10 +62,11 @@ const handler = async (req, res) => {
         enrollmentType,
         incomingGradeLevel,
         program,
-        accreditation
+        accreditation,
+        paymentMethod
       ),
     ]);
-    res.status(200).json({ data: { studentRecord } });
+    res.status(200).json({ data: { studentRecord, schoolFee } });
   } else {
     res
       .status(405)

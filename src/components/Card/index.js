@@ -27,8 +27,8 @@ Card.Body = ({ children, subtitle, title }) => {
 Card.Empty = ({ children }) => {
   return (
     <div>
-      <div className="flex items-center justify-center p-5 bg-gray-100 border-4 border-dashed rounded dark:bg-transparent dark:border-gray-600">
-        <p>{children}</p>
+      <div className="flex flex-col items-center justify-center p-5 bg-gray-100 border-4 border-dashed rounded dark:bg-transparent dark:border-gray-600">
+        {children}
       </div>
     </div>
   );

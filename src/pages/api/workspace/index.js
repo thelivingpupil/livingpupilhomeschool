@@ -4,7 +4,10 @@ import {
   validateCreateWorkspace,
   validateSession,
 } from '@/config/api-validation/index';
-import { createWorkspace } from '@/prisma/services/workspace';
+import {
+  createWorkspace,
+  getSingleWorkspace,
+} from '@/prisma/services/workspace';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -15,7 +18,12 @@ const handler = async (req, res) => {
     const { name } = req.body;
     let slug = slugify(name.toLowerCase());
     await createWorkspace(session.user.userId, session.user.email, name, slug);
-    res.status(200).json({ data: { name, slug } });
+    const workspace = await getSingleWorkspace(
+      session.user.userId,
+      session.user.email,
+      slug
+    );
+    res.status(200).json({ data: { name, slug, workspace } });
   } else {
     res
       .status(405)

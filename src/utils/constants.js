@@ -13,6 +13,12 @@ export const ENROLLMENT_TYPE = {
   NEW: 'New Family',
 };
 
+export const FEES = {
+  ONLINE: 10,
+  OTC: 15,
+  PAYMENT_CENTERS: 20,
+};
+
 export const GRADE_LEVEL = {
   PRESCHOOL: 'Preschool',
   K1: 'Kindergarten 1',
@@ -70,6 +76,12 @@ export const PAYMENT_TYPE = {
   ANNUAL: 'Annual',
   SEMI_ANNUAL: 'Semi-Annual',
   QUARTERLY: 'Quarterly',
+};
+
+export const PAYMENT_METHOD = {
+  ONLINE: 'Online Banking',
+  OTC: 'Over-the-Counter Banking',
+  PAYMENT_CENTERS: 'Payment Centers',
 };
 
 export const PROGRAM = {

@@ -85,7 +85,7 @@ const steps = [
     content: (
       <div className="space-y-3">
         <h3 className="text-sm font-medium text-center text-primary-500">
-          Selecting to view a student record...
+          Selecting a student record to view...
         </h3>
         <h2 className="text-lg font-bold text-center">
           Select a Student Record
@@ -105,6 +105,7 @@ const AccountLayout = ({ children }) => {
   const { workspace } = useWorkspace();
   const [showJourney, setJourneyVisibility] = useState(true);
   const [showHelp, setHelpVisibility] = useState(false);
+  const [showModal, setModalVisibility] = useState(false);
 
   const handleCallback = (data) => {
     const { type } = data;
@@ -112,7 +113,7 @@ const AccountLayout = ({ children }) => {
     if (type === EVENTS.TOUR_END) {
       localStorage.setItem(HAS_JOURNEYED, true);
       setJourneyVisibility(false);
-      toggleHelp();
+      setModalVisibility(true);
     }
   };
 
@@ -137,7 +138,7 @@ const AccountLayout = ({ children }) => {
 
   return (
     <main className="relative flex flex-col w-screen h-screen space-x-0 text-gray-800 dark:text-gray-200 md:space-x-5 md:flex-row bg-gray-50 dark:bg-gray-800">
-      <Sidebar menu={menu(workspace?.slug)} />
+      <Sidebar menu={menu(workspace?.slug)} showModal={showModal} />
       <Content>
         <Toaster position="bottom-left" toastOptions={{ duration: 10000 }} />
         <Header />

@@ -10,7 +10,7 @@ import { MenuIcon } from '@heroicons/react/outline';
 
 const staticMenu = sidebarMenu();
 
-const Sidebar = ({ menu }) => {
+const Sidebar = ({ menu, showModal }) => {
   const [showMenu, setMenuVisibility] = useState(false);
   const { data, isLoading } = useWorkspaces();
   const { workspace } = useWorkspace();
@@ -57,7 +57,7 @@ const Sidebar = ({ menu }) => {
             : 'hidden',
         ].join(' ')}
       >
-        <Actions />
+        <Actions show={showModal} />
         <div className="flex flex-col p-5 space-y-10">
           {renderStaticMenu()}
           {renderMenu()}
