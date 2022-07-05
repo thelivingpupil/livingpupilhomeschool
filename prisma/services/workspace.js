@@ -172,6 +172,9 @@ export const getSingleWorkspace = async (id, email, slug) =>
           reason: true,
           formerSchoolName: true,
           formerSchoolAddress: true,
+          image: true,
+          liveBirthCertificate: true,
+          reportCard: true,
         },
       },
       schoolFees: {
@@ -252,6 +255,9 @@ export const getWorkspace = async (id, email, slug) =>
           reason: true,
           formerSchoolName: true,
           formerSchoolAddress: true,
+          image: true,
+          liveBirthCertificate: true,
+          reportCard: true,
         },
       },
       schoolFees: {
@@ -344,6 +350,9 @@ export const getWorkspaces = async (id, email) =>
           reason: true,
           formerSchoolName: true,
           formerSchoolAddress: true,
+          image: true,
+          liveBirthCertificate: true,
+          reportCard: true,
         },
       },
       schoolFees: {

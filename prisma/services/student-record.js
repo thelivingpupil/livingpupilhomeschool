@@ -150,6 +150,32 @@ export const createStudentRecord = async (
     },
   });
 
+export const updateFile = async (studentId, type, url) => {
+  let data = {};
+
+  switch (type) {
+    case 'image': {
+      data.image = url;
+      break;
+    }
+    case 'birth': {
+      data.liveBirthCertificate = url;
+      break;
+    }
+    case 'card': {
+      data.reportCard = url;
+      break;
+    }
+    default:
+      return;
+  }
+
+  await prisma.studentRecord.update({
+    data,
+    where: { studentId },
+  });
+};
+
 export const getStudentRecords = async () =>
   await prisma.studentRecord.findMany({
     orderBy: [{ createdAt: 'desc' }],

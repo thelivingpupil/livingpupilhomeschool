@@ -3,6 +3,7 @@ import {
   CheckCircleIcon,
   CheckIcon,
   ChevronDownIcon,
+  DocumentIcon,
   InformationCircleIcon,
   UserIcon,
 } from '@heroicons/react/outline';
@@ -41,11 +42,11 @@ import {
   FEES,
   GRADE_LEVEL,
   GRADE_LEVEL_GROUPS,
-  PAYMENT_METHOD,
   PAYMENT_TYPE,
   PROGRAM,
   RELIGION,
 } from '@/utils/constants';
+import Image from 'next/image';
 
 const steps = [
   'Student Information',
@@ -153,7 +154,7 @@ const Workspace = ({ schoolFees }) => {
     document.getElementById('scroller').scroll(0, 0);
   };
 
-  const handlePictureUpload = (e) => {
+  const handlePictureUpload = (e, auto, studentId) => {
     const file = e.target?.files[0];
 
     if (file) {
@@ -186,7 +187,11 @@ const Workspace = ({ schoolFees }) => {
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              setPictureLink(downloadURL);
+              if (!auto) {
+                setPictureLink(downloadURL);
+              } else {
+                updateFile(studentId, 'image', downloadURL);
+              }
             });
           }
         );
@@ -196,7 +201,7 @@ const Workspace = ({ schoolFees }) => {
     }
   };
 
-  const handleBirthCertificateUpload = (e) => {
+  const handleBirthCertificateUpload = (e, auto, studentId) => {
     const file = e.target?.files[0];
 
     if (file) {
@@ -229,7 +234,11 @@ const Workspace = ({ schoolFees }) => {
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              setBirthCertificateLink(downloadURL);
+              if (!auto) {
+                setBirthCertificateLink(downloadURL);
+              } else {
+                updateFile(studentId, 'birth', downloadURL);
+              }
             });
           }
         );
@@ -239,7 +248,7 @@ const Workspace = ({ schoolFees }) => {
     }
   };
 
-  const handleReportCardUpload = (e) => {
+  const handleReportCardUpload = (e, auto, studentId) => {
     const file = e.target?.files[0];
 
     if (file) {
@@ -272,7 +281,11 @@ const Workspace = ({ schoolFees }) => {
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              setReportCardLink(downloadURL);
+              if (!auto) {
+                setReportCardLink(downloadURL);
+              } else {
+                updateFile(studentId, 'card', downloadURL);
+              }
             });
           }
         );
@@ -338,6 +351,40 @@ const Workspace = ({ schoolFees }) => {
   };
 
   const toggleReview = () => setReviewVisibility(!review);
+
+  const updateFile = (studentId, type, url) => {
+    api('/api/students/files', {
+      body: {
+        studentId,
+        type,
+        url,
+      },
+      method: 'PUT',
+    }).then((response) => {
+      if (response.errors) {
+        Object.keys(response.errors).forEach((error) =>
+          toast.error(response.errors[error].msg)
+        );
+      } else {
+        switch (type) {
+          case 'image': {
+            setPictureLink(url);
+            break;
+          }
+          case 'birth': {
+            setBirthCertificateLink(url);
+            break;
+          }
+          case 'card': {
+            setReportCardLink(url);
+            break;
+          }
+        }
+
+        toast.success('File uploaded successfully!');
+      }
+    });
+  };
 
   const renderTab = () => {
     const tabs = [
@@ -1444,14 +1491,245 @@ const Workspace = ({ schoolFees }) => {
           </Content.Container>
         ) : (
           <Content.Container>
+            <div className="grid grid-cols-2">
+              <div
+                className={`flex flex-col justify-between rounded ${
+                  birthCertificateLink ||
+                  workspace.studentRecord.liveBirthCertificate
+                    ? 'border'
+                    : 'border-2 border-red-400 border-dashed'
+                }`}
+              >
+                <div className="flex flex-col p-5 space-y-3 overflow-auto">
+                  <div className="flex flex-col space-y-5">
+                    <div className="flex space-x-5">
+                      <div
+                        className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${
+                          birthCertificateLink ||
+                          workspace.studentRecord.liveBirthCertificate
+                            ? 'bg-primary-400'
+                            : 'bg-red-200'
+                        }`}
+                      >
+                        <DocumentIcon className="w-12 h-12" />
+                      </div>
+                      <div className="flex flex-col space-y-2">
+                        <h2 className="text-2xl font-medium">
+                          Birth Certificate{' '}
+                          {!birthCertificateLink &&
+                            !workspace.studentRecord.liveBirthCertificate && (
+                              <span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">
+                                Missing
+                              </span>
+                            )}
+                        </h2>
+                        <div className="flex items-center space-x-3">
+                          {birthCertificateLink ||
+                          workspace.studentRecord.liveBirthCertificate ? (
+                            <>
+                              <Link
+                                href={
+                                  birthCertificateLink ||
+                                  workspace.studentRecord.liveBirthCertificate
+                                }
+                              >
+                                <a
+                                  className="underline text-primary-500"
+                                  target="_blank"
+                                >
+                                  Open
+                                </a>
+                              </Link>
+                              <span>&bull;</span>
+                              <label
+                                className="px-3 py-1 text-sm text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                htmlFor="fileBirthCertificateReplace"
+                              >
+                                Replace
+                              </label>
+                              <input
+                                id="fileBirthCertificateReplace"
+                                className="hidden text-xs"
+                                accept=".gif,.jpeg,.jpg,.png,.pdf"
+                                name="fileBirthCertificateReplace"
+                                onChange={(e) =>
+                                  handleBirthCertificateUpload(
+                                    e,
+                                    true,
+                                    workspace.studentRecord.studentId
+                                  )
+                                }
+                                type="file"
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <label
+                                className="px-3 py-1 text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                htmlFor="fileBirthCertificate"
+                              >
+                                Upload Document Now
+                              </label>
+                              <input
+                                id="fileBirthCertificate"
+                                className="hidden text-xs"
+                                accept=".gif,.jpeg,.jpg,.png,.pdf"
+                                name="fileBirthCertificate"
+                                onChange={(e) =>
+                                  handleBirthCertificateUpload(
+                                    e,
+                                    true,
+                                    workspace.studentRecord.studentId
+                                  )
+                                }
+                                type="file"
+                              />
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                className={`flex flex-col justify-between rounded ${
+                  reportCardLink || workspace.studentRecord.reportCard
+                    ? 'border'
+                    : 'border-2 border-red-400 border-dashed'
+                }`}
+              >
+                <div className="flex flex-col p-5 space-y-3 overflow-auto">
+                  <div className="flex flex-col space-y-5">
+                    <div className="flex space-x-5">
+                      <div
+                        className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${
+                          reportCardLink || workspace.studentRecord.reportCard
+                            ? 'bg-primary-400'
+                            : 'bg-red-200'
+                        }`}
+                      >
+                        <DocumentIcon className="w-12 h-12" />
+                      </div>
+                      <div className="flex flex-col space-y-2">
+                        <h2 className="text-2xl font-medium">
+                          Report Card{' '}
+                          {!reportCardLink &&
+                            !workspace.studentRecord.reportCard && (
+                              <span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">
+                                Missing
+                              </span>
+                            )}
+                        </h2>
+                        <div className="flex items-center space-x-3">
+                          {reportCardLink ||
+                          workspace.studentRecord.reportCard ? (
+                            <>
+                              <Link
+                                href={
+                                  reportCardLink ||
+                                  workspace.studentRecord.reportCard
+                                }
+                              >
+                                <a
+                                  className="underline text-primary-500"
+                                  target="_blank"
+                                >
+                                  Open
+                                </a>
+                              </Link>
+                              <span>&bull;</span>
+                              <label
+                                className="px-3 py-1 text-sm text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                htmlFor="fileReportCardReplace"
+                              >
+                                Replace
+                              </label>
+                              <input
+                                id="fileReportCardReplace"
+                                className="hidden text-xs"
+                                accept=".gif,.jpeg,.jpg,.png,.pdf"
+                                name="fileReportCardReplace"
+                                onChange={(e) =>
+                                  handleReportCardUpload(
+                                    e,
+                                    true,
+                                    workspace.studentRecord.studentId
+                                  )
+                                }
+                                type="file"
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <label
+                                className="px-3 py-1 text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                htmlFor="fileReportCard"
+                              >
+                                Upload Document Now
+                              </label>
+                              <input
+                                id="fileReportCard"
+                                className="hidden text-xs"
+                                accept=".gif,.jpeg,.jpg,.png,.pdf"
+                                name="fileReportCard"
+                                onChange={(e) =>
+                                  handleReportCardUpload(
+                                    e,
+                                    true,
+                                    workspace.studentRecord.studentId
+                                  )
+                                }
+                                type="file"
+                              />
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <Card>
               <Card.Body
                 title="Student Record Information"
                 // subtitle={`Last Updated: ${workspace.studentRecord.updatedAt}`}
               >
                 <div className="flex flex-row items-center py-5 space-x-10">
-                  <div className="flex items-center justify-center w-32 h-32 text-white bg-gray-400 rounded-full">
-                    <UserIcon className="w-20 h-20" />
+                  <div className="relative flex items-center justify-center w-32 h-32 overflow-hidden text-white bg-gray-400 rounded-full">
+                    <label
+                      className="cursor-pointer group"
+                      htmlFor="filePicture"
+                    >
+                      {workspace.studentRecord.image ? (
+                        <Image
+                          alt={workspace.studentRecord.firstName}
+                          className="rounded-full group-hover:opacity-50"
+                          layout="fill"
+                          loading="lazy"
+                          objectFit="cover"
+                          objectPosition="top"
+                          src={pictureLink || workspace.studentRecord.image}
+                        />
+                      ) : (
+                        <UserIcon className="w-20 h-20" />
+                      )}
+                      <input
+                        id="filePicture"
+                        className="hidden text-xs"
+                        accept=".jpeg,.jpg,.png"
+                        name="filePicture"
+                        onChange={(e) =>
+                          handlePictureUpload(
+                            e,
+                            true,
+                            workspace.studentRecord.studentId
+                          )
+                        }
+                        type="file"
+                      />
+                    </label>
                   </div>
                   <div className="space-y-3">
                     <h2 className="text-4xl font-medium">
