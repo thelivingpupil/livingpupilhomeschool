@@ -103,6 +103,7 @@ const Transactions = () => {
                                     : transaction.user.email}
                                 </strong>
                               </p>
+                              <small>{transaction.user.email}</small>
                             </div>
                           </td>
                           <td className="p-2 text-center">
