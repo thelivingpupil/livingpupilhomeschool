@@ -125,6 +125,11 @@ const Workspace = ({ schoolFees }) => {
       }
     } else if (program === Program.HOMESCHOOL_COTTAGE) {
       if (
+        accreditation === Accreditation.LOCAL &&
+        incomingGradeLevel === GradeLevel.K2
+      ) {
+        gradeLevel = GradeLevel.K2;
+      } else if (
         accreditation === Accreditation.FORM_ONE &&
         (incomingGradeLevel === GradeLevel.GRADE_1 ||
           incomingGradeLevel === GradeLevel.GRADE_2 ||
@@ -138,6 +143,14 @@ const Workspace = ({ schoolFees }) => {
           incomingGradeLevel === GradeLevel.GRADE_6)
       ) {
         gradeLevel = GradeLevel.GRADE_6;
+      } else if (
+        accreditation === Accreditation.FORM_THREE &&
+        (incomingGradeLevel === GradeLevel.GRADE_7 ||
+          incomingGradeLevel === GradeLevel.GRADE_8 ||
+          incomingGradeLevel === GradeLevel.GRADE_9 ||
+          incomingGradeLevel === GradeLevel.GRADE_10)
+      ) {
+        gradeLevel = GradeLevel.GRADE_10;
       }
     }
 
@@ -799,12 +812,17 @@ const Workspace = ({ schoolFees }) => {
           </div>
           <div
             className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
+              incomingGradeLevel === GradeLevel.K2 ||
               incomingGradeLevel === GradeLevel.GRADE_1 ||
               incomingGradeLevel === GradeLevel.GRADE_2 ||
               incomingGradeLevel === GradeLevel.GRADE_3 ||
               incomingGradeLevel === GradeLevel.GRADE_4 ||
               incomingGradeLevel === GradeLevel.GRADE_5 ||
-              incomingGradeLevel === GradeLevel.GRADE_6
+              incomingGradeLevel === GradeLevel.GRADE_6 ||
+              incomingGradeLevel === GradeLevel.GRADE_7 ||
+              incomingGradeLevel === GradeLevel.GRADE_8 ||
+              incomingGradeLevel === GradeLevel.GRADE_9 ||
+              incomingGradeLevel === GradeLevel.GRADE_10
                 ? program === Program.HOMESCHOOL_COTTAGE
                   ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                   : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
@@ -812,12 +830,17 @@ const Workspace = ({ schoolFees }) => {
             }`}
             onClick={() => {
               if (
+                incomingGradeLevel === GradeLevel.K2 ||
                 incomingGradeLevel === GradeLevel.GRADE_1 ||
                 incomingGradeLevel === GradeLevel.GRADE_2 ||
                 incomingGradeLevel === GradeLevel.GRADE_3 ||
                 incomingGradeLevel === GradeLevel.GRADE_4 ||
                 incomingGradeLevel === GradeLevel.GRADE_5 ||
-                incomingGradeLevel === GradeLevel.GRADE_6
+                incomingGradeLevel === GradeLevel.GRADE_6 ||
+                incomingGradeLevel === GradeLevel.GRADE_7 ||
+                incomingGradeLevel === GradeLevel.GRADE_8 ||
+                incomingGradeLevel === GradeLevel.GRADE_9 ||
+                incomingGradeLevel === GradeLevel.GRADE_10
               ) {
                 setProgram(Program.HOMESCHOOL_COTTAGE);
                 setAccreditation(null);
@@ -919,7 +942,31 @@ const Workspace = ({ schoolFees }) => {
           {program === Program.HOMESCHOOL_COTTAGE && (
             <>
               <div
-                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/4 border-2 border-primary-200 ${
+                  incomingGradeLevel === GradeLevel.K2
+                    ? accreditation === Accreditation.LOCAL
+                      ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
+                      : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
+                    : 'bg-gray-300 opacity-50 rounded'
+                }`}
+                onClick={() => {
+                  if (incomingGradeLevel === GradeLevel.K2) {
+                    setAccreditation(Accreditation.LOCAL);
+                  }
+                }}
+              >
+                {accreditation === Accreditation.LOCAL && (
+                  <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                    <CheckIcon className="w-5 h-5" />
+                  </div>
+                )}
+                <h3 className="flex flex-col font-medium text-center">
+                  <span className="text-lg">Local</span>
+                  <span className="text-sm">(K2)</span>
+                </h3>
+              </div>
+              <div
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/4 border-2 border-primary-200 ${
                   incomingGradeLevel === GradeLevel.GRADE_1 ||
                   incomingGradeLevel === GradeLevel.GRADE_2 ||
                   incomingGradeLevel === GradeLevel.GRADE_3
@@ -949,7 +996,7 @@ const Workspace = ({ schoolFees }) => {
                 </h3>
               </div>
               <div
-                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/4 border-2 border-primary-200 ${
                   incomingGradeLevel === GradeLevel.GRADE_4 ||
                   incomingGradeLevel === GradeLevel.GRADE_5 ||
                   incomingGradeLevel === GradeLevel.GRADE_6
@@ -976,6 +1023,38 @@ const Workspace = ({ schoolFees }) => {
                 <h3 className="flex flex-col font-medium text-center">
                   <span className="text-lg">Form 2</span>
                   <span className="text-sm">(Grades 4 - 6)</span>
+                </h3>
+              </div>
+              <div
+                className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/4 border-2 border-primary-200 ${
+                  incomingGradeLevel === GradeLevel.GRADE_7 ||
+                  incomingGradeLevel === GradeLevel.GRADE_8 ||
+                  incomingGradeLevel === GradeLevel.GRADE_9 ||
+                  incomingGradeLevel === GradeLevel.GRADE_10
+                    ? accreditation === Accreditation.FORM_THREE
+                      ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
+                      : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
+                    : 'bg-gray-300 opacity-50 rounded'
+                }`}
+                onClick={() => {
+                  if (
+                    incomingGradeLevel === GradeLevel.GRADE_7 ||
+                    incomingGradeLevel === GradeLevel.GRADE_8 ||
+                    incomingGradeLevel === GradeLevel.GRADE_9 ||
+                    incomingGradeLevel === GradeLevel.GRADE_10
+                  ) {
+                    setAccreditation(Accreditation.FORM_THREE);
+                  }
+                }}
+              >
+                {accreditation === Accreditation.FORM_THREE && (
+                  <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                    <CheckIcon className="w-5 h-5" />
+                  </div>
+                )}
+                <h3 className="flex flex-col font-medium text-center">
+                  <span className="text-lg">Form 3</span>
+                  <span className="text-sm">(Grades 7 - 10)</span>
                 </h3>
               </div>
             </>
@@ -1523,10 +1602,10 @@ const Workspace = ({ schoolFees }) => {
                               </span>
                             )}
                         </h2>
-                        <div className="flex items-center space-x-3">
+                        <div>
                           {birthCertificateLink ||
                           workspace.studentRecord.liveBirthCertificate ? (
-                            <>
+                            <div className="flex items-center space-x-3">
                               <Link
                                 href={
                                   birthCertificateLink ||
@@ -1561,7 +1640,7 @@ const Workspace = ({ schoolFees }) => {
                                 }
                                 type="file"
                               />
-                            </>
+                            </div>
                           ) : (
                             <>
                               <label

@@ -15,15 +15,18 @@ const HomeschoolCottage = ({ page, fees }) => {
   const [headerSection] = header?.sectionType;
   const [footerSection] = footer?.sectionType;
   const [enrollmentType, setEnrollmentType] = useState(Enrollment.NEW);
-  const [incomingGradeLevel, setIncomingGradeLevel] = useState(
-    GradeLevel.GRADE_1
-  );
-  const [accreditation, setAccreditation] = useState(Accreditation.FORM_ONE);
+  const [incomingGradeLevel, setIncomingGradeLevel] = useState(GradeLevel.K2);
+  const [accreditation, setAccreditation] = useState(Accreditation.LOCAL);
 
   const schoolFee = fees.schoolFees.find((fee) => {
     let gradeLevel = incomingGradeLevel;
 
     if (
+      accreditation === Accreditation.LOCAL &&
+      incomingGradeLevel === GradeLevel.K2
+    ) {
+      gradeLevel = GradeLevel.K2;
+    } else if (
       accreditation === Accreditation.FORM_ONE &&
       (incomingGradeLevel === GradeLevel.GRADE_1 ||
         incomingGradeLevel === GradeLevel.GRADE_2 ||
@@ -37,6 +40,14 @@ const HomeschoolCottage = ({ page, fees }) => {
         incomingGradeLevel === GradeLevel.GRADE_6)
     ) {
       gradeLevel = GradeLevel.GRADE_6;
+    } else if (
+      accreditation === Accreditation.FORM_THREE &&
+      (incomingGradeLevel === GradeLevel.GRADE_7 ||
+        incomingGradeLevel === GradeLevel.GRADE_8 ||
+        incomingGradeLevel === GradeLevel.GRADE_9 ||
+        incomingGradeLevel === GradeLevel.GRADE_10)
+    ) {
+      gradeLevel = GradeLevel.GRADE_10;
     }
 
     return (
@@ -84,6 +95,18 @@ const HomeschoolCottage = ({ page, fees }) => {
           <div className="flex flex-row items-center justify-center space-x-3">
             <button
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
+                accreditation === Accreditation.LOCAL &&
+                'text-white bg-primary-500'
+              }`}
+              onClick={() => {
+                setAccreditation(Accreditation.LOCAL);
+                setIncomingGradeLevel(GradeLevel.K2);
+              }}
+            >
+              Local
+            </button>
+            <button
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
                 accreditation === Accreditation.FORM_ONE &&
                 'text-white bg-primary-500'
               }`}
@@ -106,6 +129,18 @@ const HomeschoolCottage = ({ page, fees }) => {
             >
               Form 2
             </button>
+            <button
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
+                accreditation === Accreditation.FORM_THREE &&
+                'text-white bg-primary-500'
+              }`}
+              onClick={() => {
+                setAccreditation(Accreditation.FORM_THREE);
+                setIncomingGradeLevel(GradeLevel.GRADE_7);
+              }}
+            >
+              Form 3
+            </button>
           </div>
         </div>
         <div className="container w-full mx-auto space-y-3 md:w-1/4">
@@ -123,6 +158,10 @@ const HomeschoolCottage = ({ page, fees }) => {
                       value={level}
                       disabled={
                         !(
+                          accreditation === Accreditation.LOCAL &&
+                          level === GradeLevel.K2
+                        ) &&
+                        !(
                           accreditation === Accreditation.FORM_ONE &&
                           (level === GradeLevel.GRADE_1 ||
                             level === GradeLevel.GRADE_2 ||
@@ -133,6 +172,13 @@ const HomeschoolCottage = ({ page, fees }) => {
                           (level === GradeLevel.GRADE_4 ||
                             level === GradeLevel.GRADE_5 ||
                             level === GradeLevel.GRADE_6)
+                        ) &&
+                        !(
+                          accreditation === Accreditation.FORM_THREE &&
+                          (level === GradeLevel.GRADE_7 ||
+                            level === GradeLevel.GRADE_8 ||
+                            level === GradeLevel.GRADE_9 ||
+                            level === GradeLevel.GRADE_10)
                         )
                       }
                     >

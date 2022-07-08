@@ -298,6 +298,7 @@ enum Accreditation {
   DUAL
   FORM_ONE
   FORM_TWO
+  FORM_THREE
 }
 
 enum Currency {

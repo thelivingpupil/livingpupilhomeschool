@@ -6,6 +6,7 @@ export const ACCREDITATION = {
   DUAL: 'DepEd & US Accreditation (Dual)',
   FORM_ONE: 'DepEd Accreditation Form 1 (Grades 1-3)',
   FORM_TWO: 'DepEd Accreditation Form 2 (Grades 4-6)',
+  FORM_THREE: 'DepEd Accreditation Form 3 (Grades 7-10)',
 };
 
 export const ENROLLMENT_TYPE = {
