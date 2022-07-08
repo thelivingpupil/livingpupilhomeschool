@@ -62,7 +62,7 @@ const HomeschoolCottage = ({ page, fees }) => {
       <Meta title="Living Pupil Homeschool" />
       <Header {...headerSection} />
       <Title
-        title="Homeschool Program"
+        title="Homeschool Cottage"
         subtitle="Pre-school - Senior High School"
       />
       <section className="px-5 py-10 space-y-10">

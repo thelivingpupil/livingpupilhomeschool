@@ -1570,7 +1570,7 @@ const Workspace = ({ schoolFees }) => {
           </Content.Container>
         ) : (
           <Content.Container>
-            <div className="grid grid-cols-2">
+            <div className="grid grid-cols-2 gap-5">
               <div
                 className={`flex flex-col justify-between rounded ${
                   birthCertificateLink ||
