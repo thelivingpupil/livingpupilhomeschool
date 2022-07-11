@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronDownIcon, XIcon } from '@heroicons/react/outline';
 import imageUrlBuilder from '@sanity/image-url';
+import crypto from 'crypto';
 import debounce from 'lodash.debounce';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
@@ -26,7 +27,7 @@ const Shop = ({ categories, items }) => {
   const [total, setTotal] = useState(0);
   const [shopItems, setShopItems] = useState(items);
   const [cart, setCart] = useState([]);
-  const [query, setQuery] = useState('');
+  const [, setQuery] = useState('');
 
   const addToCart = (item) => {
     const index = cart.map((x) => x.id).indexOf(item.id);
@@ -65,6 +66,11 @@ const Shop = ({ categories, items }) => {
         toast.success('Posted items for purchase!');
       }
     });
+  };
+
+  const clear = () => {
+    setCart([]);
+    computeTotal([]);
   };
 
   const computeTotal = (cart) => {
@@ -389,7 +395,15 @@ const Shop = ({ categories, items }) => {
                         id={_id}
                         addToCart={addToCart}
                         categories={categories}
-                        code={code}
+                        code={
+                          code ||
+                          `CODE-${crypto
+                            .createHash('md5')
+                            .update(name)
+                            .digest('hex')
+                            .substring(0, 6)
+                            .toUpperCase()}`
+                        }
                         count={cart.find((x) => x.id === _id)?.quantity || 0}
                         description={description}
                         image={
@@ -474,6 +488,13 @@ const Shop = ({ categories, items }) => {
                 onClick={toggleCart}
               >
                 Review Shopping Cart
+              </button>
+              <button
+                className="py-2 text-lg bg-gray-200 rounded hover:bg-gray-100 disabled:opacity-50"
+                disabled={cart.length === 0}
+                onClick={clear}
+              >
+                Clear Shopping Cart
               </button>
             </div>
           </div>

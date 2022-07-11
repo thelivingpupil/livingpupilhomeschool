@@ -18,7 +18,7 @@ const Actions = ({ show }) => {
   const [name, setName] = useState('');
   const [showModal, setModalState] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
-  const validName = name.length > 0 && name.length <= 16;
+  const validName = name.length > 0 && name.length <= 64;
 
   const createWorkspace = (event) => {
     event.preventDefault();
