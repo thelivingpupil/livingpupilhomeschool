@@ -7,18 +7,27 @@ import GoogleProvider from 'next-auth/providers/google';
 import prisma from '@/prisma/index';
 import { html, text } from '@/config/email-templates/signin';
 import { emailConfig, sendMail } from '@/lib/server/mail';
+import { InvitationStatus } from '@prisma/client';
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
   callbacks: {
     session: async ({ session, user }) => {
       if (session.user) {
-        // const customerPayment = await getPayment(user.email);
         session.user.userId = user.id;
         session.user.userType = user.userType;
-        // if (customerPayment) {
-        //   session.user.subscription = customerPayment.subscriptionType;
-        // }
+        session.user.studentRecords = await prisma.workspace.count({
+          where: {
+            members: {
+              some: {
+                email: session.user.email,
+                deletedAt: null,
+                status: InvitationStatus.ACCEPTED,
+              },
+            },
+            deletedAt: null,
+          },
+        });
       }
 
       return session;

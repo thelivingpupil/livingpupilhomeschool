@@ -17,6 +17,32 @@ export const countWorkspaces = async (slug) =>
     where: { slug: { startsWith: slug } },
   });
 
+export const createWorkspaceWithSlug = async (creatorId, email, name, slug) => {
+  const workspace = await prisma.workspace.create({
+    data: {
+      creatorId,
+      members: {
+        create: {
+          email,
+          inviter: email,
+          status: InvitationStatus.ACCEPTED,
+          teamRole: TeamRole.OWNER,
+        },
+      },
+      name,
+      slug,
+    },
+    select: { id: true },
+  });
+  await sendMail({
+    html: createHtml({ code: workspace.inviteCode, name }),
+    subject: `[Living Pupil Homeschool] Student Record Created: ${name}`,
+    text: createText({ code: workspace.inviteCode, name }),
+    to: email,
+  });
+  return workspace;
+};
+
 export const createWorkspace = async (creatorId, email, name, slug) => {
   const count = await countWorkspaces(slug);
 
@@ -175,6 +201,7 @@ export const getSingleWorkspace = async (id, email, slug) =>
           image: true,
           liveBirthCertificate: true,
           reportCard: true,
+          createdAt: true,
         },
       },
       schoolFees: {
@@ -199,8 +226,10 @@ export const getSingleWorkspace = async (id, email, slug) =>
               message: true,
               url: true,
               purchaseHistoryId: true,
+              createdAt: true,
             },
           },
+          createdAt: true,
         },
       },
     },
@@ -258,6 +287,7 @@ export const getWorkspace = async (id, email, slug) =>
           image: true,
           liveBirthCertificate: true,
           reportCard: true,
+          createdAt: true,
         },
       },
       schoolFees: {
@@ -282,8 +312,10 @@ export const getWorkspace = async (id, email, slug) =>
               message: true,
               url: true,
               purchaseHistoryId: true,
+              createdAt: true,
             },
           },
+          createdAt: true,
         },
       },
     },
@@ -353,6 +385,7 @@ export const getWorkspaces = async (id, email) =>
           image: true,
           liveBirthCertificate: true,
           reportCard: true,
+          createdAt: true,
         },
       },
       schoolFees: {
@@ -377,8 +410,10 @@ export const getWorkspaces = async (id, email) =>
               message: true,
               url: true,
               purchaseHistoryId: true,
+              createdAt: true,
             },
           },
+          createdAt: true,
         },
       },
     },

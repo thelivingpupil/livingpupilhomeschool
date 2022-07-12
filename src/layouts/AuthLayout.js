@@ -13,7 +13,13 @@ const AuthLayout = ({ children }) => {
     setTheme('light');
 
     if (data) {
-      router.push('/account');
+      let path = '/account';
+
+      if (data.user.studentRecords === 0) {
+        path = `${path}/enrollment`;
+      }
+
+      router.push(path);
     }
   }, [data, router]);
 

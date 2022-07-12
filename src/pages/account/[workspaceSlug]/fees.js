@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { GradeLevel, PaymentType, TransactionStatus } from '@prisma/client';
+import add from 'date-fns/add';
+import format from 'date-fns/format';
 import toast from 'react-hot-toast';
 
 import Card from '@/components/Card';
@@ -9,6 +11,81 @@ import AccountLayout from '@/layouts/AccountLayout';
 import { useWorkspace } from '@/providers/workspace';
 import { GRADE_LEVEL } from '@/utils/constants';
 import api from '@/lib/common/api';
+
+const deadlines = [
+  // January
+  {
+    [PaymentType.ANNUAL]: [0],
+    [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
+    [PaymentType.QUARTERLY]: [0, 0, 0, 0],
+  },
+  // February
+  {
+    [PaymentType.ANNUAL]: [0],
+    [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
+    [PaymentType.QUARTERLY]: [0, 0, 0, 0],
+  },
+  // March
+  {
+    [PaymentType.ANNUAL]: [0],
+    [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
+    [PaymentType.QUARTERLY]: [0, 0, 0, 0],
+  },
+  // April
+  {
+    [PaymentType.ANNUAL]: [0],
+    [PaymentType.SEMI_ANNUAL]: [0, 4, 10],
+    [PaymentType.QUARTERLY]: [0, 4, 7, 10],
+  },
+  // May
+  {
+    [PaymentType.ANNUAL]: [0],
+    [PaymentType.SEMI_ANNUAL]: [0, 3, 9],
+    [PaymentType.QUARTERLY]: [0, 3, 6, 9],
+  },
+  // June
+  {
+    [PaymentType.ANNUAL]: [0],
+    [PaymentType.SEMI_ANNUAL]: [0, 3, 9],
+    [PaymentType.QUARTERLY]: [0, 3, 6, 9],
+  },
+  // July
+  {
+    [PaymentType.ANNUAL]: [0],
+    [PaymentType.SEMI_ANNUAL]: [0, 2, 8],
+    [PaymentType.QUARTERLY]: [0, 2, 5, 8],
+  },
+  // August
+  {
+    [PaymentType.ANNUAL]: [0],
+    [PaymentType.SEMI_ANNUAL]: [0, 3, 8],
+    [PaymentType.QUARTERLY]: [0, 3, 6, 8],
+  },
+  // September
+  {
+    [PaymentType.ANNUAL]: [0],
+    [PaymentType.SEMI_ANNUAL]: [0, 2, 7],
+    [PaymentType.QUARTERLY]: [0, 2, 5, 7],
+  },
+  // October
+  {
+    [PaymentType.ANNUAL]: [0],
+    [PaymentType.SEMI_ANNUAL]: [0, 2, 6],
+    [PaymentType.QUARTERLY]: [0, 2, 4, 6],
+  },
+  // November
+  {
+    [PaymentType.ANNUAL]: [0],
+    [PaymentType.SEMI_ANNUAL]: [0, 2, 6],
+    [PaymentType.QUARTERLY]: [0, 2, 4, 6],
+  },
+  // December
+  {
+    [PaymentType.ANNUAL]: [0],
+    [PaymentType.SEMI_ANNUAL]: [0, 2, 6],
+    [PaymentType.QUARTERLY]: [0, 2, 4, 6],
+  },
+];
 
 const Fees = () => {
   const { workspace } = useWorkspace();
@@ -56,6 +133,19 @@ const Fees = () => {
     });
   };
 
+  const getDeadline = (index, paymentType, createdDate) => {
+    const date = new Date(createdDate);
+    // console.log(index);
+    // console.log(paymentType);
+    // console.log(date.getMonth());
+
+    const monthsToAdd = deadlines[date.getMonth()][paymentType][index];
+    const deadline = add(new Date(date.getFullYear(), date.getMonth(), 5), {
+      months: monthsToAdd,
+    });
+    return monthsToAdd ? format(deadline, 'MMMM dd, yyyy') : '-';
+  };
+
   return (
     workspace && (
       <AccountLayout>
@@ -80,7 +170,7 @@ const Fees = () => {
                           <tr className="text-left">
                             <th className="px-3 py-2">Name</th>
                             <th className="px-3 py-2">Fee</th>
-                            <th className="px-3 py-2">Deadline</th>
+                            <th className="px-3 py-2 text-center">Deadline</th>
                             <th className="px-3 py-2 text-center">
                               Action / Status
                             </th>
@@ -117,7 +207,13 @@ const Fees = () => {
                                   currency: 'PHP',
                                 }).format(f.transaction.amount)}
                               </td>
-                              <td className="px-3 py-2"></td>
+                              <td className="px-3 py-2 text-sm text-center">
+                                {getDeadline(
+                                  index,
+                                  f.paymentType,
+                                  workspace.studentRecord.createdAt
+                                )}
+                              </td>
                               <td className="px-3 py-2 space-x-3 text-center">
                                 {f.transaction.paymentStatus ===
                                   TransactionStatus.U ||

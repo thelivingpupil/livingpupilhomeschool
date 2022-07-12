@@ -24,7 +24,7 @@ const Welcome = () => {
   const [name, setName] = useState('');
   const [isSubmitting, setSubmittingState] = useState(false);
   const [showModal, setModalState] = useState(false);
-  const validName = name.length > 0 && name.length <= 16;
+  const validName = name.length > 0 && name.length <= 64;
 
   const accept = (memberId) => {
     setSubmittingState(true);

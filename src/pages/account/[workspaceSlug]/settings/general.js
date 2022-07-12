@@ -22,10 +22,10 @@ const General = ({ isTeamOwner, workspace }) => {
   const [isSubmitting, setSubmittingState] = useState(false);
   const [name, setName] = useState(workspace.name || '');
   const [slug, setSlug] = useState(workspace.slug || '');
-  const validName = name.length > 0 && name.length <= 16;
+  const validName = name.length > 0 && name.length <= 64;
   const validSlug =
     slug.length > 0 &&
-    slug.length <= 16 &&
+    slug.length <= 64 &&
     isSlug(slug) &&
     isAlphanumeric(slug, undefined, { ignore: '-' });
 
@@ -104,7 +104,7 @@ const General = ({ isTeamOwner, workspace }) => {
             />
           </Card.Body>
           <Card.Footer>
-            <small>Please use 16 characters at maximum</small>
+            <small>Please use 64 characters at maximum</small>
             {isTeamOwner && (
               <Button
                 className="text-white bg-primary-600 hover:bg-primary-600"
