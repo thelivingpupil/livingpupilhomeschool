@@ -42,7 +42,7 @@ const Header = () => {
           )}
         </h5>
       </div>
-      <Menu as="div" className="relative inline-block text-left">
+      <Menu as="div" className="relative z-50 inline-block text-left">
         <div>
           <Menu.Button className="flex items-center justify-center px-5 py-2 space-x-3 border rounded hover:bg-gray-100 dark:hover:text-gray-800">
             <CogIcon aria-hidden="true" className="w-5 h-5" />

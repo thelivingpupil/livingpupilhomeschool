@@ -4,6 +4,7 @@ import useInquiries from './useInquiries';
 import useInvitations from './useInvitations';
 import useMembers from './useMembers';
 import usePurchases from './usePurchases';
+import usePurchaseHistory from './usePurchaseHistory';
 import useStudents from './useStudents';
 import useStudentsByGradeLevel from './useStudentsByGradeLevel';
 import useStudentsByProgram from './useStudentsByProgram';
@@ -21,6 +22,7 @@ export {
   useInvitations,
   useMembers,
   usePurchases,
+  usePurchaseHistory,
   useStudents,
   useStudentsByGradeLevel,
   useStudentsByProgram,

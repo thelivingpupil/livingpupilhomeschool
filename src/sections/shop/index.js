@@ -152,11 +152,11 @@ const Shop = ({ categories, items }) => {
         };
         break;
       }
-      case 'priceAsc': {
+      case 'priceDesc': {
         sort = (a, b) => b.price - a.price;
         break;
       }
-      case 'priceDesc': {
+      case 'priceAsc': {
         sort = (a, b) => a.price - b.price;
         break;
       }
