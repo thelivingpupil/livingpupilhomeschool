@@ -183,6 +183,7 @@ const Shop = ({ categories, items }) => {
   );
 
   useEffect(() => {
+    localStorage.clear();
     const items = JSON.parse(localStorage.getItem(LPH_CART_KEY));
 
     if (items) {
