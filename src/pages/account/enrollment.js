@@ -413,7 +413,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
             <label className="text-lg font-bold" htmlFor="txtMother">
               Full Name <span className="ml-1 text-red-600">*</span>
             </label>
-            <div className="flex flex-row space-x-5">
+            <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
               <input
                 className="px-3 py-2 border rounded md:w-1/3"
                 onChange={(e) => {
@@ -488,7 +488,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
               </div>
             </div>
           </div>
-          <div className="flex flex-row space-x-5">
+          <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
             <div className="flex flex-col w-full md:w-1/2">
               <label className="text-lg font-bold" htmlFor="txtMother">
                 Gender <span className="ml-1 text-red-600">*</span>
@@ -719,7 +719,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
         <label className="text-lg font-bold" htmlFor="txtMother">
           Enrolling as a <span className="ml-1 text-red-600">*</span>
         </label>
-        <div className="flex flex-row space-x-5">
+        <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
           <div
             className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
               enrollmentType === Enrollment.NEW
@@ -821,7 +821,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
         <label className="text-lg font-bold" htmlFor="txtMother">
           Select a Program <span className="ml-1 text-red-600">*</span>
         </label>
-        <div className="flex flex-row space-x-5">
+        <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
           <div
             className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
               program === Program.HOMESCHOOL_PROGRAM
@@ -893,7 +893,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
         <label className="text-lg font-bold" htmlFor="txtMother">
           Select an Accreditation <span className="ml-1 text-red-600">*</span>
         </label>
-        <div className="flex flex-row space-x-5">
+        <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
           {program === Program.HOMESCHOOL_PROGRAM && (
             <>
               <div
@@ -1165,7 +1165,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
         </label>
         <div className="relative flex flex-row space-x-5">
           <div
-            className={`flex flex-row items-center justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
+            className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
               payment === PaymentType.ANNUAL
                 ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                 : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
@@ -1204,7 +1204,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
         </div>
         <div className="relative flex flex-row space-x-5">
           <div
-            className={`flex flex-row items-center justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
+            className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
               payment === PaymentType.SEMI_ANNUAL
                 ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                 : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
@@ -1253,7 +1253,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
         </div>
         <div className="relative flex flex-row space-x-5">
           <div
-            className={`flex flex-row items-center justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
+            className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
               payment === PaymentType.QUARTERLY
                 ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                 : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
@@ -1391,8 +1391,8 @@ const EnrollmentProcess = ({ schoolFees }) => {
             is absolute and will be enforced.
           </p>
           <hr className="my-5 border border-dashed" />
-          <div className="flex justify-between mt-5 space-x-5">
-            <div className="w-1/2 space-y-3">
+          <div className="flex flex-col mt-5 space-x-0 space-y-5 md:flex-row md:justify-between md:space-x-5 md:space-y-0">
+            <div className="space-y-3 md:w-1/2">
               <label className="text-lg font-bold" htmlFor="txtMother">
                 Select Payment Method
                 <span className="ml-1 text-red-600">*</span>
@@ -1443,7 +1443,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
                 <span>Payment Centers (+ Php 20.00)</span>
               </div>
             </div>
-            <div className="flex flex-col w-1/2 space-y-3">
+            <div className="flex flex-col space-y-3 md:w-1/2">
               <label
                 className="text-lg font-medium text-primary-300"
                 htmlFor="txtMother"
@@ -1542,11 +1542,11 @@ const EnrollmentProcess = ({ schoolFees }) => {
       />
       <Content.Divider />
       <Content.Container>
-        <div className="flex flex-wrap justify-between w-full space-x-5">
+        <div className="flex justify-between w-full md:flex-wrap md:space-x-5">
           {steps.map((name, index) => (
             <div
               key={index}
-              className="flex flex-col items-center justify-center space-y-3 cursor-pointer"
+              className="flex flex-col items-center justify-center w-1/3 space-y-3 cursor-pointer md:w-auto"
               onClick={() => goToStep(index)}
             >
               <div
@@ -1564,7 +1564,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
                   <div className="w-3 h-3 bg-white rounded-full" />
                 )}
               </div>
-              <span className="text-xs">{name}</span>
+              <span className="text-xs text-center">{name}</span>
             </div>
           ))}
         </div>
