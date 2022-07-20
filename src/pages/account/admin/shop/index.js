@@ -19,6 +19,8 @@ const Shop = () => {
 
   const toggleModal = () => setModalVisibility(!showModal);
 
+  console.log(purchase);
+
   const view = (purchase) => {
     toggleModal();
     setPurchase(purchase);
@@ -49,6 +51,22 @@ const Shop = () => {
                     ? purchase.transaction.user.guardianInformation
                         .primaryGuardianName
                     : purchase.transaction.user.email}
+                </span>
+              </h5>
+              <h5 className="font-medium">
+                Delivery Address:{' '}
+                <span className="text-xs text-gray-400">
+                  {purchase.transaction.user.guardianInformation
+                    ? `${purchase.transaction.user.guardianInformation.address1} ${purchase.transaction.user.guardianInformation.address2}`
+                    : 'Not provided by guardian'}
+                </span>
+              </h5>
+              <h5 className="font-medium">
+                Contact Information:{' '}
+                <span className="text-xs text-gray-400">
+                  {purchase.transaction.user.guardianInformation
+                    ? `${purchase.transaction.user.guardianInformation.mobileNumber}`
+                    : 'Not provided by guardian'}
                 </span>
               </h5>
             </div>

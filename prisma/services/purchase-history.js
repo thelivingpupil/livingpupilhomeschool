@@ -94,6 +94,11 @@ export const getStorePurchases = async () =>
               guardianInformation: {
                 select: {
                   primaryGuardianName: true,
+                  secondaryGuardianName: true,
+                  address1: true,
+                  address2: true,
+                  mobileNumber: true,
+                  telephoneNumber: true,
                 },
               },
             },
