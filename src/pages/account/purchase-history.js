@@ -12,6 +12,7 @@ import { STATUS_CODES } from '@/lib/server/dragonpay';
 import Image from 'next/image';
 import { TransactionStatus } from '@prisma/client';
 import api from '@/lib/common/api';
+import toast from 'react-hot-toast';
 
 const PurchaseHistory = () => {
   const { data, isLoading } = usePurchaseHistory();

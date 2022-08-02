@@ -199,12 +199,24 @@ const Shop = ({ categories, items }) => {
   return (
     <>
       {data && (
-        <div className="w-full py-3 text-sm text-center text-white bg-primary-500">
-          You are signed in as:
-          <span className="ml-2 font-medium text-secondary-500">
-            {data?.user?.email}
-          </span>
-        </div>
+        <>
+          <div className="w-full py-3 text-sm text-center text-white bg-primary-500">
+            You are signed in as:{' '}
+            <span className="font-medium text-secondary-500">
+              {data?.user?.email}
+            </span>
+          </div>
+          <div className="w-full py-3 text-sm text-center text-white bg-primary-500">
+            Please provide your delivery address and contact information here:{' '}
+            <Link href="/account/information">
+              <a>
+                <span className="font-medium text-secondary-500">
+                  Delivery Information
+                </span>
+              </a>
+            </Link>
+          </div>
+        </>
       )}
       <section className="px-5 py-10 md:px-0">
         <div className="container flex flex-col mx-auto space-y-10 md:flex-row md:space-y-0 md:space-x-10">

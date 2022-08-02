@@ -719,7 +719,25 @@ const EnrollmentProcess = ({ schoolFees }) => {
         <label className="text-lg font-bold" htmlFor="txtMother">
           Enrolling as a <span className="ml-1 text-red-600">*</span>
         </label>
-        <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
+        <div className="flex flex-row">
+          <div className="relative inline-block w-full border rounded">
+            <select
+              className="w-full px-3 py-2 capitalize rounded appearance-none"
+              onChange={(e) => setEnrollmentType(e.target.value)}
+              value={enrollmentType}
+            >
+              {Object.keys(ENROLLMENT_TYPE).map((entry, index) => (
+                <option key={index} value={entry}>
+                  {ENROLLMENT_TYPE[entry].toLowerCase()}
+                </option>
+              ))}
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <ChevronDownIcon className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
+        {/* <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
           <div
             className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
               enrollmentType === Enrollment.NEW
@@ -750,7 +768,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
             )}
             <h3 className="text-xl font-bold text-center">Continuing Family</h3>
           </div>
-        </div>
+        </div> */}
         <hr className="border border-dashed" />
         <div className="flex flex-row space-x-5">
           <div className="flex flex-col w-full">

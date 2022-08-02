@@ -87,7 +87,7 @@ const Welcome = () => {
 
   const navigate = (workspace) => {
     setWorkspace(workspace);
-    // router.replace(`/account/${workspace.slug}`);
+    router.replace(`/account/${workspace.slug}`);
   };
 
   const toggleModal = () => setModalState(!showModal);

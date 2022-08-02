@@ -135,6 +135,9 @@ const Students = () => {
               <h4 className="font-bold text-gray-600">Religion</h4>
               <p className="text-lg capitalize">{RELIGION[student.religion]}</p>
             </div>
+            <hr className="border-2 border-gray-600" />
+            <h2 className="font-medium">School Fees:</h2>
+            <div className="flex flex-col p-3 space-y-2 border rounded"></div>
           </div>
         </SideModal>
       )}

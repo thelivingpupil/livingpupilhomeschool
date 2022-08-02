@@ -19,6 +19,10 @@ const menu = (workspaceId) => [
       //   path: `/account/${workspaceId}/documents`,
       // },
       {
+        name: 'Courses and Training',
+        path: `/account/${workspaceId}/training`,
+      },
+      {
         name: 'School Fees',
         path: `/account/${workspaceId}/fees`,
       },

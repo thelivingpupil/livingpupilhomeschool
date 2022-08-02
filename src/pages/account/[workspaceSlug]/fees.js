@@ -135,10 +135,6 @@ const Fees = () => {
 
   const getDeadline = (index, paymentType, createdDate) => {
     const date = new Date(createdDate);
-    // console.log(index);
-    // console.log(paymentType);
-    // console.log(date.getMonth());
-
     const monthsToAdd = deadlines[date.getMonth()][paymentType][index];
     const deadline = add(new Date(date.getFullYear(), date.getMonth(), 5), {
       months: monthsToAdd,
@@ -263,7 +259,7 @@ const Fees = () => {
           <Content.Container>
             <Card>
               <Card.Body title="School Fees">
-                <div className="px-3 py-3 text-sm text-red-500 border-2 border-red-600 rounded-lg bg-red-50">
+                <div className="px-3 py-3 text-sm text-red-500 border-2 border-red-600 rounded bg-red-50">
                   <p>
                     You will need to enroll your student first prior to viewing
                     the school fees.

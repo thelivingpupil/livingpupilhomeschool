@@ -19,8 +19,6 @@ const Shop = () => {
 
   const toggleModal = () => setModalVisibility(!showModal);
 
-  console.log(purchase);
-
   const view = (purchase) => {
     toggleModal();
     setPurchase(purchase);

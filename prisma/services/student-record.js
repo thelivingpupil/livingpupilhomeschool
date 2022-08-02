@@ -204,6 +204,21 @@ export const getStudentRecords = async () =>
               guardianInformation: true,
             },
           },
+          schoolFees: {
+            select: {
+              transaction: {
+                select: {
+                  transactionId: true,
+                  transactionStatus: true,
+                  amount: true,
+                  paymentReference: true,
+                  paymentStatus: true,
+                  message: true,
+                  referenceNumber: true,
+                },
+              },
+            },
+          },
         },
       },
     },

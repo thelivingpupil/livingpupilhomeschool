@@ -8,6 +8,7 @@ import {
   PencilIcon,
   ShoppingCartIcon,
   UserCircleIcon,
+  UsersIcon,
 } from '@heroicons/react/outline';
 import { QuestionMarkCircleIcon } from '@heroicons/react/solid';
 
@@ -24,6 +25,11 @@ const adminSidebarMenu = () => [
         name: 'Inquiries',
         icon: QuestionMarkCircleIcon,
         path: `/account/admin/inquiries`,
+      },
+      {
+        name: 'Accounts',
+        icon: UsersIcon,
+        path: `/account/admin/accounts`,
       },
     ],
   },
