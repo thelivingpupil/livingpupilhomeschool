@@ -19,10 +19,10 @@ const sidebarMenu = () => [
         name: 'Shop Purchases',
         path: `/account/purchase-history`,
       },
-      // {
-      //   name: 'Billing',
-      //   path: `/account/billing`,
-      // },
+      {
+        name: 'Affiliate Link',
+        path: `/account/affiliate`,
+      },
       {
         name: 'Settings',
         path: `/account/settings`,
