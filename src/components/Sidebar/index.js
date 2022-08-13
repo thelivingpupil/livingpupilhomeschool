@@ -53,7 +53,7 @@ const Sidebar = ({ menu, showModal }) => {
         className={[
           'flex-col space-y-5 md:flex md:relative md:top-0',
           showMenu
-            ? 'absolute top-12 bg-gray-800 right-0 left-0 h-screen'
+            ? 'absolute top-12 bg-primary-500 right-0 left-0 h-screen py-10'
             : 'hidden',
         ].join(' ')}
       >

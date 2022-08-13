@@ -129,7 +129,7 @@ const Information = ({ guardian }) => {
                 <label className="text-lg font-bold" htmlFor="txtMother">
                   Primary Guardian
                 </label>
-                <div className="flex flex-row space-x-5">
+                <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
                   <input
                     className="px-3 py-2 border rounded md:w-1/2"
                     placeholder="Primary Guardian's Full Name"
@@ -174,7 +174,7 @@ const Information = ({ guardian }) => {
                 <label className="text-lg font-bold" htmlFor="txtMother">
                   Secondary Guardian
                 </label>
-                <div className="flex flex-row space-x-5">
+                <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
                   <input
                     className="px-3 py-2 border rounded md:w-1/2"
                     placeholder="Secondary Guardian's Full Name"

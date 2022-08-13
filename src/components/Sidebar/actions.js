@@ -67,7 +67,7 @@ const Actions = ({ show }) => {
         onClick={toggleModal}
       >
         <PlusIcon className="w-5 h-5" aria-hidden="true" />
-        <span>Create Student Record</span>
+        <span>Enroll Student</span>
       </Button>
       <Modal
         show={showModal}
@@ -115,7 +115,7 @@ const Actions = ({ show }) => {
                 : data?.workspaces.length === 0
                 ? 'No records found'
                 : workspace === null
-                ? 'Select a student...'
+                ? 'Select a student record...'
                 : workspace.name}
             </span>
             <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
