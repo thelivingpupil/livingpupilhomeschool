@@ -7,6 +7,7 @@ import {
 import { UserType } from '@prisma/client';
 import formatDistance from 'date-fns/formatDistance';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import Meta from '@/components/Meta';
 import SideModal from '@/components/Modal/side-modal';
@@ -32,6 +33,13 @@ const Users = () => {
       <Content.Divider />
       <Card>
         <Card.Body title="List of Account Users">
+          <div>
+            <Link href="/account/admin/users/users-export">
+              <a className="items-center px-3 py-2 space-x-2 text-sm text-white rounded bg-primary-500 hover:bg-primary-600">
+                Generate Users Master List
+              </a>
+            </Link>
+          </div>
           <div>
             <table className="w-full">
               <thead>
