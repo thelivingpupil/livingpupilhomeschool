@@ -20,6 +20,18 @@ const sidebarMenu = () => [
         path: `/account/purchase-history`,
       },
       {
+        name: 'Calendar of Events',
+        path: `/account/calendar`,
+      },
+      {
+        name: 'Guides and Resources',
+        path: `/account/resources`,
+      },
+      {
+        name: 'The LP Community',
+        path: `/account/community`,
+      },
+      {
         name: 'Affiliate Link',
         path: `/account/affiliate`,
       },

@@ -168,8 +168,8 @@ const EnrollmentProcess = ({ schoolFees }) => {
     const file = e.target?.files[0];
 
     if (file) {
-      // 5 MB
-      if (file.size < 5242880) {
+      // 510MB
+      if (file.size < 10485760) {
         const extension = file.name.split('.').pop();
         const storageRef = ref(
           storage,
@@ -207,7 +207,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
         );
       }
     } else {
-      toast.error('File too large. Size should not exceed 5 MB.');
+      toast.error('File too large. Size should not exceed 10 MB.');
     }
   };
 
@@ -215,7 +215,6 @@ const EnrollmentProcess = ({ schoolFees }) => {
     const file = e.target?.files[0];
 
     if (file) {
-      // 5 MB
       if (file.size < 5242880) {
         const extension = file.name.split('.').pop();
         const storageRef = ref(
@@ -254,7 +253,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
         );
       }
     } else {
-      toast.error('File too large. Size should not exceed 5 MB.');
+      toast.error('File too large. Size should not exceed 10 MB.');
     }
   };
 
@@ -262,8 +261,8 @@ const EnrollmentProcess = ({ schoolFees }) => {
     const file = e.target?.files[0];
 
     if (file) {
-      // 5 MB
-      if (file.size < 5242880) {
+      // 10 MB
+      if (file.size < 10485760) {
         const extension = file.name.split('.').pop();
         const storageRef = ref(
           storage,
@@ -301,7 +300,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
         );
       }
     } else {
-      toast.error('File too large. Size should not exceed 5 MB.');
+      toast.error('File too large. Size should not exceed 10 MB.');
     }
   };
 
@@ -575,7 +574,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
         <p className="text-sm text-gray-600">
           Accepted file formats are <strong>PDF</strong>, <strong>PNG</strong>,
           <strong>JPEG/JPG</strong>, and <strong>GIF</strong> with a maximum
-          file size of <strong className="text-red-600">5 MB</strong>.
+          file size of <strong className="text-red-600">10 MB</strong>.
         </p>
         <table className="table border border-collapse">
           <tbody>

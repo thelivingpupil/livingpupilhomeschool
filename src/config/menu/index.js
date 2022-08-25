@@ -6,18 +6,10 @@ const menu = (workspaceId) => [
         name: 'Profile',
         path: `/account/${workspaceId}`,
       },
-      // {
-      //   name: 'Courses',
-      //   path: `/account/${workspaceId}/courses`,
-      // },
-      // {
-      //   name: 'Grades',
-      //   path: `/account/${workspaceId}/grades`,
-      // },
-      // {
-      //   name: 'Documents',
-      //   path: `/account/${workspaceId}/documents`,
-      // },
+      {
+        name: 'Grades',
+        path: `/account/${workspaceId}/grades`,
+      },
       {
         name: 'Courses and Training',
         path: `/account/${workspaceId}/training`,

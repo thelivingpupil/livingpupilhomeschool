@@ -187,6 +187,8 @@ export const getServerSideProps = async (context) => {
       if (workspace.studentRecord) {
         workspace.studentRecord.birthDate =
           workspace.studentRecord.birthDate.toDateString();
+        workspace.studentRecord.createdAt =
+          workspace.studentRecord.createdAt.toDateString();
       }
 
       if (workspace.schoolFees.length > 0) {

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
   FaAward,
   FaBook,
@@ -31,24 +32,23 @@ const Services = ({ title, content }) => {
             {content.map((c, index) => {
               const Icon = icons[c.icon];
               return (
-                <div
-                  key={index}
-                  className="flex flex-col p-5 bg-white rounded-lg shadow-xl"
-                >
-                  <div className="flex items-center space-x-5">
-                    <div className="inline-flex items-center justify-center flex-shrink-0 w-16 h-16 px-2 mb-5 rounded-xl bg-secondary-500">
-                      <Icon className="w-10 h-10 text-primary-500" />
+                <Link key={index} href={c.path}>
+                  <a className="flex flex-col p-5 break-words bg-white rounded-lg shadow-xl hover:shadow-2xl">
+                    <div className="flex items-center space-x-5 break-all">
+                      <div className="inline-flex items-center justify-center flex-shrink-0 w-16 h-16 px-2 mb-5 rounded-xl bg-secondary-500">
+                        <Icon className="w-10 h-10 text-primary-500" />
+                      </div>
+                      <h2 className="mb-3 text-xl font-bold text-primary-500 title-font">
+                        {c.title}
+                      </h2>
                     </div>
-                    <h2 className="mb-3 text-xl font-bold text-primary-500 title-font">
-                      {c.title}
-                    </h2>
-                  </div>
-                  <div className="flex-grow">
-                    <p className="text-sm leading-relaxed text-gray-800">
-                      {c.description}
-                    </p>
-                  </div>
-                </div>
+                    <div className="flex-grow">
+                      <p className="text-sm leading-relaxed text-gray-800">
+                        {c.description}
+                      </p>
+                    </div>
+                  </a>
+                </Link>
               );
             })}
           </div>
