@@ -305,26 +305,6 @@ const EnrollmentProcess = ({ schoolFees }) => {
   };
 
   const next = () => {
-    console.log(firstName);
-    console.log(middleName);
-    console.log(lastName);
-    console.log(gender);
-    console.log(religion);
-    console.log(reason);
-    console.log(enrollmentType);
-    console.log(incomingGradeLevel);
-    console.log(formerSchoolName);
-    console.log(formerSchoolAddress);
-    console.log(program);
-    console.log(accreditation);
-    console.log(payment);
-    console.log(birthDate);
-    console.log(pictureLink);
-    console.log(birthCertificateLink);
-    console.log(reportCardLink);
-    console.log(paymentMethod);
-    console.log(slug);
-
     if (step < steps.length - 1) {
       setStep(step + 1);
       document.getElementById('scroller').scroll(0, 0);
