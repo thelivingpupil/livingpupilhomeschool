@@ -305,6 +305,26 @@ const EnrollmentProcess = ({ schoolFees }) => {
   };
 
   const next = () => {
+    console.log(firstName);
+    console.log(middleName);
+    console.log(lastName);
+    console.log(gender);
+    console.log(religion);
+    console.log(reason);
+    console.log(enrollmentType);
+    console.log(incomingGradeLevel);
+    console.log(formerSchoolName);
+    console.log(formerSchoolAddress);
+    console.log(program);
+    console.log(accreditation);
+    console.log(payment);
+    console.log(birthDate);
+    console.log(pictureLink);
+    console.log(birthCertificateLink);
+    console.log(reportCardLink);
+    console.log(paymentMethod);
+    console.log(slug);
+
     if (step < steps.length - 1) {
       setStep(step + 1);
       document.getElementById('scroller').scroll(0, 0);
@@ -780,7 +800,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
                   onChange={(e) => {
                     setIncomingGradeLevel(e.target.value);
-                    setAccreditation(null);
+                    // setAccreditation(null);
                   }}
                   value={incomingGradeLevel}
                 >
@@ -838,7 +858,47 @@ const EnrollmentProcess = ({ schoolFees }) => {
         <label className="text-lg font-bold" htmlFor="txtMother">
           Select a Program <span className="ml-1 text-red-600">*</span>
         </label>
-        <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
+        <div className="flex flex-row">
+          <div className="relative inline-block w-full border rounded">
+            <select
+              className="w-full px-3 py-2 capitalize rounded appearance-none"
+              onChange={(e) => {
+                setProgram(e.target.value);
+                // setAccreditation(null);
+              }}
+              value={program}
+            >
+              {Object.keys(PROGRAM).map((entry, index) => (
+                <option
+                  key={index}
+                  disabled={
+                    entry === Program.HOMESCHOOL_COTTAGE &&
+                    !(
+                      incomingGradeLevel === GradeLevel.K2 ||
+                      incomingGradeLevel === GradeLevel.GRADE_1 ||
+                      incomingGradeLevel === GradeLevel.GRADE_2 ||
+                      incomingGradeLevel === GradeLevel.GRADE_3 ||
+                      incomingGradeLevel === GradeLevel.GRADE_4 ||
+                      incomingGradeLevel === GradeLevel.GRADE_5 ||
+                      incomingGradeLevel === GradeLevel.GRADE_6 ||
+                      incomingGradeLevel === GradeLevel.GRADE_7 ||
+                      incomingGradeLevel === GradeLevel.GRADE_8 ||
+                      incomingGradeLevel === GradeLevel.GRADE_9 ||
+                      incomingGradeLevel === GradeLevel.GRADE_10
+                    )
+                  }
+                  value={entry}
+                >
+                  {PROGRAM[entry].toLowerCase()}
+                </option>
+              ))}
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <ChevronDownIcon className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
+        {/* <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
           <div
             className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
               program === Program.HOMESCHOOL_PROGRAM
@@ -905,13 +965,109 @@ const EnrollmentProcess = ({ schoolFees }) => {
               Homeschool Cottage
             </h3>
           </div>
-        </div>
+        </div> */}
         <hr className="border border-dashed" />
         <label className="text-lg font-bold" htmlFor="txtMother">
           Select an Accreditation <span className="ml-1 text-red-600">*</span>
         </label>
+        <div className="flex flex-row">
+          <div className="relative inline-block w-full border rounded">
+            <select
+              className="w-full px-3 py-2 capitalize rounded appearance-none"
+              onChange={(e) => {
+                if (e.target.value) {
+                  setAccreditation(e.target.value);
+                } else {
+                  setAccreditation(null);
+                }
+              }}
+              value={accreditation}
+            >
+              <option value="">Please select accreditation...</option>
+              {program === Program.HOMESCHOOL_PROGRAM && (
+                <>
+                  <option value={Accreditation.LOCAL}>
+                    {ACCREDITATION[Accreditation.LOCAL]}
+                  </option>
+                  <option
+                    disabled={
+                      !(
+                        incomingGradeLevel !== GradeLevel.PRESCHOOL &&
+                        incomingGradeLevel !== GradeLevel.K1
+                      )
+                    }
+                    value={Accreditation.INTERNATIONAL}
+                  >
+                    {ACCREDITATION[Accreditation.INTERNATIONAL]}
+                  </option>
+                  <option
+                    disabled={
+                      !(
+                        incomingGradeLevel !== GradeLevel.PRESCHOOL &&
+                        incomingGradeLevel !== GradeLevel.K1
+                      )
+                    }
+                    value={Accreditation.DUAL}
+                  >
+                    {ACCREDITATION[Accreditation.DUAL]}
+                  </option>
+                </>
+              )}
+              {program === Program.HOMESCHOOL_COTTAGE && (
+                <>
+                  <option
+                    disabled={!(incomingGradeLevel === GradeLevel.K2)}
+                    value={Accreditation.LOCAL}
+                  >
+                    {ACCREDITATION[Accreditation.LOCAL]}
+                  </option>
+                  <option
+                    disabled={
+                      !(
+                        incomingGradeLevel === GradeLevel.GRADE_1 ||
+                        incomingGradeLevel === GradeLevel.GRADE_2 ||
+                        incomingGradeLevel === GradeLevel.GRADE_3
+                      )
+                    }
+                    value={Accreditation.FORM_ONE}
+                  >
+                    {ACCREDITATION[Accreditation.FORM_ONE]}
+                  </option>
+                  <option
+                    disabled={
+                      !(
+                        incomingGradeLevel === GradeLevel.GRADE_4 ||
+                        incomingGradeLevel === GradeLevel.GRADE_5 ||
+                        incomingGradeLevel === GradeLevel.GRADE_6
+                      )
+                    }
+                    value={Accreditation.FORM_TWO}
+                  >
+                    {ACCREDITATION[Accreditation.FORM_TWO]}
+                  </option>
+                  <option
+                    disabled={
+                      !(
+                        incomingGradeLevel === GradeLevel.GRADE_7 ||
+                        incomingGradeLevel === GradeLevel.GRADE_8 ||
+                        incomingGradeLevel === GradeLevel.GRADE_9 ||
+                        incomingGradeLevel === GradeLevel.GRADE_10
+                      )
+                    }
+                    value={Accreditation.FORM_THREE}
+                  >
+                    {ACCREDITATION[Accreditation.FORM_THREE]}
+                  </option>
+                </>
+              )}
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <ChevronDownIcon className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
         <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
-          {program === Program.HOMESCHOOL_PROGRAM && (
+          {/* {program === Program.HOMESCHOOL_PROGRAM && (
             <>
               <div
                 className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/3 border-2 border-primary-200 ${
@@ -987,8 +1143,8 @@ const EnrollmentProcess = ({ schoolFees }) => {
                 </h3>
               </div>
             </>
-          )}
-          {program === Program.HOMESCHOOL_COTTAGE && (
+          )} */}
+          {/* {program === Program.HOMESCHOOL_COTTAGE && (
             <>
               <div
                 className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/4 border-2 border-primary-200 ${
@@ -1107,7 +1263,7 @@ const EnrollmentProcess = ({ schoolFees }) => {
                 </h3>
               </div>
             </>
-          )}
+          )} */}
         </div>
         <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded">
           <h3 className="text-sm font-bold">
