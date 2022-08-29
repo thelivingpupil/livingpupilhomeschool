@@ -86,6 +86,7 @@ const Workspace = ({ schoolFees }) => {
   const [pictureLink, setPictureLink] = useState(null);
   const [birthCertificateLink, setBirthCertificateLink] = useState(null);
   const [reportCardLink, setReportCardLink] = useState(null);
+  const [discountCode, setDiscountCode] = useState('');
 
   const age = differenceInCalendarYears(new Date(), birthDate) || 0;
   const validateNext =
@@ -161,6 +162,8 @@ const Workspace = ({ schoolFees }) => {
       fee.type === enrollmentType
     );
   });
+
+  const applyDiscount = () => {};
 
   const goToStep = (step) => {
     validateNext && setStep(step);
@@ -1575,6 +1578,25 @@ const Workspace = ({ schoolFees }) => {
                 )}
                 <span>Payment Centers (+ Php 20.00)</span>
               </div>
+              <div className="flex flex-col py-5">
+                <label className="text-lg font-bold" htmlFor="txtMother">
+                  Discount Code
+                </label>
+                <div className="flex border rounded">
+                  <input
+                    className="w-3/4 px-3 py-2 rounded-l"
+                    onChange={(e) => setDiscountCode(e.target.value)}
+                    placeholder="Input discount code here"
+                    value={discountCode}
+                  />
+                  <button
+                    className="w-1/4 rounded-r bg-secondary-500 hover:bg-secondary-400"
+                    onClick={applyDiscount}
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
             </div>
             <div className="flex flex-col space-y-3 md:w-1/2">
               <label
@@ -1621,6 +1643,23 @@ const Workspace = ({ schoolFees }) => {
                         style: 'currency',
                         currency: 'PHP',
                       }).format(FEES[paymentMethod] || 0)}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-5 space-x-5">
+                  <div>
+                    <h5 className="font-medium">Discount</h5>
+                    <h6 className="text-xs text-gray-400">
+                      Based on applied discount code:{' '}
+                      <span className="font-bold">{discountCode || '-'}</span>
+                    </h6>
+                  </div>
+                  <div className="text-right">
+                    <span>
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(0)}
                     </span>
                   </div>
                 </div>
