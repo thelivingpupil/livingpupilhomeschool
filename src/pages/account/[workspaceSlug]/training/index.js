@@ -27,7 +27,7 @@ const Training = ({ courses }) => {
                 course.gradeLevel.includes(
                   workspace.studentRecord.incomingGradeLevel
                 ) &&
-                course.curriculum.includes(workspace.studentRecord.program) ? (
+                course.curriculum?.includes(workspace.studentRecord.program) ? (
                   <Card key={index}>
                     <Card.Body
                       title={course.title}
