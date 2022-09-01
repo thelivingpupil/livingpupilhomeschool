@@ -1,6 +1,7 @@
 import { validateSession } from '@/config/api-validation';
 import { createSchoolFees } from '@/prisma/services/school-fee';
 import { createStudentRecord } from '@/prisma/services/student-record';
+import { updateGuardianInformation } from '@/prisma/services/user';
 import { createWorkspaceWithSlug } from '@/prisma/services/workspace';
 
 const handler = async (req, res) => {
@@ -28,7 +29,35 @@ const handler = async (req, res) => {
       birthCertificateLink,
       reportCardLink,
       slug,
+      primaryGuardianName,
+      primaryGuardianOccupation,
+      primaryGuardianType,
+      primaryGuardianProfile,
+      secondaryGuardianName,
+      secondaryGuardianOccupation,
+      secondaryGuardianType,
+      secondaryGuardianProfile,
+      mobileNumber,
+      telephoneNumber,
+      anotherEmail,
+      address1,
+      address2,
     } = req.body;
+    const guardianInformation = {
+      primaryGuardianName,
+      primaryGuardianOccupation,
+      primaryGuardianType,
+      primaryGuardianProfile,
+      secondaryGuardianName,
+      secondaryGuardianOccupation,
+      secondaryGuardianType,
+      secondaryGuardianProfile,
+      mobileNumber,
+      telephoneNumber,
+      anotherEmail,
+      address1,
+      address2,
+    };
     const workspace = await createWorkspaceWithSlug(
       session.user.userId,
       session.user.email,
@@ -66,6 +95,7 @@ const handler = async (req, res) => {
         accreditation,
         paymentMethod
       ),
+      updateGuardianInformation(session.user.userId, guardianInformation),
     ]);
     res.status(200).json({ data: { studentRecord, schoolFee } });
   } else {

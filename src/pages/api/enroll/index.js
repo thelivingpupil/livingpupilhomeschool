@@ -28,7 +28,35 @@ const handler = async (req, res) => {
       birthCertificateLink,
       reportCardLink,
       slug,
+      primaryGuardianName,
+      primaryGuardianOccupation,
+      primaryGuardianType,
+      primaryGuardianProfile,
+      secondaryGuardianName,
+      secondaryGuardianOccupation,
+      secondaryGuardianType,
+      secondaryGuardianProfile,
+      mobileNumber,
+      telephoneNumber,
+      anotherEmail,
+      address1,
+      address2,
     } = req.body;
+    const guardianInformation = {
+      primaryGuardianName,
+      primaryGuardianOccupation,
+      primaryGuardianType,
+      primaryGuardianProfile,
+      secondaryGuardianName,
+      secondaryGuardianOccupation,
+      secondaryGuardianType,
+      secondaryGuardianProfile,
+      mobileNumber,
+      telephoneNumber,
+      anotherEmail,
+      address1,
+      address2,
+    };
     const workspace = await getOwnWorkspace(
       session.user.userId,
       session.user.email,
@@ -65,6 +93,7 @@ const handler = async (req, res) => {
         accreditation,
         paymentMethod
       ),
+      updateGuardianInformation(session.user.userId, guardianInformation),
     ]);
     res.status(200).json({ data: { studentRecord, schoolFee } });
   } else {
