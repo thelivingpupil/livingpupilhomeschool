@@ -1,5 +1,3 @@
-// import { PrismaClient } from '@prisma/client';
-// const prisma = new PrismaClient();
 import { CSVLink } from 'react-csv';
 import format from 'date-fns/format';
 

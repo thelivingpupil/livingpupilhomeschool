@@ -41,17 +41,33 @@ export const getGuardianInformation = async (id) =>
     where: { userId: id },
   });
 
-export const getInvitation = async (inviteCode) =>
+export const getInvitedUsers = async (userCode) =>
+  await prisma.user.findMany({
+    select: {
+      email: true,
+      name: true,
+      createdAt: true,
+    },
+    where: {
+      deletedAt: null,
+      inviteCode: userCode,
+    },
+  });
+
+export const getInvitation = async (userCode) =>
   await prisma.user.findFirst({
     select: {
       id: true,
       name: true,
+      email: true,
       userCode: true,
-      slug: true,
     },
     where: {
       deletedAt: null,
-      inviteCode,
+      userCode: {
+        contains: userCode,
+        mode: 'insensitive',
+      },
     },
   });
 
@@ -63,6 +79,16 @@ export const getUser = async (id) =>
       userCode: true,
     },
     where: { id },
+  });
+
+export const getUserByEmail = async (email) =>
+  await prisma.user.findUnique({
+    select: {
+      email: true,
+      name: true,
+      userCode: true,
+    },
+    where: { email },
   });
 
 export const getUsers = async () =>
@@ -78,6 +104,22 @@ export const getUsers = async () =>
     },
     where: { deletedAt: null },
   });
+
+export const invite = async (email, inviteCode) => {
+  const user = await getUserByEmail(email);
+
+  if (!user) {
+    await prisma.user.create({
+      data: {
+        email,
+        inviteCode,
+        createdAt: null,
+      },
+    });
+  } else {
+    throw new Error('Email already exists');
+  }
+};
 
 export const updateEmail = async (id, email, previousEmail) => {
   await prisma.user.update({
