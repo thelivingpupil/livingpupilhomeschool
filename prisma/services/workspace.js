@@ -87,6 +87,20 @@ export const deleteWorkspace = async (id, email, slug) => {
   }
 };
 
+export const getInvitation = async (inviteCode) =>
+  await prisma.workspace.findFirst({
+    select: {
+      id: true,
+      name: true,
+      workspaceCode: true,
+      slug: true,
+    },
+    where: {
+      deletedAt: null,
+      inviteCode,
+    },
+  });
+
 export const getOwnWorkspace = async (id, email, slug) =>
   await prisma.workspace.findFirst({
     select: {
