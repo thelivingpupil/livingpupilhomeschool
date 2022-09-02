@@ -14,17 +14,16 @@ model Account {
   type               String
   provider           String
   providerAccountId  String
-  refresh_token      String? @db.Text
-  access_token       String? @db.Text
+  refresh_token      String?
+  access_token       String?
   expires_at         Int?
   token_type         String?
   scope              String?
-  id_token           String? @db.Text
+  id_token           String?
   session_state      String?
   oauth_token_secret String?
   oauth_token        String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -39,8 +38,7 @@ model CustomerPayment {
   createdAt        DateTime?        @default(now())
   deletedAt        DateTime?
   updatedAt        DateTime?        @updatedAt
-
-  customer User @relation(fields: [customerId], references: [id])
+  customer         User             @relation(fields: [customerId], references: [id])
 
   @@map("customerPayments")
 }
@@ -53,9 +51,8 @@ model Domain {
   createdAt   DateTime? @default(now())
   deletedAt   DateTime?
   updatedAt   DateTime? @updatedAt
-
-  addedBy   User      @relation(fields: [addedById], references: [id])
-  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  addedBy     User      @relation(fields: [addedById], references: [id])
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
 
   @@map("domains")
 }
@@ -79,8 +76,7 @@ model GuardianInformation {
   createdAt                   DateTime?     @default(now())
   deletedAt                   DateTime?
   updatedAt                   DateTime?     @updatedAt
-
-  user User? @relation(fields: [userId], references: [id])
+  user                        User          @relation(fields: [userId], references: [id])
 
   @@map("guardianInformation")
 }
@@ -99,54 +95,51 @@ model Inquiry {
 }
 
 model Member {
-  id          String    @id @default(cuid())
+  id          String           @id @default(cuid())
   workspaceId String
   email       String
   inviter     String
-  invitedAt   DateTime? @default(now())
+  invitedAt   DateTime?        @default(now())
   joinedAt    DateTime?
   deletedAt   DateTime?
-  updatedAt   DateTime? @updatedAt
-
-  status    InvitationStatus @default(PENDING)
-  teamRole  TeamRole         @default(MEMBER)
-  member    User?            @relation(fields: [email], references: [email], name: "membership")
-  invitedBy User?            @relation(fields: [inviter], references: [email], name: "inviter")
-  workspace Workspace        @relation(fields: [workspaceId], references: [id])
+  updatedAt   DateTime?        @updatedAt
+  status      InvitationStatus @default(PENDING)
+  teamRole    TeamRole         @default(MEMBER)
+  member      User             @relation("membership", fields: [email], references: [email])
+  invitedBy   User             @relation("inviter", fields: [inviter], references: [email])
+  workspace   Workspace        @relation(fields: [workspaceId], references: [id])
 
   @@unique([workspaceId, email])
   @@map("members")
 }
 
 model Order {
-  id                String    @id @default(cuid())
+  id                String           @id @default(cuid())
   code              String
   name              String
   image             String
-  basePrice         Decimal   @default(0)
-  totalPrice        Decimal   @default(0)
-  quantity          Int       @default(0)
-  remarks           String?
-  purchaseHistoryId String?
-  createdAt         DateTime? @default(now())
+  basePrice         Decimal          @default(0)
+  totalPrice        Decimal          @default(0)
+  quantity          Int              @default(0)
+  createdAt         DateTime?        @default(now())
   deletedAt         DateTime?
-  updatedAt         DateTime? @updatedAt
-
-  purchaseHistory PurchaseHistory? @relation(fields: [purchaseHistoryId], references: [id])
+  updatedAt         DateTime?        @updatedAt
+  purchaseHistoryId String?
+  remarks           String?
+  purchaseHistory   PurchaseHistory? @relation(fields: [purchaseHistoryId], references: [id])
 
   @@map("orders")
 }
 
 model PurchaseHistory {
-  id            String    @id @default(cuid())
-  transactionId String    @unique @default(cuid())
-  total         Decimal   @default(0)
-  createdAt     DateTime? @default(now())
+  id            String       @id @default(cuid())
+  createdAt     DateTime?    @default(now())
   deletedAt     DateTime?
-  updatedAt     DateTime? @updatedAt
-
-  orderItems  Order[]
-  transaction Transaction?
+  updatedAt     DateTime?    @updatedAt
+  total         Decimal      @default(0)
+  transactionId String       @unique @default(cuid())
+  orderItems    Order[]
+  transaction   Transaction?
 
   @@map("purchaseHistory")
 }
@@ -155,15 +148,14 @@ model SchoolFee {
   id            String      @id @default(cuid())
   studentId     String      @default(cuid())
   transactionId String      @unique
-  order         Int
-  gradeLevel    GradeLevel  @default(PRESCHOOL)
   paymentType   PaymentType
   createdAt     DateTime?   @default(now())
   deletedAt     DateTime?
   updatedAt     DateTime?   @updatedAt
-
-  student     Workspace    @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  transaction Transaction? @relation(fields: [transactionId], references: [transactionId])
+  order         Int
+  gradeLevel    GradeLevel  @default(PRESCHOOL)
+  student       Workspace   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  transaction   Transaction @relation(fields: [transactionId], references: [transactionId])
 
   @@unique([studentId, transactionId])
   @@map("schoolFee")
@@ -174,8 +166,7 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
@@ -196,14 +187,13 @@ model StudentRecord {
   reason               String?
   formerSchoolName     String
   formerSchoolAddress  String
-  image                String?
-  liveBirthCertificate String?
-  reportCard           String?
   createdAt            DateTime?     @default(now())
   deletedAt            DateTime?
   updatedAt            DateTime?     @updatedAt
-
-  student Workspace @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  image                String?
+  liveBirthCertificate String?
+  reportCard           String?
+  student              Workspace     @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("studentRecord")
 }
@@ -217,47 +207,45 @@ model Transaction {
   currency          Currency          @default(PHP)
   transactionStatus TransactionStatus @default(U)
   paymentStatus     TransactionStatus @default(U)
-  source            TransactionSource @default(STORE)
-  paymentReference  String?
   description       String?
   message           String?
   url               String?
-  purchaseHistoryId String?           @unique
-  fee               Fees              @default(ONLINE)
   createdAt         DateTime?         @default(now())
   deletedAt         DateTime?
   updatedAt         DateTime?         @updatedAt
-
-  user            User             @relation(fields: [userId], references: [id])
-  purchaseHistory PurchaseHistory? @relation(fields: [purchaseHistoryId], references: [id])
-  schoolFee       SchoolFee?
+  purchaseHistoryId String?           @unique
+  source            TransactionSource @default(STORE)
+  paymentReference  String?
+  fee               Fees              @default(ONLINE)
+  purchaseHistory   PurchaseHistory?  @relation(fields: [purchaseHistoryId], references: [id])
+  user              User              @relation(fields: [userId], references: [id])
+  schoolFee         SchoolFee?
 
   @@unique([transactionId, referenceNumber])
   @@map("transactions")
 }
 
 model User {
-  id            String    @id @default(cuid())
-  userCode      String    @unique @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  userType      UserType? @default(USER)
-  inviteCode    String?
-  createdAt     DateTime? @default(now())
-  deletedAt     DateTime?
-  updatedAt     DateTime? @updatedAt
-
+  id                  String               @id @default(cuid())
+  userCode            String               @unique @default(cuid())
+  name                String?
+  email               String?              @unique
+  emailVerified       DateTime?
+  image               String?
+  createdAt           DateTime?            @default(now())
+  deletedAt           DateTime?
+  updatedAt           DateTime?            @updatedAt
+  userType            UserType?            @default(USER)
+  inviteCode          String?
   accounts            Account[]
-  sessions            Session[]
-  membership          Member[]             @relation("membership")
-  invitedMembers      Member[]             @relation("inviter")
-  createdWorkspace    Workspace[]
-  guardianInformation GuardianInformation?
   customerPayment     CustomerPayment?
   domains             Domain[]
+  guardianInformation GuardianInformation?
+  membership          Member[]             @relation("membership")
+  invitedMembers      Member[]             @relation("inviter")
+  sessions            Session[]
   transaction         Transaction[]
+  createdWorkspace    Workspace[]
 
   @@unique([userCode, email])
   @@map("users")
@@ -273,21 +261,20 @@ model VerificationToken {
 }
 
 model Workspace {
-  id            String    @id @default(cuid())
-  workspaceCode String    @unique @default(cuid())
-  inviteCode    String    @unique @default(cuid())
+  id            String         @id @default(cuid())
+  workspaceCode String         @unique @default(cuid())
+  inviteCode    String         @unique @default(cuid())
   creatorId     String
   name          String
   slug          String
-  createdAt     DateTime? @default(now())
+  createdAt     DateTime?      @default(now())
   deletedAt     DateTime?
-  updatedAt     DateTime? @updatedAt
-
+  updatedAt     DateTime?      @updatedAt
   creator       User           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  members       Member[]
   domains       Domain[]
-  studentRecord StudentRecord?
+  members       Member[]
   schoolFees    SchoolFee[]
+  studentRecord StudentRecord?
 
   @@unique([workspaceCode, inviteCode])
   @@map("workspaces")

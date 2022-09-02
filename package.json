@@ -14,7 +14,7 @@
     "@heroicons/react": "^1.0.5",
     "@next-auth/prisma-adapter": "^1.0.1",
     "@portabletext/react": "^1.0.6",
-    "@prisma/client": "^3.15.1",
+    "@prisma/client": "^4.3.1",
     "@sanity/client": "^3.3.0",
     "@sanity/image-url": "^1.0.1",
     "@splidejs/react-splide": "^0.7.5",
@@ -52,7 +52,7 @@
     "eslint": "8.6.0",
     "eslint-config-next": "^0.2.4",
     "postcss": "^8.4.5",
-    "prisma": "^3.15.1",
+    "prisma": "^4.3.1",
     "tailwindcss": "^3.0.11"
   }
 }
