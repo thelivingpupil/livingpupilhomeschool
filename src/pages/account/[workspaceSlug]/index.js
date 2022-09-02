@@ -2224,9 +2224,9 @@ const Workspace = ({ guardian, schoolFees }) => {
                 // subtitle={`Last Updated: ${workspace.studentRecord.updatedAt}`}
               >
                 <div className="flex flex-row items-center py-5 space-x-10">
-                  <div className="relative flex items-center justify-center w-32 h-32 overflow-hidden text-white bg-gray-400 rounded-full">
+                  <div className="relative flex items-center justify-center w-32 h-32 overflow-hidden text-center text-white bg-gray-400 rounded-full">
                     <label
-                      className="cursor-pointer group"
+                      className="text-center cursor-pointer group"
                       htmlFor="filePicture"
                     >
                       {workspace.studentRecord.image ? (
@@ -2240,7 +2240,7 @@ const Workspace = ({ guardian, schoolFees }) => {
                           src={pictureLink || workspace.studentRecord.image}
                         />
                       ) : (
-                        <UserIcon className="w-20 h-20" />
+                        <UserIcon className="w-16 h-16" />
                       )}
                       <input
                         id="filePicture"
@@ -2256,6 +2256,7 @@ const Workspace = ({ guardian, schoolFees }) => {
                         }
                         type="file"
                       />
+                      <span className="text-xs">Click to Upload</span>
                     </label>
                   </div>
                   <div className="space-y-3">

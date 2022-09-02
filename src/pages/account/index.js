@@ -12,7 +12,12 @@ import api from '@/lib/common/api';
 import { useWorkspace } from '@/providers/workspace';
 import { PlusIcon } from '@heroicons/react/outline';
 import Modal from '@/components/Modal';
-import { BadgeCheckIcon, ExclamationIcon } from '@heroicons/react/solid';
+import {
+  BadgeCheckIcon,
+  ExclamationIcon,
+  MinusCircleIcon,
+} from '@heroicons/react/solid';
+import { TransactionStatus } from '@prisma/client';
 
 const Welcome = () => {
   const router = useRouter();
@@ -153,12 +158,23 @@ const Welcome = () => {
                       </div>
                       <p>Unenrolled student</p>
                     </div>
-                  ) : (
+                  ) : workspace.schoolFees.length > 0 &&
+                    workspace.schoolFees.filter(
+                      (fee) =>
+                        fee.transaction.paymentStatus === TransactionStatus.S
+                    )?.length > 0 ? (
                     <div className="flex items-center px-2 py-1 space-x-3 text-sm text-green-500 border-2 border-green-600 rounded-full bg-green-50">
                       <div className="w-5 h-5">
                         <BadgeCheckIcon />
                       </div>
                       <p>Student enrolled</p>
+                    </div>
+                  ) : (
+                    <div className="flex items-center px-2 py-1 space-x-3 text-sm text-red-500 border-2 border-red-600 rounded-full bg-red-50">
+                      <div className="w-5 h-5">
+                        <MinusCircleIcon />
+                      </div>
+                      <p>Unpaid school fees</p>
                     </div>
                   )}
                 </Card.Body>

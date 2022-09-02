@@ -138,8 +138,10 @@ const AccountLayout = ({ children }) => {
 
   return (
     <main className="relative flex flex-col w-screen h-screen space-x-0 text-gray-800 dark:text-gray-200 md:space-x-5 md:flex-row bg-gray-50 dark:bg-gray-800">
-      <Sidebar menu={menu(workspace?.slug)} showModal={showModal} />
-      <Content>
+      {router.route !== '/account/enrollment' && (
+        <Sidebar menu={menu(workspace?.slug)} showModal={showModal} />
+      )}
+      <Content route={router.route}>
         <Toaster position="bottom-left" toastOptions={{ duration: 10000 }} />
         <Header />
         {children}
@@ -166,18 +168,20 @@ const AccountLayout = ({ children }) => {
                 User Guide and Help Section
               </h2>
               <hr />
-              <button
-                className="flex items-center justify-center p-3 space-x-3 text-left text-gray-800 rounded hover:bg-gray-100"
-                onClick={runTour}
-              >
-                <InformationCircleIcon className="w-1/6 text-gray-600" />
-                <div className="w-5/6">
-                  <h3 className="font-medium">Application Walkthrough</h3>
-                  <p className="text-xs text-gray-400">
-                    Let us walk you through the Parent Portal application
-                  </p>
-                </div>
-              </button>
+              {router.route !== '/account/enrollment' && (
+                <button
+                  className="flex items-center justify-center p-3 space-x-3 text-left text-gray-800 rounded hover:bg-gray-100"
+                  onClick={runTour}
+                >
+                  <InformationCircleIcon className="w-1/6 text-gray-600" />
+                  <div className="w-5/6">
+                    <h3 className="font-medium">Application Walkthrough</h3>
+                    <p className="text-xs text-gray-400">
+                      Let us walk you through the Parent Portal application
+                    </p>
+                  </div>
+                </button>
+              )}
               <Link href="https://m.me/livingpupilhomeschool">
                 <a
                   className="flex items-center justify-center p-3 space-x-3 text-gray-800 rounded hover:bg-gray-100"

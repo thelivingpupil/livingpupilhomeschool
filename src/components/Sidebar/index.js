@@ -7,6 +7,7 @@ import sidebarMenu from '@/config/menu/sidebar-static';
 import { useWorkspaces } from '@/hooks/data';
 import { useWorkspace } from '@/providers/workspace';
 import { MenuIcon } from '@heroicons/react/outline';
+import { TransactionStatus } from '@prisma/client';
 
 const staticMenu = sidebarMenu();
 
@@ -23,6 +24,12 @@ const Sidebar = ({ menu, showModal }) => {
           key={index}
           data={item}
           isLoading={isLoading}
+          menuCondition={
+            workspace?.schoolFees?.length > 0 &&
+            workspace?.schoolFees?.filter(
+              (fee) => fee.transaction.paymentStatus === TransactionStatus.S
+            )?.length > 0
+          }
           showMenu={data?.workspaces.length > 0 || isLoading}
         />
       ))

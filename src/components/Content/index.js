@@ -1,12 +1,29 @@
-const Content = ({ admin, children }) => {
+import Link from 'next/link';
+
+const Content = ({ admin, children, route }) => {
   return (
     <div
       id="scroller"
-      className={`flex flex-col h-full p-5 space-y-5 overflow-y-auto md:p-10 ${
-        admin ? 'md:w-4/5' : 'md:w-3/4'
+      className={`overflow-y-auto ${
+        admin
+          ? 'md:w-4/5'
+          : route === '/account/enrollment'
+          ? 'md:w-full'
+          : 'md:w-3/4'
       }`}
     >
-      {children}
+      {route === '/account/enrollment' && (
+        <div className="w-full p-5 text-center text-white bg-primary-500">
+          <Link href="/">
+            <a className="flex-grow text-2xl font-bold tourLogo">
+              Living Pupil Homeschool
+            </a>
+          </Link>
+        </div>
+      )}
+      <div className="flex flex-col h-full p-5 space-y-5 md:p-10">
+        {children}
+      </div>
     </div>
   );
 };
