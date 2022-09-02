@@ -7,9 +7,9 @@ import toast, { Toaster } from 'react-hot-toast';
 import Card from '@/components/Card/index';
 import Button from '@/components/Button';
 import api from '@/lib/common/api';
-import { getInvitation } from '@/prisma/services/workspace';
+import { getInvitation } from '@/prisma/services/user';
 
-const Invite = ({ workspace }) => {
+const Invite = ({ user }) => {
   const { data } = useSession();
   const router = useRouter();
   const [isSubmitting, setSubmittingState] = useState(false);
@@ -58,7 +58,7 @@ const Invite = ({ workspace }) => {
                   </Button>
                 ) : (
                   <Link href="/auth/login">
-                    <a className="flex items-center justify-center px-5 py-2 space-x-3 text-white bg-primary-600 rounded hover:bg-primary-600">
+                    <a className="flex items-center justify-center px-5 py-2 space-x-3 text-white rounded bg-primary-600 hover:bg-primary-600">
                       Create an account
                     </a>
                   </Link>
@@ -74,8 +74,8 @@ const Invite = ({ workspace }) => {
 
 export const getServerSideProps = async (context) => {
   const { code } = context.query;
-  const workspace = await getInvitation(code);
-  return { props: { workspace } };
+  const user = await getInvitation(code);
+  return { props: { user } };
 };
 
 export default Invite;

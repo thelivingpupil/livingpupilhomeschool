@@ -244,6 +244,7 @@ model User {
   emailVerified DateTime?
   image         String?
   userType      UserType? @default(USER)
+  inviteCode    String?
   createdAt     DateTime? @default(now())
   deletedAt     DateTime?
   updatedAt     DateTime? @updatedAt

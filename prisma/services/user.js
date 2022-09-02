@@ -41,6 +41,20 @@ export const getGuardianInformation = async (id) =>
     where: { userId: id },
   });
 
+export const getInvitation = async (inviteCode) =>
+  await prisma.user.findFirst({
+    select: {
+      id: true,
+      name: true,
+      userCode: true,
+      slug: true,
+    },
+    where: {
+      deletedAt: null,
+      inviteCode,
+    },
+  });
+
 export const getUser = async (id) =>
   await prisma.user.findUnique({
     select: {

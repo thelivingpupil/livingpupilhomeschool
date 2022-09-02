@@ -1,18 +1,14 @@
 import { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import {
-  ChevronDownIcon,
   DocumentDuplicateIcon,
   DotsVerticalIcon,
-  PlusCircleIcon,
-  XIcon,
 } from '@heroicons/react/outline';
 import { InvitationStatus, TeamRole } from '@prisma/client';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import toast from 'react-hot-toast';
 import isEmail from 'validator/lib/isEmail';
 
-import Button from '@/components/Button/index';
 import Card from '@/components/Card/index';
 import Content from '@/components/Content/index';
 import Meta from '@/components/Meta/index';
@@ -212,7 +208,7 @@ const Affiliate = ({ inviteLink }) => {
       <Content.Divider />
       <Content.Container>
         <Card>
-          <Card.Body title="Users who signed up using your link">
+          <Card.Body title="Parents who signed up using your invite link">
             <table className="table-fixed">
               <thead className="text-gray-400 border-b">
                 <tr>
@@ -326,7 +322,7 @@ export const getServerSideProps = async (context) => {
 
   if (session) {
     inviteLink = `${process.env.APP_URL}/join?code=${encodeURI(
-      session.user?.userCode.toUpperCase()
+      session.user?.userCode
     )}`;
   }
 
