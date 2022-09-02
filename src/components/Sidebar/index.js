@@ -31,7 +31,12 @@ const Sidebar = ({ menu, showModal }) => {
 
   const renderStaticMenu = () => {
     return staticMenu.map((item, index) => (
-      <Menu key={index} data={item} showMenu={true} />
+      <Menu
+        key={index}
+        data={item}
+        menuCondition={data?.workspaces.length > 0}
+        showMenu={true}
+      />
     ));
   };
 

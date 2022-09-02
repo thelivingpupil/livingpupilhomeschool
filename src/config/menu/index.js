@@ -5,18 +5,22 @@ const menu = (workspaceId) => [
       {
         name: 'Profile',
         path: `/account/${workspaceId}`,
+        showDefault: true,
       },
       {
         name: 'Grades',
         path: `/account/${workspaceId}/grades`,
+        showDefault: false,
       },
       {
         name: 'Courses and Training',
         path: `/account/${workspaceId}/training`,
+        showDefault: false,
       },
       {
         name: 'School Fees',
         path: `/account/${workspaceId}/fees`,
+        showDefault: true,
       },
     ],
   },
@@ -26,18 +30,17 @@ const menu = (workspaceId) => [
       {
         name: 'Student Information',
         path: `/account/${workspaceId}/settings/general`,
+        showDefault: true,
       },
-      // {
-      //   name: 'Domain Configurations',
-      //   path: `/account/${workspaceId}/settings/domain`,
-      // },
       {
         name: 'Group Members',
         path: `/account/${workspaceId}/settings/team`,
+        showDefault: true,
       },
       {
         name: 'Advanced',
         path: `/account/${workspaceId}/settings/advanced`,
+        showDefault: true,
       },
     ],
   },
