@@ -1,4 +1,6 @@
 import { validateSession } from '@/config/api-validation';
+import { html, text } from '@/config/email-templates/enrollment';
+import { sendMail } from '@/lib/server/mail';
 import { createSchoolFees } from '@/prisma/services/school-fee';
 import { createStudentRecord } from '@/prisma/services/student-record';
 import { getOwnWorkspace } from '@/prisma/services/workspace';
@@ -95,6 +97,36 @@ const handler = async (req, res) => {
       ),
       updateGuardianInformation(session.user.userId, guardianInformation),
     ]);
+    await sendMail({
+      html: html({
+        accreditation,
+        birthCertificateLink,
+        enrollmentType,
+        firstName,
+        incomingGradeLevel,
+        payment,
+        paymentMethod,
+        pictureLink,
+        program,
+        reportCardLink,
+        schoolFee,
+      }),
+      subject: `[Living Pupil Homeschool] Received ${firstName}'s Student Record`,
+      text: text({
+        accreditation,
+        birthCertificateLink,
+        enrollmentType,
+        firstName,
+        incomingGradeLevel,
+        payment,
+        paymentMethod,
+        pictureLink,
+        program,
+        reportCardLink,
+        schoolFee,
+      }),
+      to: [session.user.email],
+    });
     res.status(200).json({ data: { studentRecord, schoolFee } });
   } else {
     res
