@@ -2243,11 +2243,6 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
         </div>
         {viewFees ? (
           <>
-            <Link href={`/account`}>
-              <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-50">
-                View Dashboard
-              </a>
-            </Link>
             {paymentLink && (
               <a
                 className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
@@ -2257,6 +2252,11 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
                 Pay Now
               </a>
             )}
+            <Link href={`/account`}>
+              <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-50">
+                View Dashboard
+              </a>
+            </Link>
           </>
         ) : (
           <button
