@@ -1543,6 +1543,35 @@ const Workspace = ({ guardian, schoolFees }) => {
         <label className="text-lg font-bold" htmlFor="txtMother">
           Select Payment Type <span className="ml-1 text-red-600">*</span>
         </label>
+        <div className="relative inline-block w-full border rounded">
+          <select
+            className="w-full px-3 py-2 capitalize rounded appearance-none"
+            onChange={(e) => {
+              setPayment(e.target.value ? e.target.value : null);
+
+              if (payment === PaymentType.ANNUAL) {
+                setFee(schoolFee?.fees[0]);
+              } else if (payment === PaymentType.SEMI_ANNUAL) {
+                setFee(schoolFee?.fees[1]);
+              } else if (payment === PaymentType.QUARTERLY) {
+                setFee(schoolFee?.fees[2]);
+              }
+            }}
+            value={payment}
+          >
+            <option value="">Please select payment type...</option>
+            <option value={PaymentType.ANNUAL}>Full Payment</option>
+            <option value={PaymentType.SEMI_ANNUAL}>
+              Semi Annual Payment (Initial Fee + Semi-Annual Fees)
+            </option>
+            <option value={PaymentType.QUARTERLY}>
+              Quarterly Payment (Initial Fee + Quarterly Fees)
+            </option>
+          </select>
+          <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+            <ChevronDownIcon className="w-5 h-5" />
+          </div>
+        </div>
         <div className="relative flex flex-row space-x-5">
           <div
             className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
