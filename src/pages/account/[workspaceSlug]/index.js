@@ -125,6 +125,7 @@ const Workspace = ({ guardian, schoolFees }) => {
   );
   const [address1, setAddress1] = useState(guardian?.address1 || '');
   const [address2, setAddress2] = useState(guardian?.address2 || '');
+  const [paymentLink, setPaymentLink] = useState(null);
 
   const handlePrimaryGuardianName = (event) =>
     setPrimaryGuardianName(event.target.value);
@@ -447,6 +448,7 @@ const Workspace = ({ guardian, schoolFees }) => {
         );
       } else {
         window.open(response.data.schoolFee.url, '_blank');
+        setPaymentLink(response.data.schoolFee.url);
         setViewFees(true);
         toast.success('Student information successfully submitted!');
       }
@@ -2549,11 +2551,22 @@ const Workspace = ({ guardian, schoolFees }) => {
             </p>
           </div>
           {viewFees ? (
-            <Link href={`/account/${workspace.slug}/fees`}>
-              <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-50">
-                Pay School Fees
-              </a>
-            </Link>
+            <>
+              <Link href={`/account/${workspace.slug}/fees`}>
+                <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-50">
+                  View Dashboard
+                </a>
+              </Link>
+              {paymentLink && (
+                <a
+                  className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
+                  href={paymentLink}
+                  target="_blank"
+                >
+                  Pay Now
+                </a>
+              )}
+            </>
           ) : (
             <button
               className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
