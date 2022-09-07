@@ -48,7 +48,8 @@ const Shop = () => {
                   {purchase.transaction.user.guardianInformation
                     ? purchase.transaction.user.guardianInformation
                         .primaryGuardianName
-                    : purchase.transaction.user.email}
+                    : ''}{' '}
+                  - {purchase.transaction.user.email}
                 </span>
               </h5>
               <h5 className="font-medium">
@@ -184,7 +185,16 @@ const Shop = () => {
                                   {purchase.transaction.user.guardianInformation
                                     ? purchase.transaction.user
                                         .guardianInformation.primaryGuardianName
-                                    : purchase.transaction.user.email}
+                                    : ''}{' '}
+                                  - {purchase.transaction.user.email}
+                                </strong>
+                              </p>
+                              <p className="text-xs text-gray-400">
+                                Delivery Address:{' '}
+                                <strong>
+                                  {purchase.transaction.user.guardianInformation
+                                    ? `${purchase.transaction.user.guardianInformation.address1} ${purchase.transaction.user.guardianInformation.address2}`
+                                    : 'Not provided by guardian'}
                                 </strong>
                               </p>
                             </div>
