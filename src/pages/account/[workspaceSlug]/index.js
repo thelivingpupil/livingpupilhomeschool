@@ -1808,7 +1808,32 @@ const Workspace = ({ guardian, schoolFees }) => {
                 Select Payment Method
                 <span className="ml-1 text-red-600">*</span>
               </label>
-              <div
+              <div className="flex flex-row">
+                <div className="relative inline-block w-full border rounded">
+                  <select
+                    className="w-full px-3 py-2 capitalize rounded appearance-none"
+                    onChange={(e) => {
+                      setPaymentMethod(e.target.value ? e.target.value : null);
+                    }}
+                    value={paymentMethod}
+                  >
+                    <option value="">Please select payment method...</option>
+                    <option value={Fees.ONLINE}>
+                      Online Banking (+ Php 10.00)
+                    </option>
+                    <option value={Fees.OTC}>
+                      Over-the-Counter Banking (+ Php 15.00)
+                    </option>
+                    <option value={Fees.PAYMENT_CENTERS}>
+                      Payment Centers (+ Php 20.00)
+                    </option>
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <ChevronDownIcon className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+              {/* <div
                 className={`flex items-center px-5 py-5 space-x-3 text-gray-600 bg-gray-100 rounded cursor-pointer ${
                   paymentMethod === Fees.ONLINE
                     ? 'border-green-600 text-green-500 border-2'
@@ -1852,7 +1877,7 @@ const Workspace = ({ guardian, schoolFees }) => {
                   <CheckCircleIcon className="w-5 h-5 text-gray-400" />
                 )}
                 <span>Payment Centers (+ Php 20.00)</span>
-              </div>
+              </div> */}
               <div className="flex flex-col py-5">
                 <label className="text-lg font-bold" htmlFor="txtMother">
                   Discount Code

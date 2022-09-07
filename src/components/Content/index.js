@@ -29,7 +29,7 @@ const Content = ({ admin, children, route }) => {
 };
 
 Content.Container = ({ children }) => {
-  return <div className="flex flex-col pb-10 space-y-5">{children}</div>;
+  return <div className="flex flex-col pb-20 space-y-5">{children}</div>;
 };
 
 Content.Divider = ({ thick }) => {
