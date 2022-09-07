@@ -111,9 +111,6 @@ export const getStorePurchases = async () =>
       transaction: {
         source: TransactionSource.STORE,
         deletedAt: null,
-        paymentStatus: {
-          not: TransactionStatus.U,
-        },
       },
     },
   });
