@@ -9,14 +9,14 @@ import Header from '@/components/Header/index';
 import AdminSidebar from '@/components/Sidebar/admin';
 
 const AdminLayout = ({ children }) => {
-  const { data } = useSession();
+  const { data, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (!data && data?.user.userType !== UserType.ADMIN) {
+    if (status === 'authenticated' && data?.user.userType !== UserType.ADMIN) {
       router.replace('/account');
     }
-  }, [data, router]);
+  }, [data, router, status]);
 
   return (
     <main className="relative flex flex-col w-screen h-screen space-x-0 text-gray-800 dark:text-gray-200 md:space-x-5 md:flex-row bg-gray-50 dark:bg-gray-800">

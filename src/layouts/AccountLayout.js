@@ -136,9 +136,7 @@ const AccountLayout = ({ children }) => {
     }
   }, [status, router]);
 
-  return status === 'loading' ? (
-    <></>
-  ) : (
+  return (
     <main className="relative flex flex-col w-screen h-screen space-x-0 text-gray-800 dark:text-gray-200 md:space-x-5 md:flex-row bg-gray-50 dark:bg-gray-800">
       {router.route !== '/account/enrollment' && (
         <Sidebar menu={menu(workspace?.slug)} showModal={showModal} />
