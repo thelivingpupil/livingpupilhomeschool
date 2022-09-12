@@ -3,6 +3,7 @@ import { html, text } from '@/config/email-templates/enrollment';
 import { sendMail } from '@/lib/server/mail';
 import { createSchoolFees } from '@/prisma/services/school-fee';
 import { createStudentRecord } from '@/prisma/services/student-record';
+import { updateGuardianInformation } from '@/prisma/services/user';
 import { getOwnWorkspace } from '@/prisma/services/workspace';
 
 const handler = async (req, res) => {
