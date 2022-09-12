@@ -6,13 +6,13 @@ import { Toaster } from 'react-hot-toast';
 
 const AuthLayout = ({ children }) => {
   const router = useRouter();
-  const { data } = useSession();
+  const { data, status } = useSession();
   const { setTheme } = useTheme();
 
   useEffect(() => {
     setTheme('light');
 
-    if (data) {
+    if (status === 'authenticated') {
       let path = '/account';
 
       if (data.user.studentRecords === 0) {
@@ -21,9 +21,11 @@ const AuthLayout = ({ children }) => {
 
       router.push(path);
     }
-  }, [data, router]);
+  }, [status, router]);
 
-  return (
+  return status === 'loading' ? (
+    <></>
+  ) : (
     <main className="relative flex flex-col items-center justify-center h-screen p-10 space-y-10">
       <Toaster position="bottom-center" toastOptions={{ duration: 10000 }} />
       {children}

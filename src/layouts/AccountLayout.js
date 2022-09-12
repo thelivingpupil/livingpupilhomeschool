@@ -100,7 +100,7 @@ const steps = [
 ];
 
 const AccountLayout = ({ children }) => {
-  const { data } = useSession();
+  const { data, status } = useSession();
   const router = useRouter();
   const { workspace } = useWorkspace();
   const [showJourney, setJourneyVisibility] = useState(true);
@@ -125,7 +125,7 @@ const AccountLayout = ({ children }) => {
   };
 
   useEffect(() => {
-    if (!data) {
+    if (status === 'unauthenticated') {
       router.replace('/auth/login');
     } else {
       const hasJourneyed = localStorage.getItem(HAS_JOURNEYED);
@@ -134,9 +134,11 @@ const AccountLayout = ({ children }) => {
         setJourneyVisibility(false);
       }
     }
-  }, [data, router]);
+  }, [status, router]);
 
-  return (
+  return status === 'loading' ? (
+    <></>
+  ) : (
     <main className="relative flex flex-col w-screen h-screen space-x-0 text-gray-800 dark:text-gray-200 md:space-x-5 md:flex-row bg-gray-50 dark:bg-gray-800">
       {router.route !== '/account/enrollment' && (
         <Sidebar menu={menu(workspace?.slug)} showModal={showModal} />
