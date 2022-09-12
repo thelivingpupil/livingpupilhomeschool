@@ -148,7 +148,7 @@ const PurchaseHistory = () => {
                 </div>
                 {purchase.transaction.paymentStatus !== TransactionStatus.S && (
                   <button
-                    className="inline-block px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-50"
+                    className="inline-block px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
                     disabled={isSubmitting}
                     onClick={() =>
                       renew(
@@ -171,7 +171,7 @@ const PurchaseHistory = () => {
             >
               <Link href="/shop">
                 <a
-                  className="w-full py-2 text-center rounded-lg text-primary-500 bg-secondary-500 hover:bg-secondary-600 disabled:opacity-50"
+                  className="w-full py-2 text-center rounded-lg text-primary-500 bg-secondary-500 hover:bg-secondary-600 disabled:opacity-25"
                   target="_blank"
                 >
                   Visit Shop

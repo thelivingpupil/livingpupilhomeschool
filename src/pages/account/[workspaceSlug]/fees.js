@@ -217,7 +217,7 @@ const Fees = () => {
                                   TransactionStatus.P ? (
                                   <>
                                     <button
-                                      className="inline-block px-3 py-2 text-xs text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-50"
+                                      className="inline-block px-3 py-2 text-xs text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
                                       disabled={isSubmitting}
                                       onClick={() =>
                                         renew(
@@ -230,7 +230,7 @@ const Fees = () => {
                                     </button>
                                     {/* <Link href={f.transaction.url}>
                                       <a
-                                        className="inline-block px-3 py-2 text-xs rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
+                                        className="inline-block px-3 py-2 text-xs rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
                                         target="_blank"
                                       >
                                         Pay Now

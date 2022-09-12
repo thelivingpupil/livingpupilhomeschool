@@ -77,7 +77,7 @@ const Presentation = ({ title, video, secondaryVideo }) => {
                               value={email}
                             />
                             <button
-                              className="px-5 rounded-r shadow-lg bg-primary-500 hover:bg-primary-400 disabled:opacity-50"
+                              className="px-5 rounded-r shadow-lg bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
                               disabled={!validate || isSubmitting}
                               onClick={submit}
                             >

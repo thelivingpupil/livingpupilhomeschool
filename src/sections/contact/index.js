@@ -195,7 +195,7 @@ const Contact = ({ title, subtitle, address, phone, email, hours }) => {
                   onChange={onReCAPTCHAChange}
                 />
                 <button
-                  className="px-6 py-2 text-lg border-0 rounded text-secondary-500 bg-primary-500 focus:outline-none hover:bg-primary-600 disabled:opacity-50"
+                  className="px-6 py-2 text-lg border-0 rounded text-secondary-500 bg-primary-500 focus:outline-none hover:bg-primary-600 disabled:opacity-25"
                   disabled={!validate || isSubmitting}
                   onClick={handleSubmit}
                 >

@@ -315,7 +315,7 @@ const Shop = ({ categories, items }) => {
                 </p>
               </div>
               <button
-                className="w-full py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
+                className="w-full py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
                 disabled={!data || isSubmitting}
                 onClick={checkout}
               >
@@ -340,7 +340,7 @@ const Shop = ({ categories, items }) => {
               <p>You may view your purchase history in your account profile.</p>
               <Link href={paymentLink}>
                 <a
-                  className="inline-block w-full px-3 py-2 text-lg text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
+                  className="inline-block w-full px-3 py-2 text-lg text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
                   target="_blank"
                 >
                   Pay Now
@@ -496,14 +496,14 @@ const Shop = ({ categories, items }) => {
                 </div>
               </div>
               <button
-                className="py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
+                className="py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
                 disabled={total === 0}
                 onClick={toggleCart}
               >
                 Review Shopping Cart
               </button>
               <button
-                className="py-2 text-lg bg-gray-200 rounded hover:bg-gray-100 disabled:opacity-50"
+                className="py-2 text-lg bg-gray-200 rounded hover:bg-gray-100 disabled:opacity-25"
                 disabled={cart.length === 0}
                 onClick={clear}
               >

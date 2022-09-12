@@ -77,7 +77,7 @@ const Item = ({
       <div className="space-y-3">
         <div className="flex flex-row justify-between space-x-3">
           <button
-            className="p-2 text-white rounded bg-primary-400 disabled:opacity-50"
+            className="p-2 text-white rounded bg-primary-400 disabled:opacity-25"
             disabled={quantity === 0}
             onClick={decrease}
           >
@@ -92,7 +92,7 @@ const Item = ({
           </button>
         </div>
         <button
-          className="w-full py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-50"
+          className="w-full py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25"
           disabled={quantity === 0}
           onClick={() => addToCart({ id, code, image, name, price, quantity })}
         >

@@ -1144,7 +1144,7 @@ const Workspace = ({ guardian, schoolFees }) => {
                 ? program === Program.HOMESCHOOL_COTTAGE
                   ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                   : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-                : 'bg-gray-300 opacity-50 rounded'
+                : 'bg-gray-300 opacity-25 rounded'
             }`}
             onClick={() => {
               if (
@@ -1303,7 +1303,7 @@ const Workspace = ({ guardian, schoolFees }) => {
                     ? accreditation === Accreditation.INTERNATIONAL
                       ? 'border-4 border-solid rounded-xl border-primary-200 bg-primary-50/50'
                       : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
-                    : 'bg-gray-300 opacity-50 rounded'
+                    : 'bg-gray-300 opacity-25 rounded'
                 }`}
                 onClick={() => {
                   if (
@@ -1331,7 +1331,7 @@ const Workspace = ({ guardian, schoolFees }) => {
                     ? accreditation === Accreditation.DUAL
                       ? 'border-4 border-solid rounded-xl border-primary-200 bg-primary-50/50'
                       : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
-                    : 'bg-gray-300 opacity-50 rounded'
+                    : 'bg-gray-300 opacity-25 rounded'
                 }`}
                 onClick={() => {
                   if (incomingGradeLevel !== GradeLevel.PRESCHOOL) {
@@ -1361,7 +1361,7 @@ const Workspace = ({ guardian, schoolFees }) => {
                     ? accreditation === Accreditation.LOCAL
                       ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
                       : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
-                    : 'bg-gray-300 opacity-50 rounded'
+                    : 'bg-gray-300 opacity-25 rounded'
                 }`}
                 onClick={() => {
                   if (incomingGradeLevel === GradeLevel.K2) {
@@ -1387,7 +1387,7 @@ const Workspace = ({ guardian, schoolFees }) => {
                     ? accreditation === Accreditation.FORM_ONE
                       ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
                       : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
-                    : 'bg-gray-300 opacity-50 rounded'
+                    : 'bg-gray-300 opacity-25 rounded'
                 }`}
                 onClick={() => {
                   if (
@@ -1417,7 +1417,7 @@ const Workspace = ({ guardian, schoolFees }) => {
                     ? accreditation === Accreditation.FORM_TWO
                       ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
                       : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
-                    : 'bg-gray-300 opacity-50 rounded'
+                    : 'bg-gray-300 opacity-25 rounded'
                 }`}
                 onClick={() => {
                   if (
@@ -1448,7 +1448,7 @@ const Workspace = ({ guardian, schoolFees }) => {
                     ? accreditation === Accreditation.FORM_THREE
                       ? 'border-4 rounded-xl border-primary-200 bg-primary-50/50'
                       : 'border border-dashed rounded cursor-pointer hover:border-primary-200 hover:bg-primary-50/25'
-                    : 'bg-gray-300 opacity-50 rounded'
+                    : 'bg-gray-300 opacity-25 rounded'
                 }`}
                 onClick={() => {
                   if (
@@ -2288,7 +2288,7 @@ const Workspace = ({ guardian, schoolFees }) => {
                       {workspace.studentRecord.image ? (
                         <Image
                           alt={workspace.studentRecord.firstName}
-                          className="rounded-full group-hover:opacity-50"
+                          className="rounded-full group-hover:opacity-25"
                           layout="fill"
                           loading="lazy"
                           objectFit="cover"
@@ -2579,7 +2579,7 @@ const Workspace = ({ guardian, schoolFees }) => {
             <>
               {paymentLink && (
                 <a
-                  className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
+                  className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
                   href={paymentLink}
                   target="_blank"
                 >
@@ -2587,14 +2587,14 @@ const Workspace = ({ guardian, schoolFees }) => {
                 </a>
               )}
               <Link href={`/account/${workspace.slug}/fees`}>
-                <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-50">
+                <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25">
                   View Dashboard
                 </a>
               </Link>
             </>
           ) : (
             <button
-              className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-50"
+              className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
               disabled={isSubmitting}
               onClick={submit}
             >

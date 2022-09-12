@@ -85,7 +85,7 @@ const Login = () => {
             value={email}
           />
           <button
-            className="py-2 text-white rounded bg-primary-600 hover:bg-primary-600 disabled:opacity-75"
+            className="py-2 text-white rounded bg-primary-600 hover:bg-primary-600 disabled:opacity-50"
             disabled={status === 'loading' || !validate || isSubmitting}
             onClick={signInWithEmail}
           >
@@ -103,7 +103,7 @@ const Login = () => {
               {socialProviders.map((provider, index) => (
                 <button
                   key={index}
-                  className="py-2 bg-gray-100 border rounded hover:bg-gray-50 disabled:opacity-75"
+                  className="py-2 bg-gray-100 border rounded hover:bg-gray-50 disabled:opacity-50"
                   disabled={status === 'loading'}
                   onClick={() => signInWithSocial(provider.id)}
                 >

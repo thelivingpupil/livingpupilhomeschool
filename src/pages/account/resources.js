@@ -19,7 +19,7 @@ const Resources = () => {
             subtitle="You may visit our Facebook page for more details"
           >
             <a
-              className="w-full py-2 text-center rounded-lg text-primary-500 bg-secondary-500 hover:bg-secondary-600 disabled:opacity-50"
+              className="w-full py-2 text-center rounded-lg text-primary-500 bg-secondary-500 hover:bg-secondary-600 disabled:opacity-25"
               href="https://www.facebook.com/livingpupilhomeschool"
               target="_blank"
             >

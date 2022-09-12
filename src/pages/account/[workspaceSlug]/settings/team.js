@@ -187,7 +187,7 @@ const Team = ({ isTeamOwner, workspace }) => {
                 ))}
                 <div>
                   <Button
-                    className="text-sm border hover:border-black disabled:opacity-75"
+                    className="text-sm border hover:border-black disabled:opacity-50"
                     disabled={members.length === 3 || isSubmitting}
                     onClick={addEmail}
                   >
