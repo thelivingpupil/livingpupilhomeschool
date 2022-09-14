@@ -42,6 +42,9 @@ export const countEnrolledStudentsByGradeLevel = async () => {
   return data;
 };
 
+export const countUsedDiscountCode = async (code) =>
+  await prisma.studentRecord.count({ where: { discount: code } });
+
 export const countEnrolledStudentsByProgram = async () => {
   const result = await prisma.studentRecord.groupBy({
     by: ['program'],
@@ -126,7 +129,8 @@ export const createStudentRecord = async (
   formerSchoolAddress,
   image,
   liveBirthCertificate,
-  reportCard
+  reportCard,
+  discount
 ) =>
   await prisma.studentRecord.create({
     data: {
@@ -147,6 +151,7 @@ export const createStudentRecord = async (
       image,
       liveBirthCertificate,
       reportCard,
+      discount,
     },
   });
 

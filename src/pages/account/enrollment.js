@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import {
-  CheckCircleIcon,
   CheckIcon,
   ChevronDownIcon,
   InformationCircleIcon,
 } from '@heroicons/react/outline';
-import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/solid';
 import {
   Accreditation,
   Enrollment,
@@ -47,7 +45,6 @@ import {
   PROGRAM,
   RELIGION,
 } from '@/utils/constants';
-import Payment from './payment';
 
 const steps = [
   'Student Information',
@@ -58,6 +55,7 @@ const steps = [
 const EnrollmentProcess = ({ guardian, schoolFees }) => {
   const [step, setStep] = useState(0);
   const [viewFees, setViewFees] = useState(false);
+  const [isSubmittingCode, setSubmittingCodeState] = useState(false);
   const [isSubmitting, setSubmittingState] = useState(false);
   const [review, setReviewVisibility] = useState(false);
   const [agree, setAgree] = useState(false);
@@ -88,6 +86,7 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
   const [birthCertificateLink, setBirthCertificateLink] = useState(null);
   const [reportCardLink, setReportCardLink] = useState(null);
   const [discountCode, setDiscountCode] = useState('');
+  const [discount, setDiscount] = useState(null);
 
   const [primaryGuardianName, setPrimaryGuardianName] = useState(
     guardian?.primaryGuardianName || ''
@@ -170,7 +169,11 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
       address1.length > 0 &&
       address2.length > 0) ||
     (step === 1 && accreditation !== null) ||
-    (step === 2 && payment !== null && paymentMethod && agree);
+    (step === 2 &&
+      payment !== null &&
+      paymentMethod &&
+      agree &&
+      !isSubmittingCode);
   const schoolFee = schoolFees.find((fee) => {
     let gradeLevel = incomingGradeLevel;
 
@@ -236,7 +239,25 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
     );
   });
 
-  const applyDiscount = () => {};
+  const applyDiscount = () => {
+    setSubmittingCodeState(true);
+    api('/api/enroll/discount', {
+      body: { code: discountCode },
+      method: 'POST',
+    }).then((response) => {
+      setSubmittingCodeState(false);
+
+      if (response.errors) {
+        setDiscount(null);
+        Object.keys(response.errors).forEach((error) =>
+          toast.error(response.errors[error].msg)
+        );
+      } else {
+        setDiscount(response.data);
+        toast.success('Discount successfully applied');
+      }
+    });
+  };
 
   const goToStep = (step) => {
     validateNext && setStep(step);
@@ -434,6 +455,7 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
         anotherEmail,
         address1,
         address2,
+        discountCode,
       },
       method: 'POST',
     }).then((response) => {
@@ -1907,12 +1929,16 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
                 <div className="flex border rounded">
                   <input
                     className="w-3/4 px-3 py-2 rounded-l"
-                    onChange={(e) => setDiscountCode(e.target.value)}
+                    onChange={(e) => {
+                      setDiscountCode(e.target.value);
+                      setDiscount(null);
+                    }}
                     placeholder="Input discount code here"
                     value={discountCode}
                   />
                   <button
                     className="w-1/4 rounded-r bg-secondary-500 hover:bg-secondary-400"
+                    disabled={isSubmittingCode}
                     onClick={applyDiscount}
                   >
                     Apply
@@ -1973,15 +1999,46 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
                     <h5 className="font-medium">Discount</h5>
                     <h6 className="text-xs text-gray-400">
                       Based on applied discount code:{' '}
-                      <span className="font-bold">{discountCode || '-'}</span>
+                      <span className="font-bold text-green-600">
+                        {discountCode || '-'}{' '}
+                        {`${
+                          discount
+                            ? `(${Number(discount.value).toFixed(2)}${
+                                discount.type === 'VALUE' ? 'Php' : '%'
+                              })`
+                            : ''
+                        }`}
+                      </span>
                     </h6>
                   </div>
                   <div className="text-right">
-                    <span>
+                    <span className={discount ? 'text-red-600' : ''}>
                       {new Intl.NumberFormat('en-US', {
                         style: 'currency',
                         currency: 'PHP',
-                      }).format(0)}
+                      }).format(
+                        discount
+                          ? discount.type === 'VALUE'
+                            ? Number(discount.value).toFixed(2) * -1
+                            : Math.ceil(
+                                (fee?._type === 'annual'
+                                  ? fee?.totalFee
+                                  : fee?.initialFee) +
+                                  (fee?._type === 'annual'
+                                    ? 0
+                                    : fee?._type === 'semiAnnual'
+                                    ? fee?.semiAnnualFee * 2
+                                    : fee?.quarterlyFee *
+                                      (fee?._type === 'annual'
+                                        ? 1
+                                        : fee?._type === 'semiAnnual'
+                                        ? 2
+                                        : 3))
+                              ) *
+                              (discount.value / 100) *
+                              -1
+                          : 0
+                      )}
                     </span>
                   </div>
                 </div>
@@ -1989,10 +2046,15 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
               <div>
                 <div className="flex items-center justify-between p-5 space-x-5 bg-gray-100 border-t border-dashed">
                   <div>
-                    <h5 className="font-bold">Total Payable</h5>
+                    <h5 className="font-bold">
+                      {fee?._type === 'annual'
+                        ? 'Total Payable'
+                        : 'Initial Fee'}
+                    </h5>
                     <h6 className="text-xs text-primary-500">
                       <strong>NOTE</strong>: Succeeding payments will always
-                      incur payment gateway fees per transaction
+                      incur payment gateway fees per transaction and see
+                      breakdown for applicable discounts
                     </h6>
                   </div>
                   <div className="text-right">
@@ -2002,7 +2064,12 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
                         currency: 'PHP',
                       }).format(
                         (fee?._type === 'annual'
-                          ? fee?.totalFee
+                          ? fee?.totalFee -
+                            (discount
+                              ? discount?.type === 'VALUE'
+                                ? discount.value
+                                : (discount.value / 100) * fee?.totalFee
+                              : 0)
                           : fee?.initialFee) + FEES[paymentMethod] || 0
                       )}
                     </span>
@@ -2230,6 +2297,51 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
                     </tr>
                   )
                 )}
+                {discount && (
+                  <tr>
+                    <td className="px-3 py-1 border">
+                      Total Discounts:{' '}
+                      <strong className="text-green-600">
+                        {discountCode || '-'}{' '}
+                        {`${
+                          discount
+                            ? `(${Number(discount.value).toFixed(2)}${
+                                discount.type === 'VALUE' ? 'Php' : '%'
+                              })`
+                            : ''
+                        }`}
+                      </strong>
+                    </td>
+                    <td className="px-3 py-1 text-right text-red-600 border">
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        discount
+                          ? discount.type === 'VALUE'
+                            ? Number(discount.value).toFixed(2) * -1
+                            : Math.ceil(
+                                (fee?._type === 'annual'
+                                  ? fee?.totalFee
+                                  : fee?.initialFee) +
+                                  (fee?._type === 'annual'
+                                    ? 0
+                                    : fee?._type === 'semiAnnual'
+                                    ? fee?.semiAnnualFee * 2
+                                    : fee?.quarterlyFee *
+                                      (fee?._type === 'annual'
+                                        ? 1
+                                        : fee?._type === 'semiAnnual'
+                                        ? 2
+                                        : 3))
+                              ) *
+                              (discount.value / 100) *
+                              -1
+                          : 0
+                      )}
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -2252,7 +2364,17 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
                           : fee?._type === 'semiAnnual'
                           ? 2
                           : 3))
-                ) || 0
+                ) -
+                  (discount
+                    ? discount?.type === 'VALUE'
+                      ? discount.value
+                      : (discount.value / 100) *
+                        (fee?._type === 'annual'
+                          ? fee?.totalFee
+                          : fee?._type === 'semiAnnual'
+                          ? fee?.initialFee + fee?.semiAnnualFee * 2
+                          : fee?.initialFee + fee?.quarterlyFee * 3)
+                    : 0) || 0
               )}
             </span>
           </h4>
