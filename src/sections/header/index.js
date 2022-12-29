@@ -11,7 +11,7 @@ const Header = ({ cta, menuLinks }) => {
   const toggleMenu = () => setMenuVisibility(!showMenu);
 
   return (
-    <header className="z-50 px-5 py-5 md:px-0 testing">
+    <header className="z-50 px-5 py-5 md:px-0">
       <div className="container flex items-center justify-between px-2 mx-auto md:px-10">
         <div className="relative">
           <Link href="/">
