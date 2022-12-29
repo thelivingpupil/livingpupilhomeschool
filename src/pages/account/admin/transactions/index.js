@@ -25,6 +25,10 @@ const Transactions = () => {
 
   const renew = () => {};
 
+  const sortedItems = data.transactions.sort((a, b) =>
+    b.createdAt.localeCompare(a.createdAt)
+  );
+
   return (
     <AdminLayout>
       <Meta title="Living Pupil Homeschool - Students List" />
@@ -57,7 +61,7 @@ const Transactions = () => {
                 <tbody>
                   {!isLoading ? (
                     data ? (
-                      data.transactions.map((transaction, index) => (
+                      sortedItems.map((transaction, index) => (
                         <tr
                           key={index}
                           className="text-sm border-t border-b hover:bg-gray-100 border-b-gray-300"
