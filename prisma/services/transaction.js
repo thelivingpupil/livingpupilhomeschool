@@ -177,7 +177,7 @@ export const getTransaction = async (transactionId, referenceNumber) =>
 
 export const getTransactions = async () =>
   await prisma.transaction.findMany({
-    orderBy: [{ createdAt: 'desc' }],
+    orderBy: [{ updatedAt: 'desc' }],
     select: {
       transactionId: true,
       amount: true,
