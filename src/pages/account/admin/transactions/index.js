@@ -55,7 +55,6 @@ const Transactions = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {console.log(data.transactions)}
                   {!isLoading ? (
                     data ? (
                       data.transactions.map((transaction, index) => (
