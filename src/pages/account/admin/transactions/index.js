@@ -88,13 +88,7 @@ const Transactions = () => {
                               </h5>
                               <p className="text-xs text-gray-400">
                                 Created{' '}
-                                {formatDistance(
-                                  new Date(transaction.createdAt),
-                                  new Date(),
-                                  {
-                                    addSuffix: true,
-                                  }
-                                )}{' '}
+                                {new Date(transaction.createdAt).toDateString()}{' '}
                                 by{' '}
                                 <strong>
                                   {transaction.user.guardianInformation
