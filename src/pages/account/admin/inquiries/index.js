@@ -95,13 +95,7 @@ const Inquiries = () => {
                             </p>
                             <p className="text-xs text-gray-400">
                               Messaged{' '}
-                              {formatDistance(
-                                new Date(inquiry.createdAt),
-                                new Date(),
-                                {
-                                  addSuffix: true,
-                                }
-                              )}
+                              {new Date(inquiry.createdAt).toDateString()}
                             </p>
                           </td>
                           <td className="p-2 space-x-2 text-xs text-center">
