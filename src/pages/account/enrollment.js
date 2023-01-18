@@ -456,7 +456,7 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
         anotherEmail,
         address1,
         address2,
-        discountCode,
+        discount,
       },
       method: 'POST',
     }).then((response) => {
