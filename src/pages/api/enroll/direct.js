@@ -44,7 +44,7 @@ const handler = async (req, res) => {
       anotherEmail,
       address1,
       address2,
-      discount,
+      discountCode,
     } = req.body;
     const guardianInformation = {
       primaryGuardianName,
@@ -86,7 +86,7 @@ const handler = async (req, res) => {
         pictureLink,
         birthCertificateLink,
         reportCardLink,
-        discount
+        discountCode
       ),
       createSchoolFees(
         session.user.userId,
