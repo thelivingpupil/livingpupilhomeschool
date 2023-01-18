@@ -86,7 +86,7 @@ const handler = async (req, res) => {
         pictureLink,
         birthCertificateLink,
         reportCardLink,
-        discount
+        discountCode
       ),
       createSchoolFees(
         session.user.userId,
