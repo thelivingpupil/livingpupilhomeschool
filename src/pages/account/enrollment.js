@@ -246,7 +246,8 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
       method: 'POST',
     }).then((response) => {
       setSubmittingCodeState(false);
-
+      console.log('errors', response.errors);
+      console.log('data', response.data);
       if (response.errors) {
         setDiscount(null);
         Object.keys(response.errors).forEach((error) =>
