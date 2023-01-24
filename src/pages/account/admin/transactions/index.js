@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import formatDistance from 'date-fns/formatDistance';
+import api from '@/lib/common/api';
 
 import Meta from '@/components/Meta';
 import SideModal from '@/components/Modal/side-modal';
