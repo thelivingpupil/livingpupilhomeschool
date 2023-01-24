@@ -20,7 +20,8 @@ export const createSchoolFees = async (
   incomingGradeLevel,
   program,
   accreditation,
-  paymentMethod
+  paymentMethod,
+  discountCode
 ) => {
   let gradeLevel = incomingGradeLevel;
 

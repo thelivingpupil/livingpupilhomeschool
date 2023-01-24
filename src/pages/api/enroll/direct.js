@@ -97,7 +97,8 @@ const handler = async (req, res) => {
         incomingGradeLevel,
         program,
         accreditation,
-        paymentMethod
+        paymentMethod,
+        discountCode
       ),
       updateGuardianInformation(session.user.userId, guardianInformation),
     ]);
