@@ -422,6 +422,46 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
   const submit = () => {
     schoolFee;
     setSubmittingState(true);
+    const testvar = {
+      body: {
+        firstName,
+        middleName,
+        lastName,
+        gender,
+        religion,
+        reason,
+        enrollmentType,
+        incomingGradeLevel,
+        formerSchoolName,
+        formerSchoolAddress,
+        program,
+        accreditation,
+        payment,
+        birthDate,
+        pictureLink,
+        birthCertificateLink,
+        reportCardLink,
+        paymentMethod,
+        slug,
+        primaryGuardianName,
+        primaryGuardianOccupation,
+        primaryGuardianType,
+        primaryGuardianProfile,
+        secondaryGuardianName,
+        secondaryGuardianOccupation,
+        secondaryGuardianType,
+        secondaryGuardianProfile,
+        mobileNumber,
+        telephoneNumber,
+        anotherEmail,
+        address1,
+        address2,
+        discountCode,
+      },
+    };
+
+    console.log(testvar);
+    return false;
     api('/api/enroll/direct', {
       body: {
         firstName,
