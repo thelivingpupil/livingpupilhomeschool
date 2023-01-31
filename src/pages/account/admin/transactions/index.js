@@ -27,62 +27,69 @@ const Transactions = () => {
 
   const renew = () => {};
 
-  const submit = () => {
+  const submit = async () => {
     //schoolFee;
     setSubmittingState(true);
-    api('/api/enroll/direct', {
-      body: {
-        firstName,
-        middleName,
-        lastName,
-        gender,
-        religion,
-        reason,
-        enrollmentType,
-        incomingGradeLevel,
-        formerSchoolName,
-        formerSchoolAddress,
-        program,
-        accreditation,
-        payment,
-        birthDate,
-        pictureLink,
-        birthCertificateLink,
-        reportCardLink,
-        paymentMethod,
-        slug,
-        primaryGuardianName,
-        primaryGuardianOccupation,
-        primaryGuardianType,
-        primaryGuardianProfile,
-        secondaryGuardianName,
-        secondaryGuardianOccupation,
-        secondaryGuardianType,
-        secondaryGuardianProfile,
-        mobileNumber,
-        telephoneNumber,
-        anotherEmail,
-        address1,
-        address2,
-        discountCode,
-      },
-      method: 'POST',
-    }).then((response) => {
-      setSubmittingState(false);
 
-      if (response.errors) {
-        Object.keys(response.errors).forEach((error) =>
-          //toast.error(response.errors[error].msg)
-          console.log(response.errors[error].msg)
-        );
-      } else {
-        //window.open(response.data.schoolFee.url, '_blank');
-        //setPaymentLink(response.data.schoolFee.url);
-        //setViewFees(true);
-        //toast.success('Student information successfully submitted!');
-        console.log('Student information successfully submitted!');
-      }
-    });
+
+    api('/api/enroll/import', {
+      method: 'GET'
+    })
+
+    setSubmittingState(false);
+    // api('/api/enroll/direct', {
+    //   body: {
+    //     firstName,
+    //     middleName,
+    //     lastName,
+    //     gender,
+    //     religion,
+    //     reason,
+    //     enrollmentType,
+    //     incomingGradeLevel,
+    //     formerSchoolName,
+    //     formerSchoolAddress,
+    //     program,
+    //     accreditation,
+    //     payment,
+    //     birthDate,
+    //     pictureLink,
+    //     birthCertificateLink,
+    //     reportCardLink,
+    //     paymentMethod,
+    //     slug,
+    //     primaryGuardianName,
+    //     primaryGuardianOccupation,
+    //     primaryGuardianType,
+    //     primaryGuardianProfile,
+    //     secondaryGuardianName,
+    //     secondaryGuardianOccupation,
+    //     secondaryGuardianType,
+    //     secondaryGuardianProfile,
+    //     mobileNumber,
+    //     telephoneNumber,
+    //     anotherEmail,
+    //     address1,
+    //     address2,
+    //     discountCode,
+    //   },
+    //   method: 'POST',
+    // }).then((response) => {
+    //   setSubmittingState(false);
+
+    //   if (response.errors) {
+    //     Object.keys(response.errors).forEach((error) =>
+    //       //toast.error(response.errors[error].msg)
+    //       console.log(response.errors[error].msg)
+    //     );
+    //   } else {
+    //     //window.open(response.data.schoolFee.url, '_blank');
+    //     //setPaymentLink(response.data.schoolFee.url);
+    //     //setViewFees(true);
+    //     //toast.success('Student information successfully submitted!');
+    //     console.log('Student information successfully submitted!');
+    //   }
+    // });
   };
 
   return (

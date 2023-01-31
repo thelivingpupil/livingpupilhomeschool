@@ -84,6 +84,7 @@ export const getUser = async (id) =>
 export const getUserByEmail = async (email) =>
   await prisma.user.findUnique({
     select: {
+      id: true,
       email: true,
       name: true,
       userCode: true,
