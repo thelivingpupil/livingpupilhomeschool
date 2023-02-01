@@ -18,6 +18,8 @@ import {
   STATUS_BG_COLOR,
 } from '@/utils/constants';
 
+import prisma from "@/prisma/index";
+
 const Transactions = () => {
   const { data, isLoading } = useTransactions();
   const [showModal, setModalVisibility] = useState(false);
@@ -27,12 +29,30 @@ const Transactions = () => {
 
   const renew = () => {};
 
+  const importUser = async () => {
+    const user = await prisma.user.findUnique({
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      userCode: true,
+    },
+    where: { email: 'babydaughson@gmail.com' },
+  });
+
+  console.log('I am here');
+
+  console.log(user);
+
+  console.log(session);
+  }
+
   const submit = async () => {
     //schoolFee;
     setSubmittingState(true);
 
 
-
+    await importUser()
 
     setSubmittingState(false);
     // api('/api/enroll/direct', {
