@@ -18,8 +18,6 @@ import {
   STATUS_BG_COLOR,
 } from '@/utils/constants';
 
-import prisma from "@/prisma/index";
-
 const Transactions = () => {
   const { data, isLoading } = useTransactions();
   const [showModal, setModalVisibility] = useState(false);
@@ -29,85 +27,66 @@ const Transactions = () => {
 
   const renew = () => {};
 
-  const importUser = async () => {
-    const user = await prisma.user.findUnique({
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      userCode: true,
-    },
-    where: { email: 'babydaughson@gmail.com' },
-  });
-
-  console.log('I am here');
-
-  console.log(user);
-
-  console.log(session);
-  }
-
-  const submit = async () => {
+  const submit = () => {
     //schoolFee;
     setSubmittingState(true);
 
 
-    // await importUser()
+    api('/api/enroll/import', {
+      body: {
+        firstName,
+        middleName,
+        lastName,
+        gender,
+        religion,
+        reason,
+        enrollmentType,
+        incomingGradeLevel,
+        formerSchoolName,
+        formerSchoolAddress,
+        program,
+        accreditation,
+        payment,
+        birthDate,
+        pictureLink,
+        birthCertificateLink,
+        reportCardLink,
+        paymentMethod,
+        slug,
+        primaryGuardianName,
+        primaryGuardianOccupation,
+        primaryGuardianType,
+        primaryGuardianProfile,
+        secondaryGuardianName,
+        secondaryGuardianOccupation,
+        secondaryGuardianType,
+        secondaryGuardianProfile,
+        mobileNumber,
+        telephoneNumber,
+        anotherEmail,
+        address1,
+        address2,
+        discountCode,
+      },
+      method: 'POST',
+    }).then((response) => {
+      setSubmittingState(false);
+
+      if (response.errors) {
+        Object.keys(response.errors).forEach((error) =>
+          //toast.error(response.errors[error].msg)
+          console.log(response.errors[error].msg)
+        );
+      } else {
+        //window.open(response.data.schoolFee.url, '_blank');
+        //setPaymentLink(response.data.schoolFee.url);
+        //setViewFees(true);
+        //toast.success('Student information successfully submitted!');
+        console.log('Student information successfully submitted!');
+      }
+    });
 
     setSubmittingState(false);
-    // api('/api/enroll/direct', {
-    //   body: {
-    //     firstName,
-    //     middleName,
-    //     lastName,
-    //     gender,
-    //     religion,
-    //     reason,
-    //     enrollmentType,
-    //     incomingGradeLevel,
-    //     formerSchoolName,
-    //     formerSchoolAddress,
-    //     program,
-    //     accreditation,
-    //     payment,
-    //     birthDate,
-    //     pictureLink,
-    //     birthCertificateLink,
-    //     reportCardLink,
-    //     paymentMethod,
-    //     slug,
-    //     primaryGuardianName,
-    //     primaryGuardianOccupation,
-    //     primaryGuardianType,
-    //     primaryGuardianProfile,
-    //     secondaryGuardianName,
-    //     secondaryGuardianOccupation,
-    //     secondaryGuardianType,
-    //     secondaryGuardianProfile,
-    //     mobileNumber,
-    //     telephoneNumber,
-    //     anotherEmail,
-    //     address1,
-    //     address2,
-    //     discountCode,
-    //   },
-    //   method: 'POST',
-    // }).then((response) => {
-    //   setSubmittingState(false);
-
-    //   if (response.errors) {
-    //     Object.keys(response.errors).forEach((error) =>
-    //       //toast.error(response.errors[error].msg)
-    //       console.log(response.errors[error].msg)
-    //     );
-    //   } else {
-    //     //window.open(response.data.schoolFee.url, '_blank');
-    //     //setPaymentLink(response.data.schoolFee.url);
-    //     //setViewFees(true);
-    //     //toast.success('Student information successfully submitted!');
-    //     console.log('Student information successfully submitted!');
-    //   }
-    // });
   };
 
   return (

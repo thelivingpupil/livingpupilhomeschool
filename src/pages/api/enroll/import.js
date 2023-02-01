@@ -16,9 +16,9 @@ const handler = async (req, res) => {
 
   console.log('I am here');
 
- console.log(user);
+  console.log(user);
 
- console.log(session);
+  console.log(session);
 }
 
 export default handler;
