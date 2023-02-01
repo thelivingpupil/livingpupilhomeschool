@@ -52,7 +52,7 @@ const Transactions = () => {
     setSubmittingState(true);
 
 
-    await importUser()
+    // await importUser()
 
     setSubmittingState(false);
     // api('/api/enroll/direct', {
