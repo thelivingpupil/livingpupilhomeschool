@@ -32,9 +32,7 @@ const Transactions = () => {
     setSubmittingState(true);
 
 
-    api('/api/enroll/import', {
-      method: 'GET'
-    })
+
 
     setSubmittingState(false);
     // api('/api/enroll/direct', {
