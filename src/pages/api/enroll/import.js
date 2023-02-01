@@ -12,11 +12,13 @@ const handler = async (req, res) => {
       userCode: true,
     },
     where: { email: 'babydaughson@gmail.com' },
-  })
+  });
+
+  console.log('I am here');
 
  console.log(user);
 
- console.log(session)
+ console.log(session);
 }
 
 export default handler;
