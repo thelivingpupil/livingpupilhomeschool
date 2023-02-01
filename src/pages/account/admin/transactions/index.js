@@ -37,6 +37,8 @@ const Transactions = () => {
     }).then((response) => {
       setSubmittingState(false);
 
+      console.log(response)
+
       if (response.errors) {
         Object.keys(response.errors).forEach((error) =>
           //toast.error(response.errors[error].msg)

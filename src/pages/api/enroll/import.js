@@ -14,11 +14,16 @@ const handler = async (req, res) => {
     where: { email: 'babydaughson@gmail.com' },
   });
 
-  console.log('I am here');
+  // console.log('I am here');
 
-  console.log(user);
+  // console.log(JSON.stringify(user));
 
-  console.log(session);
+  // console.log(JSON.stringify());
+
+  res.status(200).json({
+    user,
+    session
+  });
 }
 
 export default handler;
