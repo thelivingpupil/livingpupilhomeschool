@@ -33,41 +33,6 @@ const Transactions = () => {
 
 
     api('/api/enroll/import', {
-      body: {
-        firstName,
-        middleName,
-        lastName,
-        gender,
-        religion,
-        reason,
-        enrollmentType,
-        incomingGradeLevel,
-        formerSchoolName,
-        formerSchoolAddress,
-        program,
-        accreditation,
-        payment,
-        birthDate,
-        pictureLink,
-        birthCertificateLink,
-        reportCardLink,
-        paymentMethod,
-        slug,
-        primaryGuardianName,
-        primaryGuardianOccupation,
-        primaryGuardianType,
-        primaryGuardianProfile,
-        secondaryGuardianName,
-        secondaryGuardianOccupation,
-        secondaryGuardianType,
-        secondaryGuardianProfile,
-        mobileNumber,
-        telephoneNumber,
-        anotherEmail,
-        address1,
-        address2,
-        discountCode,
-      },
       method: 'POST',
     }).then((response) => {
       setSubmittingState(false);
@@ -84,9 +49,11 @@ const Transactions = () => {
         //toast.success('Student information successfully submitted!');
         console.log('Student information successfully submitted!');
       }
+    }).catch((error) => {
+      console.log(error)
     });
 
-    setSubmittingState(false);
+    // setSubmittingState(false);
   };
 
   return (
