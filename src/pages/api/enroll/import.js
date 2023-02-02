@@ -1,3 +1,6 @@
+import { validateSession } from "@/config/api-validation";
+import prisma from "@/prisma/index";
+
 const handler = async (req, res) => {
  try {
 
