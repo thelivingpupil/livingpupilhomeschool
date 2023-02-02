@@ -3,7 +3,7 @@ import prisma from "@/prisma/index";
 
 const handler = async (req, res) => {
  try {
-
+    const firstName = 'KHLOE COLLEEN';
     const session = await validateSession(req, res);
 
     const user = await prisma.user.findUnique({
