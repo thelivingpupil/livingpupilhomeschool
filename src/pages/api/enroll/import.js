@@ -28,10 +28,26 @@ const handler = async (req, res) => {
       where: { id: session.user.userId },
     });
 
+    const existingWorkspace = activeUser.createdWorkspace.find((workspace) => {
+      const validation = workspace.name.length > firstName.length ? {
+        compareWith: workspace.name.toLowerCase(),
+        compareTo: firstName.toLowerCase()
+      } : {
+        compareWith: firstName.toLowerCase(),
+        compareTo: workspace.name.toLowerCase()
+      }
+
+      return validation.compareWith.includes(validation.compareTo)
+    })
+
+    const workspace = existingWorkspace ?? 'test';
+
     res.status(200).json({ message: 'Successful import', data: {
       session,
       user,
-      activeUser
+      activeUser,
+      existingWorkspace,
+      workspace
     } });
  } catch (error) {
     res.status(400).json({
