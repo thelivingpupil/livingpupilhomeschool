@@ -16,7 +16,7 @@ export const processUser = async ({email, firstName}) => {
       where: { email },
     });
 
-    const activeUser = user ?? await prisma.user.findUnique({
+    const activeUser = user || await prisma.user.findUnique({
       select: {
         id: true,
         email: true,
@@ -27,26 +27,26 @@ export const processUser = async ({email, firstName}) => {
       where: { id: session.user.userId },
     });
 
-    const existingWorkspace = activeUser.createdWorkspace.find((workspace) => {
-      const validation = workspace.name.length > firstName.length ? {
-        compareWith: workspace.name.toLowerCase(),
-        compareTo: firstName.toLowerCase()
-      } : {
-        compareWith: firstName.toLowerCase(),
-        compareTo: workspace.name.toLowerCase()
-      }
+    // const existingWorkspace = activeUser.createdWorkspace.find((workspace) => {
+    //   const validation = workspace.name.length > firstName.length ? {
+    //     compareWith: workspace.name.toLowerCase(),
+    //     compareTo: firstName.toLowerCase()
+    //   } : {
+    //     compareWith: firstName.toLowerCase(),
+    //     compareTo: workspace.name.toLowerCase()
+    //   }
 
-      return validation.compareWith.includes(validation.compareTo)
-    })
+    //   return validation.compareWith.includes(validation.compareTo)
+    // })
 
-    const workspace = existingWorkspace ?? 'test';
+    // const workspace = existingWorkspace ?? 'test';
 
     return {
       session,
       user,
       activeUser,
-      existingWorkspace,
-      workspace
+      // existingWorkspace,
+      // workspace
     }
   } catch (error) {
     throw error;
