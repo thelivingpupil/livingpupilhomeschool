@@ -12,7 +12,7 @@ const processUser = async ({email, firstName}) => {
         userCode: true,
         createdWorkspace: true
       },
-      where: { email: 'babydaughson@gmail.com' },
+      where: { email },
     });
 
     const activeUser = user ?? await prisma.user.findUnique({
