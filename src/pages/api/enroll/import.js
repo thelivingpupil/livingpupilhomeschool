@@ -1,10 +1,8 @@
 import { validateSession } from "@/config/api-validation";
 import prisma from "@/prisma/index";
 
-const handler = async (req, res) => {
- try {
-    const firstName = 'KHLOE COLLEEN';
-    const session = await validateSession(req, res);
+const processUser = async ({email, firstName}) => {
+  const session = await validateSession(req, res);
 
     const user = await prisma.user.findUnique({
       select: {
@@ -42,13 +40,23 @@ const handler = async (req, res) => {
 
     const workspace = existingWorkspace ?? 'test';
 
-    res.status(200).json({ message: 'Successful import', data: {
+    return {
       session,
       user,
       activeUser,
       existingWorkspace,
       workspace
-    } });
+    }
+}
+
+const handler = async (req, res) => {
+ try {
+    const firstName = 'KHLOE COLLEEN';
+
+    const data = await processUser({email: 'babydaughson@gmail.com', firstName})
+
+
+    res.status(200).json({ message: 'Successful import', data });
  } catch (error) {
     res.status(400).json({
       error
