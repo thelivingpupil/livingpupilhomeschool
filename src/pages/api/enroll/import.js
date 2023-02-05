@@ -1,11 +1,29 @@
 import { validateSession } from "@/config/api-validation";
 import prisma from "@/prisma/index";
+import { createWorkspaceWithSlug } from "@/prisma/services/workspace";
+import slugify from 'slugify';
 
 const handler = async (req, res) => {
  try {
-    const firstName = 'KHLOE COLLEEN';
-    const email = 'babydaughson@gmail.com'
-    const processUser = async ({email, firstName }) => {
+    const student = {
+        lastName: "ROBANTE",
+        firstName: "KHLOE COLLEEN",
+        middleName: "Dinorog",
+        incomingGradeLevel: "GRADE_6",
+        amount: 7200,
+        datePaid: "8/3/2022",
+        paymentType: "SEMI_ANNUAL",
+        email: "babydaughson@gmail.com",
+        secondaryEmail: "babydaughson@yahoo.com",
+        birthDate: "7/29/2011",
+        gender: "FEMALE",
+        religion: "ROMAN_CATHOLIC",
+        enrollmentType: "CONTINUING",
+        program: "HOMESCHOOL_PROGRAM",
+        accreditation: "LOCAL"
+    }
+
+    const processUser = async ({ email, firstName, lastName }) => {
       const session = await validateSession(req, res);
 
       const user = await prisma.user.findUnique({
@@ -42,7 +60,12 @@ const handler = async (req, res) => {
         return validation.compareWith.includes(validation.compareTo)
       })
 
-      const workspace = existingWorkspace ?? 'test';
+      const workspace = existingWorkspace ?? await createWorkspaceWithSlug(
+        activeUser.id,
+        activeUser.email,
+        `${firstName} ${lastName}`,
+        slugify(firstName.toLowerCase())
+      );
 
       return {
         session,
@@ -53,7 +76,7 @@ const handler = async (req, res) => {
       }
     }
 
-    const data = await processUser({email, firstName});
+    const data = await processUser(student);
 
     res.status(200).json({ message: 'Successful import', data });
  } catch (error) {
