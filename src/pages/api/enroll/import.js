@@ -82,7 +82,7 @@ const handler = async (req, res) => {
         student.accreditation,
         'From Import',
         'From Import',
-        undefined,
+        'From Import',
         undefined,
         undefined,
         undefined,
