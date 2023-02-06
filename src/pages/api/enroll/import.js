@@ -98,6 +98,7 @@ const handler = async (req, res) => {
 
     res.status(200).json({ message: 'Successful import', data });
  } catch (error) {
+    throw error;
     res.status(400).json({
       error
     })
