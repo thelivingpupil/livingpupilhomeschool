@@ -73,7 +73,7 @@ const handler = async (req, res) => {
         student.firstName,
         student.middleName,
         student.lastName,
-        student.birthDate,
+        new Date(student.birthDate),
         student.gender,
         student.religion,
         student.incomingGradeLevel,
@@ -81,7 +81,12 @@ const handler = async (req, res) => {
         student.program,
         student.accreditation,
         'From Import',
-        'From Import'
+        'From Import',
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
       )
 
       return {
