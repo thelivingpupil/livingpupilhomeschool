@@ -70,16 +70,16 @@ const handler = async (req, res) => {
 
       const studentRecord = workspace.studentRecord ?? await createStudentRecord(
         workspace.id,
-        firstName,
-        middleName,
-        lastName,
-        birthDate,
-        gender,
-        religion,
-        incomingGradeLevel,
-        enrollmentType,
-        program,
-        accreditation,
+        student.firstName,
+        student.middleName,
+        student.lastName,
+        student.birthDate,
+        student.gender,
+        student.religion,
+        student.incomingGradeLevel,
+        student.enrollmentType,
+        student.program,
+        student.accreditation,
         'From Import',
         'From Import'
       )
