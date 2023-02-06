@@ -44,7 +44,18 @@ const handler = async (req, res) => {
           email: true,
           name: true,
           userCode: true,
-          createdWorkspace: true
+          createdWorkspace: {
+            select: {
+              id: true,
+              workspaceCode: true,
+              inviteCode: true,
+              creatorId: true,
+              name: true,
+              slug: true,
+              schoolFees: true,
+              studentRecord: true
+            }
+          }
         },
         where: { id: session.user.userId },
       });
