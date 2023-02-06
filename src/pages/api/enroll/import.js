@@ -68,6 +68,12 @@ const handler = async (req, res) => {
         slugify(firstName.toLowerCase())
       );
 
+      const existingStudentRecord = await prisma.studentRecord.findUnique({
+        where: {
+          studentId: workspace.id
+        }
+      })
+
       // const studentRecord = workspace.studentRecord ?? await createStudentRecord(
       //   workspace.id,
       //   student.firstName,
@@ -95,7 +101,8 @@ const handler = async (req, res) => {
         activeUser,
         existingWorkspace,
         workspace,
-        // studentRecord
+        // studentRecord,
+        existingStudentRecord
       }
     }
 
