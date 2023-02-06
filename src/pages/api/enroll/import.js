@@ -68,26 +68,26 @@ const handler = async (req, res) => {
         slugify(firstName.toLowerCase())
       );
 
-      const studentRecord = workspace.studentRecord ?? await createStudentRecord(
-        workspace.id,
-        student.firstName,
-        student.middleName,
-        student.lastName,
-        new Date(student.birthDate),
-        student.gender,
-        student.religion,
-        student.incomingGradeLevel,
-        student.enrollmentType,
-        student.program,
-        student.accreditation,
-        'From Import',
-        'From Import',
-        'From Import',
-        undefined,
-        undefined,
-        undefined,
-        undefined
-      )
+      // const studentRecord = workspace.studentRecord ?? await createStudentRecord(
+      //   workspace.id,
+      //   student.firstName,
+      //   student.middleName,
+      //   student.lastName,
+      //   new Date(student.birthDate),
+      //   student.gender,
+      //   student.religion,
+      //   student.incomingGradeLevel,
+      //   student.enrollmentType,
+      //   student.program,
+      //   student.accreditation,
+      //   'From Import',
+      //   'From Import',
+      //   'From Import',
+      //   undefined,
+      //   undefined,
+      //   undefined,
+      //   undefined
+      // )
 
       return {
         session,
@@ -95,7 +95,7 @@ const handler = async (req, res) => {
         activeUser,
         existingWorkspace,
         workspace,
-        studentRecord
+        // studentRecord
       }
     }
 
@@ -105,9 +105,6 @@ const handler = async (req, res) => {
  } catch (error) {
     console.log(error)
     throw error;
-    res.status(400).json({
-      error
-    })
  }
 }
 
