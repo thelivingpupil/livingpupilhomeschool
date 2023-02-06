@@ -72,6 +72,11 @@ const handler = async (req, res) => {
         return validation.compareWith.includes(validation.compareTo)
       })
 
+      const fetchExistingWorkspace = await prisma.workspace.findUnique({
+        where: {
+          id: existingWorkspace.id
+        }
+      })
       const workspace = existingWorkspace ?? await createWorkspaceWithSlug(
         activeUser.id,
         activeUser.email,
@@ -85,34 +90,35 @@ const handler = async (req, res) => {
         }
       })
 
-      // const studentRecord = workspace.studentRecord ?? await createStudentRecord(
-      //   workspace.id,
-      //   student.firstName,
-      //   student.middleName,
-      //   student.lastName,
-      //   new Date(student.birthDate),
-      //   student.gender,
-      //   student.religion,
-      //   student.incomingGradeLevel,
-      //   student.enrollmentType,
-      //   student.program,
-      //   student.accreditation,
-      //   'From Import',
-      //   'From Import',
-      //   'From Import',
-      //   undefined,
-      //   undefined,
-      //   undefined,
-      //   undefined
-      // )
+      const studentRecord = existingStudentRecord ?? await createStudentRecord(
+        workspace.id,
+        student.firstName,
+        student.middleName,
+        student.lastName,
+        new Date(student.birthDate),
+        student.gender,
+        student.religion,
+        student.incomingGradeLevel,
+        student.enrollmentType,
+        student.program,
+        student.accreditation,
+        'From Import',
+        'From Import',
+        'From Import',
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      )
 
       return {
         session,
         user,
         activeUser,
         existingWorkspace,
+        fetchExistingWorkspace,
         workspace,
-        // studentRecord,
+        studentRecord,
         existingStudentRecord
       }
     }
