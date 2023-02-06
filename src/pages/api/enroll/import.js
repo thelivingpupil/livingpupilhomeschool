@@ -1,5 +1,6 @@
 import { validateSession } from "@/config/api-validation";
 import prisma from "@/prisma/index";
+import { createStudentRecord } from "@/prisma/services/student-record";
 import { createWorkspaceWithSlug } from "@/prisma/services/workspace";
 import slugify from 'slugify';
 
@@ -67,12 +68,29 @@ const handler = async (req, res) => {
         slugify(firstName.toLowerCase())
       );
 
+      const studentRecord = workspace.studentRecord ?? await createStudentRecord(
+        workspace.id,
+        firstName,
+        middleName,
+        lastName,
+        birthDate,
+        gender,
+        religion,
+        incomingGradeLevel,
+        enrollmentType,
+        program,
+        accreditation,
+        'From Import',
+        'From Import'
+      )
+
       return {
         session,
         user,
         activeUser,
         existingWorkspace,
-        workspace
+        workspace,
+        studentRecord
       }
     }
 
