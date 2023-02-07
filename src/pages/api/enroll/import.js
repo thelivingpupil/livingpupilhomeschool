@@ -130,7 +130,7 @@ const handler = async (req, res) => {
         fetchExistingWorkspace,
         workspace,
         studentRecord,
-        existingStudentRecord.
+        existingStudentRecord,
         existingSchoolFees
       }
     }
