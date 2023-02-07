@@ -77,6 +77,7 @@ const handler = async (req, res) => {
           id: existingWorkspace.id
         }
       })
+
       const workspace = existingWorkspace ?? await createWorkspaceWithSlug(
         activeUser.id,
         activeUser.email,
@@ -111,6 +112,16 @@ const handler = async (req, res) => {
         undefined
       )
 
+      const existingSchoolFees = await prisma.schoolFee.findMany({
+        where: {
+          student: {
+            is: {
+              id: 'cl1aablpy085409l26aey9rla'
+            }
+          }
+        }
+      })
+
       return {
         session,
         user,
@@ -119,7 +130,8 @@ const handler = async (req, res) => {
         fetchExistingWorkspace,
         workspace,
         studentRecord,
-        existingStudentRecord
+        existingStudentRecord.
+        existingSchoolFees
       }
     }
 
