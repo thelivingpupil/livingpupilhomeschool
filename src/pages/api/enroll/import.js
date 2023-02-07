@@ -116,7 +116,7 @@ const handler = async (req, res) => {
         where: {
           student: {
             is: {
-              id: 'cl1aablpy085409l26aey9rla'
+              id: workspace.id
             }
           }
         }
