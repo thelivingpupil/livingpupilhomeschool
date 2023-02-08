@@ -17,6 +17,7 @@ import { UserIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import format from 'date-fns/format';
 import differenceInCalendarYears from 'date-fns/differenceInCalendarYears';
+import differenceInYears from 'date-fns/differenceInYears';
 
 const Students = () => {
   const { data, isLoading } = useStudents();
@@ -115,10 +116,7 @@ const Students = () => {
               <h4 className="font-bold text-gray-600">Birth Date</h4>
               <p className="text-lg">
                 {format(new Date(student.birthDate), 'MMMM dd, yyyy')} (
-                {differenceInCalendarYears(
-                  new Date(),
-                  new Date(student.birthDate)
-                )}{' '}
+                {differenceInYears(new Date(), new Date(student.birthDate))}{' '}
                 years old )
               </p>
               <h4 className="font-bold text-gray-600">Former School</h4>
