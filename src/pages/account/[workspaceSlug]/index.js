@@ -21,6 +21,7 @@ import {
 } from '@prisma/client';
 import crypto from 'crypto';
 import differenceInCalendarYears from 'date-fns/differenceInCalendarYears';
+import differenceInYears from 'date-fns/differenceInYears';
 import format from 'date-fns/format';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import Link from 'next/link';
@@ -150,7 +151,7 @@ const Workspace = ({ guardian, schoolFees }) => {
   const handleAddress1 = (event) => setAddress1(event.target.value);
   const handleAddress2 = (event) => setAddress2(event.target.value);
 
-  const age = differenceInCalendarYears(new Date(), birthDate) || 0;
+  const age = differenceInYears(new Date(), birthDate) || 0;
   const validateNext =
     (step === 0 &&
       firstName.length > 0 &&
@@ -2351,7 +2352,7 @@ const Workspace = ({ guardian, schoolFees }) => {
                           'MMMM dd, yyyy'
                         )}{' '}
                         (
-                        {differenceInCalendarYears(
+                        {differenceInYears(
                           new Date(),
                           new Date(workspace.studentRecord.birthDate)
                         )}{' '}
