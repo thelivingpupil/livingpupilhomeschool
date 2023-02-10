@@ -3,6 +3,7 @@ import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
 
 import { MinusIcon, PlusIcon } from '@heroicons/react/outline';
+import Link from 'next/link';
 
 const Item = ({
   id,
@@ -41,7 +42,9 @@ const Item = ({
             src={image || '/images/livingpupil-homeschool-logo.png'}
           />
         </div>
-        <h3 className="font-bold">{name}</h3>
+        <Link href={`/shop/${id}`}>
+          <h3 className="font-bold">{name}</h3>
+        </Link>
         <p className="text-gray-600">
           {new Intl.NumberFormat('en-US', {
             style: 'currency',
