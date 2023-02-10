@@ -11,6 +11,8 @@ import Title from '@/sections/sectionTitle';
 const ShopItem = ({ page, item }) => {
   const router = useRouter();
 
+  console.log('item', { item });
+
   if (!page) {
     return <ErrorPage statusCode={404} />;
   }
