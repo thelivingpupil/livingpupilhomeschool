@@ -42,21 +42,21 @@ export const getStaticPaths = async () => {
 
   console.log('paths', paths);
   return {
-    paths: paths.map((slug) => ({ params: { slug } })),
+    paths: paths.map((id) => ({ params: { id } })),
     fallback: true,
   };
 };
 
 export const getStaticProps = async ({ params }) => {
-  const { slug } = params;
+  const { id } = params;
 
-  console.log('pathId', slug);
+  console.log('pathId', id);
   const [[header, footer], item] = await Promise.all([
     sanityClient.fetch(
       `*[_type == 'sections' && (name == 'Common Header' || name == 'Common Footer')]`
     ),
     sanityClient.fetch(`*[_type == 'shopItems' && _id == $id][0]`, {
-      slug,
+      id,
     }),
   ]);
   return {
