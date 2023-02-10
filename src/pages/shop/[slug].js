@@ -35,16 +35,16 @@ const ShopItem = ({ page, item }) => {
   );
 };
 
-export const getStaticPaths = async () => {
-  const paths = await sanityClient.fetch(
-    `*[_type == 'shopItems' && defined(slug.current)][].slug.current`
-  );
-  console.log('paths', paths);
-  return {
-    paths: paths.map((slug) => ({ params: { slug } })),
-    fallback: true,
-  };
-};
+// export const getStaticPaths = async () => {
+//   const paths = await sanityClient.fetch(
+//     `*[_type == 'shopItems' && defined(slug.current)][].slug.current`
+//   );
+//   console.log('paths', paths);
+//   return {
+//     paths: paths.map((slug) => ({ params: { slug } })),
+//     fallback: true,
+//   };
+// };
 
 export const getStaticProps = async ({ params }) => {
   const { slug } = params;
@@ -52,7 +52,7 @@ export const getStaticProps = async ({ params }) => {
     sanityClient.fetch(
       `*[_type == 'sections' && (name == 'Common Header' || name == 'Common Footer')]`
     ),
-    sanityClient.fetch(`*[_type == 'shopItems' && slug.current == $slug][0]`, {
+    sanityClient.fetch(`*[_type == 'shopItems' && _id == $slug][0]`, {
       slug,
     }),
   ]);
