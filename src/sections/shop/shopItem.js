@@ -6,7 +6,7 @@ import sanityClient from '@/lib/server/sanity';
 const imageBuilder = imageUrlBuilder(sanityClient);
 
 const ShopItem = ({ item }) => {
-  const imageAsset = imageBuilder(item?.image?.asset);
+  const imageAsset = imageBuilder.image(item?.image?.asset);
 
   const image = imageAsset?.options?.source ? imageAsset?.url() : null;
   return (
@@ -21,7 +21,9 @@ const ShopItem = ({ item }) => {
             src={image || '/images/livingpupil-homeschool-logo.png'}
           />
         </div>
-        <div className="flex flex-col"></div>
+        <div className="flex flex-col">
+          <div className="">{item.name}</div>
+        </div>
       </div>
     </section>
   );
