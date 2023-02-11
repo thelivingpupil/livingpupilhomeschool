@@ -7,6 +7,7 @@ import sanityClient from '@/lib/server/sanity';
 import Footer from '@/sections/footer';
 import Header from '@/sections/header';
 import Title from '@/sections/sectionTitle';
+import Item from '@/sections/shop/shopItem';
 
 const ShopItem = ({ page, item }) => {
   const router = useRouter();
@@ -30,6 +31,7 @@ const ShopItem = ({ page, item }) => {
       <Meta title="Living Pupil Homeschool" />
       <Header {...headerSection} />
       <Title title="Living Pupil Homeschool Shop" />
+      <Item item={item} />
       <Footer {...footerSection} />
     </LandingLayout>
   );

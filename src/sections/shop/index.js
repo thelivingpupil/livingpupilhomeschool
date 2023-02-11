@@ -17,7 +17,6 @@ const builder = imageUrlBuilder(sanityClient);
 const LPH_CART_KEY = 'LPHCART';
 
 const Shop = ({ categories, items }) => {
-  console.log('items', items);
   const { data } = useSession();
   const [sortBy, setSortBy] = useState('alphaAsc');
   const [categoryFilter, setCategoryFilter] = useState('all');
