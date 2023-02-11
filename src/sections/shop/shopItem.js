@@ -12,16 +12,18 @@ const ShopItem = ({ item }) => {
   return (
     <section className="px-5 py-10 md:px-0">
       <div className="container flex mx-auto space-y-10 md:space-y-0 md:space-x-10">
-        <div className="relative inline-block">
-          <Image
-            name={item.name}
-            layout="fill"
-            loading="lazy"
-            objectFit="contain"
-            src={image || '/images/livingpupil-homeschool-logo.png'}
-          />
+        <div className="flex flex-none">
+          <div className="relative inline-block w-full">
+            <Image
+              name={item.name}
+              layout="fill"
+              loading="lazy"
+              objectFit="contain"
+              src={image || '/images/livingpupil-homeschool-logo.png'}
+            />
+          </div>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-1">
           <div className="">{item.name}</div>
         </div>
       </div>
