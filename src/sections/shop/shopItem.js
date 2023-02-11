@@ -12,7 +12,7 @@ const ShopItem = ({ item }) => {
   return (
     <section className="px-5 py-10 md:px-0">
       <div className="container flex mx-auto space-y-10 md:space-y-0 md:space-x-10">
-        <div className="flex">
+        <div className="relative inline-block">
           <Image
             name={item.name}
             layout="fill"
