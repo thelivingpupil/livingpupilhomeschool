@@ -12,8 +12,6 @@ import Item from '@/sections/shop/shopItem';
 const ShopItem = ({ page, item }) => {
   const router = useRouter();
 
-  console.log('item', { item });
-
   if (!page) {
     return <ErrorPage statusCode={404} />;
   }
@@ -42,7 +40,6 @@ export const getStaticPaths = async () => {
     `*[_type == 'shopItems' && defined(_id)][]._id`
   );
 
-  console.log('paths', paths);
   return {
     paths: paths.map((id) => ({ params: { id } })),
     fallback: true,
@@ -52,7 +49,6 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params }) => {
   const { id } = params;
 
-  console.log('pathId', id);
   const [[header, footer], item] = await Promise.all([
     sanityClient.fetch(
       `*[_type == 'sections' && (name == 'Common Header' || name == 'Common Footer')]`

@@ -44,7 +44,7 @@ const ShopItem = ({ item }) => {
               ) : null
             )}
           </div>
-          <div className="text-base py-2 space-y-3 justify-center">
+          <div className="text-sm py-2 space-y-3 justify-center">
             <PortableText value={item.description} />
           </div>
         </div>
