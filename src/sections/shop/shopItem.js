@@ -12,7 +12,7 @@ const ShopItem = ({ item }) => {
   return (
     <section className="px-5 py-10 md:px-0">
       <div className="container flex mx-auto space-y-10 md:space-y-0 md:space-x-10">
-        <div className="flex flex-none">
+        <div className="flex flex-1">
           <div className="relative inline-block w-full">
             <Image
               name={item.name}
@@ -20,10 +20,18 @@ const ShopItem = ({ item }) => {
               loading="lazy"
               objectFit="contain"
               src={image || '/images/livingpupil-homeschool-logo.png'}
+              height={500}
             />
           </div>
         </div>
         <div className="flex flex-col flex-1">
+          <div className="text-lg font-bold">{item.name}</div>
+          <div className="text-lg font-bold">{item.name}</div>
+          <div className="text-lg font-bold">{item.name}</div>
+          <div className="text-lg font-bold">{item.name}</div>
+          <div className="text-lg font-bold">{item.name}</div>
+          <div className="text-lg font-bold">{item.name}</div>
+          <div className="text-lg font-bold">{item.name}</div>
           <div className="">{item.name}</div>
         </div>
       </div>
