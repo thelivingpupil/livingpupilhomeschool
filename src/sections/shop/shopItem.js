@@ -26,8 +26,8 @@ const ShopItem = ({ item }) => {
         <div className="flex flex-col flex-1">
           <div className="flex text-4xl font-bold">{item.name}</div>
           <div className="flex text-2xl py-2">{item.price}</div>
-          <div className="flex flex-wrap py-2">
-            {item.categories?.map((category, index) => (
+          {/* <div className="flex flex-wrap py-2">
+            {item?.categories?.map((category, index) => (
               <span
                 key={index}
                 className="px-3 py-1 mb-2 mr-3 text-xs text-gray-600 bg-gray-100 rounded-full"
@@ -38,7 +38,7 @@ const ShopItem = ({ item }) => {
           </div>
           <div className="text-base py-2 space-y-3 justify-center">
             {item.description}
-          </div>
+          </div> */}
         </div>
       </div>
     </section>
