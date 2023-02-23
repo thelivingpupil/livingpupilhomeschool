@@ -2,8 +2,10 @@ import Content from '@/components/Content/index';
 import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
+import sanityClient from '@/lib/server/sanity';
 
-const Calendar = () => {
+const Calendar = ({ events }) => {
+  console.log('events', events);
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - School Calendar" />
@@ -30,6 +32,16 @@ const Calendar = () => {
       </Content.Container>
     </AccountLayout>
   );
+};
+
+export const getStaticProps = async () => {
+  const events = await sanityClient.fetch(`*[_type == 'events']`);
+
+  return {
+    props: {
+      events,
+    },
+  };
 };
 
 export default Calendar;
