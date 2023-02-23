@@ -35,7 +35,7 @@ const Calendar = ({ events }) => {
 };
 
 export const getServerSideProps = async () => {
-  const events = await sanityClient.fetch(`*[_type == 'events']{...}`);
+  const events = await sanityClient.fetch(`*[_type == 'events']`);
 
   return {
     props: {
