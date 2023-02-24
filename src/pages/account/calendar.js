@@ -108,7 +108,9 @@ const Calendar = ({ events }) => {
                         href={event.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                      />
+                      >
+                        {event.link}
+                      </a>
                     </div>
                   </div>
                   <div className="flex flex-col mt-4">
@@ -118,7 +120,9 @@ const Calendar = ({ events }) => {
                         href={event.mapLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                      />
+                      >
+                        {event.mapLink}
+                      </a>
                     </div>
                   </div>
                 </Card>
