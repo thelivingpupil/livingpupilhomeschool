@@ -71,14 +71,20 @@ const Calendar = ({ events }) => {
                       ))}
                   </div>
                   <div className="flex flex-col mt-2">
-                    <div className="flex text-lg font-semibold">
-                      Date and Times:
+                    <div className="flex font-semibold">Date and Times:</div>
+                    <div className="flex flex-wrap">
+                      {event.dateandtime.map((date, idx) => (
+                        <div
+                          className="flex text-sm text-gray-600 bg-gray-100 rounded-full px-3 py-1 mb-2 mr-3"
+                          key={idx}
+                        >
+                          {format(
+                            new Date(date),
+                            'eeee, MMMM dd, yyyy hh:mm aa'
+                          )}
+                        </div>
+                      ))}
                     </div>
-                    {event.dateandtime.map((date, idx) => (
-                      <div className="flex text-sm" key={idx}>
-                        {format(new Date(date), 'eeee, MMMM dd, yyyy hh:mm aa')}
-                      </div>
-                    ))}
                   </div>
                 </Card>
               </div>
