@@ -27,7 +27,7 @@ const Calendar = ({ events }) => {
       />
       <Content.Divider />
       <Content.Container>
-        <div className="grid grid-cols-2 grid-flow-dense gap-4">
+        <div className="grid grid-cols-2 xs:grid-cols-1 grid-flow-dense gap-4">
           {events.map((event) => {
             const imageAsset = imageBuilder.image(event?.poster?.asset);
 
@@ -108,7 +108,7 @@ const Calendar = ({ events }) => {
                         href={event.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-base"
+                        className="text-base flex"
                       >
                         {event.link}
                       </a>
@@ -121,7 +121,7 @@ const Calendar = ({ events }) => {
                         href={event.maplink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-base"
+                        className="text-base flex"
                       >
                         {event.maplink}
                       </a>
