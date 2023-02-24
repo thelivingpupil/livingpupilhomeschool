@@ -1,8 +1,13 @@
+import Image from 'next/image';
+import imageUrlBuilder from '@sanity/image-url';
+
 import Content from '@/components/Content/index';
 import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
 import sanityClient from '@/lib/server/sanity';
+
+const imageBuilder = imageUrlBuilder(sanityClient);
 
 const Calendar = ({ events }) => {
   console.log('events', events);
@@ -15,20 +20,29 @@ const Calendar = ({ events }) => {
       />
       <Content.Divider />
       <Content.Container>
-        <Card>
-          <Card.Body
-            title="A list of calendar events and school activities will be displayed here"
-            subtitle="You may visit our Facebook page for more details"
-          >
-            <a
-              className="w-full py-2 text-center rounded-lg text-primary-500 bg-secondary-500 hover:bg-secondary-600 disabled:opacity-25"
-              href="https://www.facebook.com/livingpupilhomeschool"
-              target="_blank"
-            >
-              Visit Facebook Page
-            </a>
-          </Card.Body>
-        </Card>
+        <div className="grid grid-cols-2 grid-flow-dense gap-4">
+          {events.map((event) => {
+            const imageAsset = imageBuilder.image(event?.poster?.asset);
+
+            const image = imageAsset?.options?.source
+              ? imageAsset?.url()
+              : null;
+
+            return (
+              <Card key={event._id}>
+                <div className="relative inline-block w-full">
+                  <Image
+                    name={event.title}
+                    layout="fill"
+                    loading="lazy"
+                    objectFit="contain"
+                    src={image || '/images/livingpupil-homeschool-logo.png'}
+                  />
+                </div>
+              </Card>
+            );
+          })}
+        </div>
       </Content.Container>
     </AccountLayout>
   );
