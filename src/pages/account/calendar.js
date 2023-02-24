@@ -11,6 +11,11 @@ import sanityClient from '@/lib/server/sanity';
 
 const imageBuilder = imageUrlBuilder(sanityClient);
 
+const types = {
+  FACETOFACE: 'Face To Face',
+  ONLINE: 'Online',
+};
+
 const Calendar = ({ events }) => {
   console.log('events', events);
   return (
@@ -54,14 +59,16 @@ const Calendar = ({ events }) => {
                     <PortableText value={event.description} />
                   </div>
                   <div className="flex flex-wrap mt-2">
-                    {event.types.map((type, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1 mb-2 mr-3 text-xs text-gray-600 bg-gray-100 rounded-full"
-                      >
-                        {type}
-                      </span>
-                    ))}
+                    {event.types
+                      ?.filter((type) => type !== '')
+                      ?.map((type, index) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 mb-2 mr-3 text-xs text-gray-600 bg-gray-100 rounded-full"
+                        >
+                          {types[type]}
+                        </span>
+                      ))}
                   </div>
                   <div className="flex flex-col mt-2">
                     <div className="flex text-lg font-semibold">
