@@ -53,12 +53,22 @@ const Calendar = ({ events }) => {
                   <div className="text-sm py-2 space-y-3 justify-center text-gray-600 mt-4">
                     <PortableText value={event.description} />
                   </div>
-                  <div className="flex flex-col mt-4">
+                  <div className="flex flex-wrap mt-2">
+                    {event.types.map((type, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 mb-2 mr-3 text-xs text-gray-600 bg-gray-100 rounded-full"
+                      >
+                        {type}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex flex-col mt-2">
                     <div className="flex text-lg font-semibold">
                       Date and Times:
                     </div>
-                    {event.dateandtime.map((date) => (
-                      <div className="flex text-sm">
+                    {event.dateandtime.map((date, idx) => (
+                      <div className="flex text-sm" key={idx}>
                         {format(new Date(date), 'eeee, MMMM dd, yyyy hh:mm aa')}
                       </div>
                     ))}
