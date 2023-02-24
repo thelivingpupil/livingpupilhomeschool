@@ -117,14 +117,14 @@ const Calendar = ({ events }) => {
                   <div className="flex flex-col mt-4">
                     <div className="flex font-semibold">Venue</div>
                     <div className="flex flex-col mt-2">
-                      <a
+                      <span
                         href={event.maplink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-base flex"
                       >
                         {event.maplink}
-                      </a>
+                      </span>
                     </div>
                   </div>
                 </Card>
