@@ -55,10 +55,10 @@ const Calendar = ({ events }) => {
                   <div className="flex text-2xl font-bold mt-4">
                     {event.title}
                   </div>
-                  <div className="text-sm py-2 space-y-3 justify-center text-gray-600 mt-4">
+                  <div className="text-sm py-2 space-y-3 justify-center text-gray-600 mt-2">
                     <PortableText value={event.description} />
                   </div>
-                  <div className="flex flex-wrap mt-2">
+                  <div className="flex flex-wrap">
                     {event.types
                       ?.filter((type) => type !== '')
                       ?.map((type, index) => (
@@ -70,7 +70,7 @@ const Calendar = ({ events }) => {
                         </span>
                       ))}
                   </div>
-                  <div className="flex flex-col mt-2">
+                  <div className="flex flex-col mt-4">
                     <div className="flex font-semibold">Date and Times:</div>
                     <div className="flex flex-wrap">
                       {event.dateandtime.map((date, idx) => (
@@ -84,6 +84,41 @@ const Calendar = ({ events }) => {
                           )}
                         </div>
                       ))}
+                    </div>
+                  </div>
+                  <div className="flex flex-col mt-4">
+                    <div className="flex font-semibold">Who can join?</div>
+                    <div className="flex flex-col">
+                      {event.joiners
+                        ?.filter((joiner) => joiner !== '')
+                        ?.map((joiner, idx) => (
+                          <div
+                            className="flex text-sm text-gray-600 bg-gray-100 px-3 py-1 mb-2 mr-3"
+                            key={idx}
+                          >
+                            {joiner}
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                  <div className="flex flex-col mt-4">
+                    <div className="flex font-semibold">Registration Link</div>
+                    <div className="flex flex-col">
+                      <a
+                        href={event.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col mt-4">
+                    <div className="flex font-semibold">Venue</div>
+                    <div className="flex flex-col">
+                      <a
+                        href={event.mapLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      />
                     </div>
                   </div>
                 </Card>
