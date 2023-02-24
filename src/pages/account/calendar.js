@@ -34,9 +34,9 @@ const Calendar = ({ events }) => {
                 <div className="relative inline-block w-full">
                   <Image
                     name={event.title}
-                    layout="fill"
                     loading="lazy"
                     objectFit="contain"
+                    sizes="100vw"
                     src={image || '/images/livingpupil-homeschool-logo.png'}
                   />
                 </div>
