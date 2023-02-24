@@ -59,7 +59,7 @@ const Calendar = ({ events }) => {
                     </div>
                     {event.dateandtime.map((date) => (
                       <div className="flex text-sm">
-                        {format(new Date(date), 'eeee, MMMM dd, YYYY hh:mm aa')}
+                        {format(new Date(date), 'eeee, MMMM dd, yyyy hh:mm aa')}
                       </div>
                     ))}
                   </div>
