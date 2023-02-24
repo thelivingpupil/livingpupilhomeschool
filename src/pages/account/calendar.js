@@ -34,14 +34,14 @@ const Calendar = ({ events }) => {
                 <div className="relative inline-block w-full">
                   <Image
                     name={event.title}
+                    layout="fill"
                     loading="lazy"
-                    objectFit="contain"
-                    sizes="100vw"
+                    objectFit="fill"
                     src={image || '/images/livingpupil-homeschool-logo.png'}
                   />
                 </div>
-                <div className="flex text-lg">{event.title}</div>
-                <div className="text-sm py-2 space-y-3 justify-center">
+                <div className="flex text-2xl font-bold">{event.title}</div>
+                <div className="text-sm py-2 space-y-3 justify-center text-gray-600">
                   <PortableText value={event.description} />
                 </div>
               </Card>
