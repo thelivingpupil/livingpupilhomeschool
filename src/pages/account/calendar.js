@@ -108,7 +108,7 @@ const Calendar = ({ events }) => {
                         href={event.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm flex break-words"
+                        className="text-sm break-words"
                       >
                         {event.link}
                       </a>
@@ -121,7 +121,7 @@ const Calendar = ({ events }) => {
                         href={event.maplink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm flex break-words"
+                        className="text-sm break-words"
                       >
                         {event.maplink}
                       </a>
