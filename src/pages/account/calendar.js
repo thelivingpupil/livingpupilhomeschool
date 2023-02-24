@@ -103,7 +103,7 @@ const Calendar = ({ events }) => {
                   </div>
                   <div className="flex flex-col mt-4">
                     <div className="flex font-semibold">Registration Link</div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col mt-2">
                       <a
                         href={event.link}
                         target="_blank"
@@ -115,13 +115,13 @@ const Calendar = ({ events }) => {
                   </div>
                   <div className="flex flex-col mt-4">
                     <div className="flex font-semibold">Venue</div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col mt-2">
                       <a
-                        href={event.mapLink}
+                        href={event.maplink}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {event.mapLink}
+                        {event.maplink}
                       </a>
                     </div>
                   </div>
