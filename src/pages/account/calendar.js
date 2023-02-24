@@ -108,7 +108,7 @@ const Calendar = ({ events }) => {
                         href={event.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-base flex"
+                        className="text-sm flex break-words"
                       >
                         {event.link}
                       </a>
@@ -117,14 +117,14 @@ const Calendar = ({ events }) => {
                   <div className="flex flex-col mt-4">
                     <div className="flex font-semibold">Venue</div>
                     <div className="flex flex-col mt-2">
-                      <span
+                      <a
                         href={event.maplink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-base flex"
+                        className="text-sm flex break-words"
                       >
                         {event.maplink}
-                      </span>
+                      </a>
                     </div>
                   </div>
                 </Card>
