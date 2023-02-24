@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import imageUrlBuilder from '@sanity/image-url';
 import { PortableText } from '@portabletext/react';
+import { format } from 'date-fns';
 
 import Content from '@/components/Content/index';
 import Meta from '@/components/Meta';
@@ -30,28 +31,40 @@ const Calendar = ({ events }) => {
               : null;
 
             return (
-              <Card key={event._id}>
-                <div className="relative inline-block w-full">
-                  <Image
-                    name={event.title}
-                    loading="lazy"
-                    width={700}
-                    height={475}
-                    sizes="100vw"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                    }}
-                    src={image || '/images/livingpupil-homeschool-logo.png'}
-                  />
-                </div>
-                <div className="flex text-2xl font-bold my-2">
-                  {event.title}
-                </div>
-                <div className="text-sm py-2 space-y-3 justify-center text-gray-600 my-2">
-                  <PortableText value={event.description} />
-                </div>
-              </Card>
+              <div className="cols-span-auto">
+                <Card key={event._id}>
+                  <div className="relative inline-block w-full">
+                    <Image
+                      name={event.title}
+                      loading="lazy"
+                      width={700}
+                      height={475}
+                      sizes="100vw"
+                      style={{
+                        width: '100%',
+                        height: 'auto',
+                      }}
+                      src={image || '/images/livingpupil-homeschool-logo.png'}
+                    />
+                  </div>
+                  <div className="flex text-2xl font-bold mt-4">
+                    {event.title}
+                  </div>
+                  <div className="text-sm py-2 space-y-3 justify-center text-gray-600 mt-4">
+                    <PortableText value={event.description} />
+                  </div>
+                  <div className="flex flex-col mt-4">
+                    <div className="flex text-lg font-semibold">
+                      Date and Times:
+                    </div>
+                    {event.dateandtime.map((date) => (
+                      <div className="flex text-sm">
+                        {format(new Date(date), 'eeee, MMMM DD, YYYY hh:mm aa')}
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </div>
             );
           })}
         </div>
