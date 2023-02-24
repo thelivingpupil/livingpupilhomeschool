@@ -108,6 +108,7 @@ const Calendar = ({ events }) => {
                         href={event.link}
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="text-base"
                       >
                         {event.link}
                       </a>
@@ -120,6 +121,7 @@ const Calendar = ({ events }) => {
                         href={event.maplink}
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="text-base"
                       >
                         {event.maplink}
                       </a>
