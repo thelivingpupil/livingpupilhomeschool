@@ -4,7 +4,7 @@ const Card = ({ children, danger }) => {
       {children}
     </div>
   ) : (
-    <div className="flex flex-col justify-between border rounded dark:border-gray-600">
+    <div className="flex flex-col justify-between border rounded dark:border-gray-600 p-4">
       {children}
     </div>
   );

@@ -45,8 +45,10 @@ const Calendar = ({ events }) => {
                     src={image || '/images/livingpupil-homeschool-logo.png'}
                   />
                 </div>
-                <div className="flex text-2xl font-bold">{event.title}</div>
-                <div className="text-sm py-2 space-y-3 justify-center text-gray-600">
+                <div className="flex text-2xl font-bold my-2">
+                  {event.title}
+                </div>
+                <div className="text-sm py-2 space-y-3 justify-center text-gray-600 my-2">
                   <PortableText value={event.description} />
                 </div>
               </Card>
