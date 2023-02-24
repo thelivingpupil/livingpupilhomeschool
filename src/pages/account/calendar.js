@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import imageUrlBuilder from '@sanity/image-url';
+import { PortableText } from '@portabletext/react';
 
 import Content from '@/components/Content/index';
 import Meta from '@/components/Meta';
@@ -38,6 +39,10 @@ const Calendar = ({ events }) => {
                     objectFit="contain"
                     src={image || '/images/livingpupil-homeschool-logo.png'}
                   />
+                </div>
+                <div className="flex text-lg">{event.title}</div>
+                <div className="text-sm py-2 space-y-3 justify-center">
+                  <PortableText value={event.description} />
                 </div>
               </Card>
             );
