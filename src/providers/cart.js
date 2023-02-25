@@ -21,14 +21,16 @@ const CartProvider = ({ children }) => {
   );
 
   const addToCart = (item) => {
-    // const isCartItemExists = cart.findIndex(
-    //   (cartItem) => cartItem.id === item.id
-    // );
+    const findExistingItem = cart.findIndex(
+      (cartItem) => cartItem.id === item.id
+    );
 
-    // if (isCartItemExists !== -1) {
-    // }
+    const newCart =
+      findExistingItem !== -1
+        ? [...cart].splice(findExistingItem, 1)
+        : [...cart];
 
-    setCart([...cart, item]);
+    setCart([...newCart, item]);
   };
 
   const removeToCart = (id) => {
