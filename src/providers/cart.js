@@ -16,7 +16,7 @@ const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
   const total = useMemo(
-    () => cart.reduce((a, b) => a + b.price * b.quantity),
+    () => cart.reduce((a, b) => a + b.price * b.quantity, 0),
     [cart]
   );
 
