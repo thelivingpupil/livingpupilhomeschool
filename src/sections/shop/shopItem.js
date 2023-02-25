@@ -25,7 +25,7 @@ const ShopItem = ({ item }) => {
             <div className="relative w-full hidden md:inline-block">
               <Image
                 name={item.name}
-                layout="fill"
+                layout="fixed"
                 loading="lazy"
                 objectFit="cover"
                 src={image || '/images/livingpupil-homeschool-logo.png'}
