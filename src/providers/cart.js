@@ -4,7 +4,7 @@ const cartInitialState = {
   cart: [],
   total: 0,
   addToCart: () => {},
-  removeToCart: () => {},
+  removeFromCart: () => {},
   clearCart: () => {},
 };
 
@@ -25,19 +25,15 @@ const CartProvider = ({ children }) => {
       (cartItem) => cartItem.id === item.id
     );
 
-    console.log('findExistingItem', findExistingItem);
-
     const newCart =
       findExistingItem !== -1
         ? [...cart].splice(findExistingItem, 1, item)
         : [...cart, item];
 
-    console.log('newCart', newCart);
-
     setCart([...newCart]);
   };
 
-  const removeToCart = (id) => {
+  const removeFromCart = (id) => {
     const findExistingCartIndex = cart.findIndex((item) => item.id === id);
 
     const newCart = [...cart].splice(findExistingCartIndex, 1);
@@ -55,7 +51,7 @@ const CartProvider = ({ children }) => {
         cart,
         total,
         addToCart,
-        removeToCart,
+        removeFromCart,
         clearCart,
       }}
     >

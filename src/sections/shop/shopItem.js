@@ -10,7 +10,8 @@ import { useCartContext } from '@/providers/cart';
 const imageBuilder = imageUrlBuilder(sanityClient);
 
 const ShopItem = ({ item }) => {
-  const { cart, total, addToCart, removeToCart, clearCart } = useCartContext();
+  const { cart, total, addToCart, removeFromCart, clearCart } =
+    useCartContext();
 
   console.log('item', item);
 
@@ -102,6 +103,7 @@ const ShopItem = ({ item }) => {
             <div className="flex mt-4">
               <button
                 className="w-full md:w-1/4 py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25"
+                disabled={quantity === 0}
                 onClick={() =>
                   addToCart({
                     id: item._id,
@@ -121,17 +123,75 @@ const ShopItem = ({ item }) => {
           <div className="sticky flex-col justify-between hidden p-5 space-y-5 border-4 rounded-lg md:flex border-primary-500">
             <h2 className="text-3xl font-bold">Shopping Cart</h2>
             <div className="flex flex-col items-start justify-between w-full h-full space-y-3">
-              <div>Your cart is empty</div>
+              {cart.length ? (
+                cart.map(({ id, image, name, price, quantity }) => {
+                  return (
+                    <div
+                      key={id}
+                      className="flex items-center justify-between w-full"
+                    >
+                      <div className="flex items-center justify-center space-x-3">
+                        <Image
+                          width={30}
+                          height={30}
+                          objectFit="cover"
+                          src={
+                            image || '/images/livingpupil-homeschool-logo.png'
+                          }
+                        />
+                        <div className="flex flex-col">
+                          <p className="font-bold">{name}</p>
+                          <p className="text-xs">
+                            {`(${quantity}x) @
+                              ${new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'PHP',
+                              }).format(price)}`}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-center space-x-3">
+                        <span>
+                          {new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'PHP',
+                          }).format(price * quantity)}
+                        </span>
+                        <button
+                          className="w-5 h-5 p-2 hover:text-red-500"
+                          onClick={() => removeFromCart(id)}
+                        >
+                          <XIcon className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div>Your cart is empty</div>
+              )}
             </div>
             <hr className="border-2 border-dashed" />
             <div className="flex justify-between text-2xl font-bold">
               <div>Total</div>
-              <div></div>
+              <div>
+                {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(total)}
+              </div>
             </div>
-            <button className="py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25">
+            <button
+              className="py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+              disabled={total === 0}
+            >
               Review Shopping Cart
             </button>
-            <button className="py-2 text-lg bg-gray-200 rounded hover:bg-gray-100 disabled:opacity-25">
+            <button
+              className="py-2 text-lg bg-gray-200 rounded hover:bg-gray-100 disabled:opacity-25"
+              disabled={!cart.length}
+              onClick={() => clearCart()}
+            >
               Clear Shopping Cart
             </button>
           </div>
