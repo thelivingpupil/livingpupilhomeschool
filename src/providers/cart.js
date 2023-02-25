@@ -31,8 +31,6 @@ const CartProvider = ({ children }) => {
   const [paymentLink, setPaymentLink] = useState('');
 
   useEffect(() => {
-    localStorage.clear();
-
     const cart = JSON.parse(localStorage.getItem(LPH_CART_KEY));
 
     if (cart) {
