@@ -39,7 +39,7 @@ const ShopItem = ({ item }) => {
               height={475}
               sizes="100vw"
               style={{
-                width: 'auto',
+                width: '100%',
                 height: 'auto',
               }}
               className="flex md:hidden"
