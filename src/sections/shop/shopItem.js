@@ -27,7 +27,7 @@ const ShopItem = ({ item }) => {
                 name={item.name}
                 layout="responsive"
                 loading="lazy"
-                objectFit="cover"
+                objectFit="contain"
                 src={image || '/images/livingpupil-homeschool-logo.png'}
               />
             </div>
