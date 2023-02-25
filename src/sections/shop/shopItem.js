@@ -1,13 +1,17 @@
 import Image from 'next/image';
+import { MinusIcon, PlusIcon } from '@heroicons/react/outline';
 
 import imageUrlBuilder from '@sanity/image-url';
 import sanityClient from '@/lib/server/sanity';
 import { PortableText } from '@portabletext/react';
+import { useState } from 'react';
 
 const imageBuilder = imageUrlBuilder(sanityClient);
 
 const ShopItem = ({ item }) => {
   const imageAsset = imageBuilder.image(item?.image?.asset);
+
+  const [quantity, setQuantity] = useState(0);
 
   const image = imageAsset?.options?.source ? imageAsset?.url() : null;
   return (
@@ -46,6 +50,26 @@ const ShopItem = ({ item }) => {
           </div>
           <div className="text-sm py-2 space-y-3 justify-center">
             <PortableText value={item.description} />
+          </div>
+          <div className="flex flex-row mt-4">
+            <button
+              className="p-2 text-white rounded bg-primary-400 disabled:opacity-25"
+              disabled={quantity === 0}
+            >
+              <MinusIcon className="w-3 h-3" />
+            </button>
+            <div className="mx-4">{quantity}</div>
+            <button
+              className="p-2 text-white rounded bg-primary-400 disabled:opacity-25"
+              disabled={quantity === item.inventory}
+            >
+              <PlusIcon className="w-3 h-3" />
+            </button>
+          </div>
+          <div className="flex mt-4">
+            <button className="w-full py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25">
+              Add to Cart
+            </button>
           </div>
         </div>
       </div>
