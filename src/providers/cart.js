@@ -25,6 +25,8 @@ const CartProvider = ({ children }) => {
       (cartItem) => cartItem.id === item.id
     );
 
+    console.log('findExistingItem', findExistingItem);
+
     const newCart =
       findExistingItem !== -1
         ? [...cart].splice(findExistingItem, 1)
