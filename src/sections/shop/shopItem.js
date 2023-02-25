@@ -1,17 +1,32 @@
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 import { MinusIcon, PlusIcon, XIcon } from '@heroicons/react/outline';
-
-import imageUrlBuilder from '@sanity/image-url';
-import sanityClient from '@/lib/server/sanity';
 import { PortableText } from '@portabletext/react';
+import imageUrlBuilder from '@sanity/image-url';
+
+import sanityClient from '@/lib/server/sanity';
 import { useState } from 'react';
 import { useCartContext } from '@/providers/cart';
+import Modal from '@/components/Modal';
 
 const imageBuilder = imageUrlBuilder(sanityClient);
 
 const ShopItem = ({ item }) => {
-  const { cart, total, addToCart, removeFromCart, clearCart } =
-    useCartContext();
+  const { data } = useSession();
+  const {
+    cart,
+    total,
+    addToCart,
+    removeFromCart,
+    clearCart,
+    showCart,
+    toggleCartVisibility,
+    showPaymentLink,
+    togglePaymentLinkVisibility,
+    isSubmitting,
+    paymentLink,
+    checkoutCart,
+  } = useCartContext();
 
   console.log('item', item);
 
@@ -28,6 +43,134 @@ const ShopItem = ({ item }) => {
   return (
     <section className="px-5 py-10 md:px-0">
       <div className="container flex mx-auto space-y-10 md:space-y-0 md:space-x-10 flex-col md:flex-row">
+        <div className="flex items-center justify-between px-5 py-3 border-4 rounded-lg border-primary-500 md:hidden">
+          <p className="text-sm">{cart.length} item(s) in cart</p>
+          <button
+            className="px-5 py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600"
+            onClick={toggleCartVisibility}
+          >
+            Review Cart
+          </button>
+          <Modal
+            show={showCart}
+            title="Review Shopping Cart"
+            toggle={toggleCartVisibility}
+          >
+            <div className="flex flex-col items-start justify-between w-full h-full space-y-3">
+              {cart.length ? (
+                cart.map(({ id, image, name, price, quantity }) => {
+                  return (
+                    <div
+                      key={id}
+                      className="flex items-center justify-between w-full"
+                    >
+                      <div className="flex items-center justify-center space-x-3 text-sm">
+                        <Image
+                          width={30}
+                          height={30}
+                          objectFit="cover"
+                          src={
+                            image || '/images/livingpupil-homeschool-logo.png'
+                          }
+                        />
+                        <div className="flex flex-col">
+                          <p className="font-bold">{name}</p>
+                          <p className="text-xs">
+                            {`(${quantity}x) @
+                              ${new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'PHP',
+                              }).format(price)}`}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-center space-x-3">
+                        <span>
+                          {new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'PHP',
+                          }).format(price * quantity)}
+                        </span>
+                        <button
+                          className="p-2 hover:text-red-500"
+                          onClick={() => removeFromCart(id)}
+                        >
+                          <XIcon className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div>Your cart is empty</div>
+              )}
+            </div>
+            <hr className="border-2 border-dashed" />
+            <div className="flex justify-between text-2xl font-bold">
+              <div>Total</div>
+              <div>
+                {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(total)}
+              </div>
+            </div>
+            <div className="text-xs">
+              <p>
+                Please be informed of the following expiry time of each
+                transaction:
+              </p>
+              <ul className="px-5 list-disc">
+                <li>
+                  Online Banking - <strong>1 hour</strong>
+                </li>
+                <li>
+                  OTC (Bank and Non-Bank) - <strong>2 days</strong>
+                </li>
+              </ul>
+              <p>
+                The payment link will expire beyond the allocated transaction
+                allowance.
+              </p>
+              <p>
+                If the link is expired, you will be required to send another
+                checkout request.
+              </p>
+            </div>
+            <button
+              className="w-full py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+              disabled={!data || isSubmitting}
+              onClick={checkoutCart}
+            >
+              {isSubmitting ? 'Processing...' : 'Checkout'}
+            </button>
+            {!data && (
+              <Link href="/auth/login">
+                <a
+                  className="inline-block w-full py-2 text-lg text-center text-white bg-gray-500 rounded hover:bg-gray-400"
+                  target="_blank"
+                >
+                  Sign In to Checkout
+                </a>
+              </Link>
+            )}
+          </Modal>
+          <Modal
+            show={showPaymentLink}
+            title="Go To Payment Link"
+            toggle={togglePaymentLinkVisibility}
+          >
+            <p>You may view your purchase history in your account profile.</p>
+            <Link href={paymentLink}>
+              <a
+                className="inline-block w-full px-3 py-2 text-lg text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+                target="_blank"
+              >
+                Pay Now
+              </a>
+            </Link>
+          </Modal>
+        </div>
         <div className="flex flex-col md:flex-row flex-1 gap-4">
           <div className="flex" style={{ flex: '0.5 1 0' }}>
             <div className="relative w-full hidden md:inline-block">
