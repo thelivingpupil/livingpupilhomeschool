@@ -13,6 +13,9 @@ const ShopItem = ({ item }) => {
 
   const [quantity, setQuantity] = useState(0);
 
+  const decrease = () => setQuantity((state) => state - 1);
+  const increase = () => setQuantity((state) => state + 1);
+
   const image = imageAsset?.options?.source ? imageAsset?.url() : null;
   return (
     <section className="px-5 py-10 md:px-0">
@@ -55,6 +58,7 @@ const ShopItem = ({ item }) => {
             <button
               className="p-2 text-white bg-primary-400 disabled:opacity-25"
               disabled={quantity === 0}
+              onClick={decrease}
             >
               <MinusIcon className="w-5 h-5" />
             </button>
@@ -62,6 +66,7 @@ const ShopItem = ({ item }) => {
             <button
               className="p-2 text-white bg-primary-400 disabled:opacity-25"
               disabled={quantity === item.inventory}
+              onClick={increase}
             >
               <PlusIcon className="w-5 h-5" />
             </button>
