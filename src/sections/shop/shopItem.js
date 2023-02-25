@@ -57,17 +57,17 @@ const ShopItem = ({ item }) => {
           </div>
           <div className="w-1/4 flex flex-row mt-4">
             <button
-              className="p-2 text-white bg-primary-400 border-y border-primary-400 disabled:opacity-25"
+              className="p-2 text-white bg-primary-400 border border-primary-400 disabled:opacity-25"
               disabled={quantity === 0}
               onClick={decrease}
             >
               <MinusIcon className="w-5 h-5" />
             </button>
-            <div className="w-full flex items-center justify-center px-6 border-y border-primary-400">
+            <div className="w-full flex items-center justify-center px-6 border border-primary-400">
               {quantity}
             </div>
             <button
-              className="p-2 text-white bg-primary-400 border-y border-primary-400 disabled:opacity-25"
+              className="p-2 text-white bg-primary-400 border border-primary-400 disabled:opacity-25"
               disabled={quantity === item.inventory}
               onClick={increase}
             >
