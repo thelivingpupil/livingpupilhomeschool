@@ -53,17 +53,17 @@ const ShopItem = ({ item }) => {
           </div>
           <div className="flex flex-row mt-4">
             <button
-              className="p-2 text-white rounded bg-primary-400 disabled:opacity-25"
+              className="p-2 text-white bg-primary-400 disabled:opacity-25"
               disabled={quantity === 0}
             >
-              <MinusIcon className="w-3 h-3" />
+              <MinusIcon className="w-5 h-5" />
             </button>
-            <div className="mx-4">{quantity}</div>
+            <div className="px-6 border border-primary-400">{quantity}</div>
             <button
-              className="p-2 text-white rounded bg-primary-400 disabled:opacity-25"
+              className="p-2 text-white bg-primary-400 disabled:opacity-25"
               disabled={quantity === item.inventory}
             >
-              <PlusIcon className="w-3 h-3" />
+              <PlusIcon className="w-5 h-5" />
             </button>
           </div>
           <div className="flex mt-4">
