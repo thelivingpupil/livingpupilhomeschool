@@ -29,10 +29,12 @@ const CartProvider = ({ children }) => {
 
     const newCart =
       findExistingItem !== -1
-        ? [...cart].splice(findExistingItem, 1)
-        : [...cart];
+        ? [...cart].splice(findExistingItem, 1, item)
+        : [...cart, item];
 
-    setCart([...newCart, item]);
+    console.log('newCart', newCart);
+
+    setCart([...newCart]);
   };
 
   const removeToCart = (id) => {
