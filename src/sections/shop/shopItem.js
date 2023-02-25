@@ -22,7 +22,7 @@ const ShopItem = ({ item }) => {
     <section className="px-5 py-10 md:px-0">
       <div className="container flex mx-auto space-y-10 md:space-y-0 md:space-x-10 flex-col md:flex-row">
         <div className="flex" style={{ flex: '0.5 1 0' }}>
-          <div className="relative inline-block w-full hidden md:flex">
+          <div className="relative w-full hidden md:inline-block">
             <Image
               name={item.name}
               layout="fill"
@@ -31,7 +31,7 @@ const ShopItem = ({ item }) => {
               src={image || '/images/livingpupil-homeschool-logo.png'}
             />
           </div>
-          <div className="relative inline-block w-full flex md:hidden">
+          <div className="relative inline-block w-full md:hidden">
             <Image
               name={item.name}
               loading="lazy"
