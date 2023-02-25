@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { MinusIcon, PlusIcon } from '@heroicons/react/outline';
+import { MinusIcon, PlusIcon, XIcon } from '@heroicons/react/outline';
 
 import imageUrlBuilder from '@sanity/image-url';
 import sanityClient from '@/lib/server/sanity';
