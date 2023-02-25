@@ -66,7 +66,7 @@ const ShopItem = ({ item }) => {
               ) : null
             )}
           </div>
-          <div className="text-sm py-2 space-y-3 justify-center">
+          <div className="text-sm py-2 space-y-3 justify-center text-justify">
             <PortableText value={item.description} />
           </div>
           <div className="w-full md:w-1/4 flex flex-row mt-4">

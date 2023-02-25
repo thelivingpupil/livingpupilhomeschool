@@ -55,7 +55,7 @@ const Calendar = ({ events }) => {
                   <div className="flex text-2xl font-bold mt-4">
                     {event.title}
                   </div>
-                  <div className="text-sm py-2 space-y-3 justify-center text-gray-600 mt-2">
+                  <div className="text-sm py-2 space-y-3 justify-center text-gray-600 mt-2 text-justify">
                     <PortableText value={event.description} />
                   </div>
                   <div className="flex flex-wrap">
