@@ -8,12 +8,17 @@ const cartInitialState = {
   clearCart: () => {},
 };
 
+const LPH_CART_KEY = 'LPHCART';
+
 const CartContext = createContext(cartInitialState);
 
 export const useCartContext = () => useContext(CartContext);
 
 const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
+  const existingCart = localStorage.getItem(LPH_CART_KEY);
+  const [cart, setCart] = useState(
+    existingCart ? JSON.parse(existingCart) : []
+  );
 
   const total = useMemo(
     () => cart.reduce((a, b) => a + b.price * b.quantity, 0),
@@ -31,6 +36,7 @@ const CartProvider = ({ children }) => {
         : [...cart, item];
 
     setCart([...newCart]);
+    localStorage.setItem(LPH_CART_KEY, JSON.stringify([...newCart]));
   };
 
   const removeFromCart = (id) => {
@@ -40,9 +46,9 @@ const CartProvider = ({ children }) => {
 
     cloneCart.splice(findExistingCartIndex, 1);
 
-    console.log('cloneCart, remove', cloneCart);
-
     setCart([...cloneCart]);
+
+    localStorage.setItem(LPH_CART_KEY, JSON.stringify([...cloneCart]));
   };
 
   const clearCart = () => {
