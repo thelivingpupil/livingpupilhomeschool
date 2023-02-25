@@ -29,10 +29,6 @@ const ShopItem = ({ item }) => {
     checkoutCart,
   } = useCartContext();
 
-  console.log('item', item);
-
-  console.log('cart', cart);
-  console.log('cart total', total);
   const imageAsset = imageBuilder.image(item?.image?.asset);
 
   const [quantity, setQuantity] = useState(0);
