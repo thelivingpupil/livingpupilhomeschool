@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ChevronDownIcon, XIcon } from '@heroicons/react/outline';
 import imageUrlBuilder from '@sanity/image-url';
 import crypto from 'crypto';
@@ -6,77 +6,36 @@ import debounce from 'lodash.debounce';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
 
 import Modal from '@/components/Modal';
 import Item from '@/components/Shop/item';
-import api from '@/lib/common/api';
+
 import sanityClient from '@/lib/server/sanity';
+import { useCartContext } from '@/providers/cart';
 
 const builder = imageUrlBuilder(sanityClient);
-const LPH_CART_KEY = 'LPHCART';
 
 const Shop = ({ categories, items }) => {
   const { data } = useSession();
   const [sortBy, setSortBy] = useState('alphaAsc');
   const [categoryFilter, setCategoryFilter] = useState('all');
-  const [isSubmitting, setSubmittingState] = useState(false);
-  const [showCart, setCartVisibility] = useState(false);
-  const [showPaymentLink, setPaymentLinkVisibility] = useState(false);
-  const [paymentLink, setPaymentLink] = useState('');
-  const [total, setTotal] = useState(0);
   const [shopItems, setShopItems] = useState(items);
-  const [cart, setCart] = useState([]);
   const [, setQuery] = useState('');
 
-  const addToCart = (item) => {
-    const index = cart.map((x) => x.id).indexOf(item.id);
-
-    if (index === -1) {
-      cart.push(item);
-    }
-
-    const cartItem = cart[index];
-    cartItem = { ...item };
-    cart.splice(index, 1, cartItem);
-    setCart([...cart]);
-    computeTotal(cart);
-    localStorage.setItem(LPH_CART_KEY, JSON.stringify(cart));
-  };
-
-  const checkout = () => {
-    setSubmittingState(true);
-    api('/api/shop', {
-      body: { items: cart },
-      method: 'POST',
-    }).then((response) => {
-      setSubmittingState(false);
-
-      if (response.errors) {
-        Object.keys(response.errors).forEach((error) =>
-          toast.error(response.errors[error].msg)
-        );
-      } else {
-        toggleCart();
-        setPaymentLink(response.data.paymentLink);
-        togglePaymentLink();
-        setCart([]);
-        computeTotal([]);
-        localStorage.setItem(LPH_CART_KEY, JSON.stringify([]));
-        toast.success('Posted items for purchase!');
-      }
-    });
-  };
-
-  const clear = () => {
-    setCart([]);
-    computeTotal([]);
-  };
-
-  const computeTotal = (cart) => {
-    const total = cart.reduce((a, b) => a + b.price * b.quantity, 0);
-    setTotal(total);
-  };
+  const {
+    cart,
+    total,
+    addToCart,
+    removeFromCart,
+    clearCart,
+    showCart,
+    toggleCartVisibility,
+    showPaymentLink,
+    togglePaymentLinkVisibility,
+    isSubmitting,
+    paymentLink,
+    checkoutCart,
+  } = useCartContext();
 
   const onChangeFilter = (e) => {
     const category = e.target.value;
@@ -166,35 +125,10 @@ const Shop = ({ categories, items }) => {
     setShopItems([...shopItems]);
   };
 
-  const removeFromCart = (index) => {
-    cart.splice(index, 1);
-    setCart([...cart]);
-    computeTotal(cart);
-    localStorage.setItem(LPH_CART_KEY, JSON.stringify(cart));
-  };
-
-  const toggleCart = () => setCartVisibility(!showCart);
-
-  const togglePaymentLink = () => setPaymentLinkVisibility(!showPaymentLink);
-
   const debouncedChangeHandler = useMemo(
     () => debounce(handleSearch, 300),
     [items, categories]
   );
-
-  useEffect(() => {
-    localStorage.clear();
-    const items = JSON.parse(localStorage.getItem(LPH_CART_KEY));
-
-    if (items) {
-      setCart([...items]);
-      computeTotal(items);
-    }
-
-    return () => {
-      debouncedChangeHandler.cancel();
-    };
-  }, []);
 
   return (
     <>
@@ -224,21 +158,21 @@ const Shop = ({ categories, items }) => {
             <p className="text-sm">{cart.length} item(s) in cart</p>
             <button
               className="px-5 py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600"
-              onClick={toggleCart}
+              onClick={toggleCartVisibility}
             >
               Review Cart
             </button>
             <Modal
               show={showCart}
               title="Review Shopping Cart"
-              toggle={toggleCart}
+              toggle={toggleCartVisibility}
             >
               <div className="flex flex-col items-start justify-between w-full h-full space-y-3">
                 {cart.length ? (
-                  cart.map(({ image, name, price, quantity }, index) => {
+                  cart.map(({ id, image, name, price, quantity }) => {
                     return (
                       <div
-                        key={index}
+                        key={id}
                         className="flex items-center justify-between w-full"
                       >
                         <div className="flex items-center justify-center space-x-3 text-sm">
@@ -270,7 +204,7 @@ const Shop = ({ categories, items }) => {
                           </span>
                           <button
                             className="p-2 hover:text-red-500"
-                            onClick={() => removeFromCart(index)}
+                            onClick={() => removeFromCart(id)}
                           >
                             <XIcon className="w-3 h-3" />
                           </button>
@@ -317,7 +251,7 @@ const Shop = ({ categories, items }) => {
               <button
                 className="w-full py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
                 disabled={!data || isSubmitting}
-                onClick={checkout}
+                onClick={checkoutCart}
               >
                 {isSubmitting ? 'Processing...' : 'Checkout'}
               </button>
@@ -335,7 +269,7 @@ const Shop = ({ categories, items }) => {
             <Modal
               show={showPaymentLink}
               title="Go To Payment Link"
-              toggle={togglePaymentLink}
+              toggle={togglePaymentLinkVisibility}
             >
               <p>You may view your purchase history in your account profile.</p>
               <Link href={paymentLink}>
@@ -398,7 +332,7 @@ const Shop = ({ categories, items }) => {
               {shopItems ? (
                 shopItems.map(
                   (
-                    { _id, code, image, name, price, categories, description },
+                    { _id, image, name, price, categories, description },
                     index
                   ) => {
                     const imageAsset = builder.image(image?.asset);
@@ -408,15 +342,6 @@ const Shop = ({ categories, items }) => {
                         id={_id}
                         addToCart={addToCart}
                         categories={categories}
-                        code={
-                          code ||
-                          `CODE-${crypto
-                            .createHash('md5')
-                            .update(name)
-                            .digest('hex')
-                            .substring(0, 6)
-                            .toUpperCase()}`
-                        }
                         count={cart.find((x) => x.id === _id)?.quantity || 0}
                         description={description}
                         image={
@@ -438,10 +363,10 @@ const Shop = ({ categories, items }) => {
               <h2 className="text-3xl font-bold">Shopping Cart</h2>
               <div className="flex flex-col items-start justify-between w-full h-full space-y-3">
                 {cart.length ? (
-                  cart.map(({ image, name, price, quantity }, index) => {
+                  cart.map(({ id, image, name, price, quantity }) => {
                     return (
                       <div
-                        key={index}
+                        key={id}
                         className="flex items-center justify-between w-full"
                       >
                         <div className="flex items-center justify-center space-x-3">
@@ -473,7 +398,7 @@ const Shop = ({ categories, items }) => {
                           </span>
                           <button
                             className="w-5 h-5 p-2 hover:text-red-500"
-                            onClick={() => removeFromCart(index)}
+                            onClick={() => removeFromCart(id)}
                           >
                             <XIcon className="w-3 h-3" />
                           </button>
@@ -498,14 +423,14 @@ const Shop = ({ categories, items }) => {
               <button
                 className="py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
                 disabled={total === 0}
-                onClick={toggleCart}
+                onClick={toggleCartVisibility}
               >
                 Review Shopping Cart
               </button>
               <button
                 className="py-2 text-lg bg-gray-200 rounded hover:bg-gray-100 disabled:opacity-25"
                 disabled={cart.length === 0}
-                onClick={clear}
+                onClick={clearCart}
               >
                 Clear Shopping Cart
               </button>

@@ -8,7 +8,6 @@ import Link from 'next/link';
 const Item = ({
   id,
   addToCart,
-  code,
   count,
   image,
   name,
@@ -97,7 +96,7 @@ const Item = ({
         <button
           className="w-full py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25"
           disabled={quantity === 0}
-          onClick={() => addToCart({ id, code, image, name, price, quantity })}
+          onClick={() => addToCart({ id, image, name, price, quantity })}
         >
           Add to Cart
         </button>
