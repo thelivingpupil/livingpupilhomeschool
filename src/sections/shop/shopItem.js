@@ -63,7 +63,7 @@ const ShopItem = ({ item }) => {
             >
               <MinusIcon className="w-5 h-5" />
             </button>
-            <div className="w-full flex items-center px-6 border-y border-primary-400">
+            <div className="w-full flex items-center justify-center px-6 border-y border-primary-400">
               {quantity}
             </div>
             <button
