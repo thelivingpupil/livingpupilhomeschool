@@ -13,6 +13,7 @@ import WorkspaceProvider from '@/providers/workspace';
 import '@/styles/globals.css';
 import '@/styles/datepicker.css';
 import '@splidejs/react-splide/css';
+import CartProvider from '@/providers/cart';
 
 const App = ({ Component, pageProps }) => {
   const [progress, setProgress] = useState(false);
@@ -51,8 +52,10 @@ const App = ({ Component, pageProps }) => {
           forcedTheme="light"
         >
           <WorkspaceProvider>
-            {progress && <TopBarProgress />}
-            <Component {...pageProps} />
+            <CartProvider>
+              {progress && <TopBarProgress />}
+              <Component {...pageProps} />
+            </CartProvider>
           </WorkspaceProvider>
         </ThemeProvider>
       </SWRConfig>

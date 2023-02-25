@@ -5,10 +5,17 @@ import imageUrlBuilder from '@sanity/image-url';
 import sanityClient from '@/lib/server/sanity';
 import { PortableText } from '@portabletext/react';
 import { useState } from 'react';
+import { useCartContext } from '@/providers/cart';
 
 const imageBuilder = imageUrlBuilder(sanityClient);
 
 const ShopItem = ({ item }) => {
+  const { cart, total, addToCart, removeToCart, clearCart } = useCartContext();
+
+  console.log('item', item);
+
+  console.log('cart', cart);
+  console.log('cart total', total);
   const imageAsset = imageBuilder.image(item?.image?.asset);
 
   const [quantity, setQuantity] = useState(0);
@@ -93,7 +100,18 @@ const ShopItem = ({ item }) => {
               </button>
             </div>
             <div className="flex mt-4">
-              <button className="w-full md:w-1/4 py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25">
+              <button
+                className="w-full md:w-1/4 py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25"
+                onClick={() =>
+                  addToCart({
+                    id: item._id,
+                    image,
+                    name: item.name,
+                    price: item.price,
+                    quantity,
+                  })
+                }
+              >
                 Add to Cart
               </button>
             </div>
