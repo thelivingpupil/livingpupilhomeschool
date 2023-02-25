@@ -55,7 +55,7 @@ const ShopItem = ({ item }) => {
           <div className="text-sm py-2 space-y-3 justify-center">
             <PortableText value={item.description} />
           </div>
-          <div className="flex flex-row mt-4">
+          <div className="w-1/4 flex flex-row mt-4">
             <button
               className="p-2 text-white bg-primary-400 border-y border-primary-400 disabled:opacity-25"
               disabled={quantity === 0}
@@ -63,7 +63,7 @@ const ShopItem = ({ item }) => {
             >
               <MinusIcon className="w-5 h-5" />
             </button>
-            <div className="flex items-center px-6 border-y border-primary-400">
+            <div className="w-full flex items-center px-6 border-y border-primary-400">
               {quantity}
             </div>
             <button
