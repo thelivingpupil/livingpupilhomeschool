@@ -1,4 +1,4 @@
-const { createContext, useContext, useMemo } = require('react');
+const { createContext, useContext, useMemo, useState } = require('react');
 
 const cartInitialState = {
   cart: [],
