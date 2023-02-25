@@ -25,23 +25,14 @@ const ShopItem = ({ item }) => {
           <div className="relative inline-block w-full">
             <Image
               name={item.name}
-              layout="fill"
-              loading="lazy"
-              objectFit="contain"
-              className="hidden md:flex"
-              src={image || '/images/livingpupil-homeschool-logo.png'}
-            />
-            <Image
-              name={item.name}
               loading="lazy"
               width={700}
               height={475}
               sizes="100vw"
               style={{
-                width: '100%',
+                width: 'auto',
                 height: 'auto',
               }}
-              className="flex md:hidden"
               src={image || '/images/livingpupil-homeschool-logo.png'}
             />
           </div>
