@@ -20,14 +20,14 @@ const ShopItem = ({ item }) => {
   return (
     <section className="px-5 py-10 md:px-0">
       <div className="container flex mx-auto space-y-10 md:space-y-0 md:space-x-10 flex-col md:flex-row">
-        <div className="flex flex-col md:flex-row flex-1">
+        <div className="flex flex-col md:flex-row flex-1 gap-4">
           <div className="flex" style={{ flex: '0.5 1 0' }}>
             <div className="relative w-full hidden md:inline-block">
               <Image
                 name={item.name}
                 layout="fill"
                 loading="lazy"
-                objectFit="contain"
+                objectFit="cover"
                 src={image || '/images/livingpupil-homeschool-logo.png'}
               />
             </div>
