@@ -10,12 +10,13 @@ const cartInitialState = {
 
 const LPH_CART_KEY = 'LPHCART';
 
+const existingCart = localStorage.getItem(LPH_CART_KEY);
+
 const CartContext = createContext(cartInitialState);
 
 export const useCartContext = () => useContext(CartContext);
 
 const CartProvider = ({ children }) => {
-  const existingCart = localStorage.getItem(LPH_CART_KEY);
   const [cart, setCart] = useState(
     existingCart ? JSON.parse(existingCart) : []
   );
