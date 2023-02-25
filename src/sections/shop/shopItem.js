@@ -28,6 +28,20 @@ const ShopItem = ({ item }) => {
               layout="fill"
               loading="lazy"
               objectFit="contain"
+              className="hidden md:flex"
+              src={image || '/images/livingpupil-homeschool-logo.png'}
+            />
+            <Image
+              name={item.name}
+              loading="lazy"
+              width={700}
+              height={475}
+              sizes="100vw"
+              style={{
+                width: '100%',
+                height: 'auto',
+              }}
+              className="md:hidden"
               src={image || '/images/livingpupil-homeschool-logo.png'}
             />
           </div>
@@ -55,7 +69,7 @@ const ShopItem = ({ item }) => {
           <div className="text-sm py-2 space-y-3 justify-center">
             <PortableText value={item.description} />
           </div>
-          <div className="w-1/4 flex flex-row mt-4">
+          <div className="w-full md:w-1/4 flex flex-row mt-4">
             <button
               className="p-2 text-white bg-primary-400 border border-primary-400 disabled:opacity-25"
               disabled={quantity === 0}
@@ -75,7 +89,7 @@ const ShopItem = ({ item }) => {
             </button>
           </div>
           <div className="flex mt-4">
-            <button className="w-1/4 py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25">
+            <button className="w-full md:w-1/4 py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25">
               Add to Cart
             </button>
           </div>
