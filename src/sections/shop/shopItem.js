@@ -9,6 +9,7 @@ import { useState } from 'react';
 const imageBuilder = imageUrlBuilder(sanityClient);
 
 const ShopItem = ({ item }) => {
+  console.log('item', item);
   const imageAsset = imageBuilder.image(item?.image?.asset);
 
   const [quantity, setQuantity] = useState(0);
@@ -62,7 +63,7 @@ const ShopItem = ({ item }) => {
             >
               <MinusIcon className="w-5 h-5" />
             </button>
-            <div className="flex items-center px-6 border-x border-primary-400">
+            <div className="flex items-center px-6 border-y border-primary-400">
               {quantity}
             </div>
             <button
