@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { MinusIcon, PlusIcon, XIcon } from '@heroicons/react/outline';
 import { PortableText } from '@portabletext/react';
 import imageUrlBuilder from '@sanity/image-url';
