@@ -99,6 +99,7 @@ const CartProvider = ({ children }) => {
 
   const clearCart = () => {
     setCart([]);
+    localStorage.setItem(LPH_CART_KEY, JSON.stringify([]));
   };
 
   return (
