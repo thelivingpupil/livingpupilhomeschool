@@ -41,7 +41,7 @@ const ShopItem = ({ item }) => {
                 width: '100%',
                 height: 'auto',
               }}
-              className="md:hidden"
+              className="flex md:hidden"
               src={image || '/images/livingpupil-homeschool-logo.png'}
             />
           </div>
