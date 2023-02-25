@@ -8,11 +8,6 @@ const cartInitialState = {
   clearCart: () => {},
 };
 
-const LPH_CART_KEY = 'LPHCART';
-
-const existingCart =
-  typeof window !== undefined && localStorage?.getItem(LPH_CART_KEY);
-
 const CartContext = createContext(cartInitialState);
 
 export const useCartContext = () => useContext(CartContext);
@@ -38,7 +33,6 @@ const CartProvider = ({ children }) => {
         : [...cart, item];
 
     setCart([...newCart]);
-    localStorage.setItem(LPH_CART_KEY, JSON.stringify([...newCart]));
   };
 
   const removeFromCart = (id) => {
@@ -49,8 +43,6 @@ const CartProvider = ({ children }) => {
     cloneCart.splice(findExistingCartIndex, 1);
 
     setCart([...cloneCart]);
-
-    localStorage.setItem(LPH_CART_KEY, JSON.stringify([...cloneCart]));
   };
 
   const clearCart = () => {
