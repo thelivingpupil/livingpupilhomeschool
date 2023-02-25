@@ -62,7 +62,9 @@ const ShopItem = ({ item }) => {
             >
               <MinusIcon className="w-5 h-5" />
             </button>
-            <div className="px-6 border border-primary-400">{quantity}</div>
+            <div className="flex items-center px-6 border-x border-primary-400">
+              {quantity}
+            </div>
             <button
               className="p-2 text-white bg-primary-400 disabled:opacity-25"
               disabled={quantity === item.inventory}
