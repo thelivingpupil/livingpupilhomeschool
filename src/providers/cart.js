@@ -10,7 +10,8 @@ const cartInitialState = {
 
 const LPH_CART_KEY = 'LPHCART';
 
-const existingCart = localStorage.getItem(LPH_CART_KEY);
+const existingCart =
+  typeof window !== undefined && localStorage?.getItem(LPH_CART_KEY);
 
 const CartContext = createContext(cartInitialState);
 
