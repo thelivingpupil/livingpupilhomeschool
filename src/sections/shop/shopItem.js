@@ -57,7 +57,7 @@ const ShopItem = ({ item }) => {
           </div>
           <div className="flex flex-row mt-4">
             <button
-              className="p-2 text-white bg-primary-400 disabled:opacity-25"
+              className="p-2 text-white bg-primary-400 border-y border-primary-400 disabled:opacity-25"
               disabled={quantity === 0}
               onClick={decrease}
             >
@@ -67,7 +67,7 @@ const ShopItem = ({ item }) => {
               {quantity}
             </div>
             <button
-              className="p-2 text-white bg-primary-400 disabled:opacity-25"
+              className="p-2 text-white bg-primary-400 border-y border-primary-400 disabled:opacity-25"
               disabled={quantity === item.inventory}
               onClick={increase}
             >
@@ -75,7 +75,7 @@ const ShopItem = ({ item }) => {
             </button>
           </div>
           <div className="flex mt-4">
-            <button className="w-full py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25">
+            <button className="w-1/4 py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25">
               Add to Cart
             </button>
           </div>
