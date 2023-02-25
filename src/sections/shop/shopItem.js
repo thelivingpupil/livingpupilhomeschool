@@ -28,6 +28,9 @@ const ShopItem = ({ item }) => {
                 layout="responsive"
                 loading="lazy"
                 objectFit="contain"
+                style={{
+                  verticalAlign: 'top',
+                }}
                 src={image || '/images/livingpupil-homeschool-logo.png'}
               />
             </div>
