@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import api from '@/lib/common/api';
+import toast from 'react-hot-toast';
 
 const cartInitialState = {
   cart: [],
