@@ -17,7 +17,6 @@ const types = {
 };
 
 const Calendar = ({ events }) => {
-  console.log('events', events);
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - School Calendar" />

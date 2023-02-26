@@ -10,7 +10,7 @@ import Header from '@/sections/header';
 import Title from '@/sections/sectionTitle';
 import { GRADE_LEVEL, GRADE_LEVEL_GROUPS } from '@/utils/constants';
 
-const HomeschoolProgram = ({ page, fees }) => {
+const HomeschoolProgram = ({ page, fees, programs }) => {
   const { footer, header } = page;
   const [headerSection] = header?.sectionType;
   const [footerSection] = footer?.sectionType;
@@ -19,6 +19,8 @@ const HomeschoolProgram = ({ page, fees }) => {
     GradeLevel.PRESCHOOL
   );
   const [accreditation, setAccreditation] = useState(Accreditation.LOCAL);
+
+  console.log('programs', programs);
 
   const schoolFee = fees.schoolFees.find((fee) => {
     let gradeLevel = incomingGradeLevel;
@@ -228,18 +230,22 @@ const HomeschoolProgram = ({ page, fees }) => {
 };
 
 export const getStaticProps = async () => {
-  const [[header, footer], schoolFees] = await Promise.all([
+  const [[header, footer], schoolFees, programs] = await Promise.all([
     sanityClient.fetch(
       `*[_type == 'sections' && (name == 'Common Header' || name == 'Common Footer')]`
     ),
     sanityClient.fetch(
       `*[_type == 'schoolFees' && program == 'HOMESCHOOL_PROGRAM']{...}`
     ),
+    sanityClient.fetch(
+      `*[_type == 'programs' && programType == 'HOMESCHOOL_PROGRAM']`
+    ),
   ]);
   return {
     props: {
       page: { footer, header },
       fees: { schoolFees },
+      programs,
     },
     revalidate: 10,
   };
