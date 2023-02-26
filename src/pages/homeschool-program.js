@@ -158,14 +158,31 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
           </div>
         </div>
       </section>
-      <section className="px-5 py-10">
-        <div className="flex flex-col px-5 py-5 bg-primary-500 bg-opacity-10 rounded-lg justify-center">
+      <section className="px-5 py-10 flex flex-col items-center">
+        <div className="flex flex-col px-5 py-5 mb-5 bg-primary-500 bg-opacity-75 rounded-lg justify-center w-full md:w-3/4">
           <div className="text-4xl font-bold text-secondary-500 text-center mb-3">
             Homeschool Program - Preschool
           </div>
           <div className="font-bold text-white text-center">
             a gentle preschool educational approach for little learners ages 2
             1/2 to 3 years old years old.
+          </div>
+        </div>
+
+        <div className="flex flex-col px-5 py-5 mb-5 w-full md:w-3/4">
+          <div className="text-center font-bold">
+            With the Charlotte Mason method, the preschool years are a crucial
+            time for laying the foundation for loving learning. We encourage
+            movement, outdoor time, and play time to maximize the child's
+            natural curiosity.
+            <br />
+            <br />
+            <br />
+            Although formal academic learning in the CM method begins at age 6,
+            we use the preschool years to lay the foundation for loving
+            learning. We use play, outdoor time, story time, music and
+            handicrafts, among others, to develop our little ones' skill to the
+            fullest.
           </div>
         </div>
         <div className="container flex flex-col w-3/4 mx-auto space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
