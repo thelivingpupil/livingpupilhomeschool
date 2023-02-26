@@ -169,7 +169,7 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
           </div>
         </div>
 
-        <div className="flex flex-col px-5 py-5 mb-5 w-full md:w-3/4">
+        <div className="flex flex-col px-5 py-5 w-full md:w-3/4">
           <div className="text-center font-bold">
             With the Charlotte Mason method, the preschool years are a crucial
             time for laying the foundation for loving learning. We encourage
@@ -183,6 +183,11 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
             learning. We use play, outdoor time, story time, music and
             handicrafts, among others, to develop our little ones' skill to the
             fullest.
+          </div>
+        </div>
+        <div className="flex flex-col px-5 py-5 bg-secondary-500  w-full md:w-3/4">
+          <div className="font-bold text-2xl text-primary-500 text-opacity-75 text-center">
+            Tuition Fees and Payment Plan for New Families for SY 2023-2024
           </div>
         </div>
         <div className="container flex flex-col w-3/4 mx-auto space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
