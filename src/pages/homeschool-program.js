@@ -159,6 +159,15 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
         </div>
       </section>
       <section className="px-5 py-10">
+        <div className="flex flex-col px-5 py-10 bg-primary-500 bg-opacity-25 rounded-lg justify-center">
+          <div className="text-xl font-bold text-secondary-500">
+            Homeschool Program - Preschool
+          </div>
+          <div className="font-bold text-white-500">
+            a gentle preschool educational approach for little learners ages 2
+            1/2 to 3 years old years old.
+          </div>
+        </div>
         <div className="container flex flex-col w-3/4 mx-auto space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
           <div className="w-full p-5 space-y-5 text-center border rounded-lg md:w-1/3 border-primary-500">
             <h2 className="text-xl font-medium">Full Payment</h2>
