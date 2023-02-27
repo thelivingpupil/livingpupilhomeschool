@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
-import { Accreditation, Enrollment, GradeLevel } from '@prisma/client';
+import { Enrollment, GradeLevel } from '@prisma/client';
 
 import Meta from '@/components/Meta/index';
 import { LandingLayout } from '@/layouts/index';
@@ -25,50 +25,12 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
   const [incomingGradeLevel, setIncomingGradeLevel] = useState(
     GradeLevel.PRESCHOOL
   );
-  const [accreditation, setAccreditation] = useState(Accreditation.LOCAL);
-
-  console.log('programs', programs);
 
   const program = programs.find(
     (program) =>
       program.enrollmentType === enrollmentType &&
       program.gradeLevel === incomingGradeLevel
   );
-
-  console.log('program', program);
-
-  const schoolFee = fees.schoolFees.find((fee) => {
-    let gradeLevel = incomingGradeLevel;
-
-    if (
-      incomingGradeLevel === GradeLevel.GRADE_1 ||
-      incomingGradeLevel === GradeLevel.GRADE_2 ||
-      incomingGradeLevel === GradeLevel.GRADE_3 ||
-      incomingGradeLevel === GradeLevel.GRADE_4 ||
-      incomingGradeLevel === GradeLevel.GRADE_5 ||
-      incomingGradeLevel === GradeLevel.GRADE_6
-    ) {
-      gradeLevel = GradeLevel.GRADE_6;
-    } else if (
-      incomingGradeLevel === GradeLevel.GRADE_7 ||
-      incomingGradeLevel === GradeLevel.GRADE_8 ||
-      incomingGradeLevel === GradeLevel.GRADE_9 ||
-      incomingGradeLevel === GradeLevel.GRADE_10
-    ) {
-      gradeLevel = GradeLevel.GRADE_10;
-    } else if (
-      incomingGradeLevel === GradeLevel.GRADE_11 ||
-      incomingGradeLevel === GradeLevel.GRADE_12
-    ) {
-      gradeLevel = GradeLevel.GRADE_12;
-    }
-
-    return (
-      fee.accreditation === accreditation &&
-      fee.gradeLevel === gradeLevel &&
-      fee.type === enrollmentType
-    );
-  });
 
   return (
     <LandingLayout>
@@ -103,7 +65,7 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
             </button>
           </div>
         </div>
-        <div className="container mx-auto space-y-3">
+        {/* <div className="container mx-auto space-y-3">
           <h3 className="text-lg font-bold text-center">with a</h3>
           <div className="flex flex-col items-center justify-center space-x-0 space-y-3 md:space-y-0 md:space-x-3 md:flex-row">
             <button
@@ -140,7 +102,7 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
               Dual Accreditation
             </button>
           </div>
-        </div>
+        </div> */}
         <div className="container w-full mx-auto space-y-3 md:w-1/4">
           <div className="relative inline-block w-full border rounded">
             <select
@@ -151,16 +113,7 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
               {GRADE_LEVEL_GROUPS.map((group, index) => (
                 <optgroup key={index} label={group.name}>
                   {group.levels.map((level, index) => (
-                    <option
-                      key={index}
-                      value={level}
-                      disabled={
-                        (accreditation === Accreditation.INTERNATIONAL ||
-                          accreditation === Accreditation.DUAL) &&
-                        (level === GradeLevel.PRESCHOOL ||
-                          level === GradeLevel.K1)
-                      }
-                    >
+                    <option key={index} value={level}>
                       {GRADE_LEVEL[level]}
                     </option>
                   ))}
@@ -188,7 +141,7 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
             <PortableText value={program.description} />
           </div>
         </div>
-        <div className="flex flex-col px-5 py-5 mb-5 bg-secondary-500 rounded-lg w-full md:w-3/4">
+        <div className="flex flex-col px-5 py-5 my-5 bg-secondary-500 rounded-lg w-full md:w-3/4">
           <div className="font-bold text-2xl text-primary-500 text-opacity-75 text-center">
             Tuition Fees and Payment Plan for{' '}
             {ENROLLMENT_TYPE[program.enrollmentType]} for SY 2023-2024
@@ -285,7 +238,7 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
             </div>
           </div>
         ))}
-        <div className="flex flex-col px-5 py-5 bg-primary-500 rounded-lg w-full md:w-3/4">
+        <div className="flex flex-col px-5 py-5 mt-5 bg-primary-500 rounded-lg w-full md:w-3/4">
           <div className="font-bold text-2xl text-secondary-500 text-center">
             Inclusions
           </div>
@@ -295,7 +248,7 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
             <PortableText value={program.inclusions} component="li" />
           </div>
         </div>
-        <div className="container flex flex-col w-3/4 mx-auto space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
+        {/* <div className="container flex flex-col w-3/4 mx-auto space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
           <div className="w-full p-5 space-y-5 text-center border rounded-lg md:w-1/3 border-primary-500">
             <h2 className="text-xl font-medium">Full Payment</h2>
             <h3 className="text-3xl font-bold font-display">
@@ -331,9 +284,9 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
               )}
             </h3>
           </div>
-        </div>
+        </div> */}
       </section>
-      <section className="px-5 py-5 italic">
+      {/* <section className="px-5 py-5 italic">
         <p className="text-sm text-center">
           {accreditation === Accreditation.LOCAL &&
             enrollmentType === Enrollment.CONTINUING && (
@@ -359,7 +312,7 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
             </>
           )}
         </p>
-      </section>
+      </section> */}
       <Footer {...footerSection} />
     </LandingLayout>
   );
