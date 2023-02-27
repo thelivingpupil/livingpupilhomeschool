@@ -244,7 +244,7 @@ const HomeschoolProgram = ({ page, programs }) => {
           </div>
         </div>
         <div className="flex flex-col px-5 py-5 w-full md:w-3/4">
-          <div className="text-justify font-bold space-y-5">
+          <div className="text-justify font-bold space-y-3">
             <PortableText value={program?.inclusions} />
           </div>
         </div>
