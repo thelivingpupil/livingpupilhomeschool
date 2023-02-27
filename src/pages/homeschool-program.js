@@ -190,11 +190,11 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
             Tuition Fees and Payment Plan for New Families for SY 2023-2024
           </div>
         </div>
-        <div className="flex flex-col px-5 py-5 rounded-lg w-full md:w-3/4">
+        <div className="flex flex-col px-5 py-5 border-dashed border-primary-500 rounded-lg w-full md:w-3/4">
           <div className="text-xl text-center font-semibold">
             Local Accreditation
           </div>
-          <div className="flex flex-col md:flex-wrap gap-4">
+          <div className="flex flex-col md:flex-wrap md:flex-row gap-4">
             <div className="flex-1 p-5 space-y-5 text-center border border-primary-500 rounded-lg">
               <div className="text-xl font-medim">Full Payment</div>
               <div className="text-secondary-500 text-2xl font-bold font-display">
@@ -205,7 +205,25 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
               </div>
             </div>
             <div className="flex-1 p-5 space-y-5 text-center border border-primary-500 rounded-lg">
-              <div className="text-xl font-medim">Full Payment</div>
+              <div className="text-xl font-medim">Three (3) Term Payment</div>
+              <div className="text-primary-500 text-2xl font-bold font-display">
+                {`Down payment: ${new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
+              </div>
+              <div className="text-primary-500 text-2xl font-bold font-display">
+                {`2nd payment: ${new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
+              </div>
+              <div className="text-primary-500 text-2xl font-bold font-display">
+                {`3rd payment: ${new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
+              </div>
               <div className="text-secondary-500 text-2xl font-bold font-display">
                 {`Total: ${new Intl.NumberFormat('en-US', {
                   style: 'currency',
@@ -214,7 +232,31 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
               </div>
             </div>
             <div className="flex-1 p-5 space-y-5 text-center border border-primary-500 rounded-lg">
-              <div className="text-xl font-medim">Full Payment</div>
+              <div className="text-xl font-medim">Four (4) Term Payment</div>
+              <div className="text-primary-500 text-2xl font-bold font-display">
+                {`Down payment: ${new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
+              </div>
+              <div className="text-primary-500 text-2xl font-bold font-display">
+                {`2nd payment: ${new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
+              </div>
+              <div className="text-primary-500 text-2xl font-bold font-display">
+                {`3rd payment: ${new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
+              </div>
+              <div className="text-primary-500 text-2xl font-bold font-display">
+                {`4th payment: ${new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
+              </div>
               <div className="text-secondary-500 text-2xl font-bold font-display">
                 {`Total: ${new Intl.NumberFormat('en-US', {
                   style: 'currency',
