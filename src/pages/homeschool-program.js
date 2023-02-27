@@ -250,35 +250,35 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
                   {`Down payment: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
-                  }).format(tuitionFee?.paymentTerms[1]?.downPayment || 0)}`}
+                  }).format(tuitionFee?.paymentTerms[2]?.downPayment || 0)}`}
                 </div>
                 <div className="text-primary-500 text-2xl font-bold font-display">
                   {`2nd payment: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
-                  }).format(tuitionFee?.paymentTerms[1]?.secondPayment || 0)}`}
+                  }).format(tuitionFee?.paymentTerms[2]?.secondPayment || 0)}`}
                 </div>
                 <div className="text-primary-500 text-2xl font-bold font-display">
                   {`3rd payment: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
-                  }).format(tuitionFee?.paymentTerms[1]?.thirdPayment || 0)}`}
+                  }).format(tuitionFee?.paymentTerms[2]?.thirdPayment || 0)}`}
                 </div>
                 <div className="text-primary-500 text-2xl font-bold font-display">
                   {`4th payment: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
-                  }).format(tuitionFee?.paymentTerms[1]?.fourthPayment || 0)}`}
+                  }).format(tuitionFee?.paymentTerms[2]?.fourthPayment || 0)}`}
                 </div>
                 <div className="text-secondary-500 text-2xl font-bold font-display">
                   {`Total: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
                   }).format(
-                    tuitionFee?.paymentTerms[1]?.downPayment +
-                      tuitionFee?.paymentTerms[1]?.secondPayment +
-                      tuitionFee?.paymentTerms[1]?.thirdPayment +
-                      tuitionFee?.paymentTerms[1]?.fourthPayment || 0
+                    tuitionFee?.paymentTerms[2]?.downPayment +
+                      tuitionFee?.paymentTerms[2]?.secondPayment +
+                      tuitionFee?.paymentTerms[2]?.thirdPayment +
+                      tuitionFee?.paymentTerms[2]?.fourthPayment || 0
                   )}`}
                 </div>
               </div>
@@ -292,7 +292,7 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
         </div>
         <div className="flex flex-col px-5 py-5 w-full md:w-3/4">
           <div className="font-bold">
-            <PortableText value={program.inclusions} />
+            <PortableText value={program.inclusions} component="li" />
           </div>
         </div>
         <div className="container flex flex-col w-3/4 mx-auto space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
