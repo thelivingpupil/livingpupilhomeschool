@@ -17,7 +17,7 @@ import {
 } from '@/utils/constants';
 import { PortableText } from '@portabletext/react';
 
-const HomeschoolProgram = ({ page, fees, programs }) => {
+const HomeschoolProgram = ({ page, programs }) => {
   const { footer, header } = page;
   const [headerSection] = header?.sectionType;
   const [footerSection] = footer?.sectionType;
@@ -319,12 +319,9 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
 };
 
 export const getStaticProps = async () => {
-  const [[header, footer], schoolFees, programs] = await Promise.all([
+  const [[header, footer], programs] = await Promise.all([
     sanityClient.fetch(
       `*[_type == 'sections' && (name == 'Common Header' || name == 'Common Footer')]`
-    ),
-    sanityClient.fetch(
-      `*[_type == 'schoolFees' && program == 'HOMESCHOOL_PROGRAM']{...}`
     ),
     sanityClient.fetch(
       `*[_type == 'programs' && programType == 'HOMESCHOOL_PROGRAM']`
@@ -333,7 +330,6 @@ export const getStaticProps = async () => {
   return {
     props: {
       page: { footer, header },
-      fees: { schoolFees },
       programs,
     },
     revalidate: 10,
