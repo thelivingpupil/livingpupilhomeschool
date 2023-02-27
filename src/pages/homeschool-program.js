@@ -22,6 +22,14 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
 
   console.log('programs', programs);
 
+  const program = programs.find(
+    (program) =>
+      program.enrollmentType === enrollmentType &&
+      program.gradeLevel === incomingGradeLevel
+  );
+
+  console.log('program', program);
+
   const schoolFee = fees.schoolFees.find((fee) => {
     let gradeLevel = incomingGradeLevel;
 
