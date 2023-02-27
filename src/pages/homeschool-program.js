@@ -190,13 +190,13 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
             Tuition Fees and Payment Plan for New Families for SY 2023-2024
           </div>
         </div>
-        <div className="flex flex-col px-5 py-5 border-dashed border-primary-500 rounded-lg w-full md:w-3/4">
-          <div className="text-xl text-center font-semibold">
+        <div className="flex flex-col py-5 w-full md:w-3/4">
+          <div className="text-xl my-5 text-center font-semibold">
             Local Accreditation
           </div>
           <div className="flex flex-col md:flex-wrap md:flex-row gap-4">
-            <div className="flex-1 p-5 space-y-5 text-center border border-primary-500 rounded-lg">
-              <div className="text-xl font-medim">Full Payment</div>
+            <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
+              <div className="text-xl font-medium mb-5">Full Payment</div>
               <div className="text-secondary-500 text-2xl font-bold font-display">
                 {`Total: ${new Intl.NumberFormat('en-US', {
                   style: 'currency',
@@ -204,8 +204,10 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
                 }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
               </div>
             </div>
-            <div className="flex-1 p-5 space-y-5 text-center border border-primary-500 rounded-lg">
-              <div className="text-xl font-medim">Three (3) Term Payment</div>
+            <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
+              <div className="text-xl font-medium mb-5">
+                Three (3) Term Payment
+              </div>
               <div className="text-primary-500 text-2xl font-bold font-display">
                 {`Down payment: ${new Intl.NumberFormat('en-US', {
                   style: 'currency',
@@ -231,8 +233,10 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
                 }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
               </div>
             </div>
-            <div className="flex-1 p-5 space-y-5 text-center border border-primary-500 rounded-lg">
-              <div className="text-xl font-medim">Four (4) Term Payment</div>
+            <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
+              <div className="text-xl font-medium mb-5">
+                Four (4) Term Payment
+              </div>
               <div className="text-primary-500 text-2xl font-bold font-display">
                 {`Down payment: ${new Intl.NumberFormat('en-US', {
                   style: 'currency',
