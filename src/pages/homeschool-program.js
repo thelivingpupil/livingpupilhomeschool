@@ -8,7 +8,13 @@ import sanityClient from '@/lib/server/sanity';
 import Footer from '@/sections/footer';
 import Header from '@/sections/header';
 import Title from '@/sections/sectionTitle';
-import { GRADE_LEVEL, GRADE_LEVEL_GROUPS } from '@/utils/constants';
+import {
+  ACCREDITATION,
+  GRADE_LEVEL,
+  GRADE_LEVEL_GROUPS,
+  GRADE_LEVEL_HEADER,
+} from '@/utils/constants';
+import { PortableText } from '@portabletext/react';
 
 const HomeschoolProgram = ({ page, fees, programs }) => {
   const { footer, header } = page;
@@ -169,28 +175,16 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
       <section className="px-5 py-10 flex flex-col items-center">
         <div className="flex flex-col px-5 py-5 bg-primary-500 bg-opacity-75 rounded-lg w-full md:w-3/4">
           <div className="text-4xl font-bold text-secondary-500 text-center mb-3">
-            Homeschool Program - Preschool
+            Homeschool Program - {GRADE_LEVEL_HEADER[program?.gradeLevel]}
           </div>
           <div className="font-bold text-white text-center">
-            a gentle preschool educational approach for little learners ages 2
-            1/2 to 3 years old years old.
+            {program?.subheading}
           </div>
         </div>
 
         <div className="flex flex-col px-5 py-5 w-full md:w-3/4">
           <div className="text-center font-bold">
-            With the Charlotte Mason method, the preschool years are a crucial
-            time for laying the foundation for loving learning. We encourage
-            movement, outdoor time, and play time to maximize the child's
-            natural curiosity.
-            <br />
-            <br />
-            <br />
-            Although formal academic learning in the CM method begins at age 6,
-            we use the preschool years to lay the foundation for loving
-            learning. We use play, outdoor time, story time, music and
-            handicrafts, among others, to develop our little ones' skill to the
-            fullest.
+            <PortableText value={program.description} />
           </div>
         </div>
         <div className="flex flex-col px-5 py-5 mb-5 bg-secondary-500 rounded-lg w-full md:w-3/4">
@@ -198,185 +192,106 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
             Tuition Fees and Payment Plan for New Families for SY 2023-2024
           </div>
         </div>
-        <div className="flex flex-col pb-5 w-full md:w-3/4">
-          <div className="text-xl my-5 text-center font-semibold">
-            Local Accreditation
-          </div>
-          <div className="flex flex-col md:flex-wrap md:flex-row gap-4">
-            <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
-              <div className="text-xl font-medium mb-5">Full Payment</div>
-              <div className="text-secondary-500 text-2xl font-bold font-display">
-                {`Total: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
+        {program?.tuitionFees?.map((tuitionFee) => (
+          <div className="flex flex-col pb-5 w-full md:w-3/4">
+            <div className="text-xl my-5 text-center font-semibold">
+              {ACCREDITATION[tuitionFee.type]}
             </div>
-            <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
-              <div className="text-xl font-medium mb-5">
-                Three (3) Term Payment
+            <div className="flex flex-col md:flex-wrap md:flex-row gap-4">
+              <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
+                <div className="text-xl font-medium mb-5">Full Payment</div>
+                <div className="text-secondary-500 text-2xl font-bold font-display">
+                  {`Total: ${new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(tuitionFee?.paymentTerms[0]?.fullPayment || 0)}`}
+                </div>
               </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`Down payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
+              <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
+                <div className="text-xl font-medium mb-5">
+                  Three (3) Term Payment
+                </div>
+                <div className="text-primary-500 text-2xl font-bold font-display">
+                  {`Down payment: ${new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(tuitionFee?.paymentTerms[1]?.downPayment || 0)}`}
+                </div>
+                <div className="text-primary-500 text-2xl font-bold font-display">
+                  {`2nd payment: ${new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(tuitionFee?.paymentTerms[1]?.secondPayment || 0)}`}
+                </div>
+                <div className="text-primary-500 text-2xl font-bold font-display">
+                  {`3rd payment: ${new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(tuitionFee?.paymentTerms[1]?.thirdPayment || 0)}`}
+                </div>
+                <div className="text-secondary-500 text-2xl font-bold font-display">
+                  {`Total: ${new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(
+                    tuitionFee?.paymentTerms[1]?.downPayment +
+                      tuitionFee?.paymentTerms[1]?.secondPayment +
+                      tuitionFee?.paymentTerms[1]?.thirdPayment || 0
+                  )}`}
+                </div>
               </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`2nd payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`3rd payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-              <div className="text-secondary-500 text-2xl font-bold font-display">
-                {`Total: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-            </div>
-            <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
-              <div className="text-xl font-medium mb-5">
-                Four (4) Term Payment
-              </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`Down payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`2nd payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`3rd payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`4th payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-              <div className="text-secondary-500 text-2xl font-bold font-display">
-                {`Total: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col pb-5 w-full md:w-3/4">
-          <div className="text-xl my-5 text-center font-semibold">
-            International Accreditation
-          </div>
-          <div className="flex flex-col md:flex-wrap md:flex-row gap-4">
-            <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
-              <div className="text-xl font-medium mb-5">Full Payment</div>
-              <div className="text-secondary-500 text-2xl font-bold font-display">
-                {`Total: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-            </div>
-            <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
-              <div className="text-xl font-medium mb-5">
-                Three (3) Term Payment
-              </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`Down payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`2nd payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`3rd payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-              <div className="text-secondary-500 text-2xl font-bold font-display">
-                {`Total: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-            </div>
-            <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
-              <div className="text-xl font-medium mb-5">
-                Four (4) Term Payment
-              </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`Down payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`2nd payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`3rd payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-              <div className="text-primary-500 text-2xl font-bold font-display">
-                {`4th payment: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
-              </div>
-              <div className="text-secondary-500 text-2xl font-bold font-display">
-                {`Total: ${new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}`}
+              <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
+                <div className="text-xl font-medium mb-5">
+                  Four (4) Term Payment
+                </div>
+                <div className="text-primary-500 text-2xl font-bold font-display">
+                  {`Down payment: ${new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(tuitionFee?.paymentTerms[1]?.downPayment || 0)}`}
+                </div>
+                <div className="text-primary-500 text-2xl font-bold font-display">
+                  {`2nd payment: ${new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(tuitionFee?.paymentTerms[1]?.secondPayment || 0)}`}
+                </div>
+                <div className="text-primary-500 text-2xl font-bold font-display">
+                  {`3rd payment: ${new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(tuitionFee?.paymentTerms[1]?.thirdPayment || 0)}`}
+                </div>
+                <div className="text-primary-500 text-2xl font-bold font-display">
+                  {`4th payment: ${new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(tuitionFee?.paymentTerms[1]?.fourthPayment || 0)}`}
+                </div>
+                <div className="text-secondary-500 text-2xl font-bold font-display">
+                  {`Total: ${new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(
+                    tuitionFee?.paymentTerms[1]?.downPayment +
+                      tuitionFee?.paymentTerms[1]?.secondPayment +
+                      tuitionFee?.paymentTerms[1]?.thirdPayment +
+                      tuitionFee?.paymentTerms[1]?.fourthPayment || 0
+                  )}`}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ))}
+
         <div className="flex flex-col px-5 py-5 bg-primary-500 rounded-lg w-full md:w-3/4">
           <div className="font-bold text-2xl text-secondary-500 text-center">
             Inclusions
           </div>
         </div>
         <div className="flex flex-col px-5 py-5 w-full md:w-3/4">
-          <div className="text-center font-bold">
-            With the Charlotte Mason method, the preschool years are a crucial
-            time for laying the foundation for loving learning. We encourage
-            movement, outdoor time, and play time to maximize the child's
-            natural curiosity.
-            <br />
-            <br />
-            <br />
-            Although formal academic learning in the CM method begins at age 6,
-            we use the preschool years to lay the foundation for loving
-            learning. We use play, outdoor time, story time, music and
-            handicrafts, among others, to develop our little ones' skill to the
-            fullest.
+          <div className="font-bold">
+            <PortableText value={program.inclusions} />
           </div>
         </div>
         <div className="container flex flex-col w-3/4 mx-auto space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">

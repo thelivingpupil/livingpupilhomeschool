@@ -38,6 +38,24 @@ export const GRADE_LEVEL = {
   GRADE_12: 'Grade 12',
 };
 
+export const GRADE_LEVEL_HEADER = {
+  PRESCHOOL: 'Preschool',
+  K1: 'K1',
+  K2: 'K2',
+  GRADE_1: 'Grade School',
+  GRADE_2: 'Grade School',
+  GRADE_3: 'Grade School',
+  GRADE_4: 'Grade School',
+  GRADE_5: 'Grade School',
+  GRADE_6: 'Grade School',
+  GRADE_7: 'Grade 7-8',
+  GRADE_8: 'Grade 7-8',
+  GRADE_9: 'Grade 9-10',
+  GRADE_10: 'Grade 9-10',
+  GRADE_11: 'Senior High',
+  GRADE_12: 'Senior High',
+};
+
 export const GRADE_LEVEL_GROUPS = [
   {
     name: 'Pre-school',
