@@ -138,19 +138,19 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
 
         <div className="flex flex-col px-5 py-5 w-full md:w-3/4">
           <div className="text-center font-bold">
-            <PortableText value={program.description} />
+            <PortableText value={program?.description} />
           </div>
         </div>
         <div className="flex flex-col px-5 py-5 my-5 bg-secondary-500 rounded-lg w-full md:w-3/4">
           <div className="font-bold text-2xl text-primary-500 text-opacity-75 text-center">
             Tuition Fees and Payment Plan for{' '}
-            {ENROLLMENT_TYPE[program.enrollmentType]} for SY 2023-2024
+            {ENROLLMENT_TYPE[program?.enrollmentType]} for SY 2023-2024
           </div>
         </div>
         {program?.tuitionFees?.map((tuitionFee) => (
           <div className="flex flex-col pb-5 w-full md:w-3/4">
             <div className="text-xl my-5 text-center font-semibold">
-              {ACCREDITATION[tuitionFee.type]}
+              {ACCREDITATION[tuitionFee?.type]}
             </div>
             <div className="flex flex-col md:flex-wrap md:flex-row gap-4">
               <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
@@ -245,7 +245,7 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
         </div>
         <div className="flex flex-col px-5 py-5 w-full md:w-3/4">
           <div className="font-bold">
-            <PortableText value={program.inclusions} component="li" />
+            <PortableText value={program?.inclusions} component="li" />
           </div>
         </div>
         {/* <div className="container flex flex-col w-3/4 mx-auto space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
