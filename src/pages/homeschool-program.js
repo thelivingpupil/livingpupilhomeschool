@@ -10,6 +10,7 @@ import Header from '@/sections/header';
 import Title from '@/sections/sectionTitle';
 import {
   ACCREDITATION,
+  ENROLLMENT_TYPE,
   GRADE_LEVEL,
   GRADE_LEVEL_GROUPS,
   GRADE_LEVEL_HEADER,
@@ -189,7 +190,8 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
         </div>
         <div className="flex flex-col px-5 py-5 mb-5 bg-secondary-500 rounded-lg w-full md:w-3/4">
           <div className="font-bold text-2xl text-primary-500 text-opacity-75 text-center">
-            Tuition Fees and Payment Plan for New Families for SY 2023-2024
+            Tuition Fees and Payment Plan for{' '}
+            {ENROLLMENT_TYPE[program.enrollmentType]} for SY 2023-2024
           </div>
         </div>
         {program?.tuitionFees?.map((tuitionFee) => (
@@ -283,7 +285,6 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
             </div>
           </div>
         ))}
-
         <div className="flex flex-col px-5 py-5 bg-primary-500 rounded-lg w-full md:w-3/4">
           <div className="font-bold text-2xl text-secondary-500 text-center">
             Inclusions
