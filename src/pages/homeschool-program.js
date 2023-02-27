@@ -185,12 +185,12 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
             fullest.
           </div>
         </div>
-        <div className="flex flex-col px-5 py-5 bg-secondary-500 rounded-lg w-full md:w-3/4">
+        <div className="flex flex-col px-5 py-5 mb-5 bg-secondary-500 rounded-lg w-full md:w-3/4">
           <div className="font-bold text-2xl text-primary-500 text-opacity-75 text-center">
             Tuition Fees and Payment Plan for New Families for SY 2023-2024
           </div>
         </div>
-        <div className="flex flex-col py-5 w-full md:w-3/4">
+        <div className="flex flex-col pb-5 w-full md:w-3/4">
           <div className="text-xl my-5 text-center font-semibold">
             Local Accreditation
           </div>
@@ -270,7 +270,7 @@ const HomeschoolProgram = ({ page, fees, programs }) => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col py-5 w-full md:w-3/4">
+        <div className="flex flex-col pb-5 w-full md:w-3/4">
           <div className="text-xl my-5 text-center font-semibold">
             International Accreditation
           </div>
