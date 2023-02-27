@@ -137,7 +137,7 @@ const HomeschoolProgram = ({ page, programs }) => {
         </div>
 
         <div className="flex flex-col px-5 py-5 w-full md:w-3/4">
-          <div className="text-center font-bold">
+          <div className="text-justify font-bold space-y-5">
             <PortableText value={program?.description} />
           </div>
         </div>
@@ -244,8 +244,8 @@ const HomeschoolProgram = ({ page, programs }) => {
           </div>
         </div>
         <div className="flex flex-col px-5 py-5 w-full md:w-3/4">
-          <div className="font-bold">
-            <PortableText value={program?.inclusions} component="li" />
+          <div className="text-justify font-bold space-y-5">
+            <PortableText value={program?.inclusions} />
           </div>
         </div>
         {/* <div className="container flex flex-col w-3/4 mx-auto space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
