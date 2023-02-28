@@ -13,14 +13,20 @@ import sanityClient from '@/lib/server/sanity';
 import Footer from '@/sections/footer';
 import Header from '@/sections/header';
 import Title from '@/sections/sectionTitle';
-import { GRADE_LEVEL, GRADE_LEVEL_GROUPS } from '@/utils/constants';
+import {
+  GRADE_LEVEL,
+  GRADE_LEVEL_GROUPS,
+  GRADE_LEVEL_TYPES,
+} from '@/utils/constants';
 
 const HomeschoolCottage = ({ page, fees }) => {
   const { footer, header } = page;
   const [headerSection] = header?.sectionType;
   const [footerSection] = footer?.sectionType;
   const [enrollmentType, setEnrollmentType] = useState(Enrollment.NEW);
-  const [incomingGradeLevel, setIncomingGradeLevel] = useState(GradeLevel.K2);
+  const [incomingGradeLevel, setIncomingGradeLevel] = useState(
+    GRADE_LEVEL_TYPES.K2
+  );
   const [accreditation, setAccreditation] = useState(Accreditation.LOCAL);
   const [cottageType, setCottageType] = useState(CottageType.THREE_DAYS_A_WEEK);
 
@@ -124,51 +130,71 @@ const HomeschoolCottage = ({ page, fees }) => {
           <div className="flex flex-row items-center justify-center space-x-3">
             <button
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                accreditation === Accreditation.LOCAL &&
+                incomingGradeLevel === GRADE_LEVEL_TYPES.K2 &&
                 'text-white bg-primary-500'
               }`}
               onClick={() => {
-                setAccreditation(Accreditation.LOCAL);
-                setIncomingGradeLevel(GradeLevel.K2);
+                setIncomingGradeLevel(GRADE_LEVEL_TYPES.K2);
               }}
             >
               Local
             </button>
             <button
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                accreditation === Accreditation.FORM_ONE &&
+                incomingGradeLevel === GRADE_LEVEL_TYPES.FORM_1 &&
                 'text-white bg-primary-500'
               }`}
               onClick={() => {
-                setAccreditation(Accreditation.FORM_ONE);
-                setIncomingGradeLevel(GradeLevel.GRADE_1);
+                setIncomingGradeLevel(GRADE_LEVEL_TYPES.FORM_1);
               }}
             >
               Form 1
             </button>
             <button
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                accreditation === Accreditation.FORM_TWO &&
+                incomingGradeLevel === GRADE_LEVEL_TYPES.FORM_2 &&
                 'text-white bg-primary-500'
               }`}
               onClick={() => {
-                setAccreditation(Accreditation.FORM_TWO);
-                setIncomingGradeLevel(GradeLevel.GRADE_4);
+                setIncomingGradeLevel(GRADE_LEVEL_TYPES.FORM_2);
               }}
             >
               Form 2
             </button>
             <button
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                accreditation === Accreditation.FORM_THREE &&
+                incomingGradeLevel === GRADE_LEVEL_TYPES.FORM_2 &&
                 'text-white bg-primary-500'
               }`}
               onClick={() => {
-                setAccreditation(Accreditation.FORM_THREE);
-                setIncomingGradeLevel(GradeLevel.GRADE_7);
+                setIncomingGradeLevel(GRADE_LEVEL_TYPES.FORM_2);
               }}
             >
               Form 3
+            </button>
+            <button
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
+                incomingGradeLevel === GRADE_LEVEL_TYPES.GRADE_11 &&
+                'text-white bg-primary-500'
+              }`}
+              disabled={cottageType === CottageType.THREE_DAYS_A_WEEK}
+              onClick={() => {
+                setIncomingGradeLevel(GRADE_LEVEL_TYPES.GRADE_11);
+              }}
+            >
+              Grade 11
+            </button>
+            <button
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
+                incomingGradeLevel === GRADE_LEVEL_TYPES.GRADE_12 &&
+                'text-white bg-primary-500'
+              }`}
+              disabled={cottageType === CottageType.THREE_DAYS_A_WEEK}
+              onClick={() => {
+                setIncomingGradeLevel(GRADE_LEVEL_TYPES.GRADE_12);
+              }}
+            >
+              Grade 12
             </button>
           </div>
         </div>
