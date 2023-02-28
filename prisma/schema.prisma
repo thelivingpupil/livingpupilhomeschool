@@ -336,6 +336,11 @@ enum GuardianType {
   LEGAL_GUARDIAN
 }
 
+enum CottageType {
+  THREE_DAYS_A_WEEK
+  WITH_TWO_DAYS_TUTOR
+}
+
 enum InvitationStatus {
   ACCEPTED
   PENDING

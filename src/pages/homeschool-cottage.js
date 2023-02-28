@@ -91,6 +91,28 @@ const HomeschoolCottage = ({ page, fees }) => {
           </div>
         </div>
         <div className="container mx-auto space-y-3">
+          <h3 className="text-lg font-bold text-center">for cottage program</h3>
+          <div className="flex flex-row items-center justify-center space-x-3">
+            <button
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
+                enrollmentType === Enrollment.NEW && 'text-white bg-primary-500'
+              }`}
+              onClick={() => setEnrollmentType(Enrollment.NEW)}
+            >
+              New Family
+            </button>
+            <button
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
+                enrollmentType === Enrollment.CONTINUING &&
+                'text-white bg-primary-500'
+              }`}
+              onClick={() => setEnrollmentType(Enrollment.CONTINUING)}
+            >
+              Continuing Family
+            </button>
+          </div>
+        </div>
+        <div className="container mx-auto space-y-3">
           <h3 className="text-lg font-bold text-center">with a</h3>
           <div className="flex flex-row items-center justify-center space-x-3">
             <button

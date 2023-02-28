@@ -91,6 +91,11 @@ export const GRADE_LEVEL_GROUPS = [
   },
 ];
 
+export const COTTAGE_TYPE = {
+  THREE_DAYS_A_WEEK: '3 days a week',
+  WITH_TWO_DAYS_TUTOR: 'with 2 days tutor',
+};
+
 export const PAYMENT_TYPE = {
   ANNUAL: 'Annual',
   SEMI_ANNUAL: 'Semi-Annual',
