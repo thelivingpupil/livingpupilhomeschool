@@ -137,7 +137,7 @@ const HomeschoolCottage = ({ page, fees }) => {
                 setIncomingGradeLevel(GRADE_LEVEL_TYPES.K2);
               }}
             >
-              Local
+              K2
             </button>
             <button
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
@@ -172,30 +172,34 @@ const HomeschoolCottage = ({ page, fees }) => {
             >
               Form 3
             </button>
-            <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                incomingGradeLevel === GRADE_LEVEL_TYPES.GRADE_11 &&
-                'text-white bg-primary-500'
-              }`}
-              disabled={cottageType === CottageType.THREE_DAYS_A_WEEK}
-              onClick={() => {
-                setIncomingGradeLevel(GRADE_LEVEL_TYPES.GRADE_11);
-              }}
-            >
-              Grade 11
-            </button>
-            <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                incomingGradeLevel === GRADE_LEVEL_TYPES.GRADE_12 &&
-                'text-white bg-primary-500'
-              }`}
-              disabled={cottageType === CottageType.THREE_DAYS_A_WEEK}
-              onClick={() => {
-                setIncomingGradeLevel(GRADE_LEVEL_TYPES.GRADE_12);
-              }}
-            >
-              Grade 12
-            </button>
+            {cottageType === CottageType.WITH_TWO_DAYS_TUTOR && (
+              <>
+                <button
+                  className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 disabled:opacity-25 ${
+                    incomingGradeLevel === GRADE_LEVEL_TYPES.GRADE_11 &&
+                    'text-white bg-primary-500'
+                  }`}
+                  disabled={cottageType === CottageType.THREE_DAYS_A_WEEK}
+                  onClick={() => {
+                    setIncomingGradeLevel(GRADE_LEVEL_TYPES.GRADE_11);
+                  }}
+                >
+                  Grade 11
+                </button>
+                <button
+                  className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 disabled:opacity-25 ${
+                    incomingGradeLevel === GRADE_LEVEL_TYPES.GRADE_12 &&
+                    'text-white bg-primary-500'
+                  }`}
+                  disabled={cottageType === CottageType.THREE_DAYS_A_WEEK}
+                  onClick={() => {
+                    setIncomingGradeLevel(GRADE_LEVEL_TYPES.GRADE_12);
+                  }}
+                >
+                  Grade 12
+                </button>
+              </>
+            )}
           </div>
         </div>
         <div className="container w-full mx-auto space-y-3 md:w-1/4">
