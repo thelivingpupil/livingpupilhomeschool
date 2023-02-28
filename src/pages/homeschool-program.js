@@ -127,7 +127,10 @@ const HomeschoolProgram = ({ page, programs }) => {
         </div>
       </section>
       <section className="px-5 py-10 flex flex-col items-center">
-        <div className="flex flex-col px-5 py-5 bg-blue-300 rounded-lg w-full md:w-3/4">
+        <div
+          className="flex flex-col px-5 py-5 rounded-lg w-full md:w-3/4"
+          style={{ backgroundColor: '#7189BE' }}
+        >
           <div className="text-4xl font-bold text-secondary-500 text-center mb-3">
             Homeschool Program - {GRADE_LEVEL_HEADER[program?.gradeLevel]}
           </div>
@@ -142,7 +145,10 @@ const HomeschoolProgram = ({ page, programs }) => {
           </div>
         </div>
         <div className="flex flex-col px-5 py-5 my-5 bg-secondary-500 rounded-lg w-full md:w-3/4">
-          <div className="font-bold text-2xl text-blue-300 text-center">
+          <div
+            className="font-bold text-2xl text-center"
+            style={{ color: '#7189BE' }}
+          >
             Tuition Fees and Payment Plan for{' '}
             {ENROLLMENT_TYPE[program?.enrollmentType]} for SY 2023-2024
           </div>
