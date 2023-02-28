@@ -163,11 +163,11 @@ const HomeschoolCottage = ({ page, fees }) => {
             </button>
             <button
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                incomingGradeLevel === GRADE_LEVEL_TYPES.FORM_2 &&
+                incomingGradeLevel === GRADE_LEVEL_TYPES.FORM_3 &&
                 'text-white bg-primary-500'
               }`}
               onClick={() => {
-                setIncomingGradeLevel(GRADE_LEVEL_TYPES.FORM_2);
+                setIncomingGradeLevel(GRADE_LEVEL_TYPES.FORM_3);
               }}
             >
               Form 3
