@@ -183,6 +183,7 @@ model StudentRecord {
   incomingGradeLevel   GradeLevel
   enrollmentType       Enrollment    @default(NEW)
   program              Program       @default(HOMESCHOOL_PROGRAM)
+  cottageType          CottageType?
   accreditation        Accreditation @default(LOCAL)
   reason               String?
   formerSchoolName     String

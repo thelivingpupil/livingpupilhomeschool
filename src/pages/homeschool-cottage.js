@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
-import { Accreditation, Enrollment, GradeLevel } from '@prisma/client';
+import {
+  Accreditation,
+  Enrollment,
+  GradeLevel,
+  CottageType,
+} from '@prisma/client';
 
 import Meta from '@/components/Meta/index';
 import { LandingLayout } from '@/layouts/index';
@@ -17,6 +22,7 @@ const HomeschoolCottage = ({ page, fees }) => {
   const [enrollmentType, setEnrollmentType] = useState(Enrollment.NEW);
   const [incomingGradeLevel, setIncomingGradeLevel] = useState(GradeLevel.K2);
   const [accreditation, setAccreditation] = useState(Accreditation.LOCAL);
+  const [cottageType, setCottageType] = useState(CottageType.THREE_DAYS_A_WEEK);
 
   const schoolFee = fees.schoolFees.find((fee) => {
     let gradeLevel = incomingGradeLevel;
@@ -95,20 +101,21 @@ const HomeschoolCottage = ({ page, fees }) => {
           <div className="flex flex-row items-center justify-center space-x-3">
             <button
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                enrollmentType === Enrollment.NEW && 'text-white bg-primary-500'
+                cottageType === CottageType.THREE_DAYS_A_WEEK &&
+                'text-white bg-primary-500'
               }`}
-              onClick={() => setEnrollmentType(Enrollment.NEW)}
+              onClick={() => setCottageType(CottageType.THREE_DAYS_A_WEEK)}
             >
-              New Family
+              3 days a week
             </button>
             <button
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                enrollmentType === Enrollment.CONTINUING &&
+                cottageType === CottageType.WITH_TWO_DAYS_TUTOR &&
                 'text-white bg-primary-500'
               }`}
-              onClick={() => setEnrollmentType(Enrollment.CONTINUING)}
+              onClick={() => setCottageType(CottageType.WITH_TWO_DAYS_TUTOR)}
             >
-              Continuing Family
+              With 2 days tutor
             </button>
           </div>
         </div>
