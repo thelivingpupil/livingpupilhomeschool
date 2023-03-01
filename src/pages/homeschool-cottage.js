@@ -26,8 +26,6 @@ const HomeschoolCottage = ({ page, programs }) => {
   );
   const [cottageType, setCottageType] = useState(CottageType.THREE_DAYS_A_WEEK);
 
-  console.log('programs', programs);
-
   const program = programs.find(
     (program) =>
       program.enrollmentType === enrollmentType &&
