@@ -14,6 +14,7 @@ import {
   GRADE_LEVEL_HEADER,
   GRADE_LEVEL_TYPES,
 } from '@/utils/constants';
+import { PortableText } from '@portabletext/react';
 
 const HomeschoolCottage = ({ page, programs }) => {
   const { footer, header } = page;
