@@ -169,7 +169,7 @@ const HomeschoolCottage = ({ page, programs }) => {
           </div>
         </div>
       </section>
-      <section className="px-5 py-10">
+      <section className="px-5 py-10 flex flex-col items-center">
         <div
           className="flex flex-col px-5 py-5 rounded-lg w-full md:w-3/4"
           style={{ backgroundColor: '#7189BE' }}
