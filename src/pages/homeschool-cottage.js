@@ -76,7 +76,17 @@ const HomeschoolCottage = ({ page, programs }) => {
                 cottageType === CottageType.THREE_DAYS_A_WEEK &&
                 'text-white bg-primary-500'
               }`}
-              onClick={() => setCottageType(CottageType.THREE_DAYS_A_WEEK)}
+              onClick={() => {
+                setCottageType(CottageType.THREE_DAYS_A_WEEK);
+                if (
+                  [
+                    GRADE_LEVEL_TYPES.GRADE_11,
+                    GRADE_LEVEL_TYPES.GRADE_12,
+                  ].includes(gradeLevel)
+                ) {
+                  setIncomingGradeLevel(GRADE_LEVEL_TYPES.K2);
+                }
+              }}
             >
               3 days a week
             </button>
