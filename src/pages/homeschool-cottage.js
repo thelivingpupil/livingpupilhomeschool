@@ -80,7 +80,7 @@ const HomeschoolCottage = ({ page, programs }) => {
                   [
                     GRADE_LEVEL_TYPES.GRADE_11,
                     GRADE_LEVEL_TYPES.GRADE_12,
-                  ].includes(gradeLevel)
+                  ].includes(incomingGradeLevel)
                 ) {
                   setIncomingGradeLevel(GRADE_LEVEL_TYPES.K2);
                 }
