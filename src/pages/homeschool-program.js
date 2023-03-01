@@ -65,44 +65,6 @@ const HomeschoolProgram = ({ page, programs }) => {
             </button>
           </div>
         </div>
-        {/* <div className="container mx-auto space-y-3">
-          <h3 className="text-lg font-bold text-center">with a</h3>
-          <div className="flex flex-col items-center justify-center space-x-0 space-y-3 md:space-y-0 md:space-x-3 md:flex-row">
-            <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                accreditation === Accreditation.LOCAL &&
-                'text-white bg-primary-500'
-              }`}
-              onClick={() => setAccreditation(Accreditation.LOCAL)}
-            >
-              Local Accreditation
-            </button>
-            <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                accreditation === Accreditation.INTERNATIONAL &&
-                'text-white bg-primary-500'
-              }`}
-              onClick={() => {
-                setAccreditation(Accreditation.INTERNATIONAL);
-                setIncomingGradeLevel(GradeLevel.K2);
-              }}
-            >
-              International Accreditation
-            </button>
-            <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                accreditation === Accreditation.DUAL &&
-                'text-white bg-primary-500'
-              }`}
-              onClick={() => {
-                setAccreditation(Accreditation.DUAL);
-                setIncomingGradeLevel(GradeLevel.K2);
-              }}
-            >
-              Dual Accreditation
-            </button>
-          </div>
-        </div> */}
         <div className="container w-full mx-auto space-y-3 md:w-1/4">
           <div className="relative inline-block w-full border rounded">
             <select
@@ -254,71 +216,7 @@ const HomeschoolProgram = ({ page, programs }) => {
             <PortableText value={program?.inclusions} />
           </div>
         </div>
-        {/* <div className="container flex flex-col w-3/4 mx-auto space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
-          <div className="w-full p-5 space-y-5 text-center border rounded-lg md:w-1/3 border-primary-500">
-            <h2 className="text-xl font-medium">Full Payment</h2>
-            <h3 className="text-3xl font-bold font-display">
-              {new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'PHP',
-              }).format(schoolFee?.fees[0]?.totalFee || 0)}
-            </h3>
-          </div>
-          <div className="w-full p-5 space-y-5 text-center border rounded-lg md:w-1/3 border-primary-500">
-            <h2 className="text-xl font-medium">Semi-Annual Payment</h2>
-            <h3 className="text-3xl font-bold font-display">
-              {new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'PHP',
-              }).format(
-                schoolFee?.fees[1]?.initialFee +
-                  schoolFee?.fees[1]?.semiAnnualFee * 2 || 0
-              )}
-            </h3>
-          </div>
-          <div className="w-full p-5 space-y-5 text-center border rounded-lg md:w-1/3 border-primary-500">
-            <h2 className="text-xl font-medium">Quarterly Payment</h2>
-            <h3 className="text-3xl font-bold font-display">
-              {new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'PHP',
-              }).format(
-                Math.ceil(
-                  schoolFee?.fees[2]?.initialFee +
-                    schoolFee?.fees[2]?.quarterlyFee * 3
-                ) || 0
-              )}
-            </h3>
-          </div>
-        </div> */}
       </section>
-      {/* <section className="px-5 py-5 italic">
-        <p className="text-sm text-center">
-          {accreditation === Accreditation.LOCAL &&
-            enrollmentType === Enrollment.CONTINUING && (
-              <>
-                <strong>Note: </strong>
-                <span className="block">
-                  Sibling discount is Php 1,000.00 for the second, third, and
-                  fourth child
-                </span>
-              </>
-            )}
-          {(accreditation === Accreditation.INTERNATIONAL ||
-            accreditation === Accreditation.DUAL) && (
-            <>
-              <strong>Note: </strong>
-              <span className="block">
-                Credits Review Fee Php 3,000.00 for Grade 11, Php 7,500.00 for
-                Grade 12
-              </span>
-              <span className="block">
-                Graduation Fee for Grade 12 only Php 5,000.00
-              </span>
-            </>
-          )}
-        </p>
-      </section> */}
       <Footer {...footerSection} />
     </LandingLayout>
   );
