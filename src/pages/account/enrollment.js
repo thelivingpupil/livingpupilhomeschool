@@ -461,7 +461,6 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
       },
       method: 'POST',
     }).then((response) => {
-      console.log(response);
       setSubmittingState(false);
 
       if (response.errors) {

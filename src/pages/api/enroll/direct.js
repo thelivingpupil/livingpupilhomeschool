@@ -10,7 +10,9 @@ const handler = async (req, res) => {
   const { method } = req;
 
   if (method === 'POST') {
+    console.log('method post');
     const session = await validateSession(req, res);
+    console.log('after validate');
     const {
       firstName,
       middleName,
