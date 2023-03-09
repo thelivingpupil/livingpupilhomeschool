@@ -10,9 +10,7 @@ const handler = async (req, res) => {
   const { method } = req;
 
   if (method === 'POST') {
-    console.log('method post');
     const session = await validateSession(req, res);
-    console.log('after validate');
     const {
       firstName,
       middleName,
@@ -69,9 +67,7 @@ const handler = async (req, res) => {
       `${firstName} ${lastName}`,
       slug
     );
-    console.log('workspace: ', workspace);
     const [studentRecord, schoolFee] = await Promise.all([
-      console.log('start student record'),
       createStudentRecord(
         workspace.id,
         firstName,
@@ -92,8 +88,6 @@ const handler = async (req, res) => {
         reportCardLink,
         discountCode
       ),
-      console.log('end student record'),
-      console.log('start school fees'),
       createSchoolFees(
         session.user.userId,
         session.user.email,
@@ -106,10 +100,7 @@ const handler = async (req, res) => {
         paymentMethod,
         discountCode
       ),
-      console.log('end school fees'),
-      console.log('start update guardian'),
       updateGuardianInformation(session.user.userId, guardianInformation),
-      console.log('end school fees'),
     ]);
     await sendMail({
       html: html({
