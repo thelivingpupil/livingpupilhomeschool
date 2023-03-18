@@ -1,5 +1,6 @@
 import { TransactionSource, TransactionStatus } from '@prisma/client';
 import prisma from '@/prisma/index';
+import crypto from 'crypto';
 
 export const getPurchaseHistory = async (userId) =>
   await prisma.purchaseHistory.findMany({
@@ -117,7 +118,14 @@ export const getStorePurchases = async () =>
 
 export const createPurchase = async (items) => {
   const orderItems = items.map(({ code, image, name, price, quantity }) => ({
-    code,
+    code:
+      code ||
+      `CODE-${crypto
+        .createHash('md5')
+        .update(name)
+        .digest('hex')
+        .substring(0, 6)
+        .toUpperCase()}`,
     name,
     image,
     basePrice: price,
