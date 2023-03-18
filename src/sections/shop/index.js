@@ -332,7 +332,7 @@ const Shop = ({ categories, items }) => {
               {shopItems ? (
                 shopItems.map(
                   (
-                    { _id, image, name, price, categories, description },
+                    { _id, code, image, name, price, categories, description },
                     index
                   ) => {
                     const imageAsset = builder.image(image?.asset);
@@ -342,6 +342,15 @@ const Shop = ({ categories, items }) => {
                         id={_id}
                         addToCart={addToCart}
                         categories={categories}
+                        code={
+                          code ||
+                          `CODE-${crypto
+                            .createHash('md5')
+                            .update(name)
+                            .digest('hex')
+                            .substring(0, 6)
+                            .toUpperCase()}`
+                        }
                         count={cart.find((x) => x.id === _id)?.quantity || 0}
                         description={description}
                         image={

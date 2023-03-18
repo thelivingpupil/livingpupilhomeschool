@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { MinusIcon, PlusIcon, XIcon } from '@heroicons/react/outline';
 import { PortableText } from '@portabletext/react';
 import imageUrlBuilder from '@sanity/image-url';
+import crypto from 'crypto';
 
 import sanityClient from '@/lib/server/sanity';
 import { useState } from 'react';
@@ -248,6 +249,14 @@ const ShopItem = ({ item }) => {
                   addToCart({
                     id: item._id,
                     image,
+                    code:
+                      item.code ||
+                      `CODE-${crypto
+                        .createHash('md5')
+                        .update(item.name)
+                        .digest('hex')
+                        .substring(0, 6)
+                        .toUpperCase()}`,
                     name: item.name,
                     price: item.price,
                     quantity,
