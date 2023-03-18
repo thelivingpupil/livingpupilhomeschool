@@ -36,7 +36,7 @@ const Shop = ({ categories, items }) => {
     paymentLink,
     checkoutCart,
   } = useCartContext();
-  console.log(checkoutCart);
+
   const onChangeFilter = (e) => {
     const category = e.target.value;
     setCategoryFilter(category);

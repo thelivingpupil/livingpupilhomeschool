@@ -183,7 +183,6 @@ model StudentRecord {
   incomingGradeLevel   GradeLevel
   enrollmentType       Enrollment    @default(NEW)
   program              Program       @default(HOMESCHOOL_PROGRAM)
-  cottageType          CottageType?
   accreditation        Accreditation @default(LOCAL)
   reason               String?
   formerSchoolName     String
@@ -335,11 +334,6 @@ enum GuardianType {
   MOTHER
   FATHER
   LEGAL_GUARDIAN
-}
-
-enum CottageType {
-  THREE_DAYS_A_WEEK
-  WITH_TWO_DAYS_TUTOR
 }
 
 enum InvitationStatus {
