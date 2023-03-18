@@ -56,7 +56,7 @@ const CartProvider = ({ children }) => {
       method: 'POST',
     }).then((response) => {
       setSubmitting(false);
-
+      console.log(response);
       if (response.errors) {
         Object.keys(response.errors).forEach((error) =>
           toast.error(response.errors[error].msg)
