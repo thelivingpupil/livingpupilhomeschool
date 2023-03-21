@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
+import Script from 'next/script';
 
 const Meta = ({ author, description, keywords, noIndex, title }) => {
   const [url, setUrl] = useState('https://livingpupilhomeschool.com');
@@ -32,6 +33,21 @@ const Meta = ({ author, description, keywords, noIndex, title }) => {
       <meta property="twitter:image" content={`${url}/images/seo-cover.png`} />
 
       {noIndex && <meta name="robots" content="noindex" />}
+
+      <Script strategy="lazyOnload">
+        {`
+          !function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window,document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '1339259923286669'); 
+          fbq('track', 'PageView');
+      `}
+      </Script>
     </Head>
   );
 };
