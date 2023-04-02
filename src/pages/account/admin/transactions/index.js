@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import formatDistance from 'date-fns/formatDistance';
 import api from '@/lib/common/api';
 
@@ -23,37 +23,41 @@ const Transactions = () => {
   const [showModal, setModalVisibility] = useState(false);
   const [isSubmitting, setSubmittingState] = useState(false);
 
+  const inputFileRef = useRef();
+
   const toggleModal = () => setModalVisibility(!showModal);
 
   const renew = () => {};
 
   const submit = () => {
+    inputFileRef.current.click();
     //schoolFee;
-    setSubmittingState(true);
+    // setSubmittingState(true);
 
+    // api('/api/enroll/import', {
+    //   method: 'POST',
+    // })
+    //   .then((response) => {
+    //     setSubmittingState(false);
 
-    api('/api/enroll/import', {
-      method: 'POST',
-    }).then((response) => {
-      setSubmittingState(false);
+    //     console.log(response);
 
-      console.log(response)
-
-      if (response.errors) {
-        Object.keys(response.errors).forEach((error) =>
-          //toast.error(response.errors[error].msg)
-          console.log(response.errors[error].msg)
-        );
-      } else {
-        //window.open(response.data.schoolFee.url, '_blank');
-        //setPaymentLink(response.data.schoolFee.url);
-        //setViewFees(true);
-        //toast.success('Student information successfully submitted!');
-        console.log('Student information successfully submitted!');
-      }
-    }).catch((error) => {
-      console.log(error)
-    });
+    //     if (response.errors) {
+    //       Object.keys(response.errors).forEach((error) =>
+    //         //toast.error(response.errors[error].msg)
+    //         console.log(response.errors[error].msg)
+    //       );
+    //     } else {
+    //       //window.open(response.data.schoolFee.url, '_blank');
+    //       //setPaymentLink(response.data.schoolFee.url);
+    //       //setViewFees(true);
+    //       //toast.success('Student information successfully submitted!');
+    //       console.log('Student information successfully submitted!');
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
 
     // setSubmittingState(false);
   };
@@ -211,6 +215,7 @@ const Transactions = () => {
       >
         {isSubmitting ? 'Processing...' : 'Submit & Import'}
       </button>
+      <input type="file" accept="text/csv" hidden ref={inputFileRef} />
     </AdminLayout>
   );
 };
