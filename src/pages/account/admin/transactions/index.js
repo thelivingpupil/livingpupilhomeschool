@@ -69,7 +69,7 @@ const Transactions = () => {
 
     console.log(file);
 
-    console.log(await csv().fromStream(file));
+    console.log(await csv().fromFile(file));
   };
 
   return (
