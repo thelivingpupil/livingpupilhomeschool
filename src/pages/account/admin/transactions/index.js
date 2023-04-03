@@ -67,6 +67,8 @@ const Transactions = () => {
   const handleImportFile = async (event) => {
     const file = event.target.files[0];
 
+    console.log(file);
+
     console.log(await csv().fromStream(file));
   };
 
