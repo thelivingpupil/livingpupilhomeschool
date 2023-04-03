@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import formatDistance from 'date-fns/formatDistance';
 import api from '@/lib/common/api';
 
-import csv from 'csvtojson';
+import Papa from 'papaparse';
 
 import Meta from '@/components/Meta';
 import SideModal from '@/components/Modal/side-modal';
@@ -69,7 +69,7 @@ const Transactions = () => {
 
     console.log(file);
 
-    console.log(await csv().fromFile(file));
+    console.log(Papa.parse(file));
   };
 
   return (
