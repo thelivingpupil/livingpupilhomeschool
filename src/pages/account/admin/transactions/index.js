@@ -69,7 +69,7 @@ const Transactions = () => {
 
     console.log(file);
 
-    console.log(Papa.parse(file));
+    Papa.parse(file, { complete: (results) => console.log(results) });
   };
 
   return (
