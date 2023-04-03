@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import formatDistance from 'date-fns/formatDistance';
 import api from '@/lib/common/api';
 
+import csv from 'csvtojson';
+
 import Meta from '@/components/Meta';
 import SideModal from '@/components/Modal/side-modal';
 import { AdminLayout } from '@/layouts/index';
@@ -60,6 +62,12 @@ const Transactions = () => {
     //   });
 
     // setSubmittingState(false);
+  };
+
+  const handleImportFile = async (event) => {
+    const file = event.target.files[0];
+
+    console.log(await csv().fromStream(file));
   };
 
   return (
@@ -215,7 +223,13 @@ const Transactions = () => {
       >
         {isSubmitting ? 'Processing...' : 'Submit & Import'}
       </button>
-      <input type="file" accept="text/csv" hidden ref={inputFileRef} />
+      <input
+        type="file"
+        accept="text/csv"
+        hidden
+        ref={inputFileRef}
+        onChange={handleImportFile}
+      />
     </AdminLayout>
   );
 };
