@@ -20,8 +20,6 @@ const handler = async (req, res) => {
 
     console.log('student', student);
 
-    // return res.status(200).json({ message: 'Successful import', student });
-
     const createSchoolFeesInImport = async ({
       program,
       payment,
@@ -52,6 +50,9 @@ const handler = async (req, res) => {
             referenceNumber: `fromImport-${uuidv4()}`,
             amount: initialPayment || initialPaymentPending,
             transactionStatus: initialPayment
+              ? TransactionStatus.S
+              : TransactionStatus.P,
+            paymentStatus: initialPayment
               ? TransactionStatus.S
               : TransactionStatus.P,
             source: TransactionSource.ENROLLMENT,
@@ -116,6 +117,9 @@ const handler = async (req, res) => {
               transactionStatus: initialPayment
                 ? TransactionStatus.S
                 : TransactionStatus.P,
+              paymentStatus: initialPayment
+                ? TransactionStatus.S
+                : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
               description,
               fee: Fees.OTC,
@@ -139,6 +143,9 @@ const handler = async (req, res) => {
               transactionStatus: secondPayment
                 ? TransactionStatus.S
                 : TransactionStatus.P,
+              paymentStatus: secondPayment
+                ? TransactionStatus.S
+                : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
               description,
               fee: Fees.OTC,
@@ -160,6 +167,9 @@ const handler = async (req, res) => {
               referenceNumber: `fromImport-${uuidv4()}`,
               amount: thirdPayment || thirdPaymentPending,
               transactionStatus: thirdPayment
+                ? TransactionStatus.S
+                : TransactionStatus.P,
+              paymentStatus: thirdPayment
                 ? TransactionStatus.S
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
@@ -263,6 +273,9 @@ const handler = async (req, res) => {
               transactionStatus: initialPayment
                 ? TransactionStatus.S
                 : TransactionStatus.P,
+              paymentStatus: initialPayment
+                ? TransactionStatus.S
+                : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
               description,
               fee: Fees.OTC,
@@ -284,6 +297,9 @@ const handler = async (req, res) => {
               referenceNumber: `fromImport-${uuidv4()}`,
               amount: secondPayment || secondPaymentPending,
               transactionStatus: secondPayment
+                ? TransactionStatus.S
+                : TransactionStatus.P,
+              paymentStatus: secondPayment
                 ? TransactionStatus.S
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
@@ -309,6 +325,9 @@ const handler = async (req, res) => {
               transactionStatus: thirdPayment
                 ? TransactionStatus.S
                 : TransactionStatus.P,
+              paymentStatus: thirdPayment
+                ? TransactionStatus.S
+                : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
               description,
               fee: Fees.OTC,
@@ -330,6 +349,9 @@ const handler = async (req, res) => {
               referenceNumber: `fromImport-${uuidv4()}`,
               amount: fourthPayment || fourthPaymentPending,
               transactionStatus: fourthPayment
+                ? TransactionStatus.S
+                : TransactionStatus.P,
+              paymentStatus: fourthPayment
                 ? TransactionStatus.S
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
