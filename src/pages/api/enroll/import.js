@@ -10,6 +10,7 @@ import { createStudentRecord } from '@/prisma/services/student-record';
 import { createWorkspaceWithSlug } from '@/prisma/services/workspace';
 import { ACCREDITATION, GRADE_LEVEL, PROGRAM } from '@/utils/constants';
 import slugify from 'slugify';
+import { v4 as uuidv4 } from 'uuid';
 
 const handler = async (req, res) => {
   try {
@@ -48,7 +49,7 @@ const handler = async (req, res) => {
         await prisma.transaction.create({
           data: {
             transactionId: transaction.transactionId,
-            referenceNumber: 'fromImport',
+            referenceNumber: `fromImport-${uuidv4()}`,
             amount: initialPayment || initialPaymentPending,
             transactionStatus: initialPayment
               ? TransactionStatus.S
@@ -110,7 +111,7 @@ const handler = async (req, res) => {
           prisma.transaction.create({
             data: {
               transactionId: transactions[0].transactionId,
-              referenceNumber: 'fromImport',
+              referenceNumber: `fromImport-${uuidv4()}`,
               amount: initialPayment || initialPaymentPending,
               transactionStatus: initialPayment
                 ? TransactionStatus.S
@@ -133,7 +134,7 @@ const handler = async (req, res) => {
           prisma.transaction.create({
             data: {
               transactionId: transactions[1].transactionId,
-              referenceNumber: 'fromImport',
+              referenceNumber: `fromImport-${uuidv4()}`,
               amount: secondPayment || secondPaymentPending,
               transactionStatus: secondPayment
                 ? TransactionStatus.S
@@ -156,7 +157,7 @@ const handler = async (req, res) => {
           prisma.transaction.create({
             data: {
               transactionId: transactions[2].transactionId,
-              referenceNumber: 'fromImport',
+              referenceNumber: `fromImport-${uuidv4()}`,
               amount: thirdPayment || thirdPaymentPending,
               transactionStatus: thirdPayment
                 ? TransactionStatus.S
@@ -257,7 +258,7 @@ const handler = async (req, res) => {
           prisma.transaction.create({
             data: {
               transactionId: transactions[0].transactionId,
-              referenceNumber: 'fromImport',
+              referenceNumber: `fromImport-${uuidv4()}`,
               amount: initialPayment || initialPaymentPending,
               transactionStatus: initialPayment
                 ? TransactionStatus.S
@@ -280,7 +281,7 @@ const handler = async (req, res) => {
           prisma.transaction.create({
             data: {
               transactionId: transactions[1].transactionId,
-              referenceNumber: 'fromImport',
+              referenceNumber: `fromImport-${uuidv4()}`,
               amount: secondPayment || secondPaymentPending,
               transactionStatus: secondPayment
                 ? TransactionStatus.S
@@ -303,7 +304,7 @@ const handler = async (req, res) => {
           prisma.transaction.create({
             data: {
               transactionId: transactions[2].transactionId,
-              referenceNumber: 'fromImport',
+              referenceNumber: `fromImport-${uuidv4()}`,
               amount: thirdPayment || thirdPaymentPending,
               transactionStatus: thirdPayment
                 ? TransactionStatus.S
@@ -326,7 +327,7 @@ const handler = async (req, res) => {
           prisma.transaction.create({
             data: {
               transactionId: transactions[3].transactionId,
-              referenceNumber: 'fromImport',
+              referenceNumber: `fromImport-${uuidv4()}`,
               amount: fourthPayment || fourthPaymentPending,
               transactionStatus: fourthPayment
                 ? TransactionStatus.S
