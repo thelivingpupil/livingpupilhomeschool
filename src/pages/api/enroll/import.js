@@ -568,14 +568,9 @@ const handler = async (req, res) => {
       });
 
       console.log('data', {
-        session,
-        user,
         activeUser,
-        existingWorkspace,
         workspace,
         studentRecord,
-        existingStudentRecord,
-        existingSchoolFees,
       });
 
       const schoolFees =
