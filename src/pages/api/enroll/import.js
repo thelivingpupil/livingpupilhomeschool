@@ -580,7 +580,7 @@ const handler = async (req, res) => {
               program: student.program,
               accreditation: student.accreditation,
               incomingGradeLevel: student.incomingGradeLevel,
-              userId: user.id,
+              userId: activeUser.id,
               workspaceId: workspace.id,
               payment: student.paymentType,
               initialPayment: Number(student.initialPayment),
