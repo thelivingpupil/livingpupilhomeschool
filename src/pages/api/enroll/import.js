@@ -2,12 +2,13 @@ import {
   PaymentType,
   TransactionSource,
   TransactionStatus,
+  Fees,
 } from '@prisma/client';
 import { validateSession } from '@/config/api-validation';
 import prisma from '@/prisma/index';
 import { createStudentRecord } from '@/prisma/services/student-record';
 import { createWorkspaceWithSlug } from '@/prisma/services/workspace';
-import { ACCREDITATION, FEES, GRADE_LEVEL, PROGRAM } from '@/utils/constants';
+import { ACCREDITATION, GRADE_LEVEL, PROGRAM } from '@/utils/constants';
 import slugify from 'slugify';
 
 const handler = async (req, res) => {
@@ -54,7 +55,7 @@ const handler = async (req, res) => {
               : TransactionStatus.P,
             source: TransactionSource.ENROLLMENT,
             description,
-            fee: FEES.OTC,
+            fee: Fees.OTC,
             user: {
               connect: {
                 id: userId,
@@ -116,7 +117,7 @@ const handler = async (req, res) => {
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
               description,
-              fee: FEES.OTC,
+              fee: Fees.OTC,
               user: {
                 connect: {
                   id: userId,
@@ -139,7 +140,7 @@ const handler = async (req, res) => {
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
               description,
-              fee: FEES.OTC,
+              fee: Fees.OTC,
               user: {
                 connect: {
                   id: userId,
@@ -162,7 +163,7 @@ const handler = async (req, res) => {
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
               description,
-              fee: FEES.OTC,
+              fee: Fees.OTC,
               user: {
                 connect: {
                   id: userId,
@@ -263,7 +264,7 @@ const handler = async (req, res) => {
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
               description,
-              fee: FEES.OTC,
+              fee: Fees.OTC,
               user: {
                 connect: {
                   id: userId,
@@ -286,7 +287,7 @@ const handler = async (req, res) => {
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
               description,
-              fee: FEES.OTC,
+              fee: Fees.OTC,
               user: {
                 connect: {
                   id: userId,
@@ -309,7 +310,7 @@ const handler = async (req, res) => {
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
               description,
-              fee: FEES.OTC,
+              fee: Fees.OTC,
               user: {
                 connect: {
                   id: userId,
@@ -332,7 +333,7 @@ const handler = async (req, res) => {
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
               description,
-              fee: FEES.OTC,
+              fee: Fees.OTC,
               user: {
                 connect: {
                   id: userId,
