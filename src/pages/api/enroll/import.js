@@ -505,13 +505,13 @@ const handler = async (req, res) => {
 
       console.log('existingWorkspace', existingWorkspace);
 
-      const fetchExistingWorkspace = await prisma.workspace.findUnique({
-        where: {
-          id: existingWorkspace.id,
-        },
-      });
+      // const fetchExistingWorkspace = await prisma.workspace.findUnique({
+      //   where: {
+      //     id: existingWorkspace.id,
+      //   },
+      // });
 
-      console.log('fetchExistingWorkspace', fetchExistingWorkspace);
+      // console.log('fetchExistingWorkspace', fetchExistingWorkspace);
 
       const workspace =
         existingWorkspace ??
@@ -592,7 +592,7 @@ const handler = async (req, res) => {
         user,
         activeUser,
         existingWorkspace,
-        fetchExistingWorkspace,
+        // fetchExistingWorkspace,
         workspace,
         studentRecord,
         existingStudentRecord,
