@@ -18,7 +18,7 @@ const handler = async (req, res) => {
 
     console.log('student', student);
 
-    return res.status(200).json({ message: 'Successful import', student });
+    // return res.status(200).json({ message: 'Successful import', student });
 
     const createSchoolFeesInImport = async ({
       program,
