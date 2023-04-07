@@ -567,6 +567,17 @@ const handler = async (req, res) => {
         },
       });
 
+      console.log('data', {
+        session,
+        user,
+        activeUser,
+        existingWorkspace,
+        workspace,
+        studentRecord,
+        existingStudentRecord,
+        existingSchoolFees,
+      });
+
       const schoolFees =
         existingSchoolFees.length > 0
           ? existingSchoolFees
