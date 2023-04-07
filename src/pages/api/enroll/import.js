@@ -124,7 +124,7 @@ const handler = async (req, res) => {
               },
               purchaseHistory: {
                 connect: {
-                  id: transaction.id,
+                  id: transactions[0].id,
                 },
               },
             },
@@ -147,7 +147,7 @@ const handler = async (req, res) => {
               },
               purchaseHistory: {
                 connect: {
-                  id: transaction.id,
+                  id: transactions[1].id,
                 },
               },
             },
@@ -170,7 +170,7 @@ const handler = async (req, res) => {
               },
               purchaseHistory: {
                 connect: {
-                  id: transaction.id,
+                  id: transactions[2].id,
                 },
               },
             },
@@ -271,7 +271,7 @@ const handler = async (req, res) => {
               },
               purchaseHistory: {
                 connect: {
-                  id: transaction.id,
+                  id: transactions[0].id,
                 },
               },
             },
@@ -294,7 +294,7 @@ const handler = async (req, res) => {
               },
               purchaseHistory: {
                 connect: {
-                  id: transaction.id,
+                  id: transactions[1].id,
                 },
               },
             },
@@ -317,7 +317,7 @@ const handler = async (req, res) => {
               },
               purchaseHistory: {
                 connect: {
-                  id: transaction.id,
+                  id: transactions[2].id,
                 },
               },
             },
@@ -340,7 +340,7 @@ const handler = async (req, res) => {
               },
               purchaseHistory: {
                 connect: {
-                  id: transaction.id,
+                  id: transactions[3].id,
                 },
               },
             },
