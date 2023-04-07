@@ -36,30 +36,30 @@ const Transactions = () => {
     //schoolFee;
     // setSubmittingState(true);
 
-    api('/api/enroll/import', {
-      method: 'POST',
-    })
-      .then((response) => {
-        setSubmittingState(false);
+    // api('/api/enroll/import', {
+    //   method: 'POST',
+    // })
+    //   .then((response) => {
+    //     setSubmittingState(false);
 
-        console.log(response);
+    //     console.log(response);
 
-        if (response.errors) {
-          Object.keys(response.errors).forEach((error) =>
-            //toast.error(response.errors[error].msg)
-            console.log(response.errors[error].msg)
-          );
-        } else {
-          //window.open(response.data.schoolFee.url, '_blank');
-          //setPaymentLink(response.data.schoolFee.url);
-          //setViewFees(true);
-          //toast.success('Student information successfully submitted!');
-          console.log('Student information successfully submitted!');
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    //     if (response.errors) {
+    //       Object.keys(response.errors).forEach((error) =>
+    //         //toast.error(response.errors[error].msg)
+    //         console.log(response.errors[error].msg)
+    //       );
+    //     } else {
+    //       //window.open(response.data.schoolFee.url, '_blank');
+    //       //setPaymentLink(response.data.schoolFee.url);
+    //       //setViewFees(true);
+    //       //toast.success('Student information successfully submitted!');
+    //       console.log('Student information successfully submitted!');
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
 
     // setSubmittingState(false);
   };

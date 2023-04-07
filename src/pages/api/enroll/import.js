@@ -14,7 +14,7 @@ const handler = async (req, res) => {
   try {
     const { body: student } = req;
 
-    console.log('student', student);
+    console.log('student', JSON.parse(student));
 
     return res.status(200).json({ message: 'Successful import', student });
 
