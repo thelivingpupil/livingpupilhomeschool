@@ -530,23 +530,24 @@ const handler = async (req, res) => {
       });
 
       const schoolFees =
-        existingSchoolFees ??
-        (await createSchoolFeesInImport({
-          program: student.program,
-          accreditation: student.accreditation,
-          incomingGradeLevel: student.incomingGradeLevel,
-          userId: user.id,
-          workspaceId: workspace.id,
-          payment: student.paymentType,
-          initialPayment: Number(student.initialPayment),
-          initialPaymentPending: Number(student.initialPaymentPending),
-          secondPayment: Number(student.secondPayment),
-          secondPaymentPending: Number(student.secondPaymentPending),
-          thirdPayment: Number(student.thirdPayment),
-          thirdPaymentPending: Number(student.thirdPaymentPending),
-          fourthPayment: Number(student.fourthPayment),
-          fourthPaymentPending: Number(student.fourthPaymentPending),
-        }));
+        existingSchoolFees.length > 0
+          ? existingSchoolFees
+          : await createSchoolFeesInImport({
+              program: student.program,
+              accreditation: student.accreditation,
+              incomingGradeLevel: student.incomingGradeLevel,
+              userId: user.id,
+              workspaceId: workspace.id,
+              payment: student.paymentType,
+              initialPayment: Number(student.initialPayment),
+              initialPaymentPending: Number(student.initialPaymentPending),
+              secondPayment: Number(student.secondPayment),
+              secondPaymentPending: Number(student.secondPaymentPending),
+              thirdPayment: Number(student.thirdPayment),
+              thirdPaymentPending: Number(student.thirdPaymentPending),
+              fourthPayment: Number(student.fourthPayment),
+              fourthPaymentPending: Number(student.fourthPaymentPending),
+            });
 
       return {
         session,
