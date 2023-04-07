@@ -12,9 +12,11 @@ import slugify from 'slugify';
 
 const handler = async (req, res) => {
   try {
-    const { body: student } = req;
+    const { body } = req;
 
-    console.log('student', JSON.parse(student));
+    const student = JSON.parse(body);
+
+    console.log('student', student);
 
     return res.status(200).json({ message: 'Successful import', student });
 
@@ -536,14 +538,14 @@ const handler = async (req, res) => {
           userId: user.id,
           workspaceId: workspace.id,
           payment: student.paymentType,
-          initialPayment: student.initialPayment,
-          initialPaymentPending: student.initialPaymentPending,
-          secondPayment: student.secondPayment,
-          secondPaymentPending: student.secondPaymentPending,
-          thirdPayment: student.thirdPayment,
-          thirdPaymentPending: student.thirdPaymentPending,
-          fourthPayment: student.fourthPayment,
-          fourthPaymentPending: student.fourthPaymentPending,
+          initialPayment: Number(student.initialPayment),
+          initialPaymentPending: Number(student.initialPaymentPending),
+          secondPayment: Number(student.secondPayment),
+          secondPaymentPending: Number(student.secondPaymentPending),
+          thirdPayment: Number(student.thirdPayment),
+          thirdPaymentPending: Number(student.thirdPaymentPending),
+          fourthPayment: Number(student.fourthPayment),
+          fourthPaymentPending: Number(student.fourthPaymentPending),
         }));
 
       return {
