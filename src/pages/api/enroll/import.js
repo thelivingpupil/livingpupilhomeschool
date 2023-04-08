@@ -56,6 +56,7 @@ const handler = async (req, res) => {
               ? TransactionStatus.S
               : TransactionStatus.P,
             source: TransactionSource.ENROLLMENT,
+            paymentReference: 'FROM_IMPORT',
             description,
             fee: Fees.OTC,
             user: {
@@ -121,6 +122,7 @@ const handler = async (req, res) => {
                 ? TransactionStatus.S
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
+              paymentReference: 'FROM_IMPORT',
               description,
               fee: Fees.OTC,
               user: {
@@ -147,6 +149,7 @@ const handler = async (req, res) => {
                 ? TransactionStatus.S
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
+              paymentReference: 'FROM_IMPORT',
               description,
               fee: Fees.OTC,
               user: {
@@ -173,6 +176,7 @@ const handler = async (req, res) => {
                 ? TransactionStatus.S
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
+              paymentReference: 'FROM_IMPORT',
               description,
               fee: Fees.OTC,
               user: {
@@ -277,6 +281,7 @@ const handler = async (req, res) => {
                 ? TransactionStatus.S
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
+              paymentReference: 'FROM_IMPORT',
               description,
               fee: Fees.OTC,
               user: {
@@ -303,6 +308,7 @@ const handler = async (req, res) => {
                 ? TransactionStatus.S
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
+              paymentReference: 'FROM_IMPORT',
               description,
               fee: Fees.OTC,
               user: {
@@ -329,6 +335,7 @@ const handler = async (req, res) => {
                 ? TransactionStatus.S
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
+              paymentReference: 'FROM_IMPORT',
               description,
               fee: Fees.OTC,
               user: {
@@ -355,6 +362,7 @@ const handler = async (req, res) => {
                 ? TransactionStatus.S
                 : TransactionStatus.P,
               source: TransactionSource.ENROLLMENT,
+              paymentReference: 'FROM_IMPORT',
               description,
               fee: Fees.OTC,
               user: {
@@ -458,8 +466,6 @@ const handler = async (req, res) => {
         where: { email },
       });
 
-      console.log('user', user);
-
       const activeUser =
         user ??
         (await prisma.user.findUnique({
@@ -484,8 +490,6 @@ const handler = async (req, res) => {
           where: { id: session.user.userId },
         }));
 
-      console.log('activeUser', activeUser);
-
       const existingWorkspace = activeUser.createdWorkspace.find(
         (workspace) => {
           const validation =
@@ -503,16 +507,6 @@ const handler = async (req, res) => {
         }
       );
 
-      console.log('existingWorkspace', existingWorkspace);
-
-      // const fetchExistingWorkspace = await prisma.workspace.findUnique({
-      //   where: {
-      //     id: existingWorkspace.id,
-      //   },
-      // });
-
-      // console.log('fetchExistingWorkspace', fetchExistingWorkspace);
-
       const workspace =
         existingWorkspace ??
         (await createWorkspaceWithSlug(
@@ -522,15 +516,11 @@ const handler = async (req, res) => {
           slugify(firstName.toLowerCase())
         ));
 
-      console.log('workspace', workspace);
-
       const existingStudentRecord = await prisma.studentRecord.findUnique({
         where: {
           studentId: workspace.id,
         },
       });
-
-      console.log('existingStudentRecord', existingStudentRecord);
 
       const studentRecord =
         existingStudentRecord ??
@@ -555,8 +545,6 @@ const handler = async (req, res) => {
           undefined
         ));
 
-      console.log('studentRecord', studentRecord);
-
       const existingSchoolFees = await prisma.schoolFee.findMany({
         where: {
           student: {
@@ -565,12 +553,6 @@ const handler = async (req, res) => {
             },
           },
         },
-      });
-
-      console.log('data', {
-        activeUser,
-        workspace,
-        studentRecord,
       });
 
       const schoolFees =
