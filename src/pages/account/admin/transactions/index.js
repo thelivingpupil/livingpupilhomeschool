@@ -41,6 +41,7 @@ const Transactions = () => {
     const file = event.target.files[0];
 
     console.log(file);
+    setSubmittingState(true);
 
     Papa.parse(file, {
       header: true,
@@ -75,7 +76,12 @@ const Transactions = () => {
   return (
     <AdminLayout>
       <Meta title="Living Pupil Homeschool - Students List" />
-      <Modal show={isSubmitting} toggle={() => setSubmittingState(false)}>
+      <Modal
+        show={isSubmitting}
+        title="Loading..."
+        toggle={() => setSubmittingState(false)}
+      >
+        <p>You may view your purchase history in your account profile.</p>
         <div>{uploadCount}</div>
       </Modal>
       <SideModal show={showModal} toggle={toggleModal} />
