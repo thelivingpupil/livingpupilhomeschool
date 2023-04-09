@@ -12,6 +12,7 @@ import WorkspaceProvider from '@/providers/workspace';
 
 import '@/styles/globals.css';
 import '@/styles/datepicker.css';
+import '@/styles/transactionProgress.css';
 import '@splidejs/react-splide/css';
 import CartProvider from '@/providers/cart';
 
