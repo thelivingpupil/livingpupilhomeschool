@@ -84,13 +84,14 @@ const Transactions = () => {
         toggle={() => setSubmittingState(false)}
       >
         <p>Please do not close or refresh the browser.</p>
-        <div>{uploadCount}</div>
-        <div>{(uploadCount / totalUpload) * 100}</div>
         <p>
           <progress
             value={(uploadCount / totalUpload) * 100}
             max="100"
-          ></progress>
+            style={{ width: '100%' }}
+          >
+            {uploadCount} / {totalUpload}
+          </progress>
         </p>
       </Modal>
       <SideModal show={showModal} toggle={toggleModal} />
@@ -241,7 +242,7 @@ const Transactions = () => {
         disabled={isSubmitting}
         onClick={submit}
       >
-        {isSubmitting ? 'Processing...' : 'Submit & Import'}
+        {isSubmitting ? 'Processing...' : 'Import CSV File'}
       </button>
       <input
         type="file"
