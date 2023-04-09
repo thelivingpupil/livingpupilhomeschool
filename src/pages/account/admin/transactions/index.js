@@ -21,8 +21,6 @@ import {
 } from '@/utils/constants';
 import Modal from '@/components/Modal';
 
-import './transactionProgress.css';
-
 const Transactions = () => {
   const { data, isLoading } = useTransactions();
   const [showModal, setModalVisibility] = useState(false);
