@@ -55,6 +55,7 @@ const Transactions = () => {
             .then((response) => {
               console.log(response);
               setUploadCount((state) => state++);
+              setSubmittingState(uploadCount !== results.data.length);
               if (response.errors) {
                 Object.keys(response.errors).forEach((error) =>
                   console.log(response.errors[error].msg)
@@ -66,9 +67,9 @@ const Transactions = () => {
             .catch((error) => {
               console.log(error);
               setUploadCount((state) => state++);
+              setSubmittingState(uploadCount !== results.data.length);
             });
         }
-        setSubmittingState(false);
       },
     });
   };
