@@ -27,6 +27,8 @@ const Transactions = () => {
   const [isSubmitting, setSubmittingState] = useState(false);
   const [uploadCount, setUploadCount] = useState(0);
 
+  console.log(uploadCount);
+
   const inputFileRef = useRef();
 
   const toggleModal = () => setModalVisibility(!showModal);
@@ -46,7 +48,6 @@ const Transactions = () => {
     Papa.parse(file, {
       header: true,
       complete: (results) => {
-        setSubmittingState(true);
         for (const data of results.data) {
           api('/api/enroll/import', {
             method: 'POST',
@@ -54,7 +55,7 @@ const Transactions = () => {
           })
             .then((response) => {
               console.log(response);
-              setUploadCount((state) => state++);
+              setUploadCount(uploadCount++);
               setSubmittingState(uploadCount !== results.data.length);
               if (response.errors) {
                 Object.keys(response.errors).forEach((error) =>
@@ -66,7 +67,7 @@ const Transactions = () => {
             })
             .catch((error) => {
               console.log(error);
-              setUploadCount((state) => state++);
+              setUploadCount(uploadCount++);
               setSubmittingState(uploadCount !== results.data.length);
             });
         }
