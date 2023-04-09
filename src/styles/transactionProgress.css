@@ -1,24 +1,25 @@
 progress {
-  border: 0;
+  border: 1px solid #000;
   height: 40px;
   border-radius: 20px;
   background: transparent;
   color: #2e3494;
 }
 progress::-webkit-progress-bar {
-  border: 0;
+  border: 1px solid #000;
   height: 40px;
   border-radius: 20px;
   background: transparent;
 }
 progress::-webkit-progress-value {
-  border: 0;
+  border: 1px solid #000;
   height: 40px;
   border-radius: 20px;
   color: #2e3494;
+  background: #2e3494;
 }
 progress::-moz-progress-bar {
-  border: 0;
+  border: 1px solid #000;
   height: 40px;
   border-radius: 20px;
   background: transparent;
