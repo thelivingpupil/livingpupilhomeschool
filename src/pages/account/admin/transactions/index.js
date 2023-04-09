@@ -75,7 +75,7 @@ const Transactions = () => {
   return (
     <AdminLayout>
       <Meta title="Living Pupil Homeschool - Students List" />
-      <Modal show={isSubmitting}>
+      <Modal show={isSubmitting} toggle={() => setSubmittingState(false)}>
         <div>{uploadCount}</div>
       </Modal>
       <SideModal show={showModal} toggle={toggleModal} />
