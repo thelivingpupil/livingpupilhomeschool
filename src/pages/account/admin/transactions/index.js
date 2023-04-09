@@ -28,8 +28,6 @@ const Transactions = () => {
   const [uploadCount, setUploadCount] = useState(0);
   const [totalUpload, setTotalUpload] = useState(0);
 
-  console.log(uploadCount);
-
   const inputFileRef = useRef();
 
   const toggleModal = () => setModalVisibility(!showModal);
@@ -87,8 +85,9 @@ const Transactions = () => {
       >
         <p>Please do not close or refresh the browser.</p>
         <div>{uploadCount}</div>
+        <div>{uploadCount / totalUpload}</div>
         <p>
-          <progress value={uploadCount / totalUpload} max="100" />
+          <progress value={uploadCount / totalUpload} max="100"></progress>
         </p>
       </Modal>
       <SideModal show={showModal} toggle={toggleModal} />
