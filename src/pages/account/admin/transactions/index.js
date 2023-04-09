@@ -26,6 +26,7 @@ const Transactions = () => {
   const [showModal, setModalVisibility] = useState(false);
   const [isSubmitting, setSubmittingState] = useState(false);
   const [uploadCount, setUploadCount] = useState(0);
+  const [totalUpload, setTotalUpload] = useState(0);
 
   console.log(uploadCount);
 
@@ -43,11 +44,12 @@ const Transactions = () => {
     const file = event.target.files[0];
 
     console.log(file);
-    setSubmittingState(true);
 
     Papa.parse(file, {
       header: true,
       complete: (results) => {
+        setTotalUpload(results.data.length);
+        setSubmittingState(true);
         for (const data of results.data) {
           api('/api/enroll/import', {
             method: 'POST',
@@ -80,11 +82,14 @@ const Transactions = () => {
       <Meta title="Living Pupil Homeschool - Students List" />
       <Modal
         show={isSubmitting}
-        title="Loading..."
+        title="Loading import..."
         toggle={() => setSubmittingState(false)}
       >
-        <p>You may view your purchase history in your account profile.</p>
+        <p>Please do not close or refresh the browser.</p>
         <div>{uploadCount}</div>
+        <p>
+          <progress value={uploadCount / totalUpload} max="100" />
+        </p>
       </Modal>
       <SideModal show={showModal} toggle={toggleModal} />
       <Content.Title
