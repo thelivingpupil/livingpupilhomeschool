@@ -85,9 +85,12 @@ const Transactions = () => {
       >
         <p>Please do not close or refresh the browser.</p>
         <div>{uploadCount}</div>
-        <div>{uploadCount / totalUpload}</div>
+        <div>{(uploadCount / totalUpload) * 100}</div>
         <p>
-          <progress value={uploadCount / totalUpload} max="100"></progress>
+          <progress
+            value={(uploadCount / totalUpload) * 100}
+            max="100"
+          ></progress>
         </p>
       </Modal>
       <SideModal show={showModal} toggle={toggleModal} />
