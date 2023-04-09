@@ -19,11 +19,13 @@ import {
   PROGRAM,
   STATUS_BG_COLOR,
 } from '@/utils/constants';
+import Modal from '@/components/Modal';
 
 const Transactions = () => {
   const { data, isLoading } = useTransactions();
   const [showModal, setModalVisibility] = useState(false);
   const [isSubmitting, setSubmittingState] = useState(false);
+  const [uploadCount, setUploadCount] = useState(0);
 
   const inputFileRef = useRef();
 
@@ -43,6 +45,7 @@ const Transactions = () => {
     Papa.parse(file, {
       header: true,
       complete: (results) => {
+        setSubmittingState(true);
         for (const data of results.data) {
           api('/api/enroll/import', {
             method: 'POST',
@@ -50,7 +53,7 @@ const Transactions = () => {
           })
             .then((response) => {
               console.log(response);
-
+              setUploadCount((state) => state++);
               if (response.errors) {
                 Object.keys(response.errors).forEach((error) =>
                   console.log(response.errors[error].msg)
@@ -61,8 +64,10 @@ const Transactions = () => {
             })
             .catch((error) => {
               console.log(error);
+              setUploadCount((state) => state++);
             });
         }
+        setSubmittingState(false);
       },
     });
   };
@@ -70,6 +75,9 @@ const Transactions = () => {
   return (
     <AdminLayout>
       <Meta title="Living Pupil Homeschool - Students List" />
+      <Modal show={isSubmitting}>
+        <div>{uploadCount}</div>
+      </Modal>
       <SideModal show={showModal} toggle={toggleModal} />
       <Content.Title
         title="Enrollment Transactions"
