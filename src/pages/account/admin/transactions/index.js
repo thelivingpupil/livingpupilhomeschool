@@ -56,7 +56,7 @@ const Transactions = () => {
             .then((response) => {
               console.log(response);
               setUploadCount(uploadCount++);
-              // setSubmittingState(uploadCount !== results.data.length);
+              setSubmittingState(uploadCount !== results.data.length);
               if (response.errors) {
                 Object.keys(response.errors).forEach((error) =>
                   console.log(response.errors[error].msg)
@@ -68,7 +68,7 @@ const Transactions = () => {
             .catch((error) => {
               console.log(error);
               setUploadCount(uploadCount++);
-              // setSubmittingState(uploadCount !== results.data.length);
+              setSubmittingState(uploadCount !== results.data.length);
             });
         }
       },
@@ -85,13 +85,14 @@ const Transactions = () => {
       >
         <p>Please do not close or refresh the browser.</p>
         <p>
+          {uploadCount} / {totalUpload}
+        </p>
+        <p>
           <progress
             value={(uploadCount / totalUpload) * 100}
             max="100"
             style={{ width: '100%' }}
-          >
-            {uploadCount} / {totalUpload}
-          </progress>
+          />
         </p>
       </Modal>
       <SideModal show={showModal} toggle={toggleModal} />
