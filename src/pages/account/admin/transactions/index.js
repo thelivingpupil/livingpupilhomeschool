@@ -41,8 +41,6 @@ const Transactions = () => {
   const handleImportFile = async (event) => {
     const file = event.target.files[0];
 
-    console.log(file);
-
     Papa.parse(file, {
       header: true,
       complete: (results) => {
@@ -101,6 +99,14 @@ const Transactions = () => {
         subtitle="View and manage all transactions relevant to enrollment"
       />
       <Content.Divider />
+      <button
+        className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+        disabled={isSubmitting}
+        onClick={submit}
+        style={{ width: '25%' }}
+      >
+        {isSubmitting ? 'Processing...' : 'Import CSV File'}
+      </button>
       <Content.Container>
         <Card>
           <Card.Body title="Transactions List">
@@ -238,13 +244,6 @@ const Transactions = () => {
           </Card.Body>
         </Card>
       </Content.Container>
-      <button
-        className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-        disabled={isSubmitting}
-        onClick={submit}
-      >
-        {isSubmitting ? 'Processing...' : 'Import CSV File'}
-      </button>
       <input
         type="file"
         accept="text/csv"
