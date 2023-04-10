@@ -99,7 +99,7 @@ const Transactions = () => {
         subtitle="View and manage all transactions relevant to enrollment"
       />
       <Content.Divider />
-      <div className="flex column">
+      <div className="flex flex-col">
         <button
           className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
           disabled={isSubmitting}
