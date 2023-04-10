@@ -585,7 +585,11 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
               <label className="text-lg font-bold" htmlFor="txtMother">
                 Birthday <span className="ml-1 text-red-600">*</span>
               </label>
-              <div className="relative flex flex-row">
+              <div
+                className={`relative flex flex-row border rounded ${
+                  !birthDate && 'border-red-500'
+                }`}
+              >
                 <DatePicker
                   selected={birthDate}
                   onChange={(date) => setBirthDate(date)}
@@ -663,7 +667,9 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
             </label>
             <div className="relative flex flex-row space-x-5">
               <textarea
-                className="w-full px-3 py-2 border rounded"
+                className={`w-full px-3 py-2 border rounded ${
+                  !reason && 'border-red-500'
+                }`}
                 onChange={(e) => setReason(e.target.value)}
                 placeholder="Why did you choose to homeschool your child?"
                 rows={5}
@@ -747,7 +753,11 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
               </td>
             </tr>
             <tr>
-              <td className="w-1/2 px-3 py-2 border">
+              <td
+                className={`w-1/2 px-3 py-2 border ${
+                  !birthCertificateLink && 'border-red-500'
+                }`}
+              >
                 <h3 className="text-xl font-medium">Birth Certificate</h3>
                 <p className="text-sm text-gray-400">
                   <strong>Philippine Statistics Authority (PSA)</strong> issued
@@ -845,7 +855,11 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
           Enrolling as a <span className="ml-1 text-red-600">*</span>
         </label>
         <div className="flex flex-row">
-          <div className="relative inline-block w-full border rounded">
+          <div
+            className={`relative inline-block w-full border rounded ${
+              !enrollmentType && 'border-red-500'
+            }`}
+          >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
               onChange={(e) => setEnrollmentType(e.target.value)}
@@ -901,7 +915,11 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
               Incoming Grade Level <span className="ml-1 text-red-600">*</span>
             </label>
             <div className="flex flex-row">
-              <div className="relative inline-block w-full border rounded">
+              <div
+                className={`relative inline-block w-full border rounded ${
+                  !incomingGradeLevel && 'border-red-500'
+                }`}
+              >
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
                   onChange={(e) => {
@@ -933,7 +951,9 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
           </label>
           <div className="flex flex-row space-x-5">
             <input
-              className="px-3 py-2 border rounded md:w-2/3"
+              className={`px-3 py-2 border rounded md:w-2/3 ${
+                !formerSchoolName && 'border-red-500'
+              }`}
               onChange={(e) => setFormerSchoolName(e.target.value)}
               placeholder="Former School Name"
               value={formerSchoolName}
@@ -946,7 +966,9 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
           </label>
           <div className="relative flex flex-row space-x-5">
             <textarea
-              className="w-full px-3 py-2 border rounded"
+              className={`w-full px-3 py-2 border rounded ${
+                !formerSchoolAddress && 'border-red-500'
+              }`}
               onChange={(e) => setFormerSchoolAddress(e.target.value)}
               placeholder="Former School Address"
               rows={3}
@@ -967,18 +989,26 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className="px-3 py-2 border rounded md:w-1/2"
+              className={`px-3 py-2 border rounded md:w-1/2 ${
+                !primaryGuardianName && 'border-red-500'
+              }`}
               placeholder="Primary Guardian's Full Name"
               onChange={handlePrimaryGuardianName}
               value={primaryGuardianName}
             />
             <input
-              className="px-3 py-2 border rounded md:w-1/4"
+              className={`px-3 py-2 border rounded md:w-1/4 ${
+                !primaryGuardianOccupation && 'border-red-500'
+              }`}
               placeholder="Occupation"
               onChange={handlePrimaryGuardianOccupation}
               value={primaryGuardianOccupation}
             />
-            <div className="relative inline-block border rounded md:w-1/4">
+            <div
+              className={`relative inline-block border rounded md:w-1/4 ${
+                !primaryGuardianType && 'border-red-500'
+              }`}
+            >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
                 onChange={handlePrimaryGuardianType}
@@ -998,7 +1028,9 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
         </div>
         <div className="flex flex-col">
           <input
-            className="px-3 py-2 border rounded"
+            className={`px-3 py-2 border rounded ${
+              !primaryGuardianProfile && 'border-red-500'
+            }`}
             placeholder="Primary Guardian's Facebook Profile Link"
             onChange={handlePrimaryGuardianProfile}
             value={primaryGuardianProfile}
@@ -1010,18 +1042,26 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className="px-3 py-2 border rounded md:w-1/2"
+              className={`px-3 py-2 border rounded md:w-1/2 ${
+                !secondaryGuardianName && 'border-red-500'
+              }`}
               placeholder="Secondary Guardian's Full Name"
               onChange={handleSecondaryGuardianName}
               value={secondaryGuardianName}
             />
             <input
-              className="px-3 py-2 border rounded md:w-1/4"
+              className={`px-3 py-2 border rounded md:w-1/4 ${
+                !secondaryGuardianOccupation && 'border-red-500'
+              }`}
               placeholder="Occupation"
               onChange={handleSecondaryGuardianOccupation}
               value={secondaryGuardianOccupation}
             />
-            <div className="relative inline-block border rounded md:w-1/4">
+            <div
+              className={`relative inline-block border rounded md:w-1/4 ${
+                !secondaryGuardianType && 'border-red-500'
+              }`}
+            >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
                 onChange={handleSecondaryGuardianType}
@@ -1041,7 +1081,9 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
         </div>
         <div className="flex flex-col">
           <input
-            className="px-3 py-2 border rounded"
+            className={`px-3 py-2 border rounded ${
+              !secondaryGuardianProfile && 'border-red-500'
+            }`}
             placeholder="Secondary Guardian's Facebook Profile Link"
             onChange={handleSecondaryGuardianProfile}
             value={secondaryGuardianProfile}
@@ -1054,7 +1096,9 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
           </label>
           <div className="flex flex-row space-x-5">
             <input
-              className="px-3 py-2 border rounded md:w-1/2"
+              className={`px-3 py-2 border rounded md:w-1/2 ${
+                !mobileNumber && 'border-red-500'
+              }`}
               placeholder="Mobile Number"
               onChange={handleMobileNumber}
               value={mobileNumber}
@@ -1064,7 +1108,9 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
         <div className="flex flex-col">
           <div className="flex flex-row space-x-5">
             <input
-              className="px-3 py-2 border rounded md:w-1/2"
+              className={`px-3 py-2 border rounded md:w-1/2 ${
+                !telephoneNumber && 'border-red-500'
+              }`}
               placeholder="Telephone Number"
               onChange={handleTelephoneNumber}
               value={telephoneNumber}
@@ -1077,7 +1123,9 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
           </label>
           <div className="flex flex-row space-x-5">
             <input
-              className="px-3 py-2 border rounded md:w-1/2"
+              className={`px-3 py-2 border rounded md:w-1/2 ${
+                !anotherEmail && 'border-red-500'
+              }`}
               placeholder="another@email.com"
               onChange={handleAnotherEmail}
               value={anotherEmail}
@@ -1091,7 +1139,9 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
           </label>
           <div className="flex flex-row space-x-5">
             <input
-              className="px-3 py-2 border rounded md:w-3/4"
+              className={`px-3 py-2 border rounded md:w-3/4 ${
+                !address1 && 'border-red-500'
+              }`}
               placeholder="House No. St. Name, Village/Subdivision, Brgy."
               onChange={handleAddress1}
               value={address1}
@@ -1101,7 +1151,9 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
         <div className="flex flex-col">
           <div className="flex flex-row space-x-5">
             <input
-              className="px-3 py-2 border rounded md:w-3/4"
+              className={`px-3 py-2 border rounded md:w-3/4 ${
+                !address2 && 'border-red-500'
+              }`}
               placeholder="City, Country, ZIP Code"
               onChange={handleAddress2}
               value={address2}
@@ -1119,7 +1171,11 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
           Select a Program <span className="ml-1 text-red-600">*</span>
         </label>
         <div className="flex flex-row">
-          <div className="relative inline-block w-full border rounded">
+          <div
+            className={`relative inline-block w-full border rounded ${
+              !program && 'border-red-500'
+            }`}
+          >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
               onChange={(e) => {
@@ -1231,7 +1287,11 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
           Select an Accreditation <span className="ml-1 text-red-600">*</span>
         </label>
         <div className="flex flex-row">
-          <div className="relative inline-block w-full border rounded">
+          <div
+            className={`relative inline-block w-full border rounded ${
+              !accreditation && 'border-red-500'
+            }`}
+          >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
               onChange={(e) => {
@@ -1596,7 +1656,11 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
         <label className="text-lg font-bold" htmlFor="txtMother">
           Select Payment Type <span className="ml-1 text-red-600">*</span>
         </label>
-        <div className="relative inline-block w-full border rounded">
+        <div
+          className={`relative inline-block w-full border rounded ${
+            !payment && 'border-red-500'
+          }`}
+        >
           <select
             className="w-full px-3 py-2 capitalize rounded appearance-none"
             onChange={(e) => {
