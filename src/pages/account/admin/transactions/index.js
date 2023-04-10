@@ -99,7 +99,7 @@ const Transactions = () => {
         subtitle="View and manage all transactions relevant to enrollment"
       />
       <Content.Divider />
-      <div>
+      <div className="flex column">
         <button
           className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
           disabled={isSubmitting}
@@ -108,9 +108,14 @@ const Transactions = () => {
         >
           {isSubmitting ? 'Processing...' : 'Import Transaction'}
         </button>
-        <label>
+        <label className="text-xs mt-1">
           Note: Use the CSV template. You can download it{' '}
-          <a href="/files/import_file_template.csv">here</a>
+          <a
+            href="/files/import_file_template.csv"
+            className="text-primary-500"
+          >
+            here
+          </a>
         </label>
       </div>
       <Content.Container>
