@@ -533,7 +533,9 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
             </label>
             <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
               <input
-                className="px-3 py-2 border rounded md:w-1/3"
+                className={`px-3 py-2 border rounded md:w-1/3 ${
+                  firstName.length <= 0 && 'border-red-500'
+                }`}
                 onChange={(e) => {
                   let firstName = e.target.value;
                   setFirstName(firstName);
@@ -557,7 +559,9 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
                 value={middleName}
               />
               <input
-                className="px-3 py-2 border rounded md:w-1/3 border-red-500"
+                className={`px-3 py-2 border rounded md:w-1/3 ${
+                  lastName.length <= 0 && 'border-red-500'
+                }`}
                 onChange={(e) => {
                   let lastName = e.target.value;
                   setLastName(lastName);
