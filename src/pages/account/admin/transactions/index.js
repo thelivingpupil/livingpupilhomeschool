@@ -99,14 +99,20 @@ const Transactions = () => {
         subtitle="View and manage all transactions relevant to enrollment"
       />
       <Content.Divider />
-      <button
-        className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-        disabled={isSubmitting}
-        onClick={submit}
-        style={{ width: '25%' }}
-      >
-        {isSubmitting ? 'Processing...' : 'Import CSV File'}
-      </button>
+      <div>
+        <button
+          className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+          disabled={isSubmitting}
+          onClick={submit}
+          style={{ width: '25%' }}
+        >
+          {isSubmitting ? 'Processing...' : 'Import Transaction'}
+        </button>
+        <label>
+          Note: Use the CSV template. You can download it{' '}
+          <a href="/files/import_file_template.csv">here</a>
+        </label>
+      </div>
       <Content.Container>
         <Card>
           <Card.Body title="Transactions List">
