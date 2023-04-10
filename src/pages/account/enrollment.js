@@ -168,7 +168,9 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
       telephoneNumber.length > 0 &&
       anotherEmail.length > 0 &&
       address1.length > 0 &&
-      address2.length > 0) ||
+      address2.length > 0 &&
+      birthCertificateLink &&
+      birthCertificateLink?.length > 0) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
       payment !== null &&
@@ -555,7 +557,7 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
                 value={middleName}
               />
               <input
-                className="px-3 py-2 border rounded md:w-1/3"
+                className="px-3 py-2 border rounded md:w-1/3 border-red-500"
                 onChange={(e) => {
                   let lastName = e.target.value;
                   setLastName(lastName);
