@@ -38,6 +38,7 @@ import sanityClient from '@/lib/server/sanity';
 import { getGuardianInformation } from '@/prisma/services/user';
 import {
   ACCREDITATION,
+  COTTAGE_TYPE,
   ENROLLMENT_TYPE,
   FEES,
   GRADE_LEVEL,
@@ -53,7 +54,7 @@ const steps = [
   'School Fees',
 ];
 
-const EnrollmentProcess = ({ guardian, schoolFees }) => {
+const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
   const [step, setStep] = useState(0);
   const [viewFees, setViewFees] = useState(false);
   const [isSubmittingCode, setSubmittingCodeState] = useState(false);
@@ -74,6 +75,7 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
   const [formerSchoolName, setFormerSchoolName] = useState('');
   const [formerSchoolAddress, setFormerSchoolAddress] = useState('');
   const [program, setProgram] = useState(Program.HOMESCHOOL_PROGRAM);
+  const [cottageType, setCottageType] = useState(null);
   const [accreditation, setAccreditation] = useState(null);
   const [payment, setPayment] = useState(null);
   const [fee, setFee] = useState(null);
@@ -177,6 +179,10 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
       paymentMethod &&
       agree &&
       !isSubmittingCode);
+
+  console.log(programs);
+
+  // const programFee = programs.find(() => {});
   const schoolFee = schoolFees.find((fee) => {
     let gradeLevel = incomingGradeLevel;
 
@@ -1189,19 +1195,7 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
                   key={index}
                   disabled={
                     entry === Program.HOMESCHOOL_COTTAGE &&
-                    !(
-                      incomingGradeLevel === GradeLevel.K2 ||
-                      incomingGradeLevel === GradeLevel.GRADE_1 ||
-                      incomingGradeLevel === GradeLevel.GRADE_2 ||
-                      incomingGradeLevel === GradeLevel.GRADE_3 ||
-                      incomingGradeLevel === GradeLevel.GRADE_4 ||
-                      incomingGradeLevel === GradeLevel.GRADE_5 ||
-                      incomingGradeLevel === GradeLevel.GRADE_6 ||
-                      incomingGradeLevel === GradeLevel.GRADE_7 ||
-                      incomingGradeLevel === GradeLevel.GRADE_8 ||
-                      incomingGradeLevel === GradeLevel.GRADE_9 ||
-                      incomingGradeLevel === GradeLevel.GRADE_10
-                    )
+                    incomingGradeLevel === GradeLevel.PRESCHOOL
                   }
                   value={entry}
                 >
@@ -1214,6 +1208,39 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
             </div>
           </div>
         </div>
+        {program === Program.HOMESCHOOL_COTTAGE && (
+          <>
+            <hr className="border border-dashed" />
+            <label className="text-lg font-bold" htmlFor="txtMother">
+              Select a Cottage Type
+              <span className="ml-1 text-red-600">*</span>
+            </label>
+            <div className="flex flex-row">
+              <div
+                className={`relative inline-block w-full border rounded ${
+                  !program && 'border-red-500'
+                }`}
+              >
+                <select
+                  className="w-full px-3 py-2 capitalize rounded appearance-none"
+                  onChange={(e) => {
+                    setCottageType(e.target.value);
+                  }}
+                  value={cottageType}
+                >
+                  {Object.keys(COTTAGE_TYPE).map((entry, index) => (
+                    <option key={index} value={entry}>
+                      {COTTAGE_TYPE[entry]}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
         {/* <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
           <div
             className={`relative flex flex-col items-center justify-center w-full p-5 md:w-1/2 border-2 border-primary-200 ${
@@ -1304,82 +1331,31 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
               value={accreditation}
             >
               <option value="">Please select accreditation...</option>
-              {program === Program.HOMESCHOOL_PROGRAM && (
-                <>
-                  <option value={Accreditation.LOCAL}>
-                    {ACCREDITATION[Accreditation.LOCAL]}
-                  </option>
-                  <option
-                    disabled={
-                      !(
-                        incomingGradeLevel !== GradeLevel.PRESCHOOL &&
-                        incomingGradeLevel !== GradeLevel.K1
-                      )
-                    }
-                    value={Accreditation.INTERNATIONAL}
-                  >
-                    {ACCREDITATION[Accreditation.INTERNATIONAL]}
-                  </option>
-                  <option
-                    disabled={
-                      !(
-                        incomingGradeLevel !== GradeLevel.PRESCHOOL &&
-                        incomingGradeLevel !== GradeLevel.K1
-                      )
-                    }
-                    value={Accreditation.DUAL}
-                  >
-                    {ACCREDITATION[Accreditation.DUAL]}
-                  </option>
-                </>
-              )}
-              {program === Program.HOMESCHOOL_COTTAGE && (
-                <>
-                  <option
-                    disabled={!(incomingGradeLevel === GradeLevel.K2)}
-                    value={Accreditation.LOCAL}
-                  >
-                    {ACCREDITATION[Accreditation.LOCAL]}
-                  </option>
-                  <option
-                    disabled={
-                      !(
-                        incomingGradeLevel === GradeLevel.GRADE_1 ||
-                        incomingGradeLevel === GradeLevel.GRADE_2 ||
-                        incomingGradeLevel === GradeLevel.GRADE_3
-                      )
-                    }
-                    value={Accreditation.FORM_ONE}
-                  >
-                    {ACCREDITATION[Accreditation.FORM_ONE]}
-                  </option>
-                  <option
-                    disabled={
-                      !(
-                        incomingGradeLevel === GradeLevel.GRADE_4 ||
-                        incomingGradeLevel === GradeLevel.GRADE_5 ||
-                        incomingGradeLevel === GradeLevel.GRADE_6
-                      )
-                    }
-                    value={Accreditation.FORM_TWO}
-                  >
-                    {ACCREDITATION[Accreditation.FORM_TWO]}
-                  </option>
-                  <option
-                    disabled={
-                      !(
-                        incomingGradeLevel === GradeLevel.GRADE_7 ||
-                        incomingGradeLevel === GradeLevel.GRADE_8 ||
-                        incomingGradeLevel === GradeLevel.GRADE_9 ||
-                        incomingGradeLevel === GradeLevel.GRADE_10
-                      )
-                    }
-                    value={Accreditation.FORM_THREE}
-                  >
-                    {ACCREDITATION[Accreditation.FORM_THREE]}
-                  </option>
-                </>
-              )}
+              <option value={Accreditation.LOCAL}>
+                {ACCREDITATION[Accreditation.LOCAL]}
+              </option>
+              <option
+                disabled={
+                  !(
+                    incomingGradeLevel !== GradeLevel.PRESCHOOL &&
+                    incomingGradeLevel !== GradeLevel.K1
+                  )
+                }
+                value={Accreditation.INTERNATIONAL}
+              >
+                {ACCREDITATION[Accreditation.INTERNATIONAL]}
+              </option>
+              <option
+                disabled={
+                  !(
+                    incomingGradeLevel !== GradeLevel.PRESCHOOL &&
+                    incomingGradeLevel !== GradeLevel.K1
+                  )
+                }
+                value={Accreditation.DUAL}
+              >
+                {ACCREDITATION[Accreditation.DUAL]}
+              </option>
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
               <ChevronDownIcon className="w-5 h-5" />
@@ -2493,11 +2469,12 @@ const EnrollmentProcess = ({ guardian, schoolFees }) => {
 
 export const getServerSideProps = async (context) => {
   const session = await getSession(context);
-  const [guardian, schoolFees] = await Promise.all([
+  const [guardian, schoolFees, programs] = await Promise.all([
     getGuardianInformation(session.user?.userId),
     sanityClient.fetch(`*[_type == 'schoolFees']{...}`),
+    sanityClient.fetch(`*[_type == 'programs']`),
   ]);
-  return { props: { guardian, schoolFees } };
+  return { props: { guardian, schoolFees, programs } };
 };
 
 export default EnrollmentProcess;
