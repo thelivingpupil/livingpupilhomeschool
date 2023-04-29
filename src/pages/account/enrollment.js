@@ -180,7 +180,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
       agree &&
       !isSubmittingCode);
 
-  console.log(programs);
+  console.log('programs', programs);
 
   // const programFee = programs.find(() => {});
   const schoolFee = schoolFees.find((fee) => {
@@ -2472,7 +2472,7 @@ export const getServerSideProps = async (context) => {
   const [guardian, schoolFees, programs] = await Promise.all([
     getGuardianInformation(session.user?.userId),
     sanityClient.fetch(`*[_type == 'schoolFees']{...}`),
-    sanityClient.fetch(`*[_type == 'programs']`),
+    sanityClient.fetch(`*[_type == 'programs']{...}`),
   ]);
   return { props: { guardian, schoolFees, programs } };
 };
