@@ -2473,7 +2473,7 @@ export const getServerSideProps = async (context) => {
     getGuardianInformation(session.user?.userId),
     sanityClient.fetch(`*[_type == 'schoolFees']{...}`),
     sanityClient.fetch(
-      `*[_type == 'programs' && programType in ['HOMESCHOOL_COTTAGE', 'HOMESCHOOL_PROGRAM]]`
+      `*[_type == 'programs' && programType in ['HOMESCHOOL_COTTAGE', 'HOMESCHOOL_PROGRAM']]`
     ),
   ]);
   return { props: { guardian, schoolFees, programs } };
