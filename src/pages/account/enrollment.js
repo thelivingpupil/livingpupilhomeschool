@@ -2472,7 +2472,9 @@ export const getServerSideProps = async (context) => {
   const [guardian, schoolFees, programs] = await Promise.all([
     getGuardianInformation(session.user?.userId),
     sanityClient.fetch(`*[_type == 'schoolFees']{...}`),
-    sanityClient.fetch(`*[_type == 'programs']{...}`),
+    sanityClient.fetch(
+      `*[_type == 'programs' && programType in ['HOMESCHOOL_COTTAGE', 'HOMESCHOOL_PROGRAM]]`
+    ),
   ]);
   return { props: { guardian, schoolFees, programs } };
 };
