@@ -43,6 +43,7 @@ import {
   FEES,
   GRADE_LEVEL,
   GRADE_LEVEL_GROUPS,
+  GRADE_LEVEL_TYPES,
   PAYMENT_TYPE,
   PROGRAM,
   RELIGION,
@@ -182,7 +183,51 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
 
   console.log('programs', programs);
 
-  // const programFee = programs.find(() => {});
+  const programFee = programs.find((programFee) => {
+    let gradeLevel = incomingGradeLevel;
+
+    if (Program.HOMESCHOOL_COTTAGE) {
+      if (
+        [GradeLevel.GRADE_1, GradeLevel.GRADE_2, GradeLevel.GRADE_3].includes(
+          incomingGradeLevel
+        )
+      ) {
+        gradeLevel = GRADE_LEVEL_TYPES.FORM_1;
+      }
+
+      if (
+        [GradeLevel.GRADE_4, GradeLevel.GRADE_5, GradeLevel.GRADE_6].includes(
+          incomingGradeLevel
+        )
+      ) {
+        gradeLevel = GRADE_LEVEL_TYPES.FORM_2;
+      }
+
+      if (
+        [
+          GradeLevel.GRADE_7,
+          GradeLevel.GRADE_8,
+          GradeLevel.GRADE_9,
+          GradeLevel.GRADE_10,
+        ].includes(incomingGradeLevel)
+      ) {
+        gradeLevel = GRADE_LEVEL_TYPES.FORM_3;
+      }
+    }
+
+    const evaluate =
+      program === Program.HOMESCHOOL_COTTAGE
+        ? programFee.enrollmentType === enrollmentType &&
+          programFee.gradeLevel === gradeLevel &&
+          programFee.cottageType === cottageType
+        : program.enrollmentType === enrollmentType &&
+          program.gradeLevel === gradeLevel;
+
+    return evaluate;
+  });
+
+  console.log('programFee', programFee);
+
   const schoolFee = schoolFees.find((fee) => {
     let gradeLevel = incomingGradeLevel;
 
@@ -2472,9 +2517,7 @@ export const getServerSideProps = async (context) => {
   const [guardian, schoolFees, programs] = await Promise.all([
     getGuardianInformation(session.user?.userId),
     sanityClient.fetch(`*[_type == 'schoolFees']{...}`),
-    sanityClient.fetch(
-      `*[_type == 'programs' && programType in ['HOMESCHOOL_COTTAGE', 'HOMESCHOOL_PROGRAM']]`
-    ),
+    sanityClient.fetch(`*[_type == 'programs']`),
   ]);
   return { props: { guardian, schoolFees, programs } };
 };
