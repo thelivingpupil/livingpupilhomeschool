@@ -181,8 +181,6 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
       agree &&
       !isSubmittingCode);
 
-  console.log('programs', programs);
-
   const programFee = programs.find((programFee) => {
     let gradeLevel = incomingGradeLevel;
 
@@ -214,13 +212,6 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
         gradeLevel = GRADE_LEVEL_TYPES.FORM_3;
       }
     }
-
-    console.log('programFee data', {
-      program,
-      enrollmentType,
-      gradeLevel,
-      cottageType,
-    });
 
     const evaluate =
       program === Program.HOMESCHOOL_COTTAGE
@@ -301,6 +292,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
       fee.type === enrollmentType
     );
   });
+
+  console.log('schoolFee', schoolFee);
 
   const applyDiscount = () => {
     setSubmittingCodeState(true);
@@ -1278,10 +1271,15 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
                   onChange={(e) => {
-                    setCottageType(e.target.value);
+                    if (e.target.value) {
+                      setCottageType(e.target.value);
+                    } else {
+                      setCottageType(null);
+                    }
                   }}
                   value={cottageType}
                 >
+                  <option value="">Please select cottage type...</option>
                   {Object.keys(COTTAGE_TYPE).map((entry, index) => (
                     <option key={index} value={entry}>
                       {COTTAGE_TYPE[entry]}
