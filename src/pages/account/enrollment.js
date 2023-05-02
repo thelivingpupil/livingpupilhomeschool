@@ -184,7 +184,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
   const programFee = programs.find((programFee) => {
     let gradeLevel = incomingGradeLevel;
 
-    if (Program.HOMESCHOOL_COTTAGE) {
+    if (program === Program.HOMESCHOOL_COTTAGE) {
       if (
         [GradeLevel.GRADE_1, GradeLevel.GRADE_2, GradeLevel.GRADE_3].includes(
           incomingGradeLevel
