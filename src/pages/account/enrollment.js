@@ -215,13 +215,22 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
       }
     }
 
+    console.log('programFee data', {
+      program,
+      enrollmentType,
+      gradeLevel,
+      cottageType,
+    });
+
     const evaluate =
       program === Program.HOMESCHOOL_COTTAGE
-        ? programFee.enrollmentType === enrollmentType &&
+        ? programFee.programType === program &&
+          programFee.enrollmentType === enrollmentType &&
           programFee.gradeLevel === gradeLevel &&
           programFee.cottageType === cottageType
-        : program.enrollmentType === enrollmentType &&
-          program.gradeLevel === gradeLevel;
+        : programFee.programType === program &&
+          programFee.enrollmentType === enrollmentType &&
+          programFee.gradeLevel === gradeLevel;
 
     return evaluate;
   });
