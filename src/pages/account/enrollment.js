@@ -494,6 +494,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
         formerSchoolName,
         formerSchoolAddress,
         program,
+        cottageType,
         accreditation,
         payment,
         birthDate,
