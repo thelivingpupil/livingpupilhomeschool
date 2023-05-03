@@ -97,6 +97,13 @@ const handler = async (req, res) => {
       }
     }
 
+    console.log('data for program', {
+      accreditation,
+      enrollmentType,
+      gradeLevel,
+      program,
+    });
+
     const programFee = await sanityClient.fetch(
       `*[_type == 'programs' && gradeLevel == $gradeLevel && accreditation == $accreditation && programType == $program && enrollmentType == $enrollmentType]{...}`,
       {
