@@ -104,14 +104,27 @@ const handler = async (req, res) => {
       program,
     });
 
-    const programFee = await sanityClient.fetch(
-      `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType]{...}`,
-      {
-        enrollmentType,
-        gradeLevel,
-        program,
-      }
-    );
+    const sanityFetchArgs =
+      program === Program.HOMESCHOOL_COTTAGE
+        ? [
+            `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType && cottageType == $cottageType]{...}`,
+            {
+              enrollmentType,
+              gradeLevel,
+              program,
+              cottageType,
+            },
+          ]
+        : [
+            `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType]{...}`,
+            {
+              enrollmentType,
+              gradeLevel,
+              program,
+            },
+          ];
+
+    const programFee = await sanityClient.fetch(...sanityFetchArgs);
 
     console.log('programFee', programFee);
     // const workspace = await createWorkspaceWithSlug(
