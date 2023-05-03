@@ -99,6 +99,7 @@ const handler = async (req, res) => {
         enrollmentType,
         incomingGradeLevel,
         program,
+        cottageType,
         accreditation,
         paymentMethod,
         discountCode

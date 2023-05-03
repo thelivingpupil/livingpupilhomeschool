@@ -25,6 +25,7 @@ export const createSchoolFees = async (
   enrollmentType,
   incomingGradeLevel,
   program,
+  cottageType,
   accreditation,
   paymentMethod,
   discountCode
