@@ -519,20 +519,24 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
         discountCode,
       },
       method: 'POST',
-    }).then((response) => {
-      setSubmittingState(false);
+    })
+      .then((response) => {
+        setSubmittingState(false);
 
-      if (response.errors) {
-        Object.keys(response.errors).forEach((error) =>
-          toast.error(response.errors[error].msg)
-        );
-      } else {
-        window.open(response.data.schoolFee.url, '_blank');
-        setPaymentLink(response.data.schoolFee.url);
-        setViewFees(true);
-        toast.success('Student information successfully submitted!');
-      }
-    });
+        if (response.errors) {
+          Object.keys(response.errors).forEach((error) =>
+            toast.error(response.errors[error].msg)
+          );
+        } else {
+          window.open(response.data.schoolFee.url, '_blank');
+          setPaymentLink(response.data.schoolFee.url);
+          setViewFees(true);
+          toast.success('Student information successfully submitted!');
+        }
+      })
+      .catch(() => {
+        setSubmittingState(false);
+      });
   };
 
   const toggleReview = () => setReviewVisibility(!review);
