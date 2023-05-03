@@ -233,8 +233,6 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
     return evaluate;
   });
 
-  console.log('programFee', programFee);
-
   const schoolFee = schoolFees.find((fee) => {
     let gradeLevel = incomingGradeLevel;
 
@@ -299,8 +297,6 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
       fee.type === enrollmentType
     );
   });
-
-  console.log('schoolFee', schoolFee);
 
   const applyDiscount = () => {
     setSubmittingCodeState(true);
@@ -1683,8 +1679,6 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
       (tuition) => tuition.type === accreditation
     );
 
-    console.log('programFeeByAccreditation', programFeeByAccreditation);
-
     return (
       programFeeByAccreditation && (
         <div className="flex flex-col p-5 space-y-5 overflow-auto">
@@ -2183,13 +2177,13 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                                   fee?._type === 'fullTermPayment'
                                     ? fee?.fullPayment
                                     : fee?._type === 'threeTermPayment'
-                                    ? fee.downPayment +
-                                      fee.secondPayment +
-                                      fee.thirdPayment
-                                    : fee.downPayment +
-                                      fee.secondPayment +
-                                      fee.thirdPayment +
-                                      fee.fourthPayment
+                                    ? fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment
+                                    : fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment +
+                                      fee?.fourthPayment
                                 ) *
                                 (discount.value / 100) *
                                 -1
@@ -2483,13 +2477,13 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                                 fee?._type === 'fullTermPayment'
                                   ? fee?.fullPayment
                                   : fee?._type === 'threeTermPayment'
-                                  ? fee.downPayment +
-                                    fee.secondPayment +
-                                    fee.thirdPayment
-                                  : fee.downPayment +
-                                    fee.secondPayment +
-                                    fee.thirdPayment +
-                                    fee.fourthPayment
+                                  ? fee?.downPayment +
+                                    fee?.secondPayment +
+                                    fee?.thirdPayment
+                                  : fee?.downPayment +
+                                    fee?.secondPayment +
+                                    fee?.thirdPayment +
+                                    fee?.fourthPayment
                               ) *
                               (discount.value / 100) *
                               -1
@@ -2512,11 +2506,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                   fee?._type === 'fullTermPayment'
                     ? fee?.fullPayment
                     : fee?._type === 'threeTermPayment'
-                    ? fee.downPayment + fee.secondPayment + fee.thirdPayment
-                    : fee.downPayment +
-                      fee.secondPayment +
-                      fee.thirdPayment +
-                      fee.fourthPayment
+                    ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment
+                    : fee?.downPayment +
+                      fee?.secondPayment +
+                      fee?.thirdPayment +
+                      fee?.fourthPayment
                 ) -
                   (discount
                     ? discount?.type === 'VALUE'
@@ -2525,13 +2519,13 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                         (fee?._type === 'fullTermPayment'
                           ? fee?.fullPayment
                           : fee?._type === 'threeTermPayment'
-                          ? fee.downPayment +
-                            fee.secondPayment +
-                            fee.thirdPayment
-                          : fee.downPayment +
-                            fee.secondPayment +
-                            fee.thirdPayment +
-                            fee.fourthPayment)
+                          ? fee?.downPayment +
+                            fee?.secondPayment +
+                            fee?.thirdPayment
+                          : fee?.downPayment +
+                            fee?.secondPayment +
+                            fee?.thirdPayment +
+                            fee?.fourthPayment)
                     : 0) || 0
               )}
             </span>
