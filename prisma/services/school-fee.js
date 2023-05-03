@@ -72,7 +72,7 @@ export const createSchoolFees = async (
   const sanityFetchArgs =
     program === Program.HOMESCHOOL_COTTAGE
       ? [
-          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType && cottageType == $cottageType]{...}`,
+          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType && cottageType == $cottageType][0]{...}`,
           {
             enrollmentType,
             gradeLevel,
