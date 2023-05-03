@@ -55,6 +55,13 @@ const steps = [
   'School Fees',
 ];
 
+const payments = [
+  'downPayment',
+  'secondPayment',
+  'thirdPayment',
+  'fourthPayment',
+];
+
 const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
   const [step, setStep] = useState(0);
   const [viewFees, setViewFees] = useState(false);
@@ -2185,7 +2192,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 <div className="flex items-center justify-between p-5 space-x-5 bg-gray-100 border-t border-dashed">
                   <div>
                     <h5 className="font-bold">
-                      {fee?._type === 'annual'
+                      {fee?._type === 'fullTermPayment'
                         ? 'Total Payable'
                         : 'Initial Fee'}
                     </h5>
@@ -2201,7 +2208,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                         style: 'currency',
                         currency: 'PHP',
                       }).format(
-                        (fee?._type === 'annual'
+                        (fee?._type === 'fullTermPayment'
                           ? fee?.fullPayment -
                             (discount
                               ? discount?.type === 'VALUE'
@@ -2392,44 +2399,46 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
               <tbody>
                 <tr>
                   <td className="px-3 py-1 border">
-                    {fee?._type === 'annual' ? 'Total Fee' : 'Initial Fee'}
+                    {fee?._type === 'fullTermPayment'
+                      ? 'Total Fee'
+                      : 'Initial Fee'}
                   </td>
                   <td className="px-3 py-1 text-right border">
                     {new Intl.NumberFormat('en-US', {
                       style: 'currency',
                       currency: 'PHP',
                     }).format(
-                      fee?._type === 'annual' ? fee?.totalFee : fee?.initialFee
+                      fee?._type === 'fullTermPayment'
+                        ? fee?.fullPayment
+                        : fee?.downPayment
                     )}
                   </td>
                 </tr>
                 {Array.from(
                   Array(
-                    fee?._type === 'annual'
+                    fee?._type === 'fullTermPayment'
                       ? 0
-                      : fee?._type === 'semiAnnual'
+                      : fee?._type === 'threeTermPayment'
                       ? 2
                       : 3
                   ),
                   (_, index) => (
                     <tr key={index}>
                       <td className="px-3 py-1 border">
-                        {fee?._type === 'annual'
+                        {fee?._type === 'fullTermPayment'
                           ? ''
-                          : fee?._type === 'semiAnnual'
-                          ? `Semi Annual Payment #${index + 1}`
-                          : `Quarterly Payment #${index + 1}`}
+                          : fee?._type === 'threeTermPayment'
+                          ? `Three (3) Term Payment #${index + 1}`
+                          : `Four (4) Term Payment #${index + 1}`}
                       </td>
                       <td className="px-3 py-1 text-right border">
                         {new Intl.NumberFormat('en-US', {
                           style: 'currency',
                           currency: 'PHP',
                         }).format(
-                          fee?._type === 'annual'
+                          fee?._type === 'fullTermPayment'
                             ? 0
-                            : fee?._type === 'semiAnnual'
-                            ? fee?.semiAnnualFee
-                            : fee?.quarterlyFee
+                            : fee[payments[index + 1]]
                         )}
                       </td>
                     </tr>
@@ -2459,19 +2468,16 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                           ? discount.type === 'VALUE'
                             ? Number(discount.value).toFixed(2) * -1
                             : Math.ceil(
-                                (fee?._type === 'annual'
-                                  ? fee?.totalFee
-                                  : fee?.initialFee) +
-                                  (fee?._type === 'annual'
-                                    ? 0
-                                    : fee?._type === 'semiAnnual'
-                                    ? fee?.semiAnnualFee * 2
-                                    : fee?.quarterlyFee *
-                                      (fee?._type === 'annual'
-                                        ? 1
-                                        : fee?._type === 'semiAnnual'
-                                        ? 2
-                                        : 3))
+                                fee?._type === 'fullTermPayment'
+                                  ? fee?.fullPayment
+                                  : fee?._type === 'threeTermPayment'
+                                  ? fee.downPayment +
+                                    fee.secondPayment +
+                                    fee.thirdPayment
+                                  : fee.downPayment +
+                                    fee.secondPayment +
+                                    fee.thirdPayment +
+                                    fee.fourthPayment
                               ) *
                               (discount.value / 100) *
                               -1
@@ -2491,27 +2497,29 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 currency: 'PHP',
               }).format(
                 Math.ceil(
-                  (fee?._type === 'annual' ? fee?.totalFee : fee?.initialFee) +
-                    (fee?._type === 'annual'
-                      ? 0
-                      : fee?._type === 'semiAnnual'
-                      ? fee?.semiAnnualFee * 2
-                      : fee?.quarterlyFee *
-                        (fee?._type === 'annual'
-                          ? 1
-                          : fee?._type === 'semiAnnual'
-                          ? 2
-                          : 3))
+                  fee?._type === 'fullTermPayment'
+                    ? fee?.fullPayment
+                    : fee?._type === 'threeTermPayment'
+                    ? fee.downPayment + fee.secondPayment + fee.thirdPayment
+                    : fee.downPayment +
+                      fee.secondPayment +
+                      fee.thirdPayment +
+                      fee.fourthPayment
                 ) -
                   (discount
                     ? discount?.type === 'VALUE'
                       ? discount.value
                       : (discount.value / 100) *
-                        (fee?._type === 'annual'
-                          ? fee?.totalFee
-                          : fee?._type === 'semiAnnual'
-                          ? fee?.initialFee + fee?.semiAnnualFee * 2
-                          : fee?.initialFee + fee?.quarterlyFee * 3)
+                        (fee?._type === 'fullTermPayment'
+                          ? fee?.fullPayment
+                          : fee?._type === 'threeTermPayment'
+                          ? fee.downPayment +
+                            fee.secondPayment +
+                            fee.thirdPayment
+                          : fee.downPayment +
+                            fee.secondPayment +
+                            fee.thirdPayment +
+                            fee.fourthPayment)
                     : 0) || 0
               )}
             </span>
