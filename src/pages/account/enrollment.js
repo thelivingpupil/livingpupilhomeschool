@@ -1683,74 +1683,89 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
       (tuition) => tuition.type === accreditation
     );
 
-    return (
-      <div className="flex flex-col p-5 space-y-5 overflow-auto">
-        <div>
-          <p>{ENROLLMENT_TYPE[enrollmentType]} Enrollment</p>
-          <h2 className="text-2xl text-primary-500">
-            {PROGRAM[program]} for {GRADE_LEVEL[incomingGradeLevel]} -{' '}
-            {ACCREDITATION[accreditation]}
-          </h2>
-        </div>
-        <label className="text-lg font-bold" htmlFor="txtMother">
-          Select Payment Type <span className="ml-1 text-red-600">*</span>
-        </label>
-        <div
-          className={`relative inline-block w-full border rounded ${
-            !payment && 'border-red-500'
-          }`}
-        >
-          <select
-            className="w-full px-3 py-2 capitalize rounded appearance-none"
-            onChange={(e) => {
-              setPayment(e.target.value ? e.target.value : null);
+    console.log('programFeeByAccreditation', programFeeByAccreditation);
 
-              if (payment === PaymentType.ANNUAL) {
-                setFee(programFeeByAccreditation?.paymentTerms[0]);
-              } else if (payment === PaymentType.SEMI_ANNUAL) {
-                setFee(programFeeByAccreditation?.paymentTerms[1]);
-              } else if (payment === PaymentType.QUARTERLY) {
-                setFee(programFeeByAccreditation?.paymentTerms[2]);
-              }
-            }}
-            value={payment}
-          >
-            <option value="">Please select payment type...</option>
-            <option value={PaymentType.ANNUAL}>Full Payment</option>
-            <option value={PaymentType.SEMI_ANNUAL}>
-              Three (3) Term Payment (Initial Fee + Two Payment Term Fees)
-            </option>
-            <option value={PaymentType.QUARTERLY}>
-              Four (4) Term Payment (Initial Fee + Three Payment Term Fees)
-            </option>
-          </select>
-          <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <ChevronDownIcon className="w-5 h-5" />
+    return (
+      programFeeByAccreditation && (
+        <div className="flex flex-col p-5 space-y-5 overflow-auto">
+          <div>
+            <p>{ENROLLMENT_TYPE[enrollmentType]} Enrollment</p>
+            <h2 className="text-2xl text-primary-500">
+              {PROGRAM[program]} for {GRADE_LEVEL[incomingGradeLevel]} -{' '}
+              {ACCREDITATION[accreditation]}
+            </h2>
           </div>
-        </div>
-        <hr />
-        <div className="relative flex flex-row space-x-5">
+          <label className="text-lg font-bold" htmlFor="txtMother">
+            Select Payment Type <span className="ml-1 text-red-600">*</span>
+          </label>
           <div
-            className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
-              payment === PaymentType.ANNUAL
-                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+            className={`relative inline-block w-full border rounded ${
+              !payment && 'border-red-500'
             }`}
-            onClick={() => {
-              setPayment(PaymentType.ANNUAL);
-              setFee(programFeeByAccreditation?.paymentTerms[0]);
-            }}
           >
-            {payment === PaymentType.ANNUAL && (
-              <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
-                <CheckIcon className="w-5 h-5" />
-              </div>
-            )}
-            <div>
-              <h3 className="text-xl font-bold">Full Payment</h3>
+            <select
+              className="w-full px-3 py-2 capitalize rounded appearance-none"
+              onChange={(e) => {
+                setPayment(e.target.value ? e.target.value : null);
+
+                if (payment === PaymentType.ANNUAL) {
+                  setFee(programFeeByAccreditation?.paymentTerms[0]);
+                } else if (payment === PaymentType.SEMI_ANNUAL) {
+                  setFee(programFeeByAccreditation?.paymentTerms[1]);
+                } else if (payment === PaymentType.QUARTERLY) {
+                  setFee(programFeeByAccreditation?.paymentTerms[2]);
+                }
+              }}
+              value={payment}
+            >
+              <option value="">Please select payment type...</option>
+              <option value={PaymentType.ANNUAL}>Full Payment</option>
+              <option value={PaymentType.SEMI_ANNUAL}>
+                Three (3) Term Payment (Initial Fee + Two Payment Term Fees)
+              </option>
+              <option value={PaymentType.QUARTERLY}>
+                Four (4) Term Payment (Initial Fee + Three Payment Term Fees)
+              </option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <ChevronDownIcon className="w-5 h-5" />
+            </div>
+          </div>
+          <hr />
+          <div className="relative flex flex-row space-x-5">
+            <div
+              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
+                payment === PaymentType.ANNUAL
+                  ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                  : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+              }`}
+              onClick={() => {
+                setPayment(PaymentType.ANNUAL);
+                setFee(programFeeByAccreditation?.paymentTerms[0]);
+              }}
+            >
+              {payment === PaymentType.ANNUAL && (
+                <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                  <CheckIcon className="w-5 h-5" />
+                </div>
+              )}
               <div>
+                <h3 className="text-xl font-bold">Full Payment</h3>
+                <div>
+                  <span>
+                    Initial Payment:{' '}
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      programFeeByAccreditation?.paymentTerms[0]?.fullPayment ||
+                        0
+                    )}
+                  </span>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold">
                 <span>
-                  Initial Payment:{' '}
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
@@ -1758,274 +1773,270 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                     programFeeByAccreditation?.paymentTerms[0]?.fullPayment || 0
                   )}
                 </span>
-              </div>
+              </h3>
             </div>
-            <h3 className="text-xl font-bold">
-              <span>
+          </div>
+          <div className="relative flex flex-row space-x-5">
+            <div
+              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
+                payment === PaymentType.SEMI_ANNUAL
+                  ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                  : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+              }`}
+              onClick={() => {
+                setPayment(PaymentType.SEMI_ANNUAL);
+                setFee(programFeeByAccreditation?.paymentTerms[1]);
+              }}
+            >
+              {payment === PaymentType.SEMI_ANNUAL && (
+                <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                  <CheckIcon className="w-5 h-5" />
+                </div>
+              )}
+              <div>
+                <h3 className="text-xl font-bold">Three (3) Term Payment</h3>
+                <div>
+                  <span>
+                    Initial Fee:{' '}
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      programFeeByAccreditation?.paymentTerms[1]?.downPayment ||
+                        0
+                    )}{' '}
+                    +
+                  </span>
+                  <span>
+                    (
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      programFeeByAccreditation?.paymentTerms[1]
+                        ?.secondPayment || 0
+                    )}{' '}
+                    +{' '}
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      programFeeByAccreditation?.paymentTerms[1]
+                        ?.thirdPayment || 0
+                    )}
+                    )
+                  </span>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold">
                 {new Intl.NumberFormat('en-US', {
                   style: 'currency',
                   currency: 'PHP',
                 }).format(
-                  programFeeByAccreditation?.paymentTerms[0]?.fullPayment || 0
-                )}
-              </span>
-            </h3>
-          </div>
-        </div>
-        <div className="relative flex flex-row space-x-5">
-          <div
-            className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
-              payment === PaymentType.SEMI_ANNUAL
-                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-            }`}
-            onClick={() => {
-              setPayment(PaymentType.SEMI_ANNUAL);
-              setFee(programFeeByAccreditation?.paymentTerms[1]);
-            }}
-          >
-            {payment === PaymentType.SEMI_ANNUAL && (
-              <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
-                <CheckIcon className="w-5 h-5" />
-              </div>
-            )}
-            <div>
-              <h3 className="text-xl font-bold">Three (3) Term Payment</h3>
-              <div>
-                <span>
-                  Initial Fee:{' '}
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(
-                    programFeeByAccreditation?.paymentTerms[1]?.downPayment || 0
-                  )}{' '}
-                  +
-                </span>
-                <span>
-                  (
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(
-                    programFeeByAccreditation?.paymentTerms[1]?.secondPayment ||
-                      0
-                  )}{' '}
-                  +{' '}
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(
+                  programFeeByAccreditation?.paymentTerms[1]?.downPayment +
+                    programFeeByAccreditation?.paymentTerms[1]?.secondPayment +
                     programFeeByAccreditation?.paymentTerms[1]?.thirdPayment ||
-                      0
-                  )}
-                  )
-                </span>
-              </div>
+                    0
+                )}
+              </h3>
             </div>
-            <h3 className="text-xl font-bold">
-              {new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'PHP',
-              }).format(
-                programFeeByAccreditation?.paymentTerms[1]?.downPayment +
-                  programFeeByAccreditation?.paymentTerms[1]?.secondPayment +
-                  programFeeByAccreditation?.paymentTerms[1]?.thirdPayment || 0
-              )}
-            </h3>
           </div>
-        </div>
-        <div className="relative flex flex-row space-x-5">
-          <div
-            className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
-              payment === PaymentType.QUARTERLY
-                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-            }`}
-            onClick={() => {
-              setPayment(PaymentType.QUARTERLY);
-              setFee(programFeeByAccreditation?.paymentTerms[2]);
-            }}
-          >
-            {payment === PaymentType.QUARTERLY && (
-              <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
-                <CheckIcon className="w-5 h-5" />
-              </div>
-            )}
-            <div>
-              <h3 className="text-xl font-bold">Four (4) Term Payment</h3>
+          <div className="relative flex flex-row space-x-5">
+            <div
+              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
+                payment === PaymentType.QUARTERLY
+                  ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                  : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+              }`}
+              onClick={() => {
+                setPayment(PaymentType.QUARTERLY);
+                setFee(programFeeByAccreditation?.paymentTerms[2]);
+              }}
+            >
+              {payment === PaymentType.QUARTERLY && (
+                <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                  <CheckIcon className="w-5 h-5" />
+                </div>
+              )}
               <div>
-                <span>
-                  Initial Fee:{' '}
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(
-                    programFeeByAccreditation?.paymentTerms[2]?.downPayment || 0
-                  )}{' '}
-                  +
-                </span>
-                <span>
-                  (
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(
-                    programFeeByAccreditation?.paymentTerms[2]?.secondPayment ||
-                      0
-                  )}{' '}
-                  +{' '}
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(
-                    programFeeByAccreditation?.paymentTerms[2]?.thirdPayment ||
-                      0
-                  )}{' '}
-                  +{' '}
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(
-                    programFeeByAccreditation?.paymentTerms[2]?.fourthPayment ||
-                      0
-                  )}
-                  )
-                </span>
-              </div>
-            </div>
-            <h3 className="text-xl font-bold">
-              {new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'PHP',
-              }).format(
-                programFeeByAccreditation?.paymentTerms[2]?.downPayment +
-                  programFeeByAccreditation?.paymentTerms[2]?.secondPayment +
-                  programFeeByAccreditation?.paymentTerms[2]?.thirdPayment +
-                  programFeeByAccreditation?.paymentTerms[2]?.fourthPayment || 0
-              )}
-            </h3>
-          </div>
-        </div>
-        <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded">
-          <h3 className="text-sm font-bold">Payment Policies:</h3>
-          <ol className="px-5 list-decimal">
-            <li>
-              A 3% interest will be added to the school fee when the parents are
-              not able to pay on time.
-            </li>
-            <li>
-              For Post-dated checks, bounced or delayed payments will be
-              subjected to 5% interest per month.
-            </li>
-            <li>
-              It is expected of the Parents to submit every quarter the grades
-              and assessment, class documentation (at least 2 photos/videos per
-              subject per quarter) and eCard page 2 (number of school days,
-              traits and teacher&apos;s comments form). At the end of the school
-              year, parents should compile in a digital form all the outputs per
-              subject and send /share the drive link to LPHS admin. Deadline of
-              submission: Q1 & Q2 = January 10, 2023 and Q3 & Q4 = June 8, 2023.
-              Failure to submit grades will incur a retard fee of 1,000.00 per
-              delay.
-            </li>
-            <li>
-              Students are expected to present an Annual portfolio (Show and
-              Tell).
-            </li>
-            <li>
-              All school records will be released after the student has been
-              cleared of financial and academic obligations from the LPHS.
-            </li>
-            <li>
-              In case of non-compliance with LPHS requirements and/or the
-              student decides to withdraw/ drop out, the tuition fee and
-              miscellaneous fees will not be carried over to the next school
-              year.
-            </li>
-            <li>
-              Living Pupil Homeschool&apos;s foundation is build on trust and
-              relationship with our families. We therefore require our
-              Parent-Teachers to do their task with honesty & commitment. Should
-              there be homeschool concerns, please communicate directly to our
-              team.
-            </li>
-          </ol>
-          <h3 className="text-sm font-bold">
-            Refund on Tuition Fees and other fees:
-          </h3>
-          <p>
-            A student who wishes to transfer or withdraw his/her enrollment from
-            LPHS would be entitled to a tuition refund provided: (1) he/she
-            submit a letter of withdrawal/transfer (2) has already paid the
-            tuition and other fees in full. The amount of refund depends on:
-          </p>
-          <ol className="px-5 list-decimal">
-            <li>
-              When the student withdraws a week after enrolment, 10% of the
-              total annual due will be charged.
-            </li>
-            <li>
-              When the student withdraws two (2) weeks after enrollment, 20% of
-              the total annual due will be charged.
-            </li>
-            <li>
-              When the student withdraws one (1) one month after enrollment, no
-              refund will be given.
-            </li>
-            <li>
-              There will be no refund for books and other learning materials.
-            </li>
-            <li>
-              When the student withdraw before the school year ends, the parent
-              will pay the annual tuition fee for the school records to be
-              released.
-            </li>
-          </ol>
-        </div>
-        <div>
-          <p>
-            By completing and submitting this form, I understand that I am
-            applying to be a part of Living Pupil Homeschool for SY
-            {new Date().getFullYear()} - {new Date().getFullYear() + 1}. I have
-            thoroughly reviewed the forms, and I agree with everything
-            stipulated in the student form. I agree to the rates as indicated
-            for this enrollment period. Lastly, I understand that this agreement
-            is absolute and will be enforced.
-          </p>
-          <hr className="my-5 border border-dashed" />
-          <div className="flex flex-col mt-5 space-x-0 space-y-5 md:flex-row md:justify-between md:space-x-5 md:space-y-0">
-            <div className="space-y-3 md:w-1/2">
-              <label className="text-lg font-bold" htmlFor="txtMother">
-                Select Payment Method
-                <span className="ml-1 text-red-600">*</span>
-              </label>
-              <div className="flex flex-row">
-                <div className="relative inline-block w-full border rounded">
-                  <select
-                    className="w-full px-3 py-2 capitalize rounded appearance-none"
-                    onChange={(e) => {
-                      setPaymentMethod(e.target.value ? e.target.value : null);
-                    }}
-                    value={paymentMethod}
-                  >
-                    <option value="">Please select payment method...</option>
-                    <option value={Fees.ONLINE}>
-                      Online Banking (+ Php 10.00)
-                    </option>
-                    <option value={Fees.OTC}>
-                      Over-the-Counter Banking (+ Php 15.00)
-                    </option>
-                    <option value={Fees.PAYMENT_CENTERS}>
-                      Payment Centers (+ Php 20.00)
-                    </option>
-                  </select>
-                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                    <ChevronDownIcon className="w-5 h-5" />
-                  </div>
+                <h3 className="text-xl font-bold">Four (4) Term Payment</h3>
+                <div>
+                  <span>
+                    Initial Fee:{' '}
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      programFeeByAccreditation?.paymentTerms[2]?.downPayment ||
+                        0
+                    )}{' '}
+                    +
+                  </span>
+                  <span>
+                    (
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      programFeeByAccreditation?.paymentTerms[2]
+                        ?.secondPayment || 0
+                    )}{' '}
+                    +{' '}
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      programFeeByAccreditation?.paymentTerms[2]
+                        ?.thirdPayment || 0
+                    )}{' '}
+                    +{' '}
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      programFeeByAccreditation?.paymentTerms[2]
+                        ?.fourthPayment || 0
+                    )}
+                    )
+                  </span>
                 </div>
               </div>
-              {/* <div
+              <h3 className="text-xl font-bold">
+                {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(
+                  programFeeByAccreditation?.paymentTerms[2]?.downPayment +
+                    programFeeByAccreditation?.paymentTerms[2]?.secondPayment +
+                    programFeeByAccreditation?.paymentTerms[2]?.thirdPayment +
+                    programFeeByAccreditation?.paymentTerms[2]?.fourthPayment ||
+                    0
+                )}
+              </h3>
+            </div>
+          </div>
+          <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded">
+            <h3 className="text-sm font-bold">Payment Policies:</h3>
+            <ol className="px-5 list-decimal">
+              <li>
+                A 3% interest will be added to the school fee when the parents
+                are not able to pay on time.
+              </li>
+              <li>
+                For Post-dated checks, bounced or delayed payments will be
+                subjected to 5% interest per month.
+              </li>
+              <li>
+                It is expected of the Parents to submit every quarter the grades
+                and assessment, class documentation (at least 2 photos/videos
+                per subject per quarter) and eCard page 2 (number of school
+                days, traits and teacher&apos;s comments form). At the end of
+                the school year, parents should compile in a digital form all
+                the outputs per subject and send /share the drive link to LPHS
+                admin. Deadline of submission: Q1 & Q2 = January 10, 2023 and Q3
+                & Q4 = June 8, 2023. Failure to submit grades will incur a
+                retard fee of 1,000.00 per delay.
+              </li>
+              <li>
+                Students are expected to present an Annual portfolio (Show and
+                Tell).
+              </li>
+              <li>
+                All school records will be released after the student has been
+                cleared of financial and academic obligations from the LPHS.
+              </li>
+              <li>
+                In case of non-compliance with LPHS requirements and/or the
+                student decides to withdraw/ drop out, the tuition fee and
+                miscellaneous fees will not be carried over to the next school
+                year.
+              </li>
+              <li>
+                Living Pupil Homeschool&apos;s foundation is build on trust and
+                relationship with our families. We therefore require our
+                Parent-Teachers to do their task with honesty & commitment.
+                Should there be homeschool concerns, please communicate directly
+                to our team.
+              </li>
+            </ol>
+            <h3 className="text-sm font-bold">
+              Refund on Tuition Fees and other fees:
+            </h3>
+            <p>
+              A student who wishes to transfer or withdraw his/her enrollment
+              from LPHS would be entitled to a tuition refund provided: (1)
+              he/she submit a letter of withdrawal/transfer (2) has already paid
+              the tuition and other fees in full. The amount of refund depends
+              on:
+            </p>
+            <ol className="px-5 list-decimal">
+              <li>
+                When the student withdraws a week after enrolment, 10% of the
+                total annual due will be charged.
+              </li>
+              <li>
+                When the student withdraws two (2) weeks after enrollment, 20%
+                of the total annual due will be charged.
+              </li>
+              <li>
+                When the student withdraws one (1) one month after enrollment,
+                no refund will be given.
+              </li>
+              <li>
+                There will be no refund for books and other learning materials.
+              </li>
+              <li>
+                When the student withdraw before the school year ends, the
+                parent will pay the annual tuition fee for the school records to
+                be released.
+              </li>
+            </ol>
+          </div>
+          <div>
+            <p>
+              By completing and submitting this form, I understand that I am
+              applying to be a part of Living Pupil Homeschool for SY
+              {new Date().getFullYear()} - {new Date().getFullYear() + 1}. I
+              have thoroughly reviewed the forms, and I agree with everything
+              stipulated in the student form. I agree to the rates as indicated
+              for this enrollment period. Lastly, I understand that this
+              agreement is absolute and will be enforced.
+            </p>
+            <hr className="my-5 border border-dashed" />
+            <div className="flex flex-col mt-5 space-x-0 space-y-5 md:flex-row md:justify-between md:space-x-5 md:space-y-0">
+              <div className="space-y-3 md:w-1/2">
+                <label className="text-lg font-bold" htmlFor="txtMother">
+                  Select Payment Method
+                  <span className="ml-1 text-red-600">*</span>
+                </label>
+                <div className="flex flex-row">
+                  <div className="relative inline-block w-full border rounded">
+                    <select
+                      className="w-full px-3 py-2 capitalize rounded appearance-none"
+                      onChange={(e) => {
+                        setPaymentMethod(
+                          e.target.value ? e.target.value : null
+                        );
+                      }}
+                      value={paymentMethod}
+                    >
+                      <option value="">Please select payment method...</option>
+                      <option value={Fees.ONLINE}>
+                        Online Banking (+ Php 10.00)
+                      </option>
+                      <option value={Fees.OTC}>
+                        Over-the-Counter Banking (+ Php 15.00)
+                      </option>
+                      <option value={Fees.PAYMENT_CENTERS}>
+                        Payment Centers (+ Php 20.00)
+                      </option>
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                      <ChevronDownIcon className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+                {/* <div
                 className={`flex items-center px-5 py-5 space-x-3 text-gray-600 bg-gray-100 rounded cursor-pointer ${
                   paymentMethod === Fees.ONLINE
                     ? 'border-green-600 text-green-500 border-2'
@@ -2070,172 +2081,173 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 )}
                 <span>Payment Centers (+ Php 20.00)</span>
               </div> */}
-              <div className="flex flex-col py-5">
-                <label className="text-lg font-bold" htmlFor="txtMother">
-                  Discount Code
+                <div className="flex flex-col py-5">
+                  <label className="text-lg font-bold" htmlFor="txtMother">
+                    Discount Code
+                  </label>
+                  <div className="flex border rounded">
+                    <input
+                      className="w-3/4 px-3 py-2 rounded-l"
+                      onChange={(e) => {
+                        setDiscountCode(e.target.value);
+                        setDiscount(null);
+                      }}
+                      placeholder="Input discount code here"
+                      value={discountCode}
+                    />
+                    <button
+                      className="w-1/4 rounded-r bg-secondary-500 hover:bg-secondary-400"
+                      disabled={isSubmittingCode}
+                      onClick={applyDiscount}
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col space-y-3 md:w-1/2">
+                <label
+                  className="text-lg font-medium text-primary-300"
+                  htmlFor="txtMother"
+                >
+                  {payment === PaymentType.ANNUAL
+                    ? 'Full Payment'
+                    : 'Initial Fees'}{' '}
+                  Summary for <span className="">{PAYMENT_TYPE[payment]}</span>{' '}
+                  Payments
                 </label>
-                <div className="flex border rounded">
-                  <input
-                    className="w-3/4 px-3 py-2 rounded-l"
-                    onChange={(e) => {
-                      setDiscountCode(e.target.value);
-                      setDiscount(null);
-                    }}
-                    placeholder="Input discount code here"
-                    value={discountCode}
-                  />
-                  <button
-                    className="w-1/4 rounded-r bg-secondary-500 hover:bg-secondary-400"
-                    disabled={isSubmittingCode}
-                    onClick={applyDiscount}
-                  >
-                    Apply
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col space-y-3 md:w-1/2">
-              <label
-                className="text-lg font-medium text-primary-300"
-                htmlFor="txtMother"
-              >
-                {payment === PaymentType.ANNUAL
-                  ? 'Full Payment'
-                  : 'Initial Fees'}{' '}
-                Summary for <span className="">{PAYMENT_TYPE[payment]}</span>{' '}
-                Payments
-              </label>
-              <div className="flex flex-col justify-between border rounded bg-gray-50">
-                <div className="flex items-center justify-between p-5 space-x-5 border-b">
-                  <div>
-                    <h5 className="font-medium">Enrollment Fee</h5>
-                    <h6 className="text-xs text-gray-400">
-                      Based on payment type selection
-                    </h6>
-                  </div>
-                  <div className="text-right">
-                    <span>
-                      {new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'PHP',
-                      }).format(
-                        (fee?._type === 'fullTermPayment'
-                          ? fee?.fullPayment
-                          : fee?.downPayment) || 0
-                      )}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-5 space-x-5">
-                  <div>
-                    <h5 className="font-medium">Payment Gateway Fee</h5>
-                    <h6 className="text-xs text-gray-400">
-                      Based on payment method selection
-                    </h6>
-                  </div>
-                  <div className="text-right">
-                    <span>
-                      {new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'PHP',
-                      }).format(FEES[paymentMethod] || 0)}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-5 space-x-5">
-                  <div>
-                    <h5 className="font-medium">Discount</h5>
-                    <h6 className="text-xs text-gray-400">
-                      Based on applied discount code:{' '}
-                      <span className="font-bold text-green-600">
-                        {discountCode || '-'}{' '}
-                        {`${
-                          discount
-                            ? `(${Number(discount.value).toFixed(2)}${
-                                discount.type === 'VALUE' ? 'Php' : '%'
-                              })`
-                            : ''
-                        }`}
+                <div className="flex flex-col justify-between border rounded bg-gray-50">
+                  <div className="flex items-center justify-between p-5 space-x-5 border-b">
+                    <div>
+                      <h5 className="font-medium">Enrollment Fee</h5>
+                      <h6 className="text-xs text-gray-400">
+                        Based on payment type selection
+                      </h6>
+                    </div>
+                    <div className="text-right">
+                      <span>
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'PHP',
+                        }).format(
+                          (fee?._type === 'fullTermPayment'
+                            ? fee?.fullPayment
+                            : fee?.downPayment) || 0
+                        )}
                       </span>
-                    </h6>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <span className={discount ? 'text-red-600' : ''}>
-                      {new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'PHP',
-                      }).format(
-                        discount
-                          ? discount.type === 'VALUE'
-                            ? Number(discount.value).toFixed(2) * -1
-                            : Math.ceil(
-                                fee?._type === 'fullTermPayment'
-                                  ? fee?.fullPayment
-                                  : fee?._type === 'threeTermPayment'
-                                  ? fee.downPayment +
-                                    fee.secondPayment +
-                                    fee.thirdPayment
-                                  : fee.downPayment +
-                                    fee.secondPayment +
-                                    fee.thirdPayment +
-                                    fee.fourthPayment
-                              ) *
-                              (discount.value / 100) *
-                              -1
-                          : 0
-                      )}
-                    </span>
+                  <div className="flex items-center justify-between p-5 space-x-5">
+                    <div>
+                      <h5 className="font-medium">Payment Gateway Fee</h5>
+                      <h6 className="text-xs text-gray-400">
+                        Based on payment method selection
+                      </h6>
+                    </div>
+                    <div className="text-right">
+                      <span>
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'PHP',
+                        }).format(FEES[paymentMethod] || 0)}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-5 space-x-5">
+                    <div>
+                      <h5 className="font-medium">Discount</h5>
+                      <h6 className="text-xs text-gray-400">
+                        Based on applied discount code:{' '}
+                        <span className="font-bold text-green-600">
+                          {discountCode || '-'}{' '}
+                          {`${
+                            discount
+                              ? `(${Number(discount.value).toFixed(2)}${
+                                  discount.type === 'VALUE' ? 'Php' : '%'
+                                })`
+                              : ''
+                          }`}
+                        </span>
+                      </h6>
+                    </div>
+                    <div className="text-right">
+                      <span className={discount ? 'text-red-600' : ''}>
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'PHP',
+                        }).format(
+                          discount
+                            ? discount.type === 'VALUE'
+                              ? Number(discount.value).toFixed(2) * -1
+                              : Math.ceil(
+                                  fee?._type === 'fullTermPayment'
+                                    ? fee?.fullPayment
+                                    : fee?._type === 'threeTermPayment'
+                                    ? fee.downPayment +
+                                      fee.secondPayment +
+                                      fee.thirdPayment
+                                    : fee.downPayment +
+                                      fee.secondPayment +
+                                      fee.thirdPayment +
+                                      fee.fourthPayment
+                                ) *
+                                (discount.value / 100) *
+                                -1
+                            : 0
+                        )}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div>
-                <div className="flex items-center justify-between p-5 space-x-5 bg-gray-100 border-t border-dashed">
-                  <div>
-                    <h5 className="font-bold">
-                      {fee?._type === 'fullTermPayment'
-                        ? 'Total Payable'
-                        : 'Initial Fee'}
-                    </h5>
-                    <h6 className="text-xs text-primary-500">
-                      <strong>NOTE</strong>: Succeeding payments will always
-                      incur payment gateway fees per transaction and see
-                      breakdown for applicable discounts
-                    </h6>
-                  </div>
-                  <div className="text-right">
-                    <span>
-                      {new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'PHP',
-                      }).format(
-                        (fee?._type === 'fullTermPayment'
-                          ? fee?.fullPayment -
-                            (discount
-                              ? discount?.type === 'VALUE'
-                                ? discount.value
-                                : (discount.value / 100) * fee?.fullPayment
-                              : 0)
-                          : fee?.downPayment) + FEES[paymentMethod] || 0
-                      )}
-                    </span>
+                <div>
+                  <div className="flex items-center justify-between p-5 space-x-5 bg-gray-100 border-t border-dashed">
+                    <div>
+                      <h5 className="font-bold">
+                        {fee?._type === 'fullTermPayment'
+                          ? 'Total Payable'
+                          : 'Initial Fee'}
+                      </h5>
+                      <h6 className="text-xs text-primary-500">
+                        <strong>NOTE</strong>: Succeeding payments will always
+                        incur payment gateway fees per transaction and see
+                        breakdown for applicable discounts
+                      </h6>
+                    </div>
+                    <div className="text-right">
+                      <span>
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'PHP',
+                        }).format(
+                          (fee?._type === 'fullTermPayment'
+                            ? fee?.fullPayment -
+                              (discount
+                                ? discount?.type === 'VALUE'
+                                  ? discount.value
+                                  : (discount.value / 100) * fee?.fullPayment
+                                : 0)
+                            : fee?.downPayment) + FEES[paymentMethod] || 0
+                        )}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+            <label className="flex items-center mt-10 space-x-3 font-medium cursor-pointer">
+              <input
+                checked={agree}
+                type="checkbox"
+                onChange={() => setAgree(!agree)}
+              />
+              <span>
+                Yes, I agree. My responses will be saved in Living Pupil
+                Homeschool's Database
+              </span>
+            </label>
           </div>
-          <label className="flex items-center mt-10 space-x-3 font-medium cursor-pointer">
-            <input
-              checked={agree}
-              type="checkbox"
-              onChange={() => setAgree(!agree)}
-            />
-            <span>
-              Yes, I agree. My responses will be saved in Living Pupil
-              Homeschool's Database
-            </span>
-          </label>
         </div>
-      </div>
+      )
     );
   };
 
