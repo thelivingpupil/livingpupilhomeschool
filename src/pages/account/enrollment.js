@@ -2444,7 +2444,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                         }).format(
                           fee?._type === 'fullTermPayment'
                             ? 0
-                            : fee[payments[index + 1]]
+                            : fee && fee[payments[index + 1]]
                         )}
                       </td>
                     </tr>
