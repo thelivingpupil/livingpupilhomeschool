@@ -98,13 +98,12 @@ const handler = async (req, res) => {
     }
 
     const programFee = await sanityClient.fetch(
-      `*[_type == 'programs' && gradeLevel == $gradeLevel && accreditation == $accreditation && programType == $program && enrollmentType == $enrollmentType && cottageType == $cottageType]{...}`,
+      `*[_type == 'programs' && gradeLevel == $gradeLevel && accreditation == $accreditation && programType == $program && enrollmentType == $enrollmentType]{...}`,
       {
         accreditation,
         enrollmentType,
         gradeLevel,
         program,
-        cottageType,
       }
     );
 
