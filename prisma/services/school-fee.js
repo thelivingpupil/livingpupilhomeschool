@@ -8,7 +8,13 @@ import {
 
 import sanityClient from '@/lib/server/sanity';
 import prisma from '@/prisma/index';
-import { ACCREDITATION, FEES, GRADE_LEVEL, PROGRAM } from '@/utils/constants';
+import {
+  ACCREDITATION,
+  FEES,
+  GRADE_LEVEL,
+  GRADE_LEVEL_TYPES,
+  PROGRAM,
+} from '@/utils/constants';
 import { createTransaction } from './transaction';
 
 export const createSchoolFees = async (
@@ -25,62 +31,77 @@ export const createSchoolFees = async (
 ) => {
   let gradeLevel = incomingGradeLevel;
 
-  if (program === Program.HOMESCHOOL_PROGRAM) {
+  if (program === Program.HOMESCHOOL_COTTAGE) {
     if (
-      incomingGradeLevel === GradeLevel.GRADE_1 ||
-      incomingGradeLevel === GradeLevel.GRADE_2 ||
-      incomingGradeLevel === GradeLevel.GRADE_3 ||
-      incomingGradeLevel === GradeLevel.GRADE_4 ||
-      incomingGradeLevel === GradeLevel.GRADE_5 ||
-      incomingGradeLevel === GradeLevel.GRADE_6
+      [GradeLevel.GRADE_1, GradeLevel.GRADE_2, GradeLevel.GRADE_3].includes(
+        incomingGradeLevel
+      )
     ) {
-      gradeLevel = GradeLevel.GRADE_6;
-    } else if (
-      incomingGradeLevel === GradeLevel.GRADE_7 ||
-      incomingGradeLevel === GradeLevel.GRADE_8 ||
-      incomingGradeLevel === GradeLevel.GRADE_9 ||
-      incomingGradeLevel === GradeLevel.GRADE_10
-    ) {
-      gradeLevel = GradeLevel.GRADE_10;
-    } else if (
-      incomingGradeLevel === GradeLevel.GRADE_11 ||
-      incomingGradeLevel === GradeLevel.GRADE_12
-    ) {
-      gradeLevel = GradeLevel.GRADE_12;
+      gradeLevel = GRADE_LEVEL_TYPES.FORM_1;
     }
-  } else if (program === Program.HOMESCHOOL_COTTAGE) {
+
     if (
-      accreditation === Accreditation.FORM_ONE &&
-      (incomingGradeLevel === GradeLevel.GRADE_1 ||
-        incomingGradeLevel === GradeLevel.GRADE_2 ||
-        incomingGradeLevel === GradeLevel.GRADE_3)
+      [GradeLevel.GRADE_4, GradeLevel.GRADE_5, GradeLevel.GRADE_6].includes(
+        incomingGradeLevel
+      )
     ) {
-      gradeLevel = GradeLevel.GRADE_3;
-    } else if (
-      accreditation === Accreditation.FORM_TWO &&
-      (incomingGradeLevel === GradeLevel.GRADE_4 ||
-        incomingGradeLevel === GradeLevel.GRADE_5 ||
-        incomingGradeLevel === GradeLevel.GRADE_6)
+      gradeLevel = GRADE_LEVEL_TYPES.FORM_2;
+    }
+
+    if (
+      [
+        GradeLevel.GRADE_7,
+        GradeLevel.GRADE_8,
+        GradeLevel.GRADE_9,
+        GradeLevel.GRADE_10,
+      ].includes(incomingGradeLevel)
     ) {
-      gradeLevel = GradeLevel.GRADE_6;
+      gradeLevel = GRADE_LEVEL_TYPES.FORM_3;
     }
   }
-  const schoolFee = await sanityClient.fetch(
-    `*[_type == 'schoolFees' && gradeLevel == $gradeLevel && accreditation == $accreditation && program == $program && type == $type][0]{...}`,
-    {
-      accreditation,
-      type: enrollmentType,
-      gradeLevel,
-      program,
-    }
+
+  console.log('data for program', {
+    accreditation,
+    enrollmentType,
+    gradeLevel,
+    program,
+  });
+
+  const sanityFetchArgs =
+    program === Program.HOMESCHOOL_COTTAGE
+      ? [
+          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType && cottageType == $cottageType]{...}`,
+          {
+            enrollmentType,
+            gradeLevel,
+            program,
+            cottageType,
+          },
+        ]
+      : [
+          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType]{...}`,
+          {
+            enrollmentType,
+            gradeLevel,
+            program,
+          },
+        ];
+
+  const fetchProgram = await sanityClient.fetch(...sanityFetchArgs);
+
+  const schoolFee = fetchProgram?.tuitionFees.find(
+    (tuition) => tuition.type === accreditation
   );
+
+  console.log('programFee', programFee);
+  console.log('schoolFee', schoolFee);
   const description = `${PROGRAM[program]} for ${GRADE_LEVEL[incomingGradeLevel]} - ${ACCREDITATION[accreditation]}`;
   let result = null;
 
   if (payment === PaymentType.ANNUAL) {
-    const fee = schoolFee.fees[0];
+    const fee = schoolFee.paymentTerms[0];
     const transaction = await prisma.purchaseHistory.create({
-      data: { total: fee.totalFee + FEES[paymentMethod] },
+      data: { total: fee.fullPayment + FEES[paymentMethod] },
       select: { id: true, transactionId: true },
     });
     const [response] = await Promise.all([
@@ -88,7 +109,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transaction.transactionId,
-        fee.totalFee + FEES[paymentMethod],
+        fee.fullPayment + FEES[paymentMethod],
         description,
         transaction.id,
         TransactionSource.ENROLLMENT,
@@ -116,18 +137,18 @@ export const createSchoolFees = async (
     ]);
     result = response;
   } else if (payment === PaymentType.SEMI_ANNUAL) {
-    const fee = schoolFee.fees[1];
+    const fee = schoolFee.paymentTerms[1];
     const transactionIds = await Promise.all([
       prisma.purchaseHistory.create({
-        data: { total: fee.initialFee + FEES[paymentMethod] },
+        data: { total: fee.downPayment + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.semiAnnualFee + FEES[paymentMethod] },
+        data: { total: fee.secondPayment + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.semiAnnualFee + FEES[paymentMethod] },
+        data: { total: fee.thirdPayment + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
     ]);
@@ -136,7 +157,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[0].transactionId,
-        fee.initialFee + FEES[paymentMethod],
+        fee.downPayment + FEES[paymentMethod],
         description,
         transactionIds[0].id,
         TransactionSource.ENROLLMENT,
@@ -146,7 +167,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[1].transactionId,
-        fee.semiAnnualFee + FEES[paymentMethod],
+        fee.secondPayment + FEES[paymentMethod],
         description,
         transactionIds[1].id,
         TransactionSource.ENROLLMENT,
@@ -156,7 +177,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[2].transactionId,
-        fee.semiAnnualFee + FEES[paymentMethod],
+        fee.thirdPayment + FEES[paymentMethod],
         description,
         transactionIds[2].id,
         TransactionSource.ENROLLMENT,
@@ -218,22 +239,22 @@ export const createSchoolFees = async (
     ]);
     result = response;
   } else if (payment === PaymentType.QUARTERLY) {
-    const fee = schoolFee.fees[2];
+    const fee = schoolFee.paymentTerms[2];
     const transactionIds = await Promise.all([
       prisma.purchaseHistory.create({
-        data: { total: fee.initialFee + FEES[paymentMethod] },
+        data: { total: fee.downPayment + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.quarterlyFee + FEES[paymentMethod] },
+        data: { total: fee.secondPayment + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.quarterlyFee + FEES[paymentMethod] },
+        data: { total: fee.thirdPayment + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.quarterlyFee + FEES[paymentMethod] },
+        data: { total: fee.fourthPayment + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
     ]);
@@ -242,7 +263,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[0].transactionId,
-        fee.initialFee + FEES[paymentMethod],
+        fee.downPayment + FEES[paymentMethod],
         description,
         transactionIds[0].id,
         TransactionSource.ENROLLMENT,
@@ -252,7 +273,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[1].transactionId,
-        fee.quarterlyFee + FEES[paymentMethod],
+        fee.secondPayment + FEES[paymentMethod],
         description,
         transactionIds[1].id,
         TransactionSource.ENROLLMENT,
@@ -262,7 +283,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[2].transactionId,
-        fee.quarterlyFee + FEES[paymentMethod],
+        fee.thirdPayment + FEES[paymentMethod],
         description,
         transactionIds[2].id,
         TransactionSource.ENROLLMENT,
@@ -272,7 +293,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[3].transactionId,
-        fee.quarterlyFee + FEES[paymentMethod],
+        fee.fourthPayment + FEES[paymentMethod],
         description,
         transactionIds[3].id,
         TransactionSource.ENROLLMENT,
