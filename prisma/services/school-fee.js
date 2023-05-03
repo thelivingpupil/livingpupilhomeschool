@@ -61,14 +61,6 @@ export const createSchoolFees = async (
     }
   }
 
-  console.log('data for program', {
-    accreditation,
-    enrollmentType,
-    gradeLevel,
-    program,
-    cottageType,
-  });
-
   const sanityFetchArgs =
     program === Program.HOMESCHOOL_COTTAGE
       ? [
@@ -91,13 +83,10 @@ export const createSchoolFees = async (
 
   const fetchProgram = await sanityClient.fetch(...sanityFetchArgs);
 
-  console.log('programFee', fetchProgram);
-
   const schoolFee = fetchProgram?.tuitionFees.find(
     (tuition) => tuition.type === accreditation
   );
 
-  console.log('schoolFee', schoolFee);
   const description = `${PROGRAM[program]} for ${GRADE_LEVEL[incomingGradeLevel]} - ${ACCREDITATION[accreditation]}`;
   let result = null;
 

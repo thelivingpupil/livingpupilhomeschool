@@ -2,11 +2,11 @@ const sidebarMenu = () => [
   {
     name: 'Account',
     menuItems: [
-      // {
-      //   name: 'Enrollment Form',
-      //   path: `/account/enrollment`,
-      //   showDefault: true,
-      // },
+      {
+        name: 'Enrollment Form',
+        path: `/account/enrollment`,
+        showDefault: true,
+      },
       {
         name: 'Dashboard',
         path: `/account`,
