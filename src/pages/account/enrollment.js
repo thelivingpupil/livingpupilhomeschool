@@ -1703,11 +1703,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
               onChange={(e) => {
                 setPayment(e.target.value ? e.target.value : null);
 
-                if (payment === PaymentType.ANNUAL) {
+                if (e.target.value === PaymentType.ANNUAL) {
                   setFee(programFeeByAccreditation?.paymentTerms[0]);
-                } else if (payment === PaymentType.SEMI_ANNUAL) {
+                } else if (e.target.value === PaymentType.SEMI_ANNUAL) {
                   setFee(programFeeByAccreditation?.paymentTerms[1]);
-                } else if (payment === PaymentType.QUARTERLY) {
+                } else if (e.target.value === PaymentType.QUARTERLY) {
                   setFee(programFeeByAccreditation?.paymentTerms[2]);
                 }
               }}

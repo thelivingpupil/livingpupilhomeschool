@@ -181,6 +181,7 @@ const handler = async (req, res) => {
     //   to: [session.user.email],
     // });
     // res.status(200).json({ data: { studentRecord, schoolFee } });
+    res.status(200).json({ data: { message: 'success' } });
   } else {
     res
       .status(405)
