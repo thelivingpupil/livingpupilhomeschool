@@ -1672,6 +1672,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
   };
 
   const renderSchoolFees = () => {
+    const programFeeByAccreditation = programFee?.tuitionFees.find(
+      (tuition) => tuition.type === accreditation
+    );
+
     return (
       <div className="flex flex-col p-5 space-y-5 overflow-auto">
         <div>
@@ -1695,11 +1699,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
               setPayment(e.target.value ? e.target.value : null);
 
               if (payment === PaymentType.ANNUAL) {
-                setFee(schoolFee?.fees[0]);
+                setFee(programFeeByAccreditation?.paymentTerms[0]);
               } else if (payment === PaymentType.SEMI_ANNUAL) {
-                setFee(schoolFee?.fees[1]);
+                setFee(programFeeByAccreditation?.paymentTerms[1]);
               } else if (payment === PaymentType.QUARTERLY) {
-                setFee(schoolFee?.fees[2]);
+                setFee(programFeeByAccreditation?.paymentTerms[2]);
               }
             }}
             value={payment}
@@ -1707,10 +1711,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
             <option value="">Please select payment type...</option>
             <option value={PaymentType.ANNUAL}>Full Payment</option>
             <option value={PaymentType.SEMI_ANNUAL}>
-              Semi Annual Payment (Initial Fee + Semi-Annual Fees)
+              Three (3) Term Payment (Initial Fee + Two Payment Term Fees)
             </option>
             <option value={PaymentType.QUARTERLY}>
-              Quarterly Payment (Initial Fee + Quarterly Fees)
+              Four (4) Term Payment (Initial Fee + Three Payment Term Fees)
             </option>
           </select>
           <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -1727,7 +1731,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
             }`}
             onClick={() => {
               setPayment(PaymentType.ANNUAL);
-              setFee(schoolFee?.fees[0]);
+              setFee(programFeeByAccreditation?.paymentTerms[0]);
             }}
           >
             {payment === PaymentType.ANNUAL && (
@@ -1743,7 +1747,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
-                  }).format(schoolFee?.fees[0]?.totalFee || 0)}
+                  }).format(
+                    programFeeByAccreditation?.paymentTerms[0]?.fullPayment || 0
+                  )}
                 </span>
               </div>
             </div>
@@ -1752,7 +1758,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 {new Intl.NumberFormat('en-US', {
                   style: 'currency',
                   currency: 'PHP',
-                }).format(schoolFee?.fees[0]?.totalFee || 0)}
+                }).format(
+                  programFeeByAccreditation?.paymentTerms[0]?.fullPayment || 0
+                )}
               </span>
             </h3>
           </div>
@@ -1766,7 +1774,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
             }`}
             onClick={() => {
               setPayment(PaymentType.SEMI_ANNUAL);
-              setFee(schoolFee?.fees[1]);
+              setFee(programFeeByAccreditation?.paymentTerms[1]);
             }}
           >
             {payment === PaymentType.SEMI_ANNUAL && (
@@ -1775,14 +1783,16 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
               </div>
             )}
             <div>
-              <h3 className="text-xl font-bold">Semi Annual</h3>
+              <h3 className="text-xl font-bold">Three (3) Term Payment</h3>
               <div>
                 <span>
                   Initial Fee:{' '}
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
-                  }).format(schoolFee?.fees[1]?.initialFee || 0)}{' '}
+                  }).format(
+                    programFeeByAccreditation?.paymentTerms[1]?.downPayment || 0
+                  )}{' '}
                   +
                 </span>
                 <span>
@@ -1790,8 +1800,19 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
-                  }).format(schoolFee?.fees[1]?.semiAnnualFee || 0)}{' '}
-                  semi-annually)
+                  }).format(
+                    programFeeByAccreditation?.paymentTerms[1]?.secondPayment ||
+                      0
+                  )}{' '}
+                  +{' '}
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(
+                    programFeeByAccreditation?.paymentTerms[1]?.thirdPayment ||
+                      0
+                  )}
+                  )
                 </span>
               </div>
             </div>
@@ -1800,8 +1821,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 style: 'currency',
                 currency: 'PHP',
               }).format(
-                schoolFee?.fees[1]?.initialFee +
-                  schoolFee?.fees[1]?.semiAnnualFee * 2 || 0
+                programFeeByAccreditation?.paymentTerms[1]?.downPayment +
+                  programFeeByAccreditation?.paymentTerms[1]?.secondPayment +
+                  programFeeByAccreditation?.paymentTerms[1]?.thirdPayment || 0
               )}
             </h3>
           </div>
@@ -1815,7 +1837,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
             }`}
             onClick={() => {
               setPayment(PaymentType.QUARTERLY);
-              setFee(schoolFee?.fees[2]);
+              setFee(programFeeByAccreditation?.paymentTerms[2]);
             }}
           >
             {payment === PaymentType.QUARTERLY && (
@@ -1824,14 +1846,16 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
               </div>
             )}
             <div>
-              <h3 className="text-xl font-bold">Quarterly</h3>
+              <h3 className="text-xl font-bold">Four (4) Term Payment</h3>
               <div>
                 <span>
                   Initial Fee:{' '}
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
-                  }).format(schoolFee?.fees[2]?.initialFee || 0)}{' '}
+                  }).format(
+                    programFeeByAccreditation?.paymentTerms[2]?.downPayment || 0
+                  )}{' '}
                   +
                 </span>
                 <span>
@@ -1840,9 +1864,26 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                     style: 'currency',
                     currency: 'PHP',
                   }).format(
-                    Number(schoolFee?.fees[2]?.quarterlyFee).toFixed(0) || 0
+                    programFeeByAccreditation?.paymentTerms[2]?.secondPayment ||
+                      0
                   )}{' '}
-                  quarterly)
+                  +{' '}
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(
+                    programFeeByAccreditation?.paymentTerms[2]?.thirdPayment ||
+                      0
+                  )}{' '}
+                  +{' '}
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(
+                    programFeeByAccreditation?.paymentTerms[2]?.fourthPayment ||
+                      0
+                  )}
+                  )
                 </span>
               </div>
             </div>
@@ -1851,10 +1892,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 style: 'currency',
                 currency: 'PHP',
               }).format(
-                Number(
-                  schoolFee?.fees[2]?.initialFee +
-                    schoolFee?.fees[2]?.quarterlyFee * 3
-                ).toFixed(0) || 0
+                programFeeByAccreditation?.paymentTerms[2]?.downPayment +
+                  programFeeByAccreditation?.paymentTerms[2]?.secondPayment +
+                  programFeeByAccreditation?.paymentTerms[2]?.thirdPayment +
+                  programFeeByAccreditation?.paymentTerms[2]?.fourthPayment || 0
               )}
             </h3>
           </div>
@@ -2071,9 +2112,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                         style: 'currency',
                         currency: 'PHP',
                       }).format(
-                        (fee?._type === 'annual'
-                          ? fee?.totalFee
-                          : fee?.initialFee) || 0
+                        (fee?._type === 'fullTermPayment'
+                          ? fee?.fullPayment
+                          : fee?.downPayment) || 0
                       )}
                     </span>
                   </div>
@@ -2121,19 +2162,16 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                           ? discount.type === 'VALUE'
                             ? Number(discount.value).toFixed(2) * -1
                             : Math.ceil(
-                                (fee?._type === 'annual'
-                                  ? fee?.totalFee
-                                  : fee?.initialFee) +
-                                  (fee?._type === 'annual'
-                                    ? 0
-                                    : fee?._type === 'semiAnnual'
-                                    ? fee?.semiAnnualFee * 2
-                                    : fee?.quarterlyFee *
-                                      (fee?._type === 'annual'
-                                        ? 1
-                                        : fee?._type === 'semiAnnual'
-                                        ? 2
-                                        : 3))
+                                fee?._type === 'fullTermPayment'
+                                  ? fee?.fullPayment
+                                  : fee?._type === 'threeTermPayment'
+                                  ? fee.downPayment +
+                                    fee.secondPayment +
+                                    fee.thirdPayment
+                                  : fee.downPayment +
+                                    fee.secondPayment +
+                                    fee.thirdPayment +
+                                    fee.fourthPayment
                               ) *
                               (discount.value / 100) *
                               -1
@@ -2164,13 +2202,13 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                         currency: 'PHP',
                       }).format(
                         (fee?._type === 'annual'
-                          ? fee?.totalFee -
+                          ? fee?.fullPayment -
                             (discount
                               ? discount?.type === 'VALUE'
                                 ? discount.value
-                                : (discount.value / 100) * fee?.totalFee
+                                : (discount.value / 100) * fee?.fullPayment
                               : 0)
-                          : fee?.initialFee) + FEES[paymentMethod] || 0
+                          : fee?.downPayment) + FEES[paymentMethod] || 0
                       )}
                     </span>
                   </div>
