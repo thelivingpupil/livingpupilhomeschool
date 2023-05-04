@@ -2224,7 +2224,12 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                                   ? discount.value
                                   : (discount.value / 100) * fee?.fullPayment
                                 : 0)
-                            : fee?.downPayment) + FEES[paymentMethod] || 0
+                            : fee?.downPayment -
+                              (discount
+                                ? discount?.type === 'VALUE'
+                                  ? discount.value
+                                  : (discount.value / 100) * fee?.fullPayment
+                                : 0)) + FEES[paymentMethod] || 0
                         )}
                       </span>
                     </div>
