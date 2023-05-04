@@ -479,7 +479,6 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
   };
 
   const submit = () => {
-    schoolFee;
     setSubmittingState(true);
     api('/api/enroll/direct', {
       body: {

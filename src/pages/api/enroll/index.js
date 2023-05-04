@@ -23,6 +23,7 @@ const handler = async (req, res) => {
       formerSchoolName,
       formerSchoolAddress,
       program,
+      cottageType,
       accreditation,
       birthDate,
       payment,
@@ -78,6 +79,7 @@ const handler = async (req, res) => {
         incomingGradeLevel,
         enrollmentType,
         program,
+        cottageType,
         accreditation,
         reason,
         formerSchoolName,
@@ -95,6 +97,7 @@ const handler = async (req, res) => {
         enrollmentType,
         incomingGradeLevel,
         program,
+        cottageType,
         accreditation,
         paymentMethod
       ),

@@ -535,6 +535,7 @@ const handler = async (req, res) => {
           student.incomingGradeLevel,
           student.enrollmentType,
           student.program,
+          null,
           student.accreditation,
           'From Import',
           'From Import',
