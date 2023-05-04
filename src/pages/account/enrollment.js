@@ -1272,7 +1272,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
             <div className="flex flex-row">
               <div
                 className={`relative inline-block w-full border rounded ${
-                  !program && 'border-red-500'
+                  !cottageType && 'border-red-500'
                 }`}
               >
                 <select
