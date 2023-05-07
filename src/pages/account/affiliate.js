@@ -51,6 +51,7 @@ const Affiliate = ({ invitedUsers, inviteLink }) => {
                 <tr>
                   <th className="py-3 text-left">Email/Name</th>
                   <th className="py-3 text-right">Date Joined</th>
+                  <th className="py-3 text-right">Enrolled Student Count</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
@@ -71,6 +72,11 @@ const Affiliate = ({ invitedUsers, inviteLink }) => {
                             ? format(new Date(user.createdAt), 'MMMM dd, yyyy')
                             : '-'}
                         </span>
+                      </div>
+                    </td>
+                    <td className="py-3">
+                      <div className="flex flex-row items-center justify-end space-x-3">
+                        <span>{user.createdWorkspace?.length || 0}</span>
                       </div>
                     </td>
                   </tr>
