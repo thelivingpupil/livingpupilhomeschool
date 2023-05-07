@@ -51,6 +51,7 @@ export const getInvitedUsers = async (userCode) =>
         select: {
           studentRecord: true,
         },
+        where: { NOT: [{ studentRecord: null }] },
       },
     },
     where: {
