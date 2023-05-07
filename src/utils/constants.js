@@ -121,9 +121,9 @@ export const COTTAGE_TYPE = {
 };
 
 export const PAYMENT_TYPE = {
-  ANNUAL: 'Full Payment',
-  SEMI_ANNUAL: 'Three (3) Term Payment',
-  QUARTERLY: 'Four (4) Term Payment',
+  ANNUAL: 'Annual',
+  SEMI_ANNUAL: 'Semi-Annual',
+  QUARTERLY: 'Quarterly',
 };
 
 export const PAYMENT_METHOD = {
@@ -136,7 +136,7 @@ export const PROGRAM = {
   HOMESCHOOL_PROGRAM: 'Homeschool Program',
   HOMESCHOOL_COTTAGE: ' Homeschool Cottage',
 };
-x;
+
 export const RELIGION = {
   ROMAN_CATHOLIC: 'Roman Catholic',
   MUSLIM: 'Muslim',
