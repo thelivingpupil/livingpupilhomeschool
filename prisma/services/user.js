@@ -56,7 +56,7 @@ export const getInvitedUsers = async (userCode) =>
     },
     where: {
       deletedAt: null,
-      userCode,
+      inviteCode: userCode,
     },
   });
 
