@@ -185,8 +185,8 @@ const Fees = () => {
                                     ? 'Initial School Fee'
                                     : index > 0 &&
                                       f.paymentType === PaymentType.SEMI_ANNUAL
-                                    ? `Semi-Annual School Fee #${index}`
-                                    : `Quarterly Fee #${index}`}
+                                    ? `Three (3) Term Payment School Fee #${index}`
+                                    : `Four (4) Term Payment School Fee #${index}`}
                                 </p>
                                 <p className="text-xs italic text-gray-400">
                                   <span className="font-medium">
