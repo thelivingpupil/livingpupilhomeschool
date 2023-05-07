@@ -44,6 +44,7 @@ import {
   GRADE_LEVEL,
   GRADE_LEVEL_GROUPS,
   GRADE_LEVEL_TYPES,
+  PASTORS_FEE,
   PAYMENT_TYPE,
   PROGRAM,
   RELIGION,
@@ -2176,7 +2177,22 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                         }).format(
                           discount
                             ? discount.type === 'VALUE'
-                              ? Number(discount.value).toFixed(2) * -1
+                              ? (discount?.code
+                                  ?.toLowerCase()
+                                  .includes('pastor')
+                                  ? Math.ceil(
+                                      fee?._type === 'fullTermPayment'
+                                        ? fee?.fullPayment
+                                        : fee?._type === 'threeTermPayment'
+                                        ? fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment
+                                        : fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment +
+                                          fee?.fourthPayment
+                                    ) - PASTORS_FEE
+                                  : Number(discount.value).toFixed(2)) * -1
                               : Math.ceil(
                                   fee?._type === 'fullTermPayment'
                                     ? fee?.fullPayment
@@ -2214,7 +2230,22 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                             ? fee?.fullPayment -
                               (discount
                                 ? discount?.type === 'VALUE'
-                                  ? discount.value
+                                  ? discount?.code
+                                      ?.toLowerCase()
+                                      .includes('pastor')
+                                    ? Math.ceil(
+                                        fee?._type === 'fullTermPayment'
+                                          ? fee?.fullPayment
+                                          : fee?._type === 'threeTermPayment'
+                                          ? fee?.downPayment +
+                                            fee?.secondPayment +
+                                            fee?.thirdPayment
+                                          : fee?.downPayment +
+                                            fee?.secondPayment +
+                                            fee?.thirdPayment +
+                                            fee?.fourthPayment
+                                      ) - PASTORS_FEE
+                                    : discount.value
                                   : (discount.value / 100) * fee?.fullPayment
                                 : 0)
                             : fee?.downPayment) + FEES[paymentMethod] || 0
@@ -2469,7 +2500,20 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                       }).format(
                         discount
                           ? discount.type === 'VALUE'
-                            ? Number(discount.value).toFixed(2) * -1
+                            ? (discount?.code?.toLowerCase().includes('pastor')
+                                ? Math.ceil(
+                                    fee?._type === 'fullTermPayment'
+                                      ? fee?.fullPayment
+                                      : fee?._type === 'threeTermPayment'
+                                      ? fee?.downPayment +
+                                        fee?.secondPayment +
+                                        fee?.thirdPayment
+                                      : fee?.downPayment +
+                                        fee?.secondPayment +
+                                        fee?.thirdPayment +
+                                        fee?.fourthPayment
+                                  ) - PASTORS_FEE
+                                : Number(discount.value).toFixed(2)) * -1
                             : Math.ceil(
                                 fee?._type === 'fullTermPayment'
                                   ? fee?.fullPayment
@@ -2504,7 +2548,20 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 ) -
                   (discount
                     ? discount?.type === 'VALUE'
-                      ? discount.value
+                      ? discount?.code?.toLowerCase().includes('pastor')
+                        ? Math.ceil(
+                            fee?._type === 'fullTermPayment'
+                              ? fee?.fullPayment
+                              : fee?._type === 'threeTermPayment'
+                              ? fee?.downPayment +
+                                fee?.secondPayment +
+                                fee?.thirdPayment
+                              : fee?.downPayment +
+                                fee?.secondPayment +
+                                fee?.thirdPayment +
+                                fee?.fourthPayment
+                          ) - PASTORS_FEE
+                        : discount.value
                       : (discount.value / 100) *
                         (fee?._type === 'fullTermPayment'
                           ? fee?.fullPayment
