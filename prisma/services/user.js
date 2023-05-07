@@ -47,17 +47,15 @@ export const getInvitedUsers = async (userCode) =>
       email: true,
       name: true,
       createdAt: true,
-      _count: {
-        createdWorkspace: {
-          select: {
-            studentRecord: true,
-          },
+      createdWorkspace: {
+        select: {
+          studentRecord: true,
         },
       },
     },
     where: {
       deletedAt: null,
-      inviteCode: null,
+      inviteCode: userCode,
     },
   });
 
