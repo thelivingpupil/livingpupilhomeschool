@@ -73,7 +73,7 @@ export const createSchoolFees = async (
           },
         ]
       : [
-          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType]{...}`,
+          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType][0]{...}`,
           {
             enrollmentType,
             gradeLevel,
@@ -90,10 +90,30 @@ export const createSchoolFees = async (
   const description = `${PROGRAM[program]} for ${GRADE_LEVEL[incomingGradeLevel]} - ${ACCREDITATION[accreditation]}`;
   let result = null;
 
+  const discount =
+    discountCode &&
+    (await sanityClient.fetch(
+      `*[_type == 'discounts' && code == $code][0]{...}`,
+      { code: discountCode }
+    ));
+
+  const isPastorsFee =
+    discount && discount?.code?.toLowerCase().includes('pastor');
+
   if (payment === PaymentType.ANNUAL) {
     const fee = schoolFee.paymentTerms[0];
+
+    const payment = isPastorsFee
+      ? discount.value
+      : discount
+      ? fee.fullPayment -
+        (discount.type === 'VALUE'
+          ? discount.value
+          : (discount.value / 100) * fee.fullPayment)
+      : fee.fullPayment;
+
     const transaction = await prisma.purchaseHistory.create({
-      data: { total: fee.fullPayment + FEES[paymentMethod] },
+      data: { total: payment + FEES[paymentMethod] },
       select: { id: true, transactionId: true },
     });
     const [response] = await Promise.all([
@@ -101,7 +121,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transaction.transactionId,
-        fee.fullPayment + FEES[paymentMethod],
+        payment + FEES[paymentMethod],
         description,
         transaction.id,
         TransactionSource.ENROLLMENT,
@@ -130,17 +150,35 @@ export const createSchoolFees = async (
     result = response;
   } else if (payment === PaymentType.SEMI_ANNUAL) {
     const fee = schoolFee.paymentTerms[1];
+
+    const payments = isPastorsFee
+      ? [
+          fee.downPayment,
+          (discount.value - fee.downPayment) / 2,
+          (discount.value - fee.downPayment) / 2,
+        ]
+      : discount
+      ? [
+          fee.downPayment,
+          fee.secondPayment -
+            (discount.type === 'VALUE'
+              ? discount.value
+              : (discount.value / 100) * fee.secondPayment),
+          fee.thirdPayment,
+        ]
+      : [fee.downPayment, fee.secondPayment, fee.thirdPayment];
+
     const transactionIds = await Promise.all([
       prisma.purchaseHistory.create({
-        data: { total: fee.downPayment + FEES[paymentMethod] },
+        data: { total: payments[0] + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.secondPayment + FEES[paymentMethod] },
+        data: { total: payments[1] + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.thirdPayment + FEES[paymentMethod] },
+        data: { total: payments[2] + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
     ]);
@@ -149,7 +187,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[0].transactionId,
-        fee.downPayment + FEES[paymentMethod],
+        payments[0] + FEES[paymentMethod],
         description,
         transactionIds[0].id,
         TransactionSource.ENROLLMENT,
@@ -159,7 +197,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[1].transactionId,
-        fee.secondPayment + FEES[paymentMethod],
+        payments[1] + FEES[paymentMethod],
         description,
         transactionIds[1].id,
         TransactionSource.ENROLLMENT,
@@ -169,7 +207,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[2].transactionId,
-        fee.thirdPayment + FEES[paymentMethod],
+        payments[2] + FEES[paymentMethod],
         description,
         transactionIds[2].id,
         TransactionSource.ENROLLMENT,
@@ -232,21 +270,46 @@ export const createSchoolFees = async (
     result = response;
   } else if (payment === PaymentType.QUARTERLY) {
     const fee = schoolFee.paymentTerms[2];
+
+    const payments = isPastorsFee
+      ? [
+          fee.downPayment,
+          (discount.value - fee.downPayment) / 3,
+          (discount.value - fee.downPayment) / 3,
+          (discount.value - fee.downPayment) / 3,
+        ]
+      : discount
+      ? [
+          fee.downPayment,
+          fee.secondPayment -
+            (discount.type === 'VALUE'
+              ? discount.value
+              : (discount.value / 100) * fee.secondPayment),
+          fee.thirdPayment,
+          fee.fourthPayment,
+        ]
+      : [
+          fee.downPayment,
+          fee.secondPayment,
+          fee.thirdPayment,
+          fee.fourthPayment,
+        ];
+
     const transactionIds = await Promise.all([
       prisma.purchaseHistory.create({
-        data: { total: fee.downPayment + FEES[paymentMethod] },
+        data: { total: payments[0] + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.secondPayment + FEES[paymentMethod] },
+        data: { total: payments[1] + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.thirdPayment + FEES[paymentMethod] },
+        data: { total: payments[2] + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: fee.fourthPayment + FEES[paymentMethod] },
+        data: { total: payments[3] + FEES[paymentMethod] },
         select: { id: true, transactionId: true },
       }),
     ]);
@@ -255,7 +318,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[0].transactionId,
-        fee.downPayment + FEES[paymentMethod],
+        payments[0] + FEES[paymentMethod],
         description,
         transactionIds[0].id,
         TransactionSource.ENROLLMENT,
@@ -265,7 +328,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[1].transactionId,
-        fee.secondPayment + FEES[paymentMethod],
+        payments[1] + FEES[paymentMethod],
         description,
         transactionIds[1].id,
         TransactionSource.ENROLLMENT,
@@ -275,7 +338,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[2].transactionId,
-        fee.thirdPayment + FEES[paymentMethod],
+        payments[2] + FEES[paymentMethod],
         description,
         transactionIds[2].id,
         TransactionSource.ENROLLMENT,
@@ -285,7 +348,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[3].transactionId,
-        fee.fourthPayment + FEES[paymentMethod],
+        payments[3] + FEES[paymentMethod],
         description,
         transactionIds[3].id,
         TransactionSource.ENROLLMENT,
