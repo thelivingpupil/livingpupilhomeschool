@@ -11,6 +11,7 @@ import { getSession } from 'next-auth/react';
 import { getInvitedUsers } from '@/prisma/services/user';
 
 const Affiliate = ({ invitedUsers, inviteLink }) => {
+  console.log('invitedUsers', invitedUsers);
   const copyToClipboard = () => toast.success('Copied to clipboard!');
 
   return (
