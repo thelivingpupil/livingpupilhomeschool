@@ -20,8 +20,6 @@ export const FEES = {
   PAYMENT_CENTERS: 20,
 };
 
-export const PASTORS_FEE = 14000;
-
 export const GRADE_LEVEL = {
   PRESCHOOL: 'Preschool',
   K1: 'Kindergarten 1',

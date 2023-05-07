@@ -44,7 +44,6 @@ import {
   GRADE_LEVEL,
   GRADE_LEVEL_GROUPS,
   GRADE_LEVEL_TYPES,
-  PASTORS_FEE,
   PAYMENT_TYPE,
   PROGRAM,
   RELIGION,
@@ -2191,7 +2190,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                                           fee?.secondPayment +
                                           fee?.thirdPayment +
                                           fee?.fourthPayment
-                                    ) - PASTORS_FEE
+                                    ) - discount.value
                                   : Number(discount.value).toFixed(2)) * -1
                               : Math.ceil(
                                   fee?._type === 'fullTermPayment'
@@ -2244,7 +2243,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                                             fee?.secondPayment +
                                             fee?.thirdPayment +
                                             fee?.fourthPayment
-                                      ) - PASTORS_FEE
+                                      ) - discount.value
                                     : discount.value
                                   : (discount.value / 100) * fee?.fullPayment
                                 : 0)
@@ -2512,7 +2511,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                                         fee?.secondPayment +
                                         fee?.thirdPayment +
                                         fee?.fourthPayment
-                                  ) - PASTORS_FEE
+                                  ) - discount.value
                                 : Number(discount.value).toFixed(2)) * -1
                             : Math.ceil(
                                 fee?._type === 'fullTermPayment'
@@ -2560,7 +2559,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                                 fee?.secondPayment +
                                 fee?.thirdPayment +
                                 fee?.fourthPayment
-                          ) - PASTORS_FEE
+                          ) - discount.value
                         : discount.value
                       : (discount.value / 100) *
                         (fee?._type === 'fullTermPayment'
