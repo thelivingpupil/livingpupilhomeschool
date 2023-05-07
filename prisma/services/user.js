@@ -49,7 +49,7 @@ export const getInvitedUsers = async (userCode) =>
       createdAt: true,
       createdWorkspace: {
         select: {
-          studentRecord: true,
+          _count: { studentRecord: true },
         },
       },
     },
