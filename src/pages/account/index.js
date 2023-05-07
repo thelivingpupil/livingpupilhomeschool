@@ -113,14 +113,12 @@ const Welcome = () => {
         </div>
         <div className="space-y-1">
           <h3 className="text-xl font-bold">Student Name</h3>
-          <p className="text-sm text-gray-400">
-            What's your student's name? Nicknames will do.
-          </p>
+          <p className="text-sm text-gray-400">What's your student's name?</p>
           <input
             className="w-full px-3 py-2 border rounded"
             disabled={isSubmitting}
             onChange={handleNameChange}
-            placeholder="Name or Nickname"
+            placeholder="Full Name"
             type="text"
             value={name}
           />

@@ -92,7 +92,7 @@ const General = ({ isTeamOwner, workspace }) => {
       <Content.Container>
         <Card>
           <Card.Body
-            title="Student Name or Nickname"
+            title="Student Name"
             subtitle="Used to identify your Student Record on the Dashboard"
           >
             <input
