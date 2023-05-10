@@ -2,6 +2,7 @@ import Content from '@/components/Content/index';
 import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
+import { FaFacebook } from 'react-icons/fa';
 
 const Community = () => {
   return (
@@ -28,6 +29,13 @@ const Community = () => {
           </Card.Body>
         </Card>
       </Content.Container>
+
+      <div className="flex flex-row md:flex-col">
+        <div className="flex md:flex-row">
+          <FaFacebook color="blue" size={500} />
+        </div>
+        <div className="flex flex-wrap"></div>
+      </div>
     </AccountLayout>
   );
 };
