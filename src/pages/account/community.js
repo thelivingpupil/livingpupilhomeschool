@@ -3,6 +3,7 @@ import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
 import { FaFacebook } from 'react-icons/fa';
+import Image from 'next/image';
 
 const Community = () => {
   return (
