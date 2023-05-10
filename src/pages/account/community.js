@@ -32,12 +32,12 @@ const Community = () => {
       </Content.Container>
 
       <div className="flex flex-row md:flex-col">
-        <div className="flex md:flex-row bg-primary-200">
+        <div className="flex md:flex-row bg-water-500">
           <Image
             alt="Living Pupil Homeschool"
             src="/images/livingpupil-homeschool-logo.png"
-            width={550}
-            height={550}
+            width={250}
+            height={250}
           />
         </div>
         <div className="flex flex-wrap"></div>
