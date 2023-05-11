@@ -32,17 +32,19 @@ const Community = () => {
       </Content.Container>
 
       <div className="flex flex-row md:flex-col">
-        <div className="flex flex-end h-3/4 xs:h-full">
-          <div className="flex flex-col sm:flex-row bg-water-500 pt-28">
-            <Image
-              alt="Living Pupil Homeschool"
-              src="/images/livingpupil-homeschool-logo.png"
-              width={200}
-              height={200}
-            />
-            <span className="text-lg text-primary-500 font-semibold">
-              Living Pupil Community
-            </span>
+        <div className="flex items-end">
+          <div className="flex items-end h-3/4 xs:h-full">
+            <div className="flex flex-col sm:flex-row bg-water-500 pt-28">
+              <Image
+                alt="Living Pupil Homeschool"
+                src="/images/livingpupil-homeschool-logo.png"
+                width={200}
+                height={200}
+              />
+              <span className="text-lg text-primary-500 font-semibold">
+                Living Pupil Community
+              </span>
+            </div>
           </div>
         </div>
         <div className="flex flex-wrap"></div>
