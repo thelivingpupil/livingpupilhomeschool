@@ -33,7 +33,7 @@ const Community = () => {
 
       <div className="flex flex-row md:flex-col">
         <div className="w-1/3 md:w-full">
-          <div className="flex md:flex-row bg-water-500 pt-4">
+          <div className="flex flex-row bg-water-500 pt-28">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
