@@ -32,7 +32,7 @@ const Community = () => {
       </Content.Container>
 
       <div className="flex flex-row md:flex-col">
-        <div className="w-3/4 sm:w-full">
+        <div className="flex flex-end h-3/4 xs:h-full">
           <div className="flex flex-col sm:flex-row bg-water-500 pt-28">
             <Image
               alt="Living Pupil Homeschool"
