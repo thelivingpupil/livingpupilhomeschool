@@ -1,10 +1,9 @@
 import Content from '@/components/Content/index';
 import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
-import Card from '@/components/Card';
 import {
   FaBookOpen,
-  FaFacebookF,
+  FaFacebook,
   FaFacebookMessenger,
   FaGlobe,
   FaHome,
@@ -39,8 +38,8 @@ const Community = () => {
           </div>
         </div>
         <div className="grid grid-cols-3 space-x-5 space-y-5">
-          <div className="flex flex-col xs:flex-row bg-[#a3c0e3] p-8 items-center rounded-xl mt-5 ml-5">
-            <FaFacebookF size={100} color="#0165E1" />
+          <div className="flex flex-col xs:flex-row bg-water-600 p-8 items-center rounded-xl mt-5 ml-5">
+            <FaFacebook size={100} color="#0165E1" />
             <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
               Living Pupil Facebook Page
             </span>
