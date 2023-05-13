@@ -51,10 +51,8 @@ const Community = () => {
           <div className="flex flex-1">
             <div className="flex items-end">
               <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
-                <div className="flex bg-water-100">
-                  <FaFacebook size={100} color="#0165E1" />
-                </div>
-                <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
+                <FaFacebook size={100} color="#0165E1" fill="#FFFFFF" />
+                <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
                   Living Pupil Facebook Page
                 </span>
               </div>
