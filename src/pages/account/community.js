@@ -41,7 +41,7 @@ const Community = () => {
                 width={200}
                 height={200}
               />
-              <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150]">
+              <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
                 Living Pupil Community
               </span>
             </div>
