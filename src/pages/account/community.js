@@ -39,7 +39,7 @@ const Community = () => {
           </div>
         </div>
         <div className="grid grid-cols-3 space-x-5 space-y-5">
-          <div className="flex flex-col xs:flex-row bg-water-800 p-8 items-center rounded-xl mt-5 ml-5">
+          <div className="flex flex-col xs:flex-row bg-[#a3c0e3] p-8 items-center rounded-xl mt-5 ml-5">
             <FaFacebookF size={100} color="#0165E1" />
             <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
               Living Pupil Facebook Page
@@ -58,7 +58,7 @@ const Community = () => {
               Living Pupil Support Team
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-primary-400 p-8 items-center rounded-xl mt-5 ml-5">
+          <div className="flex flex-col xs:flex-row bg-[#4e5ba5] p-8 items-center rounded-xl mt-5 ml-5">
             <FaBookOpen size={100} color="#FFFFFF" />
             <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
               LP Bookclub (Exlusive for LP Parents)
@@ -70,7 +70,7 @@ const Community = () => {
               Living Pupil Marketplace (Facebook Page)
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
+          <div className="flex flex-col xs:flex-row bg-[#6d85bb] p-8 items-center rounded-xl mt-5 ml-5">
             <FaGlobe size={100} color="#FFFFFF" />
             <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
               Living Pupil Website
