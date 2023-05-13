@@ -3,7 +3,7 @@ import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
 import {
-  FaBook,
+  FaBookOpen,
   FaFacebookF,
   FaFacebookMessenger,
   FaGlobe,
@@ -16,28 +16,6 @@ const Community = () => {
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Living Pupil Homeschool Community" />
-      <Content.Title
-        title="Living Pupil Homeschool Community"
-        subtitle="View your Living Pupil Homeschool Community and circle"
-      />
-      <Content.Divider />
-      <Content.Container>
-        <Card>
-          <Card.Body
-            title="A list of links to the various communities of Living Pupil Homeschool"
-            subtitle="You may visit our Facebook page for more details"
-          >
-            <a
-              className="w-full py-2 text-center rounded-lg text-primary-500 bg-secondary-500 hover:bg-secondary-600 disabled:opacity-25"
-              href="https://www.facebook.com/livingpupilhomeschool"
-              target="_blank"
-            >
-              Visit Facebook Page
-            </a>
-          </Card.Body>
-        </Card>
-      </Content.Container>
-
       <div className="flex flex-row xs:flex-col pb-20">
         <div className="flex items-end flex-1">
           <div className="flex items-end flex-1">
@@ -75,7 +53,7 @@ const Community = () => {
             </span>
           </div>
           <div className="flex flex-col xs:flex-row bg-primary-200 p-8 items-center rounded-xl mt-5 ml-5">
-            <FaBook size={100} color="#FFFFFF" />
+            <FaBookOpen size={100} color="#FFFFFF" />
             <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
               LP Bookclub (Exlusive for LP Parents)
             </span>
@@ -83,7 +61,7 @@ const Community = () => {
           <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">
             <FaHome size={100} color="#FFFFFF" />
             <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
-              LP Marketplace (Facebook Page)
+              Living Pupil Marketplace (Facebook Page)
             </span>
           </div>
           <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
