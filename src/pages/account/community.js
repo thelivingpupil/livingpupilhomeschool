@@ -48,18 +48,27 @@ const Community = () => {
           </div>
         </div>
         <div className="grid grid-cols-3 space-x-5 space-y-5">
-          <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
-            <FaFacebook size={200} color="#0165E1" />
-            <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Facebook Page
-            </span>
+          <div className="flex flex-end">
+            <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
+              <div className="flex bg-water-100">
+                <FaFacebook size={100} color="#0165E1" />
+              </div>
+              <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
+                Living Pupil Facebook Page
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl">
-            <FaFacebookMessenger size={200} color="#17A9FD" />
-            <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Community
-            </span>
+          <div className="flex flex-end">
+            <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl">
+              <div className="flex bg-water-100">
+                <FaFacebookMessenger size={100} color="#17A9FD" />
+              </div>
+              <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
+                Living Pupil Community
+              </span>
+            </div>
           </div>
+
           <div className="flex flex-col xs:flex-row bg-primary-500 p-8 items-center rounded-xl">
             <Image
               alt="Living Pupil Homeschool"
