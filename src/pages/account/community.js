@@ -2,8 +2,14 @@ import Content from '@/components/Content/index';
 import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
-import { FaFacebookF, FaFacebookMessenger } from 'react-icons/fa';
-import { GrGroup } from 'react-icons/gr';
+import {
+  FaBook,
+  FaFacebookF,
+  FaFacebookMessenger,
+  FaGlobe,
+  FaHome,
+} from 'react-icons/fa';
+import { HiOutlineUserGroup } from 'react-icons/hi';
 import Image from 'next/image';
 
 const Community = () => {
@@ -63,27 +69,27 @@ const Community = () => {
           </div>
 
           <div className="flex flex-col xs:flex-row bg-primary-500 p-8 items-center rounded-xl mt-5 ml-5">
-            <GrGroup size={100} color="#FFFFFF" />
+            <HiOutlineUserGroup size={100} color="#FFFFFF" />
             <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
               Living Pupil Support Team
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
-            <FaFacebookF size={100} color="#0165E1" />
+          <div className="flex flex-col xs:flex-row bg-primary-200 p-8 items-center rounded-xl mt-5 ml-5">
+            <FaBook size={100} color="#FFFFFF" />
             <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Facebook Page
+              LP Bookclub (Exlusive for LP Parents)
+            </span>
+          </div>
+          <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">
+            <FaHome size={100} color="#FFFFFF" />
+            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
+              LP Marketplace (Facebook Page)
             </span>
           </div>
           <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
-            <FaFacebookF size={100} color="#0165E1" />
+            <FaGlobe size={100} color="#FFFFFF" />
             <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Facebook Page
-            </span>
-          </div>
-          <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
-            <FaFacebookF size={100} color="#0165E1" />
-            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Facebook Page
+              Living Pupil Website
             </span>
           </div>
         </div>
