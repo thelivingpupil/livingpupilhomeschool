@@ -33,8 +33,8 @@ const Community = () => {
 
       <div className="flex flex-row xs:flex-col space-x-5">
         <div className="flex items-end flex-1">
-          <div className="flex items-end h-3/4 xs:h-full">
-            <div className="flex flex-col xs:flex-row bg-water-500 pt-28 items-center rounded-xl">
+          <div className="flex items-end">
+            <div className="flex flex-col xs:flex-row bg-water-500 pt-28 items-center rounded-xl w-full">
               <Image
                 alt="Living Pupil Homeschool"
                 src="/images/livingpupil-homeschool-logo.png"
