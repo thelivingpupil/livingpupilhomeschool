@@ -48,7 +48,7 @@ const Community = () => {
           </div>
         </div>
         <div className="grid grid-cols-3 space-x-5 space-y-5">
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl pt-5 pl-5">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl mt-5 ml-5">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
