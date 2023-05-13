@@ -31,9 +31,9 @@ const Community = () => {
         </Card>
       </Content.Container>
 
-      <div className="flex flex-row xs:flex-col space-x-5">
-        <div className="flex items-end flex-1">
-          <div className="flex items-end flex-1">
+      <div className="flex flex-row xs:flex-col pb-20">
+        <div className="flex items-end flex-1 h-3/4">
+          <div className="flex flex-1">
             <div className="flex flex-col xs:flex-row bg-water-500 pt-28 items-center rounded-xl flex-1">
               <Image
                 alt="Living Pupil Homeschool"
@@ -48,7 +48,7 @@ const Community = () => {
           </div>
         </div>
         <div className="grid grid-cols-3 space-x-5 space-y-5">
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl pt-5 pl-5">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
