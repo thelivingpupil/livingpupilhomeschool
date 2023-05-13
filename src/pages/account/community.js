@@ -2,7 +2,7 @@ import Content from '@/components/Content/index';
 import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
-import { FaFacebook, FaFacebookMessenger } from 'react-icons/fa';
+import { FaFacebook, FaFacebookF, FaFacebookMessenger } from 'react-icons/fa';
 import Image from 'next/image';
 
 const Community = () => {
@@ -48,69 +48,41 @@ const Community = () => {
           </div>
         </div>
         <div className="grid grid-cols-3 space-x-5 space-y-5">
-          <div className="flex flex-1">
-            <div className="flex items-end">
-              <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
-                <FaFacebook size={100} color="#0165E1" stroke="#FFFFFF" />
-                <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
-                  Living Pupil Facebook Page
-                </span>
-              </div>
-            </div>
+          <div className="flex flex-col xs:flex-row bg-water-800 p-8 items-center rounded-xl mt-5 ml-5">
+            <FaFacebookF size={100} color="#0165E1" />
+            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
+              Living Pupil Facebook Page
+            </span>
           </div>
-          <div className="flex flex-end">
-            <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl">
-              <div className="flex bg-water-100">
-                <FaFacebookMessenger size={100} color="#17A9FD" />
-              </div>
-              <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
-                Living Pupil Community
-              </span>
-            </div>
+          <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">
+            <FaFacebookF size={100} color="#0165E1" />
+            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
+              Living Pupil Facebook Page
+            </span>
           </div>
 
-          <div className="flex flex-col xs:flex-row bg-primary-500 p-8 items-center rounded-xl">
-            <Image
-              alt="Living Pupil Homeschool"
-              src="/images/livingpupil-homeschool-logo.png"
-              width={200}
-              height={200}
-            />
-            <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Community
+          <div className="flex flex-col xs:flex-row bg-primary-500 p-8 items-center rounded-xl mt-5 ml-5">
+            <FaFacebookF size={100} color="#0165E1" />
+            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
+              Living Pupil Facebook Page
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
-            <Image
-              alt="Living Pupil Homeschool"
-              src="/images/livingpupil-homeschool-logo.png"
-              width={200}
-              height={200}
-            />
-            <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Community
+          <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
+            <FaFacebookF size={100} color="#0165E1" />
+            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
+              Living Pupil Facebook Page
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl">
-            <Image
-              alt="Living Pupil Homeschool"
-              src="/images/livingpupil-homeschool-logo.png"
-              width={200}
-              height={200}
-            />
-            <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Community
+          <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
+            <FaFacebookF size={100} color="#0165E1" />
+            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
+              Living Pupil Facebook Page
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
-            <Image
-              alt="Living Pupil Homeschool"
-              src="/images/livingpupil-homeschool-logo.png"
-              width={200}
-              height={200}
-            />
-            <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Community
+          <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
+            <FaFacebookF size={100} color="#0165E1" />
+            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
+              Living Pupil Facebook Page
             </span>
           </div>
         </div>
