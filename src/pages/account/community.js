@@ -48,7 +48,7 @@ const Community = () => {
           </div>
         </div>
         <div className="flex flex-wrap">
-          <div className="flex flex-col xs:flex-row bg-water-500 pt-28 items-center rounded-xl">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
@@ -59,7 +59,7 @@ const Community = () => {
               Living Pupil Community
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-500 pt-28 items-center rounded-xl">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
@@ -70,7 +70,7 @@ const Community = () => {
               Living Pupil Community
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-500 pt-28 items-center rounded-xl">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
