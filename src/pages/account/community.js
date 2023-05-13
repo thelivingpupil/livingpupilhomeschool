@@ -39,11 +39,11 @@ const Community = () => {
         </div>
         <div className="grid grid-cols-3 space-x-5 space-y-5">
           <a
-            className="flex"
+            className="flex mt-5 ml-5"
             href="https://www.facebook.com/livingpupilhomeschool"
             target="_blank"
           >
-            <div className="flex flex-col xs:flex-row bg-water-600 p-8 items-center rounded-xl mt-5 ml-5">
+            <div className="flex flex-col xs:flex-row bg-water-600 p-8 items-center rounded-xl">
               <FaFacebook size={100} color="#0165E1" />
               <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
                 Living Pupil Facebook Page
