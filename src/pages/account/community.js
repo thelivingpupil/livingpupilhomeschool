@@ -39,6 +39,7 @@ const Community = () => {
         </div>
         <div className="grid grid-cols-3 space-x-5 space-y-5">
           <a
+            className="flex"
             href="https://www.facebook.com/livingpupilhomeschool"
             target="_blank"
           >
@@ -50,6 +51,7 @@ const Community = () => {
             </div>
           </a>
           <a
+            className="flex"
             href="https://www.messenger.com/livingpupilhomeschool"
             target="_blank"
           >
@@ -60,7 +62,7 @@ const Community = () => {
               </span>
             </div>
           </a>
-          <a href="#" target="_blank">
+          <a className="flex" href="#" target="_blank">
             <div className="flex flex-col xs:flex-row bg-primary-500 p-8 items-center rounded-xl mt-5 ml-5">
               <HiOutlineUserGroup size={100} color="#FFFFFF" />
               <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
@@ -69,6 +71,7 @@ const Community = () => {
             </div>
           </a>
           <a
+            className="flex"
             href="https://www.facebook.com/livingpupilhomeschool"
             target="_blank"
           >
@@ -80,6 +83,7 @@ const Community = () => {
             </div>
           </a>
           <a
+            className="flex"
             href="https://www.facebook.com/livingpupilhomeschool"
             target="_blank"
           >
@@ -90,7 +94,11 @@ const Community = () => {
               </span>
             </div>
           </a>
-          <a href="https://livingpupilhomeschool.com" target="_blank">
+          <a
+            className="flex"
+            href="https://livingpupilhomeschool.com"
+            target="_blank"
+          >
             <div className="flex flex-col xs:flex-row bg-[#6d85bb] p-8 items-center rounded-xl mt-5 ml-5">
               <FaGlobe size={100} color="#FFFFFF" />
               <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
