@@ -16,6 +16,12 @@ const Community = () => {
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Living Pupil Homeschool Community" />
+      <Content.Title
+        title="Living Pupil Homeschool Community"
+        subtitle="View your Living Pupil Homeschool Community and circle"
+      />
+      <Content.Divider />
+
       <div className="flex flex-row xs:flex-col pb-20">
         <div className="flex items-end flex-1">
           <div className="flex items-end flex-1">
@@ -52,7 +58,7 @@ const Community = () => {
               Living Pupil Support Team
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-primary-200 p-8 items-center rounded-xl mt-5 ml-5">
+          <div className="flex flex-col xs:flex-row bg-primary-400 p-8 items-center rounded-xl mt-5 ml-5">
             <FaBookOpen size={100} color="#FFFFFF" />
             <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
               LP Bookclub (Exlusive for LP Parents)
