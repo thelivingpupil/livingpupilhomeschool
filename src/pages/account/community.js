@@ -2,7 +2,7 @@ import Content from '@/components/Content/index';
 import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
-import { FaFacebook } from 'react-icons/fa';
+import { FaFacebook, FaFacebookMessenger } from 'react-icons/fa';
 import Image from 'next/image';
 
 const Community = () => {
@@ -34,7 +34,7 @@ const Community = () => {
       <div className="flex flex-row xs:flex-col pb-20">
         <div className="flex items-end flex-1">
           <div className="flex items-end flex-1">
-            <div className="flex flex-col xs:flex-row bg-water-700 pt-28 pb-8 items-center rounded-xl flex-1">
+            <div className="flex flex-col xs:flex-row bg-water-500 pt-28 pb-8 items-center rounded-xl flex-1">
               <Image
                 alt="Living Pupil Homeschool"
                 src="/images/livingpupil-homeschool-logo.png"
@@ -48,19 +48,14 @@ const Community = () => {
           </div>
         </div>
         <div className="grid grid-cols-3 space-x-5 space-y-5">
-          <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">
-            <FaFacebook size={200} color="#3b5998" />
+          <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
+            <FaFacebook size={200} color="#0165E1" />
             <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
               Living Pupil Facebook Page
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
-            <Image
-              alt="Living Pupil Homeschool"
-              src="/images/livingpupil-homeschool-logo.png"
-              width={200}
-              height={200}
-            />
+          <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl">
+            <FaFacebookMessenger size={200} color="#17A9FD" />
             <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
               Living Pupil Community
             </span>
