@@ -42,6 +42,17 @@ const Community = () => {
             href="https://www.facebook.com/livingpupilhomeschool"
             target="_blank"
           >
+            <div className="flex flex-col xs:flex-row bg-water-600 p-8 items-center rounded-xl mt-5 ml-5">
+              <FaFacebook size={100} color="#0165E1" />
+              <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
+                Living Pupil Facebook Page
+              </span>
+            </div>
+          </a>
+          <a
+            href="https://www.messenger.com/livingpupilhomeschool"
+            target="_blank"
+          >
             <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">
               <FaFacebookMessenger size={100} color="#17A9FD" />
               <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
@@ -49,31 +60,44 @@ const Community = () => {
               </span>
             </div>
           </a>
-
-          <div className="flex flex-col xs:flex-row bg-primary-500 p-8 items-center rounded-xl mt-5 ml-5">
-            <HiOutlineUserGroup size={100} color="#FFFFFF" />
-            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Support Team
-            </span>
-          </div>
-          <div className="flex flex-col xs:flex-row bg-[#4e5ba5] p-8 items-center rounded-xl mt-5 ml-5">
-            <FaBookOpen size={100} color="#FFFFFF" />
-            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
-              LP Bookclub (Exlusive for LP Parents)
-            </span>
-          </div>
-          <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">
-            <FaHome size={100} color="#FFFFFF" />
-            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Marketplace (Facebook Page)
-            </span>
-          </div>
-          <div className="flex flex-col xs:flex-row bg-[#6d85bb] p-8 items-center rounded-xl mt-5 ml-5">
-            <FaGlobe size={100} color="#FFFFFF" />
-            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Website
-            </span>
-          </div>
+          <a href="#" target="_blank">
+            <div className="flex flex-col xs:flex-row bg-primary-500 p-8 items-center rounded-xl mt-5 ml-5">
+              <HiOutlineUserGroup size={100} color="#FFFFFF" />
+              <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
+                Living Pupil Support Team
+              </span>
+            </div>
+          </a>
+          <a
+            href="https://www.facebook.com/livingpupilhomeschool"
+            target="_blank"
+          >
+            <div className="flex flex-col xs:flex-row bg-[#4e5ba5] p-8 items-center rounded-xl mt-5 ml-5">
+              <FaBookOpen size={100} color="#FFFFFF" />
+              <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
+                LP Bookclub (Exlusive for LP Parents)
+              </span>
+            </div>
+          </a>
+          <a
+            href="https://www.facebook.com/livingpupilhomeschool"
+            target="_blank"
+          >
+            <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">
+              <FaHome size={100} color="#FFFFFF" />
+              <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
+                Living Pupil Marketplace (Facebook Page)
+              </span>
+            </div>
+          </a>
+          <a href="https://livingpupilhomeschool.com" target="_blank">
+            <div className="flex flex-col xs:flex-row bg-[#6d85bb] p-8 items-center rounded-xl mt-5 ml-5">
+              <FaGlobe size={100} color="#FFFFFF" />
+              <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
+                Living Pupil Website
+              </span>
+            </div>
+          </a>
         </div>
       </div>
     </AccountLayout>
