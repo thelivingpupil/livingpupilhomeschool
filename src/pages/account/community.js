@@ -35,23 +35,23 @@ const Community = () => {
         <div className="flex items-end flex-1 h-3/4">
           <div className="flex items-end flex-1 h-full">
             <div className="flex flex-col xs:flex-row bg-water-500 pt-28 pb-8 items-center rounded-xl flex-1">
-              <FaFacebook size={200} color="#3b5998" />
+              <Image
+                alt="Living Pupil Homeschool"
+                src="/images/livingpupil-homeschool-logo.png"
+                width={200}
+                height={200}
+              />
               <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
-                Living Pupil Facebook Page
+                Living Pupil Community
               </span>
             </div>
           </div>
         </div>
         <div className="grid grid-cols-3 space-x-5 space-y-5">
           <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl mt-5 ml-5">
-            <Image
-              alt="Living Pupil Homeschool"
-              src="/images/livingpupil-homeschool-logo.png"
-              width={200}
-              height={200}
-            />
+            <FaFacebook size={200} color="#3b5998" />
             <span className="text-lg text-primary-500 font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Community
+              Living Pupil Facebook Page
             </span>
           </div>
           <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
