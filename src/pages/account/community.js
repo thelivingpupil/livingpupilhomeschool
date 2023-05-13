@@ -47,8 +47,8 @@ const Community = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-wrap space-x-5">
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl flex-[1_1_250px]">
+        <div className="grid grid-cols-3 space-x-5 space-y-5">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
@@ -59,7 +59,7 @@ const Community = () => {
               Living Pupil Community
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl flex-[1_1_250px]">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
@@ -70,7 +70,7 @@ const Community = () => {
               Living Pupil Community
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl flex-[1_1_250px]">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
@@ -82,7 +82,7 @@ const Community = () => {
             </span>
           </div>
 
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl flex-[1_1_250px]">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
@@ -93,7 +93,7 @@ const Community = () => {
               Living Pupil Community
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl flex-[1_1_250px]">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
@@ -104,7 +104,7 @@ const Community = () => {
               Living Pupil Community
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl flex-[1_1_250px]">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
