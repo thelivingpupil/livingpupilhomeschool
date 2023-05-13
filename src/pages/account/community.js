@@ -38,18 +38,17 @@ const Community = () => {
           </div>
         </div>
         <div className="grid grid-cols-3 space-x-5 space-y-5">
-          <div className="flex flex-col xs:flex-row bg-water-600 p-8 items-center rounded-xl mt-5 ml-5">
-            <FaFacebook size={100} color="#0165E1" />
-            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Facebook Page
-            </span>
-          </div>
-          <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">
-            <FaFacebookMessenger size={100} color="#17A9FD" />
-            <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
-              Facebook Messenger Group
-            </span>
-          </div>
+          <a
+            href="https://www.facebook.com/livingpupilhomeschool"
+            target="_blank"
+          >
+            <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">
+              <FaFacebookMessenger size={100} color="#17A9FD" />
+              <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
+                Facebook Messenger Group
+              </span>
+            </div>
+          </a>
 
           <div className="flex flex-col xs:flex-row bg-primary-500 p-8 items-center rounded-xl mt-5 ml-5">
             <HiOutlineUserGroup size={100} color="#FFFFFF" />
