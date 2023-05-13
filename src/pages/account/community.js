@@ -55,16 +55,16 @@ const Community = () => {
             </span>
           </div>
           <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">
-            <FaFacebookF size={100} color="#0165E1" />
+            <FaFacebookMessenger size={100} color="#17A9FD" />
             <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Facebook Page
+              Facebook Messenger Group
             </span>
           </div>
 
           <div className="flex flex-col xs:flex-row bg-primary-500 p-8 items-center rounded-xl mt-5 ml-5">
-            <FaFacebookF size={100} color="#0165E1" />
+            <GrGroup size={100} color="#FFFFFF" />
             <span className="text-lg text-white font-semibold p-2 max-w-[150px] text-center">
-              Living Pupil Facebook Page
+              Living Pupil Support Team
             </span>
           </div>
           <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
