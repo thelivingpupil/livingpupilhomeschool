@@ -37,7 +37,7 @@ const Community = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-3 space-x-5 space-y-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 space-x-5 space-y-5">
           <a
             className="flex mt-5 ml-5"
             href="https://www.facebook.com/livingpupilhomeschool"
