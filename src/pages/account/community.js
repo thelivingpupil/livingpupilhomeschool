@@ -32,7 +32,7 @@ const Community = () => {
       </Content.Container>
 
       <div className="flex flex-row xs:flex-col space-x-5">
-        <div className="flex items-end">
+        <div className="flex items-end flex-1">
           <div className="flex items-end h-3/4 xs:h-full">
             <div className="flex flex-col xs:flex-row bg-water-500 pt-28 items-center rounded-xl">
               <Image
@@ -48,7 +48,7 @@ const Community = () => {
           </div>
         </div>
         <div className="flex flex-wrap space-x-5">
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl flex-1">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
@@ -59,7 +59,7 @@ const Community = () => {
               Living Pupil Community
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl flex-1">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
@@ -70,7 +70,7 @@ const Community = () => {
               Living Pupil Community
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl flex-1">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
@@ -82,7 +82,7 @@ const Community = () => {
             </span>
           </div>
 
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl flex-1">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
@@ -93,7 +93,7 @@ const Community = () => {
               Living Pupil Community
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl flex-1">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
@@ -104,7 +104,7 @@ const Community = () => {
               Living Pupil Community
             </span>
           </div>
-          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl">
+          <div className="flex flex-col xs:flex-row bg-water-500 p-8 items-center rounded-xl flex-1">
             <Image
               alt="Living Pupil Homeschool"
               src="/images/livingpupil-homeschool-logo.png"
