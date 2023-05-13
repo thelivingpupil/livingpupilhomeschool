@@ -2,7 +2,8 @@ import Content from '@/components/Content/index';
 import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
-import { FaFacebook, FaFacebookF, FaFacebookMessenger } from 'react-icons/fa';
+import { FaFacebookF, FaFacebookMessenger } from 'react-icons/fa';
+import { GrGroup } from 'react-icons/gr';
 import Image from 'next/image';
 
 const Community = () => {
