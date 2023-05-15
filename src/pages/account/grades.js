@@ -25,14 +25,13 @@ const Grades = () => {
             >
               Visit Facebook Page
             </a>
-
-            <script
-              type="text/javascript"
-              src="https://form.jotform.com/jsform/230861217347455"
-            ></script>
           </Card.Body>
         </Card>
       </Content.Container>
+      <script
+        type="text/javascript"
+        src="https://form.jotform.com/jsform/230861217347455"
+      ></script>
     </AccountLayout>
   );
 };
