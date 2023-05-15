@@ -91,8 +91,8 @@ const Affiliate = ({ invitedUsers, inviteLink }) => {
           Marketing Affiliate Program Policy
         </h3>
         <p>PLEASE READ THIS MARKETING AFFILIATE PROGRAM POLICY CAREFULLY.</p>
-        <ol className="px-5 list-decimal">
-          <li className="space-y-2">
+        <ol className="px-5 list-decimal space-y-2">
+          <li className="space-y-1">
             <p>
               <b>Commission</b>
             </p>
@@ -113,7 +113,7 @@ const Affiliate = ({ invitedUsers, inviteLink }) => {
               commission release schedule.
             </p>
           </li>
-          <li className="space-y-2">
+          <li className="space-y-1">
             <p>
               <b>Limitations</b>
             </p>
@@ -136,7 +136,7 @@ const Affiliate = ({ invitedUsers, inviteLink }) => {
               of affiliate links will cause inability to track referrals.
             </p>
           </li>
-          <li className="space-y-2">
+          <li className="space-y-1">
             <p>
               <b>Change of program</b>
             </p>
@@ -149,7 +149,7 @@ const Affiliate = ({ invitedUsers, inviteLink }) => {
               two months time frame).
             </p>
           </li>
-          <li className="space-y-2">
+          <li className="space-y-1">
             <p>
               <b>Attribution</b>
             </p>
