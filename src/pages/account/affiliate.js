@@ -85,6 +85,82 @@ const Affiliate = ({ invitedUsers, inviteLink }) => {
           </Card.Body>
         </Card>
       </Content.Container>
+
+      <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded">
+        <h3 className="text-sm font-bold">
+          Marketing Affiliate Program Policy
+        </h3>
+        <p>PLEASE READ THIS MARKETING AFFILIATE PROGRAM POLICY CAREFULLY.</p>
+        <ol className="py-5 list-decimal">
+          <li>
+            <p>
+              <b>Commission</b>
+            </p>
+            <p>
+              Commission rate: Available commissions are set forth in the parent
+              portal tool under the Affiliate link menu.
+            </p>
+            <p>
+              Commissions are based on every successful enrollment and
+              calculated based on the program of choice and the payment plan
+              selected by the parent.
+            </p>
+            <p>5% commission for full payment (two months processing time)</p>
+            <p>3% for partial payment (two months processing time)</p>
+            <p>
+              Note: For every successful enrollment, our finance team will
+              contact you for your preferred disbursement account and the
+              commission release schedule.
+            </p>
+          </li>
+          <li>
+            <p>
+              <b>Limitations</b>
+            </p>
+            <p>
+              The commission is only applicable for the enrollment of new
+              families who are not in an active sales process with us at the
+              time of the affiliate link click.
+            </p>
+            <p>
+              The enrolled family must be active enrollees and stay in Living
+              Pupil for at least two months. Commissions will be processed after
+              two months.
+            </p>
+            <p>
+              Affiliate links may rely on cookies to track referrals. Therefore
+              if cookies get cleared, we may be unable to track these events.
+            </p>
+            <p>
+              Only affiliate links can be used to track referrals. Incorrect use
+              of affiliate links will cause inability to track referrals.
+            </p>
+          </li>
+          <li>
+            <p>
+              <b>Change of program</b>
+            </p>
+            <p>
+              You do not receive an additional commission if a family/parent
+              decides to change a program in the future. However, suppose a
+              customer chooses to change a program from homeschool cottage to
+              homeschool program. In that case, you will receive the commission
+              associated with the current program (as long as it is within the
+              two months time frame).
+            </p>
+          </li>
+          <li>
+            <p>
+              <b>Attribution</b>
+            </p>
+            <p>
+              If a parent clicks two different affiliate links, the last
+              affiliate gets the credit. However, we reserve the right to modify
+              this in certain circumstances.
+            </p>
+          </li>
+        </ol>
+      </div>
     </AccountLayout>
   );
 };

@@ -2010,7 +2010,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 a letter of withdrawal/transfer (2) has already paid the tuition
                 and other fees in full. The amount of the refund depends on the
                 following:
-                <ul>
+                <ul className="py-5 list-disc">
                   <li>
                     When the student withdraws a week after enrollment, LP
                     finance will charge 10% of the amount paid plus the
