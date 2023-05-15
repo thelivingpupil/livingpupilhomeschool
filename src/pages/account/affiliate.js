@@ -91,7 +91,7 @@ const Affiliate = ({ invitedUsers, inviteLink }) => {
           Marketing Affiliate Program Policy
         </h3>
         <p>PLEASE READ THIS MARKETING AFFILIATE PROGRAM POLICY CAREFULLY.</p>
-        <ol className="py-5 list-decimal">
+        <ol className="px-5 list-decimal">
           <li>
             <p>
               <b>Commission</b>
