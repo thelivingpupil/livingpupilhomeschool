@@ -3,12 +3,12 @@ import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
 
-const Resources = () => {
+const Grades = () => {
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Grades and e-Card" />
       <Content.Title
-        title="Parent Guides and Resources"
+        title="Studes Grades and e-Card"
         subtitle="View and download guides and resources dedicated to the parents"
       />
       <Content.Divider />
@@ -37,4 +37,4 @@ const Resources = () => {
   );
 };
 
-export default Resources;
+export default Grades;
