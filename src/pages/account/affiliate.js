@@ -86,12 +86,14 @@ const Affiliate = ({ invitedUsers, inviteLink }) => {
         </Card>
       </Content.Container>
 
-      <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded mb-8">
-        <h3 className="text-sm font-bold">
+      <div className="p-5 text-xs leading-relaxed bg-gray-100 rounded my-8">
+        <h3 className="text-sm font-bold my-5">
           Marketing Affiliate Program Policy
         </h3>
-        <p>PLEASE READ THIS MARKETING AFFILIATE PROGRAM POLICY CAREFULLY.</p>
-        <ol className="px-5 list-decimal">
+        <p className="my-5">
+          PLEASE READ THIS MARKETING AFFILIATE PROGRAM POLICY CAREFULLY.
+        </p>
+        <ol className="px-5 list-decimal my-5">
           <li>
             <p>
               <b>Commission</b>
