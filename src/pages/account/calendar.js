@@ -44,6 +44,7 @@ const Calendar = ({ events }) => {
                       width={700}
                       height={475}
                       sizes="100vw"
+                      objectFit="contain"
                       style={{
                         width: '100%',
                         height: 'auto',
