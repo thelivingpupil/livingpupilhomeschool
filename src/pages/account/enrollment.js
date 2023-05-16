@@ -2540,7 +2540,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                             )
                           </span>
                         ) : (
-                          index === 0 && (
+                          index === 0 &&
+                          discount && (
                             <span className="text-red-600">
                               (-
                               {discount?.type === 'VALUE'
