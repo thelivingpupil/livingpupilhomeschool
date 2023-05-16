@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   CheckIcon,
   ChevronDownIcon,
@@ -318,6 +318,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
       }
     });
   };
+
+  const discountDistribution = useMemo(() => {
+    if (!discount) {
+    }
+  }, [discount]);
 
   const goToStep = (step) => {
     validateNext && setStep(step);
@@ -2524,6 +2529,26 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                           fee?._type === 'fullTermPayment'
                             ? 0
                             : fee && fee[payments[index + 1]]
+                        )}{' '}
+                        {discount &&
+                        discount?.code?.toLowerCase().includes('pastor') ? (
+                          <span className="text-red-600">
+                            (-
+                            {fee &&
+                              fee[payments[index + 1]] -
+                                (discount?.value - fee?.downPayment) / 3}
+                            )
+                          </span>
+                        ) : (
+                          index === 0 && (
+                            <span className="text-red-600">
+                              (-
+                              {discount?.type === 'VALUE'
+                                ? discount?.value
+                                : (discount?.value / 100) * fee?.secondPayment}
+                              )
+                            </span>
+                          )
                         )}
                       </td>
                     </tr>
