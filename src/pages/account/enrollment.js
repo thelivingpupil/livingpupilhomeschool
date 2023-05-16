@@ -2546,7 +2546,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                               (-
                               {discount?.type === 'VALUE'
                                 ? discount?.value
-                                : (discount?.value / 100) * fee?.secondPayment}
+                                : (discount?.value / 100) *
+                                  Math.ceil(fee?.secondPayment)}
                               )
                             </span>
                           )
