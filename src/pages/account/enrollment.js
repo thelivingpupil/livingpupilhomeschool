@@ -2534,9 +2534,14 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                         discount?.code?.toLowerCase().includes('pastor') ? (
                           <span className="text-red-600">
                             (-
-                            {fee &&
-                              fee[payments[index + 1]] -
-                                (discount?.value - fee?.downPayment) / 3}
+                            {new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: 'PHP',
+                            }).format(
+                              fee &&
+                                fee[payments[index + 1]] -
+                                  (discount?.value - fee?.downPayment) / 3
+                            )}
                             )
                           </span>
                         ) : (
@@ -2544,10 +2549,15 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                           discount && (
                             <span className="text-red-600">
                               (-
-                              {discount?.type === 'VALUE'
-                                ? discount?.value
-                                : (discount?.value / 100) *
-                                  Math.ceil(fee?.secondPayment)}
+                              {new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'PHP',
+                              }).format(
+                                discount?.type === 'VALUE'
+                                  ? discount?.value
+                                  : (discount?.value / 100) *
+                                      Math.ceil(fee?.secondPayment)
+                              )}
                               )
                             </span>
                           )
