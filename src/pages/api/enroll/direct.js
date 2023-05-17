@@ -11,6 +11,7 @@ const handler = async (req, res) => {
 
   if (method === 'POST') {
     const session = await validateSession(req, res);
+    console.log('req.body', req.body);
     const {
       firstName,
       middleName,
