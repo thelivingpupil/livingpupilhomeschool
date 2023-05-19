@@ -2,8 +2,12 @@ import Content from '@/components/Content/index';
 import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
+import { useWorkspace } from '@/providers/workspace';
 
 const Grades = () => {
+  const { workspace } = useWorkspace();
+
+  console.log('workspace', workspace);
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Student Grades" />
