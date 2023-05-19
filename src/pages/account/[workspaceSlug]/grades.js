@@ -3,6 +3,7 @@ import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
 import { useWorkspace } from '@/providers/workspace';
+import JotFormEmbed from 'react-jotform-embed';
 
 const Grades = () => {
   const { workspace } = useWorkspace();
@@ -32,6 +33,7 @@ const Grades = () => {
           </Card.Body>
         </Card>
       </Content.Container>
+      <JotFormEmbed src="https://form.jotform.com/230861217347455" />
     </AccountLayout>
   );
 };
