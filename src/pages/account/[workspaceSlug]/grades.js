@@ -48,7 +48,3 @@ const Grades = () => {
 };
 
 export default Grades;
-// "log ins: (Grades 1-3) admthelivingpupil@gmail.com Kaz52020 https://form.jotform.com/230861217347455
-// (grades 4) thelivingpupil@gmail.com courage1 https://form.jotform.com/231090829906460
-// (grades 5-10) invoicethelivingpupil@gmail.com cephas123 https://form.jotform.com/231091154537452
-// K2 Jotform LPwebsite2022@gmail.com Arjeli2022!" https://form.jotform.com/231091044111438
