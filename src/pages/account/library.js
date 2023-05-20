@@ -31,7 +31,12 @@ const Library = ({ books }) => {
 };
 
 export const getServerSideProps = async () => {
-  const books = await sanityClient.fetch(`*[_type == 'books']`);
+  const books = await sanityClient.fetch(`*[_type == 'books']{
+    title: bookTitle,
+    for: bookFor,
+    cover: bookCover,
+    file: bookFile.asset->url
+  }`);
 
   return {
     props: {
