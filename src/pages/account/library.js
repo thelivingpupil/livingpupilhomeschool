@@ -7,12 +7,12 @@ import Carousel from 'better-react-carousel';
 import Image from 'next/image';
 import slugify from 'slugify';
 
-const imageBuilder = imageUrlBuilder(sanityClient)?.image;
+const imageBuilder = imageUrlBuilder(sanityClient);
 
 const Library = ({ books }) => {
   console.log('books', books);
   const book = books && books[0];
-  const imageAsset = imageBuilder(book?.cover?.asset);
+  const imageAsset = imageBuilder.image(book?.cover?.asset);
   const image = imageAsset?.options?.source ? imageAsset?.url() : null;
   return (
     <AccountLayout>
