@@ -38,7 +38,7 @@ const Library = ({ books }) => {
                 <Carousel cols={5} rows={1} gap={10} loop>
                   <Carousel.Item>
                     <div className="flex flex-col justtify-center">
-                      <div>
+                      <div className="flex justify-center">
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -53,7 +53,7 @@ const Library = ({ books }) => {
                   </Carousel.Item>
                   <Carousel.Item>
                     <div className="flex flex-col justtify-center">
-                      <div>
+                      <div className="flex justify-center">
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -68,7 +68,7 @@ const Library = ({ books }) => {
                   </Carousel.Item>
                   <Carousel.Item>
                     <div className="flex flex-col justtify-center">
-                      <div>
+                      <div className="flex justify-center">
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -83,7 +83,7 @@ const Library = ({ books }) => {
                   </Carousel.Item>
                   <Carousel.Item>
                     <div className="flex flex-col justtify-center">
-                      <div>
+                      <div className="flex justify-center">
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -98,7 +98,7 @@ const Library = ({ books }) => {
                   </Carousel.Item>
                   <Carousel.Item>
                     <div className="flex flex-col justtify-center">
-                      <div>
+                      <div className="flex justify-center">
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -113,7 +113,7 @@ const Library = ({ books }) => {
                   </Carousel.Item>
                   <Carousel.Item>
                     <div className="flex flex-col justtify-center">
-                      <div>
+                      <div className="flex justify-center">
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -128,7 +128,7 @@ const Library = ({ books }) => {
                   </Carousel.Item>
                   <Carousel.Item>
                     <div className="flex flex-col justtify-center">
-                      <div>
+                      <div className="flex justify-center">
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -143,7 +143,7 @@ const Library = ({ books }) => {
                   </Carousel.Item>
                   <Carousel.Item>
                     <div className="flex flex-col justtify-center">
-                      <div>
+                      <div className="flex justify-center">
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -158,7 +158,7 @@ const Library = ({ books }) => {
                   </Carousel.Item>
                   <Carousel.Item>
                     <div className="flex flex-col justtify-center">
-                      <div>
+                      <div className="flex justify-center">
                         <Image
                           alt={slugify(book?.title)}
                           src={
