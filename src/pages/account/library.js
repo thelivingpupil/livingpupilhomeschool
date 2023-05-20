@@ -3,7 +3,8 @@ import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
 
-const Library = () => {
+const Library = ({ books }) => {
+  console.log('books', books);
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Virtual Library" />
@@ -27,6 +28,16 @@ const Library = () => {
       </Content.Container>
     </AccountLayout>
   );
+};
+
+export const getServerSideProps = async () => {
+  const books = await sanityClient.fetch(`*[_type == 'books']`);
+
+  return {
+    props: {
+      books,
+    },
+  };
 };
 
 export default Library;
