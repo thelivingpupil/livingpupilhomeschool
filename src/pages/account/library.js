@@ -37,13 +37,102 @@ const Library = ({ books }) => {
               <div>
                 <Carousel cols={5} rows={1} gap={5} loop>
                   <Carousel.Item>
-                    <div className="flex justtify-items-center">
+                    <div className="flex justtify-center">
                       <Image
                         alt={slugify(book?.title)}
                         src={image || '/images/livingpupil-homeschool-logo.png'}
                         width={150}
                         height={250}
                       />
+                      <button>Download</button>
+                    </div>
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <div className="flex justtify-center">
+                      <Image
+                        alt={slugify(book?.title)}
+                        src={image || '/images/livingpupil-homeschool-logo.png'}
+                        width={150}
+                        height={250}
+                      />
+                      <button>Download</button>
+                    </div>
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <div className="flex justtify-center">
+                      <Image
+                        alt={slugify(book?.title)}
+                        src={image || '/images/livingpupil-homeschool-logo.png'}
+                        width={150}
+                        height={250}
+                      />
+                      <button>Download</button>
+                    </div>
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <div className="flex justtify-center">
+                      <Image
+                        alt={slugify(book?.title)}
+                        src={image || '/images/livingpupil-homeschool-logo.png'}
+                        width={150}
+                        height={250}
+                      />
+                      <button>Download</button>
+                    </div>
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <div className="flex justtify-center">
+                      <Image
+                        alt={slugify(book?.title)}
+                        src={image || '/images/livingpupil-homeschool-logo.png'}
+                        width={150}
+                        height={250}
+                      />
+                      <button>Download</button>
+                    </div>
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <div className="flex justtify-center">
+                      <Image
+                        alt={slugify(book?.title)}
+                        src={image || '/images/livingpupil-homeschool-logo.png'}
+                        width={150}
+                        height={250}
+                      />
+                      <button>Download</button>
+                    </div>
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <div className="flex justtify-center">
+                      <Image
+                        alt={slugify(book?.title)}
+                        src={image || '/images/livingpupil-homeschool-logo.png'}
+                        width={150}
+                        height={250}
+                      />
+                      <button>Download</button>
+                    </div>
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <div className="flex justtify-center">
+                      <Image
+                        alt={slugify(book?.title)}
+                        src={image || '/images/livingpupil-homeschool-logo.png'}
+                        width={150}
+                        height={250}
+                      />
+                      <button>Download</button>
+                    </div>
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <div className="flex justtify-center">
+                      <Image
+                        alt={slugify(book?.title)}
+                        src={image || '/images/livingpupil-homeschool-logo.png'}
+                        width={150}
+                        height={250}
+                      />
+                      <button>Download</button>
                     </div>
                   </Carousel.Item>
                 </Carousel>
