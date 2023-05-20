@@ -15,7 +15,7 @@ const Library = ({ books }) => {
       <Content.Divider />
       <Content.Container>
         <div className="flex flex-col">
-          <div className="flex space-around">
+          <div className="flex justify-between">
             <div>Virtual Library</div>
             <div className="flex flex-end">
               <div>options</div>
@@ -32,10 +32,10 @@ const Library = ({ books }) => {
 
 export const getServerSideProps = async () => {
   const books = await sanityClient.fetch(`*[_type == 'books']{
-    title: bookTitle,
-    for: bookFor,
-    cover: bookCover,
-    file: bookFile.asset->url
+    'title': bookTitle,
+    'for': bookFor,
+    'cover': bookCover,
+    'file': bookFile.asset->url
   }`);
 
   return {
