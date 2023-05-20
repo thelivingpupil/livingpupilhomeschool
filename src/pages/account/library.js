@@ -37,7 +37,7 @@ const Library = ({ books }) => {
               <div>
                 <Carousel cols={5} rows={1} gap={5} loop>
                   <Carousel.Item>
-                    <div className="flex justtify-center">
+                    <div className="flex flex-col justtify-center">
                       <Image
                         alt={slugify(book?.title)}
                         src={image || '/images/livingpupil-homeschool-logo.png'}
@@ -48,7 +48,7 @@ const Library = ({ books }) => {
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex justtify-center">
+                    <div className="flex flex-col justtify-center">
                       <Image
                         alt={slugify(book?.title)}
                         src={image || '/images/livingpupil-homeschool-logo.png'}
@@ -59,7 +59,7 @@ const Library = ({ books }) => {
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex justtify-center">
+                    <div className="flex flex-col justtify-center">
                       <Image
                         alt={slugify(book?.title)}
                         src={image || '/images/livingpupil-homeschool-logo.png'}
@@ -70,7 +70,7 @@ const Library = ({ books }) => {
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex justtify-center">
+                    <div className="flex flex-col justtify-center">
                       <Image
                         alt={slugify(book?.title)}
                         src={image || '/images/livingpupil-homeschool-logo.png'}
@@ -81,7 +81,7 @@ const Library = ({ books }) => {
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex justtify-center">
+                    <div className="flex flex-col justtify-center">
                       <Image
                         alt={slugify(book?.title)}
                         src={image || '/images/livingpupil-homeschool-logo.png'}
@@ -92,7 +92,7 @@ const Library = ({ books }) => {
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex justtify-center">
+                    <div className="flex flex-col justtify-center">
                       <Image
                         alt={slugify(book?.title)}
                         src={image || '/images/livingpupil-homeschool-logo.png'}
@@ -103,7 +103,7 @@ const Library = ({ books }) => {
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex justtify-center">
+                    <div className="flex flex-col justtify-center">
                       <Image
                         alt={slugify(book?.title)}
                         src={image || '/images/livingpupil-homeschool-logo.png'}
@@ -114,7 +114,7 @@ const Library = ({ books }) => {
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex justtify-center">
+                    <div className="flex flex-col justtify-center">
                       <Image
                         alt={slugify(book?.title)}
                         src={image || '/images/livingpupil-homeschool-logo.png'}
@@ -125,7 +125,7 @@ const Library = ({ books }) => {
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex justtify-center">
+                    <div className="flex flex-col justtify-center">
                       <Image
                         alt={slugify(book?.title)}
                         src={image || '/images/livingpupil-homeschool-logo.png'}
