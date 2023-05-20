@@ -37,7 +37,7 @@ const Library = ({ books }) => {
               <div>
                 <Carousel cols={5} rows={1} gap={10} loop>
                   <Carousel.Item>
-                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                    <div className="flex flex-col justify-center items-center space-y-3 p-2">
                       <div>
                         <Image
                           alt={slugify(book?.title)}
@@ -48,13 +48,16 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                      <a
+                        className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm cursor-pointer hover:bg-primary-500"
+                        href={`${book?.file}?dl=${slugify(book?.title)}.pdf`}
+                      >
                         Download
                       </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                    <div className="flex flex-col justify-center items-center space-y-3 p-2">
                       <div>
                         <Image
                           alt={slugify(book?.title)}
@@ -65,13 +68,16 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                      <a
+                        className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm cursor-pointer hover:bg-primary-500"
+                        href={`${book?.file}?dl=${slugify(book?.title)}.pdf`}
+                      >
                         Download
                       </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                    <div className="flex flex-col justify-center items-center space-y-3 p-2">
                       <div>
                         <Image
                           alt={slugify(book?.title)}
@@ -82,13 +88,16 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                      <a
+                        className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm cursor-pointer hover:bg-primary-500"
+                        href={`${book?.file}?dl=${slugify(book?.title)}.pdf`}
+                      >
                         Download
                       </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                    <div className="flex flex-col justify-center items-center space-y-3 p-2">
                       <div>
                         <Image
                           alt={slugify(book?.title)}
@@ -99,13 +108,16 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                      <a
+                        className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm cursor-pointer hover:bg-primary-500"
+                        href={`${book?.file}?dl=${slugify(book?.title)}.pdf`}
+                      >
                         Download
                       </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                    <div className="flex flex-col justify-center items-center space-y-3 p-2">
                       <div>
                         <Image
                           alt={slugify(book?.title)}
@@ -116,13 +128,16 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                      <a
+                        className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm cursor-pointer hover:bg-primary-500"
+                        href={`${book?.file}?dl=${slugify(book?.title)}.pdf`}
+                      >
                         Download
                       </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                    <div className="flex flex-col justify-center items-center space-y-3 p-2">
                       <div>
                         <Image
                           alt={slugify(book?.title)}
@@ -133,13 +148,16 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                      <a
+                        className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm cursor-pointer hover:bg-primary-500"
+                        href={`${book?.file}?dl=${slugify(book?.title)}.pdf`}
+                      >
                         Download
                       </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                    <div className="flex flex-col justify-center items-center space-y-3 p-2">
                       <div>
                         <Image
                           alt={slugify(book?.title)}
@@ -150,13 +168,16 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                      <a
+                        className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm cursor-pointer hover:bg-primary-500"
+                        href={`${book?.file}?dl=${slugify(book?.title)}.pdf`}
+                      >
                         Download
                       </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                    <div className="flex flex-col justify-center items-center space-y-3 p-2">
                       <div>
                         <Image
                           alt={slugify(book?.title)}
@@ -167,13 +188,16 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                      <a
+                        className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm cursor-pointer hover:bg-primary-500"
+                        href={`${book?.file}?dl=${slugify(book?.title)}.pdf`}
+                      >
                         Download
                       </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                    <div className="flex flex-col justify-center items-center space-y-3 p-2">
                       <div>
                         <Image
                           alt={slugify(book?.title)}
@@ -184,7 +208,10 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                      <a
+                        className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm cursor-pointer hover:bg-primary-500"
+                        href={`${book?.file}?dl=${slugify(book?.title)}.pdf`}
+                      >
                         Download
                       </a>
                     </div>
