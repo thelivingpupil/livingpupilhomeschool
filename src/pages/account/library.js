@@ -35,7 +35,7 @@ const Library = ({ books }) => {
             <div className="flex flex-col">
               <div>Parents</div>
               <div>
-                <Carousel cols={5} rows={1} gap={5} loop>
+                <Carousel cols={5} rows={1} gap={10} loop>
                   <Carousel.Item>
                     <div className="flex flex-col justtify-center">
                       <Image
