@@ -35,12 +35,12 @@ const Library = ({ books }) => {
             <div className="flex flex-col">
               <div>Parents</div>
               <div>
-                <Carousel cols={2} rows={1} gap={5} loop>
+                <Carousel cols={5} rows={1} gap={5} loop>
                   <Carousel.Item>
                     <Image
                       alt={slugify(book?.title)}
                       src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={250}
+                      width={150}
                       height={250}
                     />
                   </Carousel.Item>
@@ -48,7 +48,7 @@ const Library = ({ books }) => {
                     <Image
                       alt={slugify(book?.title)}
                       src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={250}
+                      width={150}
                       height={250}
                     />
                   </Carousel.Item>
@@ -56,7 +56,7 @@ const Library = ({ books }) => {
                     <Image
                       alt={slugify(book?.title)}
                       src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={250}
+                      width={150}
                       height={250}
                     />
                   </Carousel.Item>
@@ -64,7 +64,7 @@ const Library = ({ books }) => {
                     <Image
                       alt={slugify(book?.title)}
                       src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={250}
+                      width={150}
                       height={250}
                     />
                   </Carousel.Item>
@@ -72,7 +72,7 @@ const Library = ({ books }) => {
                     <Image
                       alt={slugify(book?.title)}
                       src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={250}
+                      width={150}
                       height={250}
                     />
                   </Carousel.Item>
@@ -80,7 +80,7 @@ const Library = ({ books }) => {
                     <Image
                       alt={slugify(book?.title)}
                       src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={250}
+                      width={150}
                       height={250}
                     />
                   </Carousel.Item>
@@ -88,7 +88,7 @@ const Library = ({ books }) => {
                     <Image
                       alt={slugify(book?.title)}
                       src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={250}
+                      width={150}
                       height={250}
                     />
                   </Carousel.Item>
@@ -96,7 +96,7 @@ const Library = ({ books }) => {
                     <Image
                       alt={slugify(book?.title)}
                       src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={250}
+                      width={150}
                       height={250}
                     />
                   </Carousel.Item>
@@ -104,7 +104,7 @@ const Library = ({ books }) => {
                     <Image
                       alt={slugify(book?.title)}
                       src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={250}
+                      width={150}
                       height={250}
                     />
                   </Carousel.Item>
@@ -112,7 +112,7 @@ const Library = ({ books }) => {
                     <Image
                       alt={slugify(book?.title)}
                       src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={250}
+                      width={150}
                       height={250}
                     />
                   </Carousel.Item>
