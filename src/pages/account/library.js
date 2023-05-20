@@ -1,10 +1,19 @@
 import Content from '@/components/Content/index';
+import imageUrlBuilder from '@sanity/image-url';
 import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import sanityClient from '@/lib/server/sanity';
+import Carousel from 'better-react-carousel';
+import Image from 'next/image';
+import slugify from 'slugify';
+
+const imageBuilder = imageUrlBuilder(sanityClient)?.image;
 
 const Library = ({ books }) => {
   console.log('books', books);
+  const book = books && books[0];
+  const imageAsset = imageBuilder(book?.cover?.asset);
+  const image = imageAsset?.options?.source ? imageAsset?.url() : null;
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Virtual Library" />
@@ -22,7 +31,95 @@ const Library = ({ books }) => {
               <div>search</div>
             </div>
           </div>
-          <div>Parents</div>
+          {books?.length > 0 && (
+            <div className="flex flex-col">
+              <div>Parents</div>
+              <div>
+                <Carousel cols={2} rows={1} gap={5} loop>
+                  <Carousel.Item>
+                    <Image
+                      alt={slugify(book?.title)}
+                      src={image || '/images/livingpupil-homeschool-logo.png'}
+                      width={250}
+                      height={250}
+                    />
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <Image
+                      alt={slugify(book?.title)}
+                      src={image || '/images/livingpupil-homeschool-logo.png'}
+                      width={250}
+                      height={250}
+                    />
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <Image
+                      alt={slugify(book?.title)}
+                      src={image || '/images/livingpupil-homeschool-logo.png'}
+                      width={250}
+                      height={250}
+                    />
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <Image
+                      alt={slugify(book?.title)}
+                      src={image || '/images/livingpupil-homeschool-logo.png'}
+                      width={250}
+                      height={250}
+                    />
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <Image
+                      alt={slugify(book?.title)}
+                      src={image || '/images/livingpupil-homeschool-logo.png'}
+                      width={250}
+                      height={250}
+                    />
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <Image
+                      alt={slugify(book?.title)}
+                      src={image || '/images/livingpupil-homeschool-logo.png'}
+                      width={250}
+                      height={250}
+                    />
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <Image
+                      alt={slugify(book?.title)}
+                      src={image || '/images/livingpupil-homeschool-logo.png'}
+                      width={250}
+                      height={250}
+                    />
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <Image
+                      alt={slugify(book?.title)}
+                      src={image || '/images/livingpupil-homeschool-logo.png'}
+                      width={250}
+                      height={250}
+                    />
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <Image
+                      alt={slugify(book?.title)}
+                      src={image || '/images/livingpupil-homeschool-logo.png'}
+                      width={250}
+                      height={250}
+                    />
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <Image
+                      alt={slugify(book?.title)}
+                      src={image || '/images/livingpupil-homeschool-logo.png'}
+                      width={250}
+                      height={250}
+                    />
+                  </Carousel.Item>
+                </Carousel>
+              </div>
+            </div>
+          )}
           <div>Students</div>
         </div>
       </Content.Container>
