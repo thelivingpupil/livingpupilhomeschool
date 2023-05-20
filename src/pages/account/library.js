@@ -36,85 +36,15 @@ const Library = ({ books }) => {
               <div>Parents</div>
               <div>
                 <Carousel cols={5} rows={1} gap={5} loop>
-                  <Carousel.Item className="flex items-center">
-                    <Image
-                      alt={slugify(book?.title)}
-                      src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={150}
-                      height={250}
-                    />
-                  </Carousel.Item>
-                  <Carousel.Item className="flex items-center">
-                    <Image
-                      alt={slugify(book?.title)}
-                      src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={150}
-                      height={250}
-                    />
-                  </Carousel.Item>
-                  <Carousel.Item className="flex items-center">
-                    <Image
-                      alt={slugify(book?.title)}
-                      src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={150}
-                      height={250}
-                    />
-                  </Carousel.Item>
-                  <Carousel.Item className="flex items-center">
-                    <Image
-                      alt={slugify(book?.title)}
-                      src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={150}
-                      height={250}
-                    />
-                  </Carousel.Item>
-                  <Carousel.Item className="flex items-center">
-                    <Image
-                      alt={slugify(book?.title)}
-                      src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={150}
-                      height={250}
-                    />
-                  </Carousel.Item>
-                  <Carousel.Item className="flex items-center">
-                    <Image
-                      alt={slugify(book?.title)}
-                      src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={150}
-                      height={250}
-                    />
-                  </Carousel.Item>
-                  <Carousel.Item className="flex items-center">
-                    <Image
-                      alt={slugify(book?.title)}
-                      src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={150}
-                      height={250}
-                    />
-                  </Carousel.Item>
-                  <Carousel.Item className="flex items-center">
-                    <Image
-                      alt={slugify(book?.title)}
-                      src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={150}
-                      height={250}
-                    />
-                  </Carousel.Item>
-                  <Carousel.Item className="flex items-center">
-                    <Image
-                      alt={slugify(book?.title)}
-                      src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={150}
-                      height={250}
-                    />
-                  </Carousel.Item>
-                  <Carousel.Item className="flex items-center">
-                    <Image
-                      alt={slugify(book?.title)}
-                      src={image || '/images/livingpupil-homeschool-logo.png'}
-                      width={150}
-                      height={250}
-                    />
+                  <Carousel.Item>
+                    <div className="flex justtify-items-center">
+                      <Image
+                        alt={slugify(book?.title)}
+                        src={image || '/images/livingpupil-homeschool-logo.png'}
+                        width={150}
+                        height={250}
+                      />
+                    </div>
                   </Carousel.Item>
                 </Carousel>
               </div>
