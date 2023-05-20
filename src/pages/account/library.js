@@ -37,8 +37,8 @@ const Library = ({ books }) => {
               <div>
                 <Carousel cols={5} rows={1} gap={10} loop>
                   <Carousel.Item>
-                    <div className="flex flex-col justtify-center">
-                      <div className="flex justify-center">
+                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                      <div>
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -48,12 +48,14 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <button>Download</button>
+                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                        Download
+                      </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justtify-center">
-                      <div className="flex justify-center">
+                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                      <div>
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -63,12 +65,14 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <button>Download</button>
+                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                        Download
+                      </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justtify-center">
-                      <div className="flex justify-center">
+                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                      <div>
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -78,12 +82,14 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <button>Download</button>
+                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                        Download
+                      </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justtify-center">
-                      <div className="flex justify-center">
+                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                      <div>
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -93,12 +99,14 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <button>Download</button>
+                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                        Download
+                      </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justtify-center">
-                      <div className="flex justify-center">
+                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                      <div>
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -108,12 +116,14 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <button>Download</button>
+                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                        Download
+                      </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justtify-center">
-                      <div className="flex justify-center">
+                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                      <div>
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -123,12 +133,14 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <button>Download</button>
+                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                        Download
+                      </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justtify-center">
-                      <div className="flex justify-center">
+                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                      <div>
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -138,12 +150,14 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <button>Download</button>
+                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                        Download
+                      </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justtify-center">
-                      <div className="flex justify-center">
+                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                      <div>
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -153,12 +167,14 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <button>Download</button>
+                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                        Download
+                      </a>
                     </div>
                   </Carousel.Item>
                   <Carousel.Item>
-                    <div className="flex flex-col justtify-center">
-                      <div className="flex justify-center">
+                    <div className="flex flex-col justify-center items-center spacing-y-5 p-2">
+                      <div>
                         <Image
                           alt={slugify(book?.title)}
                           src={
@@ -168,7 +184,9 @@ const Library = ({ books }) => {
                           height={250}
                         />
                       </div>
-                      <button>Download</button>
+                      <a className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm hover:bg-primary-500">
+                        Download
+                      </a>
                     </div>
                   </Carousel.Item>
                 </Carousel>
