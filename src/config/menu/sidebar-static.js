@@ -49,6 +49,11 @@ const sidebarMenu = () => [
         showDefault: false,
       },
       {
+        name: 'Lesson Plans',
+        path: `/account/lesson-plans`,
+        showDefault: false,
+      },
+      {
         name: 'Settings',
         path: `/account/settings`,
         showDefault: true,
