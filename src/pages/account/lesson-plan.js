@@ -4,11 +4,24 @@ import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
 import { useWorkspaces } from '@/hooks/data';
 import sanityClient from '@/lib/server/sanity';
+import { useMemo } from 'react';
 
 const LessonPlan = ({ lessonPlans }) => {
-  const workspaces = useWorkspaces();
-  console.log('workspaces', workspaces);
+  const { data, isLoading } = useWorkspaces();
+  console.log('workspaces', data);
   console.log('lessonPlans', lessonPlans);
+
+  const availableGrades = useMemo(() => {
+    if (isLoading) {
+      return [];
+    }
+
+    return data?.workspaces
+      ?.filter((workspace) => workspace?.studentRecord)
+      ?.map((workspace) => workspace?.studentRecord?.incomingGradeLevel);
+  }, [data, isLoading]);
+
+  console.log('availableGrades', availableGrades);
 
   return (
     <AccountLayout>
@@ -20,15 +33,7 @@ const LessonPlan = ({ lessonPlans }) => {
       <Content.Divider />
       <Content.Container>
         <Card>
-          <Card.Body title="Available Lesson Plans">
-            <a
-              className="w-full py-2 text-center rounded-lg text-primary-500 bg-secondary-500 hover:bg-secondary-600 disabled:opacity-25"
-              href="https://www.facebook.com/livingpupilhomeschool"
-              target="_blank"
-            >
-              Visit Facebook Page
-            </a>
-          </Card.Body>
+          <Card.Body title="Available Lesson Plans"></Card.Body>
         </Card>
       </Content.Container>
     </AccountLayout>
