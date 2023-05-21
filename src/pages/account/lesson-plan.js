@@ -7,7 +7,7 @@ import sanityClient from '@/lib/server/sanity';
 import { useMemo } from 'react';
 
 const LessonPlan = ({ lessonPlans }) => {
-  const { data, isLoading } = useWorkspaces();
+  const { data } = useWorkspaces();
   console.log('workspaces', data);
   console.log(
     'lessonPlans',
@@ -17,7 +17,7 @@ const LessonPlan = ({ lessonPlans }) => {
   );
 
   const availableGrades = useMemo(() => {
-    if (isLoading) {
+    if (!data) {
       return [];
     }
 
@@ -26,7 +26,17 @@ const LessonPlan = ({ lessonPlans }) => {
       ?.map((workspace) => workspace?.studentRecord?.incomingGradeLevel);
   }, [data, isLoading]);
 
-  console.log('availableGrades', availableGrades);
+  const availablePlans = useMemo(
+    () =>
+      lessonPlans
+        ?.sort(
+          (a, b) => Number(a?.grade?.split('_')[1]) - b?.grade?.split('_')[1]
+        )
+        ?.filter((lessonPlan) => availableGrades.includes(lessonPlan?.grade)),
+    [availableGrades, lessonPlans]
+  );
+
+  console.log('availablePlans', availablePlans);
 
   return (
     <AccountLayout>
