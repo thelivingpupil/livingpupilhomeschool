@@ -19,7 +19,7 @@ const Library = ({ books }) => {
     }
 
     return books?.filter((book) =>
-      book?.title?.toLowerCase()?.includes(search)
+      book?.title?.toLowerCase()?.includes(search?.toLowerCase().trim())
     );
   }, [search]);
 
@@ -49,7 +49,7 @@ const Library = ({ books }) => {
                 className="px-3 py-2 border rounded"
                 placeholder="Search..."
                 value={search}
-                onChange={(e) => useSearch(e.target.value.trim())}
+                onChange={(e) => useSearch(e.target.value)}
               />
             </div>
           </div>
