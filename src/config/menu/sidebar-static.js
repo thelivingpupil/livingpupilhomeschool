@@ -44,6 +44,11 @@ const sidebarMenu = () => [
         showDefault: false,
       },
       {
+        name: 'Virtual Library',
+        path: `/account/library`,
+        showDefault: false,
+      },
+      {
         name: 'Settings',
         path: `/account/settings`,
         showDefault: true,
