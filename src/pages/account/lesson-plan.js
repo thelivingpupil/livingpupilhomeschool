@@ -11,7 +11,9 @@ const LessonPlan = ({ lessonPlans }) => {
   console.log('workspaces', data);
   console.log(
     'lessonPlans',
-    lessonPlans?.sort((a, b) => a?.grade - b?.grade)
+    lessonPlans?.sort(
+      (a, b) => Number(a?.grade?.split('_')[1]) - b?.grade?.split('_')[1]
+    )
   );
 
   const availableGrades = useMemo(() => {
