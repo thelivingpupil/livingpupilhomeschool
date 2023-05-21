@@ -3,6 +3,7 @@ import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
 import { useWorkspaces } from '@/hooks/data';
+import sanityClient from '@/lib/server/sanity';
 
 const LessonPlan = ({ lessonPlans }) => {
   const workspaces = useWorkspaces();
