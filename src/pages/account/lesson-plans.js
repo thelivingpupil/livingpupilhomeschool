@@ -6,7 +6,7 @@ import { useWorkspaces } from '@/hooks/data';
 import sanityClient from '@/lib/server/sanity';
 import { useMemo } from 'react';
 
-const LessonPlan = ({ lessonPlans }) => {
+const LessonPlans = ({ lessonPlans }) => {
   const { data } = useWorkspaces();
   console.log('workspaces', data);
   console.log(
@@ -85,4 +85,4 @@ export const getServerSideProps = async () => {
   };
 };
 
-export default LessonPlan;
+export default LessonPlans;
