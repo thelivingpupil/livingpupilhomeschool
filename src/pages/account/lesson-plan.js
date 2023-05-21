@@ -57,9 +57,9 @@ const LessonPlan = ({ lessonPlans }) => {
                     <div key={idx}>
                       <a
                         className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-2/3 text-sm cursor-pointer hover:${bgColor}-500`}
-                        href={`${plan?.fileUrl}?dl=${slugify(
-                          plan?.grade?.toLowerCase()
-                        )}-lesson_plan.pdf`}
+                        href={`${
+                          plan?.fileUrl
+                        }?dl=${plan?.grade?.toLowerCase()}-lesson_plan.pdf`}
                       >
                         {plan?.grade?.replace('_', ' ')}
                       </a>
