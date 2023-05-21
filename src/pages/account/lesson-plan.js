@@ -36,8 +36,6 @@ const LessonPlan = ({ lessonPlans }) => {
     [availableGrades, lessonPlans]
   );
 
-  console.log('availablePlans', availablePlans);
-
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Guides and Lesson Plans" />
@@ -49,12 +47,12 @@ const LessonPlan = ({ lessonPlans }) => {
       <Content.Container>
         <Card>
           <Card.Body title="Available Lesson Plans">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {availablePlans?.length &&
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
+              {availablePlans?.length > 0 &&
                 availablePlans?.map((plan, idx) => {
                   const bgColor = idx % 2 === 0 ? 'bg-primary' : 'bg-secondary';
                   return (
-                    <div key={idx}>
+                    <div key={idx} className="flex justify-center">
                       <a
                         className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-2/3 text-sm cursor-pointer hover:${bgColor}-500`}
                         href={`${
