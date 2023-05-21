@@ -4,9 +4,10 @@ import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
 import { useWorkspaces } from '@/hooks/data';
 
-const LessonPlan = () => {
+const LessonPlan = ({ lessonPlans }) => {
   const workspaces = useWorkspaces();
   console.log('workspaces', workspaces);
+  console.log('lessonPlans', lessonPlans);
 
   return (
     <AccountLayout>
@@ -34,6 +35,20 @@ const LessonPlan = () => {
       </Content.Container>
     </AccountLayout>
   );
+};
+
+export const getServerSideProps = async () => {
+  const lessonPlans = await sanityClient.fetch(`*[_type == 'lessonPlans']{
+    'grade': gradeLevel,
+    'file': lessonPlanFile,
+    'fileUrl': lessonPlanFile.asset->url
+  }`);
+
+  return {
+    props: {
+      lessonPlans,
+    },
+  };
 };
 
 export default LessonPlan;

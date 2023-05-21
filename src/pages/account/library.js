@@ -41,7 +41,7 @@ const Library = ({ books }) => {
       />
       <Content.Divider />
       <Content.Container>
-        <div className="flex flex-col space-y-10 px-5 py-10 rounded border border-gray-500">
+        <div className="flex flex-col space-y-10 px-5 py-10 rounded border dark:border-gray-600">
           <div className="flex justify-between items-center">
             <div className="text-2xl font-bold">Virtual Library</div>
             <div className="flex flex-end">
