@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Content from '@/components/Content/index';
 import imageUrlBuilder from '@sanity/image-url';
 import Meta from '@/components/Meta';
@@ -11,16 +11,24 @@ import slugify from 'slugify';
 const imageBuilder = imageUrlBuilder(sanityClient);
 
 const Library = ({ books }) => {
-  console.log('books', books);
+  const [search, useSearch] = useState('');
+
+  const searchBooks = useMemo(() => {
+    if (!search || search === '') {
+      return books;
+    }
+
+    return books?.filter((book) => book?.title?.includes(search));
+  }, [search]);
 
   const parentBooks = useMemo(
-    () => books?.filter((book) => book.for === 'PARENTS'),
-    [books]
+    () => searchBooks?.filter((book) => book.for === 'PARENTS'),
+    [searchBooks]
   );
 
   const studentBooks = useMemo(
-    () => books?.filter((book) => book.for === 'STUDENTS'),
-    [books]
+    () => searchBooks?.filter((book) => book.for === 'STUDENTS'),
+    [searchBooks]
   );
   return (
     <AccountLayout>
@@ -38,6 +46,8 @@ const Library = ({ books }) => {
               <input
                 className="px-3 py-2 border rounded"
                 placeholder="Search..."
+                value={search}
+                onChange={(e) => useSearch(e.target.value.trim())}
               />
             </div>
           </div>
