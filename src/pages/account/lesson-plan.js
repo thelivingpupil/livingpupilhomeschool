@@ -24,7 +24,7 @@ const LessonPlan = ({ lessonPlans }) => {
     return data?.workspaces
       ?.filter((workspace) => workspace?.studentRecord)
       ?.map((workspace) => workspace?.studentRecord?.incomingGradeLevel);
-  }, [data, isLoading]);
+  }, [data]);
 
   const availablePlans = useMemo(
     () =>
