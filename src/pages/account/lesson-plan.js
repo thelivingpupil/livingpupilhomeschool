@@ -9,7 +9,10 @@ import { useMemo } from 'react';
 const LessonPlan = ({ lessonPlans }) => {
   const { data, isLoading } = useWorkspaces();
   console.log('workspaces', data);
-  console.log('lessonPlans', lessonPlans);
+  console.log(
+    'lessonPlans',
+    lessonPlans?.sort((a, b) => a?.grade - b?.grade)
+  );
 
   const availableGrades = useMemo(() => {
     if (isLoading) {
