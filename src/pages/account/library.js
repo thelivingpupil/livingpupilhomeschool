@@ -18,7 +18,9 @@ const Library = ({ books }) => {
       return books;
     }
 
-    return books?.filter((book) => book?.title?.includes(search));
+    return books?.filter((book) =>
+      book?.title?.toLowerCase()?.includes(search)
+    );
   }, [search]);
 
   const parentBooks = useMemo(
