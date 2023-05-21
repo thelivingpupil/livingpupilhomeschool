@@ -12,18 +12,15 @@ const LessonPlan = ({ lessonPlans }) => {
 
   return (
     <AccountLayout>
-      <Meta title="Living Pupil Homeschool - Guides and Resources" />
+      <Meta title="Living Pupil Homeschool - Guides and Lesson Plans" />
       <Content.Title
-        title="Parent Guides and Resources"
-        subtitle="View and download guides and resources dedicated to the parents"
+        title="Parent Guides and Lesson Plans"
+        subtitle="View and download guides and lesson plans dedicated to the parents"
       />
       <Content.Divider />
       <Content.Container>
         <Card>
-          <Card.Body
-            title="A list of guides and resources such as the different forms (Form 1, 2, 3) and e-Books will be available here"
-            subtitle="You may visit our Facebook page for more details"
-          >
+          <Card.Body title="Available Lesson Plans">
             <a
               className="w-full py-2 text-center rounded-lg text-primary-500 bg-secondary-500 hover:bg-secondary-600 disabled:opacity-25"
               href="https://www.facebook.com/livingpupilhomeschool"
@@ -41,7 +38,6 @@ const LessonPlan = ({ lessonPlans }) => {
 export const getServerSideProps = async () => {
   const lessonPlans = await sanityClient.fetch(`*[_type == 'lessonPlans']{
     'grade': gradeLevel,
-    'file': lessonPlanFile,
     'fileUrl': lessonPlanFile.asset->url
   }`);
 
