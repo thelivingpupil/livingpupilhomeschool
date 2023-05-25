@@ -68,6 +68,7 @@ const Dashboard = () => {
             }}
             selectsRange
             isClearable
+            showMonthYearPicker
             nextMonthButtonLabel=">"
             previousMonthButtonLabel="<"
             popperClassName="react-datepicker-left"
