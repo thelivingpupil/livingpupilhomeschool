@@ -12,7 +12,7 @@ const AdminSidebar = () => {
 
   const renderStaticMenu = () => {
     return staticMenu.map((item, index) => (
-      <Menu key={index} data={item} showMenu={true} />
+      <Menu key={index} data={item} showMenu={true} menuCondition={true} />
     ));
   };
 
