@@ -21,6 +21,7 @@ import {
 import { AdminLayout } from '@/layouts/index';
 import { GRADE_LEVEL, PROGRAM, STATUS } from '@/utils/constants';
 import DatePicker from 'react-datepicker';
+import { useState } from 'react';
 
 ChartJS.register(
   ArcElement,
@@ -35,6 +36,13 @@ ChartJS.register(
 const chartOptions = { responsive: true };
 
 const Dashboard = () => {
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [startDate, endDate] = dateRange;
+
+  console.log('dateRange', {
+    startDate,
+    endDate,
+  });
   const { data: students, isLoading: isFetchingStudentsCount } =
     useStudentsCount();
   const { data: users, isLoading: isFetchingUsersCount } = useUsersCount();
@@ -53,29 +61,13 @@ const Dashboard = () => {
         <div className="relative flex items-center">
           <span className="px-8">Filter by Date Range: </span>
           <DatePicker
-            selected={null}
-            startDate={null}
-            endDate={null}
+            startDate={startDate}
+            endDate={endDate}
+            onChange={(updateRange) => {
+              setDateRange(updateRange);
+            }}
             selectsRange
             isClearable
-            nextMonthButtonLabel=">"
-            previousMonthButtonLabel="<"
-            popperClassName="react-datepicker-left"
-          />
-          <span className="px-5">From:</span>
-          <DatePicker
-            selected={new Date()}
-            selectsStart
-            startDate={new Date()}
-            nextMonthButtonLabel=">"
-            previousMonthButtonLabel="<"
-            popperClassName="react-datepicker-left"
-          />
-          <span className="px-5">To:</span>
-          <DatePicker
-            selected={new Date()}
-            selectsStart
-            startDate={new Date()}
             nextMonthButtonLabel=">"
             previousMonthButtonLabel="<"
             popperClassName="react-datepicker-left"
