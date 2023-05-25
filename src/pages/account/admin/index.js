@@ -53,8 +53,8 @@ const Dashboard = () => {
         <div className="relative flex items-center">
           <span className="px-8">Filter by Date Range: </span>
           <DatePicker
-            selected={new Date()}
-            startDate={new Date()}
+            selected={null}
+            startDate={null}
             endDate={null}
             selectsRange
             nextMonthButtonLabel=">"
