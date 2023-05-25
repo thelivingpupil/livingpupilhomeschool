@@ -20,6 +20,7 @@ import {
 } from '@/hooks/data';
 import { AdminLayout } from '@/layouts/index';
 import { GRADE_LEVEL, PROGRAM, STATUS } from '@/utils/constants';
+import DatePicker from 'react-datepicker';
 
 ChartJS.register(
   ArcElement,
@@ -48,6 +49,16 @@ const Dashboard = () => {
         subtitle="View and manage every recorded data from the web application"
       />
       <Content.Divider />
+      <div>
+        <DatePicker
+          selected={new Date()}
+          selectsStart
+          startDate={new Date()}
+          nextMonthButtonLabel=">"
+          previousMonthButtonLabel="<"
+          popperClassName="react-datepicker-left"
+        />
+      </div>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
         <Card>
           <Card.Body
