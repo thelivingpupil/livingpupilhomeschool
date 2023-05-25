@@ -49,15 +49,18 @@ const Dashboard = () => {
         subtitle="View and manage every recorded data from the web application"
       />
       <Content.Divider />
-      <div>
-        <DatePicker
-          selected={new Date()}
-          selectsStart
-          startDate={new Date()}
-          nextMonthButtonLabel=">"
-          previousMonthButtonLabel="<"
-          popperClassName="react-datepicker-left"
-        />
+      <div className="flex flex-end">
+        <div className="relative flex">
+          <span>From:</span>
+          <DatePicker
+            selected={new Date()}
+            selectsStart
+            startDate={new Date()}
+            nextMonthButtonLabel=">"
+            previousMonthButtonLabel="<"
+            popperClassName="react-datepicker-left"
+          />
+        </div>
       </div>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
         <Card>

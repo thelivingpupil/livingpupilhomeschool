@@ -651,7 +651,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 Birthday <span className="ml-1 text-red-600">*</span>
               </label>
               <div
-                className={`relative flex flex-row  rounded ${
+                className={`relative flex flex-row rounded ${
                   !birthDate ? 'border-red-500 border-2' : 'border'
                 }`}
               >
