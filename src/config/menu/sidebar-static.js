@@ -16,7 +16,7 @@ const sidebarMenu = () => [
         className: 'tourGuardian',
         name: 'Guardian Information',
         path: `/account/information`,
-        showDefault: false,
+        showDefault: true,
       },
       {
         name: 'Shop Purchases',
@@ -27,31 +27,46 @@ const sidebarMenu = () => [
         name: 'Calendar of Events',
         path: `/account/calendar`,
         showDefault: false,
+        validateItem: (validate) => {
+          return validate;
+        },
       },
       {
         name: 'Guides and Resources',
         path: `/account/resources`,
         showDefault: false,
+        validateItem: (validate) => {
+          return validate;
+        },
       },
       {
         name: 'The LP Community',
         path: `/account/community`,
         showDefault: false,
+        validateItem: (validate) => {
+          return validate;
+        },
       },
       {
         name: 'Affiliate Link',
         path: `/account/affiliate`,
-        showDefault: false,
+        showDefault: true,
       },
       {
         name: 'Virtual Library',
         path: `/account/library`,
         showDefault: false,
+        validateItem: (validate) => {
+          return validate;
+        },
       },
       {
         name: 'Lesson Plans',
         path: `/account/lesson-plans`,
         showDefault: false,
+        validateItem: (validate) => {
+          return validate;
+        },
       },
       {
         name: 'Settings',

@@ -43,6 +43,9 @@ const Sidebar = ({ menu, showModal }) => {
         data={item}
         menuCondition={data?.workspaces.length > 0}
         showMenu={true}
+        validate={data?.workspaces?.some(
+          (workspace) => !!workspace?.studentRecord
+        )}
       />
     ));
   };
