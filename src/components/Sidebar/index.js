@@ -25,10 +25,11 @@ const Sidebar = ({ menu, showModal }) => {
           data={item}
           isLoading={isLoading}
           menuCondition={
-            workspace?.schoolFees?.length > 0 &&
-            workspace?.schoolFees?.filter(
-              (fee) => fee.transaction.paymentStatus === TransactionStatus.S
-            )?.length > 0
+            (workspace?.schoolFees?.length > 0 &&
+              workspace?.schoolFees?.filter(
+                (fee) => fee.transaction.paymentStatus === TransactionStatus.S
+              )?.length > 0) ||
+            !!workspace?.studentRecord
           }
           showMenu={data?.workspaces.length > 0 || isLoading}
         />
