@@ -49,9 +49,28 @@ const Dashboard = () => {
         subtitle="View and manage every recorded data from the web application"
       />
       <Content.Divider />
-      <div className="flex flex-end">
-        <div className="relative flex">
-          <span>From:</span>
+      <div className="flex justify-end">
+        <div className="relative flex items-center">
+          <span className="px-8">Filter by Date Range: </span>
+          <DatePicker
+            selected={new Date()}
+            startDate={new Date()}
+            endDate={null}
+            selectsRange
+            nextMonthButtonLabel=">"
+            previousMonthButtonLabel="<"
+            popperClassName="react-datepicker-left"
+          />
+          <span className="px-5">From:</span>
+          <DatePicker
+            selected={new Date()}
+            selectsStart
+            startDate={new Date()}
+            nextMonthButtonLabel=">"
+            previousMonthButtonLabel="<"
+            popperClassName="react-datepicker-left"
+          />
+          <span className="px-5">To:</span>
           <DatePicker
             selected={new Date()}
             selectsStart
