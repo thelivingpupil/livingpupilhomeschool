@@ -103,7 +103,7 @@ export const createSchoolFees = async (
   if (payment === PaymentType.ANNUAL) {
     const fee = schoolFee.paymentTerms[0];
 
-    const payment = isPastorsFee
+    const payments = isPastorsFee
       ? discount.value
       : discount
       ? fee.fullPayment -
@@ -113,7 +113,7 @@ export const createSchoolFees = async (
       : fee.fullPayment;
 
     const transaction = await prisma.purchaseHistory.create({
-      data: { total: payment + FEES[paymentMethod] },
+      data: { total: payments + FEES[paymentMethod] },
       select: { id: true, transactionId: true },
     });
     const [response] = await Promise.all([
@@ -121,7 +121,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transaction.transactionId,
-        payment + FEES[paymentMethod],
+        payments + FEES[paymentMethod],
         description,
         transaction.id,
         TransactionSource.ENROLLMENT,
