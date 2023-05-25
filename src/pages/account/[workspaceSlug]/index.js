@@ -569,8 +569,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
               <input
-                className={`px-3 py-2 border rounded md:w-1/3 ${
-                  firstName.length <= 0 && 'border-red-500'
+                className={`px-3 py-2 rounded md:w-1/3 ${
+                  firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
                 }`}
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder="Given Name"
@@ -583,8 +583,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 value={middleName}
               />
               <input
-                className={`px-3 py-2 border rounded md:w-1/3 ${
-                  lastName.length <= 0 && 'border-red-500'
+                className={`px-3 py-2 rounded md:w-1/3 ${
+                  lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
                 }`}
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder="Last Name"
@@ -598,8 +598,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 Birthday <span className="ml-1 text-red-600">*</span>
               </label>
               <div
-                className={`relative flex flex-row border rounded ${
-                  !birthDate && 'border-red-500'
+                className={`relative flex flex-row rounded ${
+                  !birthDate ? 'border-red-500 border-2' : 'border'
                 }`}
               >
                 <DatePicker
@@ -679,8 +679,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="relative flex flex-row space-x-5">
               <textarea
-                className={`w-full px-3 py-2 border rounded ${
-                  !reason && 'border-red-500'
+                className={`w-full px-3 py-2 rounded ${
+                  !reason ? 'border-red-500 border-2' : 'border'
                 }`}
                 onChange={(e) => setReason(e.target.value)}
                 placeholder="Why did you choose to homeschool your child?"
@@ -766,8 +766,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </tr>
             <tr>
               <td
-                className={`w-1/2 px-3 py-2 border ${
-                  !birthCertificateLink && 'border-red-500'
+                className={`w-1/2 px-3 py-2 ${
+                  !birthCertificateLink ? 'border-red-500 border-2' : 'border'
                 }`}
               >
                 <h3 className="text-xl font-medium">Birth Certificate</h3>
@@ -868,8 +868,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full border rounded ${
-              !enrollmentType && 'border-red-500'
+            className={`relative inline-block w-full rounded ${
+              !enrollmentType ? 'border-red-500 border-2' : 'border'
             }`}
           >
             <select
@@ -928,8 +928,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="flex flex-row">
               <div
-                className={`relative inline-block w-full border rounded ${
-                  !incomingGradeLevel && 'border-red-500'
+                className={`relative inline-block w-full rounded ${
+                  !incomingGradeLevel ? 'border-red-500 border-2' : 'border'
                 }`}
               >
                 <select
@@ -963,8 +963,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-row space-x-5">
             <input
-              className={`px-3 py-2 border rounded md:w-2/3 ${
-                !formerSchoolName && 'border-red-500'
+              className={`px-3 py-2 rounded md:w-2/3 ${
+                !formerSchoolName ? 'border-red-500 border-2' : 'border'
               }`}
               onChange={(e) => setFormerSchoolName(e.target.value)}
               placeholder="Former School Name"
@@ -978,8 +978,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="relative flex flex-row space-x-5">
             <textarea
-              className={`w-full px-3 py-2 border rounded ${
-                !formerSchoolAddress && 'border-red-500'
+              className={`w-full px-3 py-2 rounded ${
+                !formerSchoolAddress ? 'border-red-500 border-2' : 'border'
               }`}
               onChange={(e) => setFormerSchoolAddress(e.target.value)}
               placeholder="Former School Address"
@@ -1001,24 +1001,26 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 border rounded md:w-1/2 ${
-                !primaryGuardianName && 'border-red-500'
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !primaryGuardianName ? 'border-red-500 border-2' : 'border'
               }`}
               placeholder="Primary Guardian's Full Name"
               onChange={handlePrimaryGuardianName}
               value={primaryGuardianName}
             />
             <input
-              className={`px-3 py-2 border rounded md:w-1/4 ${
-                !primaryGuardianOccupation && 'border-red-500'
+              className={`px-3 py-2 rounded md:w-1/4 ${
+                !primaryGuardianOccupation
+                  ? 'border-red-500 border-2'
+                  : 'border'
               }`}
               placeholder="Occupation"
               onChange={handlePrimaryGuardianOccupation}
               value={primaryGuardianOccupation}
             />
             <div
-              className={`relative inline-block border rounded md:w-1/4 ${
-                !primaryGuardianType && 'border-red-500'
+              className={`relative inline-block rounded md:w-1/4 ${
+                !primaryGuardianType ? 'border-red-500 border-2' : 'border'
               }`}
             >
               <select
@@ -1040,8 +1042,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </div>
         <div className="flex flex-col">
           <input
-            className={`px-3 py-2 border rounded ${
-              !primaryGuardianProfile && 'border-red-500'
+            className={`px-3 py-2 rounded ${
+              !primaryGuardianProfile ? 'border-red-500 border-2' : 'border'
             }`}
             placeholder="Primary Guardian's Facebook Profile Link"
             onChange={handlePrimaryGuardianProfile}
@@ -1054,24 +1056,26 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 border rounded md:w-1/2 ${
-                !secondaryGuardianName && 'border-red-500'
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !secondaryGuardianName ? 'border-red-500 border-2' : 'border'
               }`}
               placeholder="Secondary Guardian's Full Name"
               onChange={handleSecondaryGuardianName}
               value={secondaryGuardianName}
             />
             <input
-              className={`px-3 py-2 border rounded md:w-1/4 ${
-                !secondaryGuardianOccupation && 'border-red-500'
+              className={`px-3 py-2 rounded md:w-1/4 ${
+                !secondaryGuardianOccupation
+                  ? 'border-red-500 border-2'
+                  : 'border'
               }`}
               placeholder="Occupation"
               onChange={handleSecondaryGuardianOccupation}
               value={secondaryGuardianOccupation}
             />
             <div
-              className={`relative inline-block border rounded md:w-1/4 ${
-                !secondaryGuardianType && 'border-red-500'
+              className={`relative inline-block rounded md:w-1/4 ${
+                !secondaryGuardianType ? 'border-red-500 border-2' : 'border'
               }`}
             >
               <select
@@ -1093,8 +1097,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </div>
         <div className="flex flex-col">
           <input
-            className={`px-3 py-2 border rounded ${
-              !secondaryGuardianProfile && 'border-red-500'
+            className={`px-3 py-2 rounded ${
+              !secondaryGuardianProfile ? 'border-red-500 border-2' : 'border'
             }`}
             placeholder="Secondary Guardian's Facebook Profile Link"
             onChange={handleSecondaryGuardianProfile}
@@ -1108,8 +1112,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-row space-x-5">
             <input
-              className={`px-3 py-2 border rounded md:w-1/2 ${
-                !mobileNumber && 'border-red-500'
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !mobileNumber ? 'border-red-500 border-2' : 'border'
               }`}
               placeholder="Mobile Number"
               onChange={handleMobileNumber}
@@ -1120,8 +1124,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         <div className="flex flex-col">
           <div className="flex flex-row space-x-5">
             <input
-              className={`px-3 py-2 border rounded md:w-1/2 ${
-                !telephoneNumber && 'border-red-500'
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !telephoneNumber ? 'border-red-500 border-2' : 'border'
               }`}
               placeholder="Telephone Number"
               onChange={handleTelephoneNumber}
@@ -1135,8 +1139,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-row space-x-5">
             <input
-              className={`px-3 py-2 border rounded md:w-1/2 ${
-                !anotherEmail && 'border-red-500'
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !anotherEmail ? 'border-red-500 border-2' : 'border'
               }`}
               placeholder="another@email.com"
               onChange={handleAnotherEmail}
@@ -1151,8 +1155,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-row space-x-5">
             <input
-              className={`px-3 py-2 border rounded md:w-3/4 ${
-                !address1 && 'border-red-500'
+              className={`px-3 py-2 rounded md:w-3/4 ${
+                !address1 ? 'border-red-500 border-2' : 'border'
               }`}
               placeholder="House No. St. Name, Village/Subdivision, Brgy."
               onChange={handleAddress1}
@@ -1163,8 +1167,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         <div className="flex flex-col">
           <div className="flex flex-row space-x-5">
             <input
-              className={`px-3 py-2 border rounded md:w-3/4 ${
-                !address2 && 'border-red-500'
+              className={`px-3 py-2 rounded md:w-3/4 ${
+                !address2 ? 'border-red-500 border-2' : 'border'
               }`}
               placeholder="City, Country, ZIP Code"
               onChange={handleAddress2}
@@ -1184,8 +1188,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full border rounded ${
-              !program && 'border-red-500'
+            className={`relative inline-block w-full rounded ${
+              !program ? 'border-red-500 border-2' : 'border'
             }`}
           >
             <select
@@ -1223,8 +1227,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="flex flex-row">
               <div
-                className={`relative inline-block w-full border rounded ${
-                  !cottageType && 'border-red-500'
+                className={`relative inline-block w-full rounded ${
+                  !cottageType ? 'border-red-500 border-2' : 'border'
                 }`}
               >
                 <select
@@ -1326,8 +1330,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full border rounded ${
-              !accreditation && 'border-red-500'
+            className={`relative inline-block w-full rounded ${
+              !accreditation ? 'border-red-500 border-2' : 'border'
             }`}
           >
             <select
@@ -1626,10 +1630,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </li>
             <li>
               Make the school aware of any concerns or problems that might
-              affect my/our child’s academic work or behavior.
+              affect my/our child's academic work or behavior.
             </li>
             <li>
-              Comply with DepEd’s number of school days per school year
+              Comply with DepEd's number of school days per school year
               requirement. (at least 205 school days and follow the DepEd
               calendar in terms of school records).
             </li>
@@ -1659,7 +1663,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             <li>
               Permit to use photographs/videos of me and my family and
               information obtained through personal interviews in any of Living
-              Pupil’s publications, social media platforms, marketing materials,
+              Pupil's publications, social media platforms, marketing materials,
               or virtual events.
             </li>
             <li>
@@ -1692,8 +1696,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             Select Payment Type <span className="ml-1 text-red-600">*</span>
           </label>
           <div
-            className={`relative inline-block w-full border rounded ${
-              !payment && 'border-red-500'
+            className={`relative inline-block w-full rounded ${
+              !payment ? 'border-red-500 border-2' : 'border'
             }`}
           >
             <select
