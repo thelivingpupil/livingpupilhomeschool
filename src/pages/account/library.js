@@ -160,6 +160,7 @@ const Library = ({ books }) => {
 export const getServerSideProps = async () => {
   const books = await sanityClient.fetch(`*[_type == 'books']{
     'title': bookTitle,
+    'description': bookDescription,
     'for': bookFor,
     'cover': bookCover,
     'file': bookFile.asset->url
