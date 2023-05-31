@@ -7,11 +7,11 @@ import {
 } from '@/prisma/services/student-record';
 
 const handler = async (req, res) => {
-  const { method, params } = req;
+  const { method, query } = req;
 
-  console.log(params);
+  console.log(query);
 
-  const { startDate, endDate } = params;
+  const { startDate, endDate } = query || {};
 
   if (method === 'GET') {
     await validateSession(req, res);
