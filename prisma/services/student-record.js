@@ -103,7 +103,7 @@ export const countStudents = async (startDate, endDate) => {
   console.log('filterDate', filterDate);
   return await prisma.studentRecord.count({
     where: {
-      ...filterDate,
+      // ...filterDate,
       deletedAt: null,
       student: { deletedAt: null },
     },
