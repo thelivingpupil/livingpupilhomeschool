@@ -39,10 +39,13 @@ const Dashboard = () => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
   const { data: students, isLoading: isFetchingStudentsCount } =
-    useStudentsCount();
-  const { data: users, isLoading: isFetchingUsersCount } = useUsersCount();
+    useStudentsCount(startDate, endDate);
+  const { data: users, isLoading: isFetchingUsersCount } = useUsersCount(
+    startDate,
+    endDate
+  );
   const { data: transactions, isLoading: isFetchingTransactionsSales } =
-    useTransactionSales();
+    useTransactionSales(startDate, endDate);
 
   console.log('loaded data', {
     students,

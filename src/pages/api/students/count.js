@@ -7,14 +7,24 @@ import {
 } from '@/prisma/services/student-record';
 
 const handler = async (req, res) => {
-  const { method } = req;
+  const { method, params } = req;
+
+  console.log(params);
+
+  const { startDate, endDate } = params;
 
   if (method === 'GET') {
     await validateSession(req, res);
-    const total = await countStudents();
-    const enrolled = await countEnrolledStudents();
-    const gradeLevelGroup = await countEnrolledStudentsByGradeLevel();
-    const programGroup = await countEnrolledStudentsByProgram();
+    const total = await countStudents(startDate, endDate);
+    const enrolled = await countEnrolledStudents(startDate, endDate);
+    const gradeLevelGroup = await countEnrolledStudentsByGradeLevel(
+      startDate,
+      endDate
+    );
+    const programGroup = await countEnrolledStudentsByProgram(
+      startDate,
+      endDate
+    );
     res
       .status(200)
       .json({ data: { enrolled, total, gradeLevelGroup, programGroup } });

@@ -90,13 +90,24 @@ export const countEnrolledStudents = async () =>
     },
   });
 
-export const countStudents = async () =>
-  await prisma.studentRecord.count({
+export const countStudents = async (startDate, endDate) => {
+  const filterDate =
+    startDate && endDate
+      ? {
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
+      : {};
+  return await prisma.studentRecord.count({
     where: {
+      ...filterDate,
       deletedAt: null,
       student: { deletedAt: null },
     },
   });
+};
 
 export const countStudentsByGradeLevel = async () =>
   await prisma.studentRecord.groupBy({
