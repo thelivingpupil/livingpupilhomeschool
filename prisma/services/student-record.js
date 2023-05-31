@@ -1,10 +1,20 @@
 import { GradeLevel, Program, TransactionStatus } from '@prisma/client';
 import prisma from '@/prisma/index';
 
-export const countEnrolledStudentsByGradeLevel = async () => {
+export const countEnrolledStudentsByGradeLevel = async (startDate, endDate) => {
+  const filterDate =
+    startDate && endDate
+      ? {
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
+      : {};
   const result = await prisma.studentRecord.groupBy({
     by: ['incomingGradeLevel'],
     where: {
+      ...filterDate,
       deletedAt: null,
       student: {
         deletedAt: null,
@@ -45,10 +55,20 @@ export const countEnrolledStudentsByGradeLevel = async () => {
 export const countUsedDiscountCode = async (code) =>
   await prisma.studentRecord.count({ where: { discount: code } });
 
-export const countEnrolledStudentsByProgram = async () => {
+export const countEnrolledStudentsByProgram = async (startDate, endDate) => {
+  const filterDate =
+    startDate && endDate
+      ? {
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
+      : {};
   const result = await prisma.studentRecord.groupBy({
     by: ['program'],
     where: {
+      ...filterDate,
       deletedAt: null,
       student: {
         deletedAt: null,
