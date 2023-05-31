@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 
-const useStudentsCount = () => {
-  const apiRoute = `/api/students/count`;
+const useStudentsCount = (startDate, endDate) => {
+  const apiRoute = `/api/students/count?startDate=${startDate}&endDate=${endDate}`;
   const { data, error } = useSWR(`${apiRoute}`);
   return {
     ...data,
