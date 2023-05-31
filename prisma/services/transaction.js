@@ -12,10 +12,23 @@ import prisma from '@/prisma/index';
 
 const modes = { [Fees.ONLINE]: 1, [Fees.OTC]: 2, [Fees.PAYMENT_CENTERS]: 4 };
 
-export const getTotalEnrollmentRevenuesByStatus = async () => {
+export const getTotalEnrollmentRevenuesByStatus = async (
+  startDate,
+  endDate
+) => {
+  const filterDate =
+    startDate && endDate
+      ? {
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
+      : {};
   const result = await prisma.transaction.groupBy({
     by: ['paymentStatus'],
     where: {
+      ...filterDate,
       deletedAt: null,
       source: TransactionSource.ENROLLMENT,
     },
@@ -37,10 +50,20 @@ export const getTotalEnrollmentRevenuesByStatus = async () => {
   return data;
 };
 
-export const getTotalStoreRevenuesByStatus = async () => {
+export const getTotalStoreRevenuesByStatus = async (startDate, endDate) => {
+  const filterDate =
+    startDate && endDate
+      ? {
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
+      : {};
   const result = await prisma.transaction.groupBy({
     by: ['paymentStatus'],
     where: {
+      ...filterDate,
       deletedAt: null,
       source: TransactionSource.STORE,
     },
@@ -62,10 +85,20 @@ export const getTotalStoreRevenuesByStatus = async () => {
   return data;
 };
 
-export const getTotalSales = async () => {
+export const getTotalSales = async (startDate, endDate) => {
+  const filterDate =
+    startDate && endDate
+      ? {
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
+      : {};
   const total = await prisma.transaction.aggregate({
     _sum: { amount: true },
     where: {
+      ...filterDate,
       deletedAt: null,
       paymentStatus: TransactionStatus.S,
     },
@@ -73,10 +106,20 @@ export const getTotalSales = async () => {
   return total?._sum.amount || 0;
 };
 
-export const getPendingSales = async () => {
+export const getPendingSales = async (startDate, endDate) => {
+  const filterDate =
+    startDate && endDate
+      ? {
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
+      : {};
   const total = await prisma.transaction.aggregate({
     _sum: { amount: true },
     where: {
+      ...filterDate,
       deletedAt: null,
       NOT: { paymentStatus: TransactionStatus.S },
     },

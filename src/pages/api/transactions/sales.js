@@ -7,19 +7,22 @@ import {
 } from '@/prisma/services/transaction';
 
 const handler = async (req, res) => {
-  const { method } = req;
+  const { method, query } = req;
+
+  const { startDate, endDate } = query || {};
 
   if (method === 'GET') {
     await validateSession(req, res);
-    const totalSales = await getTotalSales();
-    const pendingSales = await getPendingSales();
-    const enrollmentSales = await getTotalEnrollmentRevenuesByStatus();
-    const storeSales = await getTotalStoreRevenuesByStatus();
-    res
-      .status(200)
-      .json({
-        data: { totalSales, pendingSales, enrollmentSales, storeSales },
-      });
+    const totalSales = await getTotalSales(startDate, endDate);
+    const pendingSales = await getPendingSales(startDate, endDate);
+    const enrollmentSales = await getTotalEnrollmentRevenuesByStatus(
+      startDate,
+      endDate
+    );
+    const storeSales = await getTotalStoreRevenuesByStatus(startDate, endDate);
+    res.status(200).json({
+      data: { totalSales, pendingSales, enrollmentSales, storeSales },
+    });
   } else {
     res.status(405).json({ error: `${method} method unsupported` });
   }

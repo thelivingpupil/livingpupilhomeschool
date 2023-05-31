@@ -2,18 +2,39 @@ import { html, text } from '@/config/email-templates/email-update';
 import { sendMail } from '@/lib/server/mail';
 import prisma from '@/prisma/index';
 
-export const countUsers = async () =>
-  await prisma.user.count({
-    where: { deletedAt: null },
+export const countUsers = async (startDate, endDate) => {
+  const filterDate =
+    startDate && endDate
+      ? {
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
+      : {};
+  return await prisma.user.count({
+    where: { ...filterDate, deletedAt: null },
   });
+};
 
-export const countVerifiedUsers = async () =>
-  await prisma.user.count({
+export const countVerifiedUsers = async (startDate, endDate) => {
+  const filterDate =
+    startDate && endDate
+      ? {
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
+      : {};
+  return await prisma.user.count({
     where: {
+      ...filterDate,
       deletedAt: null,
       NOT: { emailVerified: null },
     },
   });
+};
 
 export const deactivate = async (id) =>
   await prisma.user.update({

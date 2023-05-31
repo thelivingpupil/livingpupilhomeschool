@@ -9,8 +9,6 @@ import {
 const handler = async (req, res) => {
   const { method, query } = req;
 
-  console.log(query);
-
   const { startDate, endDate } = query || {};
 
   if (method === 'GET') {
