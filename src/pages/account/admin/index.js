@@ -38,17 +38,17 @@ const chartOptions = { responsive: true };
 const Dashboard = () => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
-
-  console.log('dateRange', {
-    startDate,
-    endDate,
-  });
   const { data: students, isLoading: isFetchingStudentsCount } =
     useStudentsCount();
   const { data: users, isLoading: isFetchingUsersCount } = useUsersCount();
   const { data: transactions, isLoading: isFetchingTransactionsSales } =
     useTransactionSales();
 
+  console.log('loaded data', {
+    students,
+    users,
+    transactions,
+  });
   return (
     <AdminLayout>
       <Meta title="Living Pupil Homeschool - Admin Dashboard" />
