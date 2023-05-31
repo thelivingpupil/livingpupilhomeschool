@@ -73,7 +73,7 @@ export const countEnrolledStudentsByProgram = async () => {
   return data;
 };
 
-export const countEnrolledStudents = async () => {
+export const countEnrolledStudents = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
