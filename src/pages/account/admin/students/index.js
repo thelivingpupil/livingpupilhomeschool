@@ -24,6 +24,8 @@ const Students = () => {
   const [showModal, setModalVisibility] = useState(false);
   const [student, setStudent] = useState(null);
 
+  console.log('Students record', { data });
+
   const toggleModal = () => setModalVisibility(!showModal);
 
   const view = (student) => {
