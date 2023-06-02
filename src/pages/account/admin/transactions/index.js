@@ -29,8 +29,8 @@ const filterValueOptions = {
 };
 
 const filterByOptions = {
-  paymentType: 'Payment Type',
-  paymentStatus: 'Payment Status',
+  paymentType: 'Payment Term',
+  paymentStatus: 'Transaction Status',
 };
 
 const Transactions = () => {
