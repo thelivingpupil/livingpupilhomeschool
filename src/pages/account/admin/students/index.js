@@ -234,7 +234,7 @@ const Students = () => {
                 </div>
               )}
             </div>
-            <div>Total {filterStudents.length}</div>
+            <div>Total {filterStudents?.length || 0}</div>
           </div>
           <div>
             <table className="w-full">
