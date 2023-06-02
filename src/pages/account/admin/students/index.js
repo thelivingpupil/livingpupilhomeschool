@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { ChevronDownIcon } from '@heroicons/react/outline';
 
 import Meta from '@/components/Meta';
 import SideModal from '@/components/Modal/side-modal';
