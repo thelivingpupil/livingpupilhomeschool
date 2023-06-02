@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import formatDistance from 'date-fns/formatDistance';
 import api from '@/lib/common/api';
 
@@ -18,17 +18,75 @@ import {
   PAYMENT_TYPE,
   PROGRAM,
   STATUS_BG_COLOR,
+  STATUS,
 } from '@/utils/constants';
 import Modal from '@/components/Modal';
+
+const filterValueOptions = {
+  paymentType: PAYMENT_TYPE,
+  paymentStatus: STATUS,
+};
+
+const filterByOptions = {
+  paymentType: 'Payment Type',
+  paymentStatus: 'Payment Status',
+};
 
 const Transactions = () => {
   const { data, isLoading } = useTransactions();
   const [showModal, setModalVisibility] = useState(false);
   const [isSubmitting, setSubmittingState] = useState(false);
+  const [filter, setFilter] = useState(['', '']);
+  const [filterBy, filterValue] = filter;
   const [uploadCount, setUploadCount] = useState(0);
   const [totalUpload, setTotalUpload] = useState(0);
 
   console.log('Transaction data', { data });
+
+  const filterTransactions = useMemo(() => {
+    if (!filterBy || !filterValue) return data?.transactions;
+
+    const filteredTransactionIds = data?.transactions
+      ?.map(
+        ({
+          transactionId,
+          amount,
+          currency,
+          paymentReference,
+          paymentStatus,
+          schoolFee: {
+            paymentType,
+            student: {
+              studentRecord: {
+                accreditation,
+                enrollmentType,
+                incomingGradeLevel,
+                program,
+              },
+            },
+          },
+        }) => ({
+          id: transactionId,
+          amount,
+          currency,
+          paymentReference,
+          paymentStatus,
+          paymentType,
+          accreditation,
+          enrollmentType,
+          incomingGradeLevel,
+          program,
+        })
+      )
+      ?.filter((transaction) => transaction[filterBy] === filterValue)
+      ?.map(({ id }) => id);
+
+    return data?.transactions?.filter(({ transactionId }) =>
+      filteredTransactionIds.includes(transactionId)
+    );
+  }, [data, filterBy, filterValue]);
+
+  console.log('Transaction data filtered', { filterTransactions });
 
   const inputFileRef = useRef();
 
@@ -123,6 +181,56 @@ const Transactions = () => {
       <Content.Container>
         <Card>
           <Card.Body title="Transactions List">
+            <div className="flex flex-col md:flex-row space-y-5 py-4 md:justify-between md:items-center">
+              <div className="flex flex-1 flex-col md:flex-row space-y-3 md:space-x-5 md:items-center">
+                <div>Filter By:</div>
+                <div className="flex flex-row md:w-1/4">
+                  <div className="relative inline-block w-full rounded border">
+                    <select
+                      className="w-full px-3 py-2 capitalize rounded appearance-none"
+                      onChange={(e) => setFilter([e.target.value, ''])}
+                      value={filterBy}
+                    >
+                      <option value="">-</option>
+                      {Object.entries(filterByOptions).map(([value, name]) => (
+                        <option key={value} value={value}>
+                          {name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                      <ChevronDownIcon className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+                {!!filterBy && (
+                  <div className="flex flex-row md:w-1/4">
+                    <div className="relative inline-block w-full rounded border">
+                      <select
+                        className="w-full px-3 py-2 capitalize rounded appearance-none"
+                        onChange={(e) => setFilter([filterBy, e.target.value])}
+                        value={filterValue}
+                      >
+                        <option value="">-</option>
+                        {Object.entries(filterValueOptions[filterBy]).map(
+                          ([value, name]) => (
+                            <option key={value} value={value}>
+                              {name}
+                            </option>
+                          )
+                        )}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                        <ChevronDownIcon className="w-5 h-5" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="text-2xl">
+                Total: {filterTransactions?.length || 0}
+              </div>
+            </div>
             <div>
               <table className="w-full">
                 <thead>
