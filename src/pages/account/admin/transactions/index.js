@@ -42,8 +42,6 @@ const Transactions = () => {
   const [uploadCount, setUploadCount] = useState(0);
   const [totalUpload, setTotalUpload] = useState(0);
 
-  console.log('Transaction data', { data });
-
   const filterTransactions = useMemo(() => {
     if (!filterBy || !filterValue) return data?.transactions;
 
@@ -86,8 +84,6 @@ const Transactions = () => {
       filteredTransactionIds.includes(transactionId)
     );
   }, [data, filterBy, filterValue]);
-
-  console.log('Transaction data filtered', { filterTransactions });
 
   const inputFileRef = useRef();
 
@@ -252,7 +248,7 @@ const Transactions = () => {
                 <tbody>
                   {!isLoading ? (
                     data ? (
-                      data.transactions.map((transaction, index) => (
+                      filterTransactions.map((transaction, index) => (
                         <tr
                           key={index}
                           className="text-sm border-t border-b hover:bg-gray-100 border-b-gray-300"
