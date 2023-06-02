@@ -147,7 +147,7 @@ export const RELIGION = {
   ROMAN_CATHOLIC: 'Roman Catholic',
   MUSLIM: 'Muslim',
   BORN_AGAIN_CHRISTIAN: 'Born-Again Christian',
-  SEVENT_DAY_ADVENTIST: 'Seventh DaY Adventist',
+  SEVENT_DAY_ADVENTIST: 'Seventh Day Adventist',
   IGLESIA_NI_CRISTO: 'Iglesia ni Cristo',
   LATTER_DAY_SAINTS_MORMONS: 'Latter Day Saint (Mormons)',
   OTHERS: 'Others',

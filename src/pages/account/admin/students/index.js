@@ -59,9 +59,6 @@ const Students = () => {
     );
   }, [data, filterBy, filterValue]);
 
-  console.log('Students record', { data });
-  console.log('FilterStudents record', { filterStudents });
-
   const toggleModal = () => setModalVisibility(!showModal);
 
   const view = (student) => {
@@ -252,7 +249,7 @@ const Students = () => {
               <tbody>
                 {!isLoading ? (
                   data ? (
-                    data.students.map((student, index) => (
+                    filterStudents.map((student, index) => (
                       <tr
                         key={index}
                         className="text-sm border-t border-b hover:bg-gray-100 border-b-gray-300"
