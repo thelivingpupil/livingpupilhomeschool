@@ -192,12 +192,13 @@ const Students = () => {
             </Link>
           </div>
           <div className="py-4">
-            <div className="flex space-x-2">
+            <div className="flex space-x-5 items-center">
               <div>Filter By:</div>
               <div className="flex flex-row">
                 <div className="relative inline-block w-full rounded border">
                   <select
                     className="w-full px-3 py-2 capitalize rounded appearance-none"
+                    onChange={(e) => setFilter([e.target.value, ''])}
                     value={filterBy}
                   >
                     <option value="">-</option>
@@ -212,6 +213,29 @@ const Students = () => {
                   </div>
                 </div>
               </div>
+              {!!filterBy && (
+                <div className="flex flex-row">
+                  <div className="relative inline-block w-full rounded border">
+                    <select
+                      className="w-full px-3 py-2 capitalize rounded appearance-none"
+                      onChange={(e) => setFilter([filterBy, e.target.value])}
+                      value={filterValue}
+                    >
+                      <option value="">-</option>
+                      {Object.entries(filterValueOptions[filterBy]).map(
+                        ([value, name]) => (
+                          <option key={value} value={value}>
+                            {name}
+                          </option>
+                        )
+                      )}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                      <ChevronDownIcon className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <div>
