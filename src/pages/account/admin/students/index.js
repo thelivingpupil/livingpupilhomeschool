@@ -188,8 +188,8 @@ const Students = () => {
               </a>
             </Link>
           </div>
-          <div className="flex flex-col md:flex-row py-4 justify-between">
-            <div className="flex flex-col md:flex-row space-y-3 md:space-x-5 md:items-center">
+          <div className="flex flex-col md:flex-row py-4 md:justify-between md:items-center">
+            <div className="flex flex-1 flex-col md:flex-row space-y-3 md:space-x-5 md:items-center">
               <div>Filter By:</div>
               <div className="flex flex-row md:w-1/4">
                 <div className="relative inline-block w-full rounded border">
@@ -234,7 +234,7 @@ const Students = () => {
                 </div>
               )}
             </div>
-            <div>Total {filterStudents?.length || 0}</div>
+            <div className="text-2xl">Total: {filterStudents?.length || 0}</div>
           </div>
           <div>
             <table className="w-full">
