@@ -189,9 +189,9 @@ const Students = () => {
             </Link>
           </div>
           <div className="py-4">
-            <div className="flex space-x-5 items-center">
+            <div className="flex flex-col md:flex-row space-y-3 md:space-x-5 md:items-center">
               <div>Filter By:</div>
-              <div className="flex flex-row">
+              <div className="flex flex-row md:w-1/4">
                 <div className="relative inline-block w-full rounded border">
                   <select
                     className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -211,7 +211,7 @@ const Students = () => {
                 </div>
               </div>
               {!!filterBy && (
-                <div className="flex flex-row">
+                <div className="flex flex-row md:w-1/4">
                   <div className="relative inline-block w-full rounded border">
                     <select
                       className="w-full px-3 py-2 capitalize rounded appearance-none"
