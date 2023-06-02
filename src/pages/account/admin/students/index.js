@@ -188,7 +188,7 @@ const Students = () => {
               </a>
             </Link>
           </div>
-          <div className="py-4">
+          <div className="flex flex-col md:flex-row py-4 justify-between">
             <div className="flex flex-col md:flex-row space-y-3 md:space-x-5 md:items-center">
               <div>Filter By:</div>
               <div className="flex flex-row md:w-1/4">
@@ -234,6 +234,7 @@ const Students = () => {
                 </div>
               )}
             </div>
+            <div>Total {filterStudents.length}</div>
           </div>
           <div>
             <table className="w-full">
