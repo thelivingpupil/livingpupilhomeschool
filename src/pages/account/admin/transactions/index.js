@@ -28,6 +28,8 @@ const Transactions = () => {
   const [uploadCount, setUploadCount] = useState(0);
   const [totalUpload, setTotalUpload] = useState(0);
 
+  console.log('Transaction data', { data });
+
   const inputFileRef = useRef();
 
   const toggleModal = () => setModalVisibility(!showModal);
