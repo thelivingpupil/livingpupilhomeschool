@@ -188,7 +188,7 @@ const Students = () => {
               </a>
             </Link>
           </div>
-          <div className="flex flex-col md:flex-row py-4 md:justify-between md:items-center">
+          <div className="flex flex-col md:flex-row space-y-5 py-4 md:justify-between md:items-center">
             <div className="flex flex-1 flex-col md:flex-row space-y-3 md:space-x-5 md:items-center">
               <div>Filter By:</div>
               <div className="flex flex-row md:w-1/4">
