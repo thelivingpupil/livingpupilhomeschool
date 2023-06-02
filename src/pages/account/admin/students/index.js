@@ -52,7 +52,7 @@ const Students = () => {
   const [student, setStudent] = useState(null);
 
   const filterStudents = useMemo(() => {
-    if (!filterBy && !filterValue) return data?.students;
+    if (!filterBy || !filterValue) return data?.students;
 
     return data?.students?.filter(
       (student) => student[filterBy] === filterValue
