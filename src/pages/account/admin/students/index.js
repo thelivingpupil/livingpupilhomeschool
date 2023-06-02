@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 
 import Meta from '@/components/Meta';
@@ -8,6 +8,8 @@ import Content from '@/components/Content';
 import Card from '@/components/Card';
 import {
   ACCREDITATION,
+  ACCREDITATION_NEW,
+  ENROLLMENT_TYPE,
   GRADE_LEVEL,
   PROGRAM,
   RELIGION,
@@ -16,15 +18,48 @@ import { useStudents } from '@/hooks/data';
 import { UserIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import format from 'date-fns/format';
-import differenceInCalendarYears from 'date-fns/differenceInCalendarYears';
 import differenceInYears from 'date-fns/differenceInYears';
+
+const filterValueOptions = {
+  accreditation: ACCREDITATION_NEW,
+  enrollmentType: ENROLLMENT_TYPE,
+  gender: {
+    FEMALE: 'Female',
+    MALE: 'Male',
+  },
+  incomingGradeLevel: GRADE_LEVEL,
+  program: PROGRAM,
+  religion: RELIGION,
+};
+
+const filterByOptions = {
+  accreditation: 'Accreditation',
+  enrollmentType: 'Enrollment Type',
+  gender: 'Gender',
+  incomingGradeLevel: 'Grade Level',
+  program: 'Program',
+  religion: 'Religion',
+};
 
 const Students = () => {
   const { data, isLoading } = useStudents();
   const [showModal, setModalVisibility] = useState(false);
+  const [filter, setFilter] = useState(['', '']);
+
+  const [filterBy, filterValue] = filter;
+
   const [student, setStudent] = useState(null);
 
+  const filterStudents = useMemo(() => {
+    if (!filterBy && !filterValue) return data?.students;
+
+    return data?.students?.filter(
+      (student) => student[filterBy] === filterValue
+    );
+  }, [data, filterBy, filterValue]);
+
   console.log('Students record', { data });
+  console.log('FilterStudents record', { filterStudents });
 
   const toggleModal = () => setModalVisibility(!showModal);
 
@@ -154,6 +189,29 @@ const Students = () => {
                 Generate Students Master List
               </a>
             </Link>
+          </div>
+          <div className="py-4">
+            <div className="flex space-x-2">
+              <div>Filter By:</div>
+              <div className="flex flex-row">
+                <div className="relative inline-block w-full rounded border">
+                  <select
+                    className="w-full px-3 py-2 capitalize rounded appearance-none"
+                    value={filterBy}
+                  >
+                    <option value="">-</option>
+                    {Object.entries(filterByOptions).map(([value, name]) => (
+                      <option key={value} value={value}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <ChevronDownIcon className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div>
             <table className="w-full">

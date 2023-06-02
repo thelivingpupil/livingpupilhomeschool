@@ -47,11 +47,6 @@ const Dashboard = () => {
   const { data: transactions, isLoading: isFetchingTransactionsSales } =
     useTransactionSales(startDate, endDate);
 
-  console.log('loaded data', {
-    students,
-    users,
-    transactions,
-  });
   return (
     <AdminLayout>
       <Meta title="Living Pupil Homeschool - Admin Dashboard" />

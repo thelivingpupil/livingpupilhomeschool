@@ -9,6 +9,12 @@ export const ACCREDITATION = {
   FORM_THREE: 'DepEd Accreditation Form 3 (Grades 7-10)',
 };
 
+export const ACCREDITATION_NEW = {
+  LOCAL: 'DepEd Accreditation (Local)',
+  INTERNATIONAL: 'US Accreditation (International)',
+  DUAL: 'DepEd & US Accreditation (Dual)',
+};
+
 export const ENROLLMENT_TYPE = {
   CONTINUING: 'Continuing Family',
   NEW: 'New Family',
