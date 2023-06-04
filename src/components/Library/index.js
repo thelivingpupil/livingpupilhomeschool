@@ -13,8 +13,8 @@ export default ({ book, image }) => {
         <Image
           alt={slugify(book?.title?.toLowerCase())}
           src={image || '/images/livingpupil-homeschool-logo.png'}
-          width={150}
-          height={250}
+          width={200}
+          height={300}
         />
       </div>
       <div className="font-bold text-xl text-primary-500">{book?.title}</div>
