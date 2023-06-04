@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import Content from '@/components/Content/index';
+import LibraryItem from '@/components/Library';
 import imageUrlBuilder from '@sanity/image-url';
 import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
@@ -69,29 +70,7 @@ const Library = ({ books }) => {
                           : null;
                         return (
                           <Carousel.Item key={idx}>
-                            <div className="flex flex-col justify-center items-center space-y-3 p-2">
-                              <div>
-                                <Image
-                                  alt={slugify(book?.title?.toLowerCase())}
-                                  src={
-                                    image ||
-                                    '/images/livingpupil-homeschool-logo.png'
-                                  }
-                                  width={150}
-                                  height={250}
-                                />
-                              </div>
-                              <div>{book?.title}</div>
-                              <div>{book?.description}</div>
-                              <a
-                                className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm cursor-pointer hover:bg-primary-500"
-                                href={`${book?.file}?dl=${slugify(
-                                  book?.title?.toLowerCase()
-                                )}.pdf`}
-                              >
-                                Download
-                              </a>
-                            </div>
+                            <LibraryItem book={book} image={image} />
                           </Carousel.Item>
                         );
                       })}
@@ -117,29 +96,7 @@ const Library = ({ books }) => {
                           : null;
                         return (
                           <Carousel.Item key={idx}>
-                            <div className="flex flex-col justify-center items-center space-y-3 p-2">
-                              <div>
-                                <Image
-                                  alt={slugify(book?.title?.toLowerCase())}
-                                  src={
-                                    image ||
-                                    '/images/livingpupil-homeschool-logo.png'
-                                  }
-                                  width={150}
-                                  height={250}
-                                />
-                              </div>
-                              <div>{book?.title}</div>
-                              <div>{book?.description}</div>
-                              <a
-                                className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm cursor-pointer hover:bg-primary-500"
-                                href={`${book?.file}?dl=${slugify(
-                                  book?.title?.toLowerCase()
-                                )}.pdf`}
-                              >
-                                Download
-                              </a>
-                            </div>
+                            <LibraryItem book={book} image={image} />
                           </Carousel.Item>
                         );
                       })}
