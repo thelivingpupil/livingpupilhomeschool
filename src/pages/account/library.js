@@ -59,7 +59,7 @@ const Library = ({ books }) => {
                 <div className="text-xl italic">Parents</div>
                 {parentBooks?.length > 0 ? (
                   <div>
-                    <Carousel cols={5} rows={1} gap={10} loop>
+                    <Carousel cols={3} rows={1} gap={10} loop>
                       {parentBooks?.map((book, idx) => {
                         const imageAsset = imageBuilder.image(
                           book?.cover?.asset
@@ -81,6 +81,8 @@ const Library = ({ books }) => {
                                   height={250}
                                 />
                               </div>
+                              <div>{book?.title}</div>
+                              <div>{book?.description}</div>
                               <a
                                 className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm cursor-pointer hover:bg-primary-500"
                                 href={`${book?.file}?dl=${slugify(
@@ -127,6 +129,8 @@ const Library = ({ books }) => {
                                   height={250}
                                 />
                               </div>
+                              <div>{book?.title}</div>
+                              <div>{book?.description}</div>
                               <a
                                 className="flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-2/3 text-sm cursor-pointer hover:bg-primary-500"
                                 href={`${book?.file}?dl=${slugify(
