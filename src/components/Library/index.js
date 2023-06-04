@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
+import slugify from 'slugify';
 
 export default ({ book, image }) => {
   const [showDescription, setDescriptionVisibility] = useState(false);
