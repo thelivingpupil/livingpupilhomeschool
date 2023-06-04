@@ -17,10 +17,10 @@ export default ({ book, image }) => {
           height={250}
         />
       </div>
-      <div className="font-bold">{book?.title}</div>
+      <div className="font-bold text-xl text-primary-500">{book?.title}</div>
       <div className="w-full flex flex-col items-start">
         <button
-          className="px-3 py-1 text-sm underline bg-gray-100 rounded text-secondary-800 hover:text-secondary-600"
+          className="py-1 text-sm underline bg-gray-100 rounded text-secondary-800 hover:text-secondary-600"
           onClick={toggle}
         >
           {showDescription ? 'Hide' : 'Read'} Item Description &raquo;
