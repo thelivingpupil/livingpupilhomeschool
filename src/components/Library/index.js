@@ -1,3 +1,6 @@
+import React, { useState } from 'react';
+import Image from 'next/image';
+
 export default ({ book, image }) => {
   const [showDescription, setDescriptionVisibility] = useState(false);
 
