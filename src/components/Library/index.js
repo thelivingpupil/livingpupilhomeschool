@@ -18,7 +18,7 @@ export default ({ book, image }) => {
         />
       </div>
       <div className="font-bold">{book?.title}</div>
-      <div className="flex items-start">
+      <div className="w-full flex flex-col items-start">
         <button
           className="px-3 py-1 text-sm underline bg-gray-100 rounded text-secondary-800 hover:text-secondary-600"
           onClick={toggle}
