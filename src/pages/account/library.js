@@ -86,7 +86,7 @@ const Library = ({ books }) => {
                 <div className="text-xl italic">Students</div>
                 {studentBooks?.length > 0 ? (
                   <div>
-                    <Carousel cols={5} rows={1} gap={10} loop>
+                    <Carousel cols={3} rows={1} gap={10} loop>
                       {studentBooks?.map((book, idx) => {
                         const imageAsset = imageBuilder.image(
                           book?.cover?.asset
