@@ -34,7 +34,7 @@ const Course = ({ course }) => {
             </Card>
             <Card>
               <Card.Body title="Course Lessons">
-                {course.lessons.map((lesson, index) => (
+                {course.lessons?.map((lesson, index) => (
                   <div
                     key={index}
                     className="px-5 py-3 border rounded border-primary-500"
