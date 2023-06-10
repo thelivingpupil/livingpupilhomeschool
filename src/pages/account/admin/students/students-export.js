@@ -8,6 +8,7 @@ import prisma from '@/prisma/index';
 import Card from '@/components/Card';
 
 const StudentsExport = ({ data }) => {
+  console.log('data export', data);
   const headers = [
     { key: 'studentId', label: 'Student ID ' },
     { key: 'firstName', label: 'First Name' },

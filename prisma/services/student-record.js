@@ -270,7 +270,7 @@ export const getStudentRecords = async () =>
                 },
               },
             },
-            orderBy: [{ order: 'desc' }],
+            orderBy: [{ order: 'asc' }],
           },
         },
       },
