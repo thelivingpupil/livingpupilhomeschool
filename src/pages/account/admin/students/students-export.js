@@ -37,66 +37,66 @@ const StudentsExport = ({ data }) => {
     { key: 'reason', label: 'Homeschooling Reason' },
     { key: 'formerSchoolName', label: 'Former School Name' },
     { key: 'formerSchoolAddress', label: 'Former School Address' },
-    // { key: 'image', label: 'Student Picture' },
-    // { key: 'liveBirthCertificate', label: 'Live Birth Certificate' },
-    // { key: 'reportCard', label: 'Report Card' },
-    // { key: 'createdAt', label: 'Enrollment Date' },
-    // { key: 'student.name', label: 'Student Record Alias ' },
-    // { key: 'student.slug', label: 'Student Record Unique Key' },
-    // { key: 'student.creator.email', label: 'Account Email' },
-    // { key: 'student.creator.emailVerified', label: 'Date Verified' },
-    // {
-    //   key: 'student.creator.guardianInformation.primaryGuardianName',
-    //   label: 'Primary Guardian Name',
-    // },
-    // {
-    //   key: 'student.creator.guardianInformation.primaryGuardianOccupation',
-    //   label: 'Primary Guardian Occupation',
-    // },
-    // {
-    //   key: 'student.creator.guardianInformation.primaryGuardianProfile',
-    //   label: 'Primary Guardian Facebook Profile',
-    // },
-    // {
-    //   key: 'student.creator.guardianInformation.primaryGuardianType',
-    //   label: 'Primary Guardian Type',
-    // },
-    // {
-    //   key: 'student.creator.guardianInformation.secondaryGuardianName',
-    //   label: 'Secondary Guardian Name',
-    // },
-    // {
-    //   key: 'student.creator.guardianInformation.secondaryGuardianOccupation',
-    //   label: 'Secondary Guardian Occupation',
-    // },
-    // {
-    //   key: 'student.creator.guardianInformation.secondaryGuardianProfile',
-    //   label: 'Secondary Guardian Facebook Profile',
-    // },
-    // {
-    //   key: 'student.creator.guardianInformation.secondaryGuardianType',
-    //   label: 'Secondary Guardian Type',
-    // },
-    // {
-    //   key: 'student.creator.guardianInformation.address1',
-    //   label: 'Address Line 1',
-    // },
-    // {
-    //   key: 'student.creator.guardianInformation.address2',
-    //   label: 'Address Line 2',
-    // },
-    // {
-    //   key: 'student.creator.guardianInformation.anotherEmail',
-    //   label: 'Secondary Email',
-    // },
-    // {
-    //   key: 'student.creator.guardianInformation.mobileNumber',
-    //   label: 'Mobile Number',
-    // },
-    // {
-    //   key: 'student.creator.guardianInformation.telephoneNumber',
-    //   label: 'Telephone Number',
-    // },
+    { key: 'image', label: 'Student Picture' },
+    { key: 'liveBirthCertificate', label: 'Live Birth Certificate' },
+    { key: 'reportCard', label: 'Report Card' },
+    { key: 'createdAt', label: 'Enrollment Date' },
+    { key: 'student.name', label: 'Student Record Alias ' },
+    { key: 'student.slug', label: 'Student Record Unique Key' },
+    { key: 'student.creator.email', label: 'Account Email' },
+    { key: 'student.creator.emailVerified', label: 'Date Verified' },
+    {
+      key: 'student.creator.guardianInformation.primaryGuardianName',
+      label: 'Primary Guardian Name',
+    },
+    {
+      key: 'student.creator.guardianInformation.primaryGuardianOccupation',
+      label: 'Primary Guardian Occupation',
+    },
+    {
+      key: 'student.creator.guardianInformation.primaryGuardianProfile',
+      label: 'Primary Guardian Facebook Profile',
+    },
+    {
+      key: 'student.creator.guardianInformation.primaryGuardianType',
+      label: 'Primary Guardian Type',
+    },
+    {
+      key: 'student.creator.guardianInformation.secondaryGuardianName',
+      label: 'Secondary Guardian Name',
+    },
+    {
+      key: 'student.creator.guardianInformation.secondaryGuardianOccupation',
+      label: 'Secondary Guardian Occupation',
+    },
+    {
+      key: 'student.creator.guardianInformation.secondaryGuardianProfile',
+      label: 'Secondary Guardian Facebook Profile',
+    },
+    {
+      key: 'student.creator.guardianInformation.secondaryGuardianType',
+      label: 'Secondary Guardian Type',
+    },
+    {
+      key: 'student.creator.guardianInformation.address1',
+      label: 'Address Line 1',
+    },
+    {
+      key: 'student.creator.guardianInformation.address2',
+      label: 'Address Line 2',
+    },
+    {
+      key: 'student.creator.guardianInformation.anotherEmail',
+      label: 'Secondary Email',
+    },
+    {
+      key: 'student.creator.guardianInformation.mobileNumber',
+      label: 'Mobile Number',
+    },
+    {
+      key: 'student.creator.guardianInformation.telephoneNumber',
+      label: 'Telephone Number',
+    },
   ];
 
   return (
