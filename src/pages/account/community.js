@@ -11,7 +11,53 @@ import {
 import { HiOutlineUserGroup } from 'react-icons/hi';
 import Image from 'next/image';
 
+const formGradeLevels = {
+  KINDER: {
+    grades: ['K1', 'K2'],
+    title: 'K1 & K2 parents',
+    url: 'https://m.me/j/AbbL9iaOGC3zXStR/',
+  },
+  FORM_1: {
+    grades: ['GRADE_1', 'GRADE_2', 'GRADE_3'],
+    title: 'Grade 1-3 Parents',
+    url: 'https://m.me/j/AbY19X_tskHnJCAM/',
+  },
+  FORM_2: {
+    grades: ['GRADE_4', 'GRADE_5', 'GRADE_6'],
+    title: 'Grade 4-6 Parents',
+    url: 'https://m.me/j/AbafH0XOzI9MzEKu/',
+  },
+  FORM_3: {
+    grades: ['GRADE_7', 'GRADE_8', 'GRADE_9', 'GRADE_10'],
+    title: 'Grade 7-10 Parents',
+    url: 'https://m.me/j/AbakbwKDgy0q8DLr/',
+  },
+};
+
 const Community = () => {
+  const { data } = useWorkspaces();
+
+  const availableGrades = useMemo(() => {
+    if (!data) {
+      return [];
+    }
+
+    return data?.workspaces
+      ?.filter((workspace) => workspace?.studentRecord)
+      ?.map((workspace) => workspace?.studentRecord?.incomingGradeLevel);
+  }, [data]);
+
+  const availableMessengerGroups = useMemo(
+    () =>
+      Object.keys(formGradeLevels).filter((form) => {
+        const formGradeLevel = formGradeLevels[form];
+
+        return formGradeLevel?.grades?.find((gradeLevel) =>
+          availableGrades.includes(gradeLevel)
+        );
+      }),
+    [availableGrades]
+  );
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Living Pupil Homeschool Community" />
@@ -50,18 +96,19 @@ const Community = () => {
               </span>
             </div>
           </a>
-          <a
-            className="flex"
-            href="https://www.messenger.com/livingpupilhomeschool"
-            target="_blank"
-          >
-            <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">
-              <FaFacebookMessenger size={100} color="#17A9FD" />
-              <span className="text-lg text-white font-semibold p-2 max-w-[200px] text-center">
-                Facebook Messenger Group
-              </span>
-            </div>
-          </a>
+          {availableMessengerGroups?.map((form) => {
+            const formGradeLevel = formGradeLevels[form];
+            return (
+              <a className="flex" href={formGradeLevel?.url} target="_blank">
+                <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">
+                  <FaFacebookMessenger size={100} color="#17A9FD" />
+                  <span className="text-lg text-white font-semibold p-2 max-w-[200px] text-center">
+                    Facebook Messenger Group {formGradeLevel?.title}
+                  </span>
+                </div>
+              </a>
+            );
+          })}
           <a className="flex" href="#" target="_blank">
             <div className="flex flex-col xs:flex-row bg-primary-500 p-8 items-center rounded-xl mt-5 ml-5">
               <HiOutlineUserGroup size={100} color="#FFFFFF" />

@@ -16,8 +16,6 @@ const formGradeLevels = {
 const LessonPlans = ({ lessonPlans, blueprints }) => {
   const { data } = useWorkspaces();
 
-  console.log('server side data', { lessonPlans, blueprints });
-
   const availableGrades = useMemo(() => {
     if (!data) {
       return [];
@@ -55,12 +53,6 @@ const LessonPlans = ({ lessonPlans, blueprints }) => {
         }),
     [availableGrades, blueprints]
   );
-
-  console.log('Availability', {
-    availableGrades,
-    availablePlans,
-    availableBlueprints,
-  });
 
   return (
     <AccountLayout>
