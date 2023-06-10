@@ -109,7 +109,7 @@ const StudentsExport = ({ data }) => {
       <Content.Divider />
       <CSVLink
         className="items-center px-3 py-3 space-x-2 text-sm text-center text-white rounded bg-primary-500 hover:bg-secondary-500 hover:text-primary-600"
-        data={data}
+        data={[]}
         filename={`students-export-${format(
           new Date(),
           'yyyy.MM.dd.kk.mm.ss'
