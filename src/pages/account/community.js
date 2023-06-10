@@ -72,7 +72,7 @@ const Community = () => {
           </a>
           <a
             className="flex"
-            href="https://www.facebook.com/livingpupilhomeschool"
+            href="https://forms.gle/Wpa4sAkm8GaEzQTA6"
             target="_blank"
           >
             <div className="flex flex-col xs:flex-row bg-[#4e5ba5] p-8 items-center rounded-xl mt-5 ml-5">
@@ -84,7 +84,7 @@ const Community = () => {
           </a>
           <a
             className="flex"
-            href="https://www.facebook.com/livingpupilhomeschool"
+            href="https://www.facebook.com/groups/328866131938778/"
             target="_blank"
           >
             <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">

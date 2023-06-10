@@ -8,13 +8,6 @@ import { useMemo } from 'react';
 
 const LessonPlans = ({ lessonPlans }) => {
   const { data } = useWorkspaces();
-  console.log('workspaces', data);
-  console.log(
-    'lessonPlans',
-    lessonPlans?.sort(
-      (a, b) => Number(a?.grade?.split('_')[1]) - b?.grade?.split('_')[1]
-    )
-  );
 
   const availableGrades = useMemo(() => {
     if (!data) {
