@@ -274,6 +274,15 @@ export const getStudentRecords = async () =>
     },
     where: {
       deletedAt: null,
-      student: { deletedAt: null, NOT: { schoolFees: { none: {} } } },
+      student: {
+        deletedAt: null,
+        schoolFees: {
+          some: {
+            transaction: {
+              paymentStatus: TransactionStatus.S,
+            },
+          },
+        },
+      },
     },
   });
