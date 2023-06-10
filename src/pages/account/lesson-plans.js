@@ -6,8 +6,10 @@ import { useWorkspaces } from '@/hooks/data';
 import sanityClient from '@/lib/server/sanity';
 import { useMemo } from 'react';
 
-const LessonPlans = ({ lessonPlans }) => {
+const LessonPlans = ({ lessonPlans, blueprints }) => {
   const { data } = useWorkspaces();
+
+  console.log('server side data', { lessonPlans, blueprints });
 
   const availableGrades = useMemo(() => {
     if (!data) {
@@ -23,7 +25,8 @@ const LessonPlans = ({ lessonPlans }) => {
     () =>
       lessonPlans
         ?.sort(
-          (a, b) => Number(a?.grade?.split('_')[1]) - b?.grade?.split('_')[1]
+          (a, b) =>
+            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1])
         )
         ?.filter((lessonPlan) => availableGrades.includes(lessonPlan?.grade)),
     [availableGrades, lessonPlans]
@@ -60,6 +63,28 @@ const LessonPlans = ({ lessonPlans }) => {
             </div>
           </Card.Body>
         </Card>
+        <Card>
+          <Card.Body title="Available Lesson Plans">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
+              {availablePlans?.length > 0 &&
+                availablePlans?.map((plan, idx) => {
+                  const bgColor = idx % 2 === 0 ? 'bg-primary' : 'bg-secondary';
+                  return (
+                    <div key={idx} className="flex justify-center">
+                      <a
+                        className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
+                        href={`${
+                          plan?.fileUrl
+                        }?dl=${plan?.grade?.toLowerCase()}-lesson_plan.pdf`}
+                      >
+                        {plan?.grade?.replace('_', ' ')}
+                      </a>
+                    </div>
+                  );
+                })}
+            </div>
+          </Card.Body>
+        </Card>
       </Content.Container>
     </AccountLayout>
   );
@@ -71,9 +96,15 @@ export const getServerSideProps = async () => {
     'fileUrl': lessonPlanFile.asset->url
   }`);
 
+  const blueprints = await sanityClient.fetch(`*[_type == 'blueprints']{
+    'form': formLevel,
+    'fileUrl': blueprintFile.asset->url
+  }`);
+
   return {
     props: {
       lessonPlans,
+      blueprints,
     },
   };
 };
