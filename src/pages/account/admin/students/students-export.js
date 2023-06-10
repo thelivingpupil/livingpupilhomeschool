@@ -1,4 +1,4 @@
-import { CSVLink } from 'react-csv';
+import { CSVLink, CSVDownload } from 'react-csv';
 import format from 'date-fns/format';
 import { TransactionStatus } from '@prisma/client';
 
@@ -107,7 +107,7 @@ const StudentsExport = ({ data }) => {
         subtitle="Export and download students list"
       />
       <Content.Divider />
-      <CSVLink
+      <CSVDownload
         className="items-center px-3 py-3 space-x-2 text-sm text-center text-white rounded bg-primary-500 hover:bg-secondary-500 hover:text-primary-600"
         data={sampleData}
         filename={`students-export-${format(
@@ -115,9 +115,10 @@ const StudentsExport = ({ data }) => {
           'yyyy.MM.dd.kk.mm.ss'
         )}.csv`}
         headers={headers}
+        target="_blank"
       >
         Download Students Master List and References
-      </CSVLink>
+      </CSVDownload>
       <Card>
         <Card.Body title="Current Students Statistics"></Card.Body>
       </Card>
