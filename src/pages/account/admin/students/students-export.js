@@ -30,60 +30,60 @@ const StudentsExport = ({ data }) => {
     { key: 'createdAt', label: 'Enrollment Date' },
     { key: 'student.name', label: 'Student Record Alias ' },
     { key: 'student.slug', label: 'Student Record Unique Key' },
-    { key: 'student.creator.email', label: 'Account Email' },
-    { key: 'student.creator.emailVerified', label: 'Date Verified' },
-    {
-      key: 'student.creator.guardianInformation.primaryGuardianName',
-      label: 'Primary Guardian Name',
-    },
-    {
-      key: 'student.creator.guardianInformation.primaryGuardianOccupation',
-      label: 'Primary Guardian Occupation',
-    },
-    {
-      key: 'student.creator.guardianInformation.primaryGuardianProfile',
-      label: 'Primary Guardian Facebook Profile',
-    },
-    {
-      key: 'student.creator.guardianInformation.primaryGuardianType',
-      label: 'Primary Guardian Type',
-    },
-    {
-      key: 'student.creator.guardianInformation.secondaryGuardianName',
-      label: 'Secondary Guardian Name',
-    },
-    {
-      key: 'student.creator.guardianInformation.secondaryGuardianOccupation',
-      label: 'Secondary Guardian Occupation',
-    },
-    {
-      key: 'student.creator.guardianInformation.secondaryGuardianProfile',
-      label: 'Secondary Guardian Facebook Profile',
-    },
-    {
-      key: 'student.creator.guardianInformation.secondaryGuardianType',
-      label: 'Secondary Guardian Type',
-    },
-    {
-      key: 'student.creator.guardianInformation.address1',
-      label: 'Address Line 1',
-    },
-    {
-      key: 'student.creator.guardianInformation.address2',
-      label: 'Address Line 2',
-    },
-    {
-      key: 'student.creator.guardianInformation.anotherEmail',
-      label: 'Secondary Email',
-    },
-    {
-      key: 'student.creator.guardianInformation.mobileNumber',
-      label: 'Mobile Number',
-    },
-    {
-      key: 'student.creator.guardianInformation.telephoneNumber',
-      label: 'Telephone Number',
-    },
+    // { key: 'student.creator.email', label: 'Account Email' },
+    // { key: 'student.creator.emailVerified', label: 'Date Verified' },
+    // {
+    //   key: 'student.creator.guardianInformation.primaryGuardianName',
+    //   label: 'Primary Guardian Name',
+    // },
+    // {
+    //   key: 'student.creator.guardianInformation.primaryGuardianOccupation',
+    //   label: 'Primary Guardian Occupation',
+    // },
+    // {
+    //   key: 'student.creator.guardianInformation.primaryGuardianProfile',
+    //   label: 'Primary Guardian Facebook Profile',
+    // },
+    // {
+    //   key: 'student.creator.guardianInformation.primaryGuardianType',
+    //   label: 'Primary Guardian Type',
+    // },
+    // {
+    //   key: 'student.creator.guardianInformation.secondaryGuardianName',
+    //   label: 'Secondary Guardian Name',
+    // },
+    // {
+    //   key: 'student.creator.guardianInformation.secondaryGuardianOccupation',
+    //   label: 'Secondary Guardian Occupation',
+    // },
+    // {
+    //   key: 'student.creator.guardianInformation.secondaryGuardianProfile',
+    //   label: 'Secondary Guardian Facebook Profile',
+    // },
+    // {
+    //   key: 'student.creator.guardianInformation.secondaryGuardianType',
+    //   label: 'Secondary Guardian Type',
+    // },
+    // {
+    //   key: 'student.creator.guardianInformation.address1',
+    //   label: 'Address Line 1',
+    // },
+    // {
+    //   key: 'student.creator.guardianInformation.address2',
+    //   label: 'Address Line 2',
+    // },
+    // {
+    //   key: 'student.creator.guardianInformation.anotherEmail',
+    //   label: 'Secondary Email',
+    // },
+    // {
+    //   key: 'student.creator.guardianInformation.mobileNumber',
+    //   label: 'Mobile Number',
+    // },
+    // {
+    //   key: 'student.creator.guardianInformation.telephoneNumber',
+    //   label: 'Telephone Number',
+    // },
   ];
 
   return (
@@ -164,9 +164,21 @@ export const getServerSideProps = async () => {
         },
       },
     },
-    where: { deletedAt: null },
+    where: {
+      deletedAt: null,
+      student: {
+        deletedAt: null,
+        schoolFees: {
+          some: {
+            transaction: {
+              paymentStatus: TransactionStatus.S,
+            },
+          },
+        },
+      },
+    },
   });
-  return { props: { data: JSON.parse(JSON.stringify(data)) } };
+  return { props: { data } };
 };
 
 export default StudentsExport;
