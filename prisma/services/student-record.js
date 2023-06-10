@@ -274,6 +274,6 @@ export const getStudentRecords = async () =>
     },
     where: {
       deletedAt: null,
-      student: { deletedAt: null, schoolFees: { none: {} } },
+      student: { deletedAt: null, NOT: { schoolFees: { none: {} } } },
     },
   });
