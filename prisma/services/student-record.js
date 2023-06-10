@@ -256,8 +256,8 @@ export const getStudentRecords = async () =>
           },
           schoolFees: {
             select: {
-              order,
-              paymentType,
+              order: true,
+              paymentType: true,
               transaction: {
                 select: {
                   transactionId: true,
