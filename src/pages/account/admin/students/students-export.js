@@ -115,6 +115,7 @@ const StudentsExport = ({ data }) => {
           'yyyy.MM.dd.kk.mm.ss'
         )}.csv`}
         headers={headers}
+        asyncOnClick
       >
         Download Students Master List and References
       </CSVLink>
