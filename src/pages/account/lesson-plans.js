@@ -6,6 +6,13 @@ import { useWorkspaces } from '@/hooks/data';
 import sanityClient from '@/lib/server/sanity';
 import { useMemo } from 'react';
 
+const formGradeLevels = {
+  KINDER: ['K1', 'K2'],
+  FORM_1: ['GRADE_1', 'GRADE_2', 'GRADE_3'],
+  FORM_2: ['GRADE_4', 'GRADE_5', 'GRADE_6'],
+  FORM_3: ['GRADE_7', 'GRADE_8', 'GRADE_9', 'GRADE_10'],
+};
+
 const LessonPlans = ({ lessonPlans, blueprints }) => {
   const { data } = useWorkspaces();
 
@@ -32,12 +39,35 @@ const LessonPlans = ({ lessonPlans, blueprints }) => {
     [availableGrades, lessonPlans]
   );
 
+  const availableBlueprints = useMemo(
+    () =>
+      blueprints
+        ?.sort(
+          (a, b) =>
+            Number(a?.form?.split('_')[1]) - Number(b?.form?.split('_')[1])
+        )
+        .filter(({ form }) => {
+          const formGradeLevel = formGradeLevels[form];
+
+          return formGradeLevel?.find((gradeLevel) =>
+            availableGrades.includes(gradeLevel)
+          );
+        }),
+    [availableGrades, blueprints]
+  );
+
+  console.log('Availability', {
+    availableGrades,
+    availablePlans,
+    availableBlueprints,
+  });
+
   return (
     <AccountLayout>
-      <Meta title="Living Pupil Homeschool - Guides and Lesson Plans" />
+      <Meta title="Living Pupil Homeschool - Guides, Lesson Plans and School Year Blueprint" />
       <Content.Title
-        title="Parent Guides and Lesson Plans"
-        subtitle="View and download guides and lesson plans dedicated to the parents"
+        title="Parent Guides, Lesson Plans and School Year Blueprint"
+        subtitle="View and download guides, lesson plans and school year blueprints dedicated to the parents"
       />
       <Content.Divider />
       <Content.Container>
@@ -64,20 +94,20 @@ const LessonPlans = ({ lessonPlans, blueprints }) => {
           </Card.Body>
         </Card>
         <Card>
-          <Card.Body title="Available Lesson Plans">
+          <Card.Body title="SY Blueprints">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
-              {availablePlans?.length > 0 &&
-                availablePlans?.map((plan, idx) => {
+              {availableBlueprints?.length > 0 &&
+                availableBlueprints?.map((blueprint, idx) => {
                   const bgColor = idx % 2 === 0 ? 'bg-primary' : 'bg-secondary';
                   return (
                     <div key={idx} className="flex justify-center">
                       <a
                         className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
                         href={`${
-                          plan?.fileUrl
-                        }?dl=${plan?.grade?.toLowerCase()}-lesson_plan.pdf`}
+                          blueprint?.fileUrl
+                        }?dl=${blueprint?.form?.toLowerCase()}-sy_blueprint.pdf`}
                       >
-                        {plan?.grade?.replace('_', ' ')}
+                        {blueprint?.form?.replace('_', ' ')}
                       </a>
                     </div>
                   );
