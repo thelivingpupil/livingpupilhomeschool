@@ -1,5 +1,6 @@
 import { CSVLink } from 'react-csv';
 import format from 'date-fns/format';
+import { TransactionStatus } from '@prisma/client';
 
 import Content from '@/components/Content';
 import Meta from '@/components/Meta';
