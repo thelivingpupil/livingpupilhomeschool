@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import formatDistance from 'date-fns/formatDistance';
 import api from '@/lib/common/api';
 import { ChevronDownIcon } from '@heroicons/react/outline';
@@ -105,8 +105,9 @@ const Transactions = () => {
     inputFileRef.current.click();
   };
 
-  const handleAccountFilter = (e) =>
-    debounce(() => setFilter([filterBy, e.target.value]), 300);
+  const handleAccountFilter = useCallback(() => {
+    debounce((e) => setFilter([filterBy, e.target.value]), 300);
+  }, [filterBy]);
 
   const handleImportFile = async (event) => {
     const file = event.target.files[0];
