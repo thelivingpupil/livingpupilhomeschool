@@ -46,13 +46,15 @@ const Shop = ({ categories, items }) => {
   } = useCartContext();
 
   useEffect(() => {
-    setDeliveryAddress(
-      data?.user?.guardianInformation?.address1
-        ? `${data?.user?.guardianInformation?.address1} ${data?.user?.guardianInformation?.address2}`
-        : ''
-    );
-    setContactNumber(data?.user?.guardianInformation?.mobileNumber || '');
-  }, [data]);
+    if (!deliveryAddress || !contactNumber) {
+      setDeliveryAddress(
+        data?.user?.guardianInformation?.address1
+          ? `${data?.user?.guardianInformation?.address1} ${data?.user?.guardianInformation?.address2}`
+          : ''
+      );
+      setContactNumber(data?.user?.guardianInformation?.mobileNumber || '');
+    }
+  }, [data, deliveryAddress, contactNumber]);
 
   const onChangeFilter = (e) => {
     const category = e.target.value;
@@ -159,8 +161,8 @@ const Shop = ({ categories, items }) => {
           </div>
           <div className="w-4/5 py-3 text-sm text-white bg-primary-500">
             <div className="flex flex-col">
-              <span>Shipping details provided:</span>
-              <div className="flex">
+              <span className="pb-5">Shipping details provided:</span>
+              <div className="flex items-center">
                 Deliver Address:{' '}
                 <div className="flex flex-row md:w-1/4">
                   <input
@@ -171,7 +173,7 @@ const Shop = ({ categories, items }) => {
                   />
                 </div>
               </div>
-              <div className="flex">
+              <div className="flex items-center">
                 Contact Number:{' '}
                 <div className="flex flex-row md:w-1/4">
                   <input
