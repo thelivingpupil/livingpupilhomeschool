@@ -17,6 +17,8 @@ const builder = imageUrlBuilder(sanityClient);
 
 const Shop = ({ categories, items }) => {
   const { data } = useSession();
+
+  console.log('data', data);
   const [sortBy, setSortBy] = useState('alphaAsc');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [shopItems, setShopItems] = useState(items);

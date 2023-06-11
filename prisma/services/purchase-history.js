@@ -1,4 +1,4 @@
-import { TransactionSource, TransactionStatus } from '@prisma/client';
+import { TransactionSource } from '@prisma/client';
 import prisma from '@/prisma/index';
 import crypto from 'crypto';
 
@@ -64,6 +64,8 @@ export const getStorePurchases = async () =>
       id: true,
       transactionId: true,
       total: true,
+      deliveryAddress: true,
+      shippingType: true,
       createdAt: true,
       orderItems: {
         select: {
@@ -116,7 +118,11 @@ export const getStorePurchases = async () =>
     },
   });
 
-export const createPurchase = async (items) => {
+export const createPurchase = async ({
+  items,
+  shippingFee,
+  deliveryAddress,
+}) => {
   const orderItems = items.map(({ code, image, name, price, quantity }) => ({
     code:
       code ||

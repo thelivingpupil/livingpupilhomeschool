@@ -9,8 +9,12 @@ const handler = async (req, res) => {
 
   if (method === 'POST') {
     const session = await validateSession(req, res);
-    const { items } = req.body;
-    const { id, transactionId, total } = await createPurchase(items);
+    const { items, shippingFee, deliveryAddress } = req.body;
+    const { id, transactionId, total } = await createPurchase({
+      items,
+      shippingFee,
+      deliveryAddress,
+    });
     const transaction = await createTransaction(
       session.user.userId,
       session.user.email,

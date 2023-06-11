@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import api from '@/lib/common/api';
 import toast from 'react-hot-toast';
+import { ShippingType } from '@prisma/client';
 
 const cartInitialState = {
   cart: [],
@@ -29,30 +30,37 @@ export const SHOP_SHIPPING = {
   withInCebu: {
     title: 'Within Cebu',
     fee: 160,
+    key: ShippingType.WITHIN_CEBU,
   },
   ncr: {
     title: 'NCR',
     fee: 200,
+    key: ShippingType.NCR,
   },
   northLuzon: {
     title: 'North Luzon',
     fee: 210,
+    key: ShippingType.NORTH_LUZON,
   },
   southLuzon: {
     title: 'South Luzon',
     fee: 210,
+    key: ShippingType.SOUTH_LUZON,
   },
   visayas: {
     title: 'Other Visayas Region',
     fee: 200,
+    key: ShippingType.VISAYAS,
   },
   mindanao: {
     title: 'Mindanao',
     fee: 200,
+    key: ShippingType.MINDANAO,
   },
   islander: {
     title: 'Islander',
     fee: 210,
+    key: ShippingType.ISLANDER,
   },
 };
 
