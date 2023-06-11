@@ -104,6 +104,16 @@ export const getUser = async (id) =>
       email: true,
       name: true,
       userCode: true,
+      guardianInformation: {
+        select: {
+          primaryGuardianName: true,
+          secondaryGuardianName: true,
+          address1: true,
+          address2: true,
+          mobileNumber: true,
+          telephoneNumber: true,
+        },
+      },
     },
     where: { id },
   });

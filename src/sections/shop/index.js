@@ -3,7 +3,6 @@ import { ChevronDownIcon, XIcon } from '@heroicons/react/outline';
 import imageUrlBuilder from '@sanity/image-url';
 import crypto from 'crypto';
 import debounce from 'lodash.debounce';
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -12,11 +11,12 @@ import Item from '@/components/Shop/item';
 
 import sanityClient from '@/lib/server/sanity';
 import { useCartContext } from '@/providers/cart';
+import useUser from '@/hooks/data/useUser';
 
 const builder = imageUrlBuilder(sanityClient);
 
 const Shop = ({ categories, items }) => {
-  const { data } = useSession();
+  const { data, isLoading } = useUser();
 
   console.log('data', data);
   const [sortBy, setSortBy] = useState('alphaAsc');
