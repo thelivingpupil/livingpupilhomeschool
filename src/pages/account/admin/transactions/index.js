@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import formatDistance from 'date-fns/formatDistance';
 import api from '@/lib/common/api';
 import { ChevronDownIcon } from '@heroicons/react/outline';
@@ -22,7 +22,6 @@ import {
   STATUS,
 } from '@/utils/constants';
 import Modal from '@/components/Modal';
-import debounce from 'lodash.debounce';
 
 const filterValueOptions = {
   paymentType: PAYMENT_TYPE,
@@ -104,10 +103,6 @@ const Transactions = () => {
   const submit = () => {
     inputFileRef.current.click();
   };
-
-  const handleAccountFilter = useCallback(() => {
-    debounce((e) => setFilter([filterBy, e.target.value]), 300);
-  }, [filterBy]);
 
   const handleImportFile = async (event) => {
     const file = event.target.files[0];
@@ -219,7 +214,7 @@ const Transactions = () => {
                     <div className="flex flex-row md:w-1/4">
                       <input
                         className="w-full px-3 py-2 border rounded"
-                        onChange={handleAccountFilter}
+                        onChange={(e) => setFilter([filterBy, e.target.value])}
                         placeholder="Email Account"
                         value={filterValue}
                       />
