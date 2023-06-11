@@ -159,18 +159,28 @@ const Shop = ({ categories, items }) => {
           </div>
           <div className="w-4/5 py-3 text-sm text-white bg-primary-500">
             <div className="flex flex-col">
-              <span>Shipping details provided</span>
-              <div>
+              <span>Shipping details provided:</span>
+              <div className="flex">
                 Deliver Address:{' '}
-                <span className="font-medium text-secondary-500">
-                  {deliveryAddress}
-                </span>
+                <div className="flex flex-row md:w-1/4">
+                  <input
+                    className="w-full px-3 py-2 border rounded"
+                    onChange={(e) => setDeliveryAddress(e.target.value)}
+                    placeholder="Delivery Address..."
+                    value={deliveryAddress}
+                  />
+                </div>
               </div>
-              <div>
+              <div className="flex">
                 Contact Number:{' '}
-                <span className="font-medium text-secondary-500">
-                  {contactNumber}
-                </span>
+                <div className="flex flex-row md:w-1/4">
+                  <input
+                    className="w-full px-3 py-2 border rounded"
+                    onChange={(e) => setContactNumber(e.target.value)}
+                    placeholder="Contact Number..."
+                    value={contactNumber}
+                  />
+                </div>
               </div>
             </div>
           </div>
