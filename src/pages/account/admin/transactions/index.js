@@ -105,7 +105,8 @@ const Transactions = () => {
     inputFileRef.current.click();
   };
 
-  const handleAccountFilter = (e) => setFilter([filterBy, e.target.value]);
+  const handleAccountFilter = (e) =>
+    debounce(() => setFilter([filterBy, e.target.value]), 300);
 
   const handleImportFile = async (event) => {
     const file = event.target.files[0];
@@ -217,7 +218,7 @@ const Transactions = () => {
                     <div className="flex flex-row md:w-1/4">
                       <input
                         className="w-full px-3 py-2 border rounded"
-                        onChange={debounce(handleAccountFilter, 300)}
+                        onChange={handleAccountFilter}
                         placeholder="Email Account"
                         value={filterValue}
                       />
