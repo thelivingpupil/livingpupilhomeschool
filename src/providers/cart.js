@@ -10,12 +10,14 @@ const cartInitialState = {
   showPaymentLink: false,
   isSubmitting: false,
   paymentLink: '',
-  setShippingFee: 'withInCebu',
+  shippingFee: {},
   deliveryAddress: '',
+  contactNumber: '',
   addToCart: () => {},
   removeFromCart: () => {},
   setShippingFee: () => {},
   setDeliveryAddress: () => {},
+  setContactNumber: () => {},
   clearCart: () => {},
   toggleCartVisibility: () => {},
   togglePaymentLinkVisibility: () => {},
@@ -74,6 +76,7 @@ const CartProvider = ({ children }) => {
   const [paymentLink, setPaymentLink] = useState('');
   const [shippingFee, setShippingFee] = useState(SHOP_SHIPPING?.withInCebu);
   const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
 
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem(LPH_CART_KEY));
@@ -156,11 +159,13 @@ const CartProvider = ({ children }) => {
         showPaymentLink,
         shippingFee,
         deliveryAddress,
+        contactNumber,
         isSubmitting,
         paymentLink,
         addToCart,
         setShippingFee,
         setDeliveryAddress,
+        setContactNumber,
         removeFromCart,
         clearCart,
         toggleCartVisibility,

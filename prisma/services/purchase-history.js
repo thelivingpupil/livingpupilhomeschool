@@ -122,6 +122,7 @@ export const createPurchase = async ({
   items,
   shippingFee,
   deliveryAddress,
+  contactNumber,
 }) => {
   const orderItems = items.map(({ code, image, name, price, quantity }) => ({
     code:
@@ -138,13 +139,15 @@ export const createPurchase = async ({
     totalPrice: Number(price * quantity).toFixed(2),
     quantity,
   }));
-  const total = items.reduce(
-    (a, { price, quantity }) => a + price * quantity,
-    0
-  );
+  const total =
+    items.reduce((a, { price, quantity }) => a + price * quantity, 0) +
+    shippingFee?.fee;
   return await prisma.purchaseHistory.create({
     data: {
       total,
+      shippingType: shippingFee?.key,
+      deliveryAddress,
+      contactNumber,
       orderItems: { create: orderItems },
     },
     select: {

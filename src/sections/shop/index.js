@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChevronDownIcon, XIcon } from '@heroicons/react/outline';
 import imageUrlBuilder from '@sanity/image-url';
 import crypto from 'crypto';
@@ -16,7 +16,7 @@ import useUser from '@/hooks/data/useUser';
 const builder = imageUrlBuilder(sanityClient);
 
 const Shop = ({ categories, items }) => {
-  const { data, isLoading } = useUser();
+  const { data } = useUser();
 
   console.log('data', data);
   const [sortBy, setSortBy] = useState('alphaAsc');
@@ -27,6 +27,12 @@ const Shop = ({ categories, items }) => {
   const {
     cart,
     total,
+    shippingFee,
+    deliveryAddress,
+    contactNumber,
+    setShippingFee,
+    setDeliveryAddress,
+    setContactNumber,
     addToCart,
     removeFromCart,
     clearCart,
@@ -38,6 +44,15 @@ const Shop = ({ categories, items }) => {
     paymentLink,
     checkoutCart,
   } = useCartContext();
+
+  useEffect(() => {
+    setDeliveryAddress(
+      data?.user?.guardianInformation?.address1
+        ? `${data?.user?.guardianInformation?.address1} ${data?.user?.guardianInformation?.address2}`
+        : ''
+    );
+    setContactNumber(data?.user?.guardianInformation?.mobileNumber || '');
+  }, [data]);
 
   const onChangeFilter = (e) => {
     const category = e.target.value;
@@ -135,24 +150,31 @@ const Shop = ({ categories, items }) => {
   return (
     <>
       {data && (
-        <>
+        <div className="flex flex-col">
           <div className="w-full py-3 text-sm text-center text-white bg-primary-500">
             You are signed in as:{' '}
             <span className="font-medium text-secondary-500">
               {data?.user?.email}
             </span>
           </div>
-          <div className="w-full py-3 text-sm text-center text-white bg-primary-500">
-            Please provide your delivery address and contact information here:{' '}
-            <Link href="/account/information">
-              <a>
+          <div className="w-full py-3 text-white bg-primary-500">
+            <div className="flex flex-col">
+              <span>Shipping details provided</span>
+              <div>
+                Deliver Address:{' '}
                 <span className="font-medium text-secondary-500">
-                  Delivery Information
+                  {deliveryAddress}
                 </span>
-              </a>
-            </Link>
+              </div>
+              <div>
+                Contact Number:{' '}
+                <span className="font-medium text-secondary-500">
+                  {contactNumber}
+                </span>
+              </div>
+            </div>
           </div>
-        </>
+        </div>
       )}
       <section className="px-5 py-10 md:px-0">
         <div className="container flex flex-col mx-auto space-y-10 md:flex-row md:space-y-0 md:space-x-10">

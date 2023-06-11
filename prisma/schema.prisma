@@ -137,6 +137,7 @@ model PurchaseHistory {
   deletedAt       DateTime?
   updatedAt       DateTime?    @updatedAt
   deliveryAddress String?
+  contactNumber   String?
   shippingType    ShippingType?
   total           Decimal      @default(0)
   transactionId   String       @unique @default(cuid())
