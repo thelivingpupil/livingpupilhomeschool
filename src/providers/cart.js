@@ -9,8 +9,12 @@ const cartInitialState = {
   showPaymentLink: false,
   isSubmitting: false,
   paymentLink: '',
+  setShippingFee: 'withInCebu',
+  deliveryAddress: '',
   addToCart: () => {},
   removeFromCart: () => {},
+  setShippingFee: () => {},
+  setDeliveryAddress: () => {},
   clearCart: () => {},
   toggleCartVisibility: () => {},
   togglePaymentLinkVisibility: () => {},
@@ -21,6 +25,37 @@ const LPH_CART_KEY = 'LPHCART';
 
 const CartContext = createContext(cartInitialState);
 
+export const SHOP_SHIPPING = {
+  withInCebu: {
+    title: 'Within Cebu',
+    fee: 160,
+  },
+  ncr: {
+    title: 'NCR',
+    fee: 200,
+  },
+  northLuzon: {
+    title: 'North Luzon',
+    fee: 210,
+  },
+  southLuzon: {
+    title: 'South Luzon',
+    fee: 210,
+  },
+  visayas: {
+    title: 'Other Visayas Region',
+    fee: 200,
+  },
+  mindanao: {
+    title: 'Mindanao',
+    fee: 200,
+  },
+  islander: {
+    title: 'Islander',
+    fee: 210,
+  },
+};
+
 export const useCartContext = () => useContext(CartContext);
 
 const CartProvider = ({ children }) => {
@@ -29,6 +64,8 @@ const CartProvider = ({ children }) => {
   const [showPaymentLink, setPaymentLinkVisibility] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
   const [paymentLink, setPaymentLink] = useState('');
+  const [shippingFee, setShippingFee] = useState(SHOP_SHIPPING?.withInCebu);
+  const [deliveryAddress, setDeliveryAddress] = useState('');
 
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem(LPH_CART_KEY));
@@ -52,7 +89,7 @@ const CartProvider = ({ children }) => {
     setSubmitting(true);
 
     api('/api/shop', {
-      body: { items: cart },
+      body: { items: cart, shippingFee, deliveryAddress },
       method: 'POST',
     }).then((response) => {
       setSubmitting(false);
@@ -109,9 +146,13 @@ const CartProvider = ({ children }) => {
         total,
         showCart,
         showPaymentLink,
+        shippingFee,
+        deliveryAddress,
         isSubmitting,
         paymentLink,
         addToCart,
+        setShippingFee,
+        setDeliveryAddress,
         removeFromCart,
         clearCart,
         toggleCartVisibility,

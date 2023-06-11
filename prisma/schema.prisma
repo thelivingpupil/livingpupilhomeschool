@@ -132,14 +132,16 @@ model Order {
 }
 
 model PurchaseHistory {
-  id            String       @id @default(cuid())
-  createdAt     DateTime?    @default(now())
-  deletedAt     DateTime?
-  updatedAt     DateTime?    @updatedAt
-  total         Decimal      @default(0)
-  transactionId String       @unique @default(cuid())
-  orderItems    Order[]
-  transaction   Transaction?
+  id              String       @id @default(cuid())
+  createdAt       DateTime?    @default(now())
+  deletedAt       DateTime?
+  updatedAt       DateTime?    @updatedAt
+  deliveryAddress String?
+  shippingType    ShippingType?
+  total           Decimal      @default(0)
+  transactionId   String       @unique @default(cuid())
+  orderItems      Order[]
+  transaction     Transaction?
 
   @@map("purchaseHistory")
 }
@@ -340,6 +342,16 @@ enum GuardianType {
 enum CottageType {
   THREE_DAYS_A_WEEK
   WITH_TWO_DAYS_TUTOR
+}
+
+enum ShippingType {
+  WITHIN_CEBU
+  NCR
+  NORTH_LUZON
+  SOUTH_LUZON
+  VISAYAS
+  MINDANAO
+  ISLANDER
 }
 
 enum InvitationStatus {
