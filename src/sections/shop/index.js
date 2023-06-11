@@ -150,14 +150,14 @@ const Shop = ({ categories, items }) => {
   return (
     <>
       {data && (
-        <div className="flex flex-col">
-          <div className="w-full py-3 text-sm text-center text-white bg-primary-500">
+        <div className="flex flex-col items-center bg-primary-500">
+          <div className="w-4/5 py-3 text-sm text-white bg-primary-500">
             You are signed in as:{' '}
             <span className="font-medium text-secondary-500">
               {data?.user?.email}
             </span>
           </div>
-          <div className="w-full py-3 text-white bg-primary-500">
+          <div className="w-4/5 py-3 text-sm text-white bg-primary-500">
             <div className="flex flex-col">
               <span>Shipping details provided</span>
               <div>
