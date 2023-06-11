@@ -22,6 +22,7 @@ import {
   STATUS,
 } from '@/utils/constants';
 import Modal from '@/components/Modal';
+import debounce from 'lodash.debounce';
 
 const filterValueOptions = {
   paymentType: PAYMENT_TYPE,
@@ -103,6 +104,8 @@ const Transactions = () => {
   const submit = () => {
     inputFileRef.current.click();
   };
+
+  const handleAccountFilter = (e) => setFilter([filterBy, e.target.value]);
 
   const handleImportFile = async (event) => {
     const file = event.target.files[0];
@@ -213,8 +216,8 @@ const Transactions = () => {
                   (filterBy === 'emailAccount' ? (
                     <div className="flex flex-row md:w-1/4">
                       <input
-                        className="px-3 py-2 border rounded"
-                        onChange={(e) => setFilter([filterBy, e.target.value])}
+                        className="w-full px-3 py-2 border rounded"
+                        onChange={debounce(handleAccountFilter, 300)}
                         placeholder="Email Account"
                         value={filterValue}
                       />
