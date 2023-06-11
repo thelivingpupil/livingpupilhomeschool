@@ -54,6 +54,7 @@ const Transactions = () => {
           currency,
           paymentReference,
           paymentStatus,
+          user: { email },
           schoolFee: {
             paymentType,
             student: {
@@ -76,11 +77,12 @@ const Transactions = () => {
           enrollmentType,
           incomingGradeLevel,
           program,
+          email,
         })
       )
       ?.filter((transaction) =>
         filterBy === 'emailAccount'
-          ? transaction?.user?.email
+          ? transaction?.email
               ?.toLowerCase()
               .includes(filterValue.trim().toLowerCase())
           : transaction[filterBy] === filterValue
