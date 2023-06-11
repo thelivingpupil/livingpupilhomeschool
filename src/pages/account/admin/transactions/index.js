@@ -31,6 +31,7 @@ const filterValueOptions = {
 const filterByOptions = {
   paymentType: 'Payment Term',
   paymentStatus: 'Transaction Status',
+  emailAccount: 'Email Account',
 };
 
 const Transactions = () => {
@@ -77,7 +78,13 @@ const Transactions = () => {
           program,
         })
       )
-      ?.filter((transaction) => transaction[filterBy] === filterValue)
+      ?.filter((transaction) =>
+        filterBy === 'emailAccount'
+          ? transaction?.user?.email
+              ?.toLowerCase()
+              .includes(filterValue.trim().toLowerCase())
+          : transaction[filterBy] === filterValue
+      )
       ?.map(({ id }) => id);
 
     return data?.transactions?.filter(({ transactionId }) =>
@@ -200,29 +207,41 @@ const Transactions = () => {
                     </div>
                   </div>
                 </div>
-                {!!filterBy && (
-                  <div className="flex flex-row md:w-1/4">
-                    <div className="relative inline-block w-full rounded border">
-                      <select
-                        className="w-full px-3 py-2 capitalize rounded appearance-none"
+                {!!filterBy &&
+                  (filterBy === 'emailAccount' ? (
+                    <div className="flex flex-row md:w-1/4">
+                      <input
+                        className="px-3 py-2 border rounded"
                         onChange={(e) => setFilter([filterBy, e.target.value])}
+                        placeholder="Email Account"
                         value={filterValue}
-                      >
-                        <option value="">-</option>
-                        {Object.entries(filterValueOptions[filterBy]).map(
-                          ([value, name]) => (
-                            <option key={value} value={value}>
-                              {name}
-                            </option>
-                          )
-                        )}
-                      </select>
-                      <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                        <ChevronDownIcon className="w-5 h-5" />
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex flex-row md:w-1/4">
+                      <div className="relative inline-block w-full rounded border">
+                        <select
+                          className="w-full px-3 py-2 capitalize rounded appearance-none"
+                          onChange={(e) =>
+                            setFilter([filterBy, e.target.value])
+                          }
+                          value={filterValue}
+                        >
+                          <option value="">-</option>
+                          {Object.entries(filterValueOptions[filterBy]).map(
+                            ([value, name]) => (
+                              <option key={value} value={value}>
+                                {name}
+                              </option>
+                            )
+                          )}
+                        </select>
+                        <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                          <ChevronDownIcon className="w-5 h-5" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  ))}
               </div>
               <div className="text-2xl">
                 Total: {filterTransactions?.length || 0}
