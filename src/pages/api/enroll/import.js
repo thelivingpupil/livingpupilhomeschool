@@ -18,8 +18,6 @@ const handler = async (req, res) => {
 
     const student = JSON.parse(body);
 
-    console.log('student', student);
-
     const createSchoolFeesInImport = async ({
       program,
       payment,

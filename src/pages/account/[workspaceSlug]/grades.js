@@ -23,7 +23,6 @@ const forms = {
 const Grades = () => {
   const { workspace } = useWorkspace();
 
-  console.log('workspace', workspace);
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Student Grades" />

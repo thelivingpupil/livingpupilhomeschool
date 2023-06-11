@@ -45,8 +45,6 @@ const filterByOptions = {
 const Students = () => {
   const { data, isLoading } = useStudents();
 
-  console.log('data', data);
-
   const [showModal, setModalVisibility] = useState(false);
   const [filter, setFilter] = useState(['', '']);
 
