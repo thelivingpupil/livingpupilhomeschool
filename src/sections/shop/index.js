@@ -53,7 +53,7 @@ const Shop = ({ categories, items }) => {
       );
       setContactNumber(data?.user?.guardianInformation?.mobileNumber || '');
     }
-  }, [data, deliveryAddress, contactNumber]);
+  }, [data]);
 
   const onChangeFilter = (e) => {
     const category = e.target.value;

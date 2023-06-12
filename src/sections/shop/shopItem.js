@@ -50,7 +50,7 @@ const ShopItem = ({ item }) => {
       );
       setContactNumber(data?.user?.guardianInformation?.mobileNumber || '');
     }
-  }, [data, deliveryAddress, contactNumber]);
+  }, [data]);
 
   const imageAsset = imageBuilder.image(item?.image?.asset);
 
