@@ -81,7 +81,7 @@ const CartProvider = ({ children }) => {
   const [showPaymentLink, setPaymentLinkVisibility] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
   const [paymentLink, setPaymentLink] = useState('');
-  const [shippingFee, setShippingFee] = useState(SHOP_SHIPPING?.withInCebu);
+  const [shippingFee, setShippingFee] = useState({});
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [contactNumber, setContactNumber] = useState('');
 
