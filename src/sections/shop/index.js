@@ -10,7 +10,7 @@ import Modal from '@/components/Modal';
 import Item from '@/components/Shop/item';
 
 import sanityClient from '@/lib/server/sanity';
-import { useCartContext } from '@/providers/cart';
+import { SHOP_SHIPPING, useCartContext } from '@/providers/cart';
 import useUser from '@/hooks/data/useUser';
 
 const builder = imageUrlBuilder(sanityClient);
@@ -173,7 +173,7 @@ const Shop = ({ categories, items }) => {
                   />
                 </div>
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center py-2">
                 Contact Number:{' '}
                 <div className="flex flex-row md:w-1/4 px-3 text-black">
                   <input
@@ -456,6 +456,32 @@ const Shop = ({ categories, items }) => {
                 )}
               </div>
               <hr className="border-2 border-dashed" />
+              <div className="flex flex-col text-lg">
+                <div>Please select a shipping area:</div>
+                <div className="flex flex-row">
+                  <div className="relative inline-block w-full rounded border">
+                    <select
+                      className="w-full px-3 py-2 capitalize rounded appearance-none"
+                      onChange={(e) =>
+                        setShippingFee(SHOP_SHIPPING[e.target.value])
+                      }
+                      value={shippingFee?.value || ''}
+                    >
+                      <option value="">-</option>
+                      {Object.entries(SHOP_SHIPPING).map(
+                        ([value, { title }]) => (
+                          <option key={value} value={value}>
+                            {title}
+                          </option>
+                        )
+                      )}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                      <ChevronDownIcon className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="flex justify-between text-2xl font-bold">
                 <div>Total</div>
                 <div>

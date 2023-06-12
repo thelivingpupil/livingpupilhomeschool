@@ -33,36 +33,43 @@ export const SHOP_SHIPPING = {
     title: 'Within Cebu',
     fee: 160,
     key: ShippingType.WITHIN_CEBU,
+    value: 'withInCebu',
   },
   ncr: {
     title: 'NCR',
     fee: 200,
     key: ShippingType.NCR,
+    value: 'ncr',
   },
   northLuzon: {
     title: 'North Luzon',
     fee: 210,
     key: ShippingType.NORTH_LUZON,
+    value: 'northLuzon',
   },
   southLuzon: {
     title: 'South Luzon',
     fee: 210,
     key: ShippingType.SOUTH_LUZON,
+    value: 'southLuzon',
   },
   visayas: {
     title: 'Other Visayas Region',
     fee: 200,
     key: ShippingType.VISAYAS,
+    value: 'visayas',
   },
   mindanao: {
     title: 'Mindanao',
     fee: 200,
     key: ShippingType.MINDANAO,
+    value: 'mindanao',
   },
   islander: {
     title: 'Islander',
     fee: 210,
     key: ShippingType.ISLANDER,
+    value: 'islander',
   },
 };
 
@@ -87,8 +94,10 @@ const CartProvider = ({ children }) => {
   }, []);
 
   const total = useMemo(
-    () => cart.reduce((a, b) => a + b.price * b.quantity, 0),
-    [cart]
+    () =>
+      cart.reduce((a, b) => a + b.price * b.quantity, 0) +
+      (shippingFee?.fee || 0),
+    [cart, shippingFee]
   );
 
   const toggleCartVisibility = () => setCartVisibility((state) => !state);
@@ -100,7 +109,7 @@ const CartProvider = ({ children }) => {
     setSubmitting(true);
 
     api('/api/shop', {
-      body: { items: cart, shippingFee, deliveryAddress },
+      body: { items: cart, shippingFee, deliveryAddress, contactNumber },
       method: 'POST',
     }).then((response) => {
       setSubmitting(false);
