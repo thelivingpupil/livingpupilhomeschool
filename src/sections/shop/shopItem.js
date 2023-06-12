@@ -165,6 +165,16 @@ const ShopItem = ({ item }) => {
                 )}
               </div>
               <hr className="border-2 border-dashed" />
+              <div className="flex justify-between text-lg font-bold">
+                <div>Shipping area fee</div>
+                <div>
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(shippingFee?.fee)}
+                </div>
+              </div>
+              <hr className="border-2 border-dashed" />
               <div className="flex justify-between text-2xl font-bold">
                 <div>Total</div>
                 <div>
@@ -175,6 +185,11 @@ const ShopItem = ({ item }) => {
                 </div>
               </div>
               <div className="text-xs">
+                <div className="pb-5">
+                  <p>Provided details for delivery</p>
+                  <p>Deliver Address: {deliveryAddress}</p>
+                  <p>Contact Number: {contactNumber}</p>
+                </div>
                 <p>
                   Please be informed of the following expiry time of each
                   transaction:
