@@ -66,6 +66,7 @@ export const getStorePurchases = async () =>
       total: true,
       deliveryAddress: true,
       shippingType: true,
+      contactNumber: true,
       createdAt: true,
       orderItems: {
         select: {

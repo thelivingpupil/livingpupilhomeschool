@@ -9,7 +9,7 @@ import { usePurchases } from '@/hooks/data';
 import Card from '@/components/Card';
 import formatDistance from 'date-fns/formatDistance';
 import { STATUS_CODES } from '@/lib/server/dragonpay';
-import { STATUS_BG_COLOR } from '@/utils/constants';
+import { SHOP_SHIPPING_TYPE, STATUS_BG_COLOR } from '@/utils/constants';
 import Image from 'next/image';
 
 const Shop = () => {
@@ -143,6 +143,9 @@ const Shop = () => {
                 <thead>
                   <tr className="bg-gray-200 border-t border-b border-t-gray-300 border-b-gray-300">
                     <th className="p-2 font-medium text-left">Order Details</th>
+                    <th className="p-2 font-medium text-center">
+                      Shipping Area
+                    </th>
                     <th className="p-2 font-medium text-center">Items</th>
                     <th className="p-2 font-medium text-left">
                       Transaction Details
@@ -192,12 +195,30 @@ const Shop = () => {
                               <p className="text-xs text-gray-400">
                                 Delivery Address:{' '}
                                 <strong>
-                                  {purchase.transaction.user.guardianInformation
+                                  {purchase?.deliveryAddress
+                                    ? purchase?.deliveryAddress
+                                    : purchase.transaction.user
+                                        .guardianInformation
                                     ? `${purchase.transaction.user.guardianInformation.address1} ${purchase.transaction.user.guardianInformation.address2}`
                                     : 'Not provided by guardian'}
                                 </strong>
                               </p>
+                              <p className="text-xs text-gray-400">
+                                Contact Number:{' '}
+                                <strong>
+                                  {purchase?.contactNumber
+                                    ? purchase?.contactNumber
+                                    : purchase.transaction.user
+                                        .guardianInformation?.mobilenumber
+                                    ? purchase.transaction.user
+                                        .guardianInformation?.mobilenumber
+                                    : 'Not provided by guardian'}
+                                </strong>
+                              </p>
                             </div>
+                          </td>
+                          <td className="p-2 text-center">
+                            {SHOP_SHIPPING_TYPE[purchase?.shippingType] || '-'}
                           </td>
                           <td className="p-2 text-center">
                             {purchase.orderItems.length}

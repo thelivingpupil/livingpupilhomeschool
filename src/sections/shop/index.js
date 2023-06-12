@@ -18,7 +18,6 @@ const builder = imageUrlBuilder(sanityClient);
 const Shop = ({ categories, items }) => {
   const { data } = useUser();
 
-  console.log('data', data);
   const [sortBy, setSortBy] = useState('alphaAsc');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [shopItems, setShopItems] = useState(items);
@@ -512,14 +511,19 @@ const Shop = ({ categories, items }) => {
               </div>
               <button
                 className="py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-                disabled={cart.length === 0 || !shippingFee?.fee}
+                disabled={
+                  !cart.length ||
+                  !shippingFee?.fee ||
+                  !deliveryAddress ||
+                  !contactNumber
+                }
                 onClick={toggleCartVisibility}
               >
                 Review Shopping Cart
               </button>
               <button
                 className="py-2 text-lg bg-gray-200 rounded hover:bg-gray-100 disabled:opacity-25"
-                disabled={cart.length === 0}
+                disabled={!cart.length}
                 onClick={clearCart}
               >
                 Clear Shopping Cart

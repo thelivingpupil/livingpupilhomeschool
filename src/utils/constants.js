@@ -185,3 +185,13 @@ export const STATUS_BG_COLOR = {
   V: 'bg-primary-500',
   A: 'bg-secondary-500',
 };
+
+export const SHOP_SHIPPING_TYPE = {
+  WITHIN_CEBU: 'Within Cebu',
+  NCR: 'NCR',
+  NORTH_LUZON: 'North Luzon',
+  SOUTH_LUZON: 'South Luzon',
+  VISAYAS: 'Other Visayas Region',
+  MINDANAO: 'Mindanao',
+  ISLANDER: 'Islander',
+};
