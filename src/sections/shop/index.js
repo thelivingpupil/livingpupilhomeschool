@@ -469,9 +469,13 @@ const Shop = ({ categories, items }) => {
                     >
                       <option value="">-</option>
                       {Object.entries(SHOP_SHIPPING).map(
-                        ([value, { title }]) => (
+                        ([value, { title, fee }]) => (
                           <option key={value} value={value}>
-                            {title}
+                            {title}{' '}
+                            {new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: 'PHP',
+                            }).format(fee)}
                           </option>
                         )
                       )}
