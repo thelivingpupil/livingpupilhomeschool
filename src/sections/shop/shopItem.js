@@ -11,7 +11,7 @@ import imageUrlBuilder from '@sanity/image-url';
 import crypto from 'crypto';
 
 import sanityClient from '@/lib/server/sanity';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SHOP_SHIPPING, useCartContext } from '@/providers/cart';
 import Modal from '@/components/Modal';
 import useUser from '@/hooks/data/useUser';
