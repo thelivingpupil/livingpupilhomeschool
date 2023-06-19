@@ -291,7 +291,7 @@ const Shop = ({ categories, items }) => {
               </p>
             </div>
             <button
-              className="w-full py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+              className="w-full py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25 disabled:cursor-not-allowed"
               disabled={
                 !data ||
                 isSubmitting ||
@@ -330,8 +330,8 @@ const Shop = ({ categories, items }) => {
               </a>
             </Link>
           </Modal>
-          <div className="flex flex-col px-5 py-3 border-4 rounded-lg border-primary-500 md:hidden">
-            <div className="flex flex-col text-lg">
+          <div className="flex flex-col px-5 py-3 border-4 space-y-5 rounded-lg border-primary-500 md:hidden">
+            <div className="flex flex-col text-sm">
               <div>Please select a shipping area:</div>
               <div className="flex flex-row">
                 <div className="relative inline-block w-full rounded border">
@@ -364,7 +364,7 @@ const Shop = ({ categories, items }) => {
             <div className="flex items-center justify-between">
               <p className="text-sm">{cart.length} item(s) in cart</p>
               <button
-                className="px-5 py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600"
+                className="px-5 py-2 text-white text-sm rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25 disabled:cursor-not-allowed"
                 disabled={
                   !cart.length ||
                   !shippingFee?.fee ||
