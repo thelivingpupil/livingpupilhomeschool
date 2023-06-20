@@ -338,8 +338,15 @@ export const getWorkspace = async (id, email, slug) =>
     },
   });
 
-export const getWorkspaces = async (id, email) =>
-  await prisma.workspace.findMany({
+export const getWorkspaces = async (id, email) => {
+  const currentYear = new Date().getFullYear();
+
+  const checkSchoolYear = new Date(`08/01/${currentYear}`) > new Date();
+
+  const [fromYear, toYear] = !checkSchoolYear
+    ? [currentYear, currentYear + 1]
+    : [currentYear - 1, currentYear];
+  return await prisma.workspace.findMany({
     select: {
       createdAt: true,
       creator: {
@@ -430,9 +437,16 @@ export const getWorkspaces = async (id, email) =>
           },
         },
       ],
-      AND: { deletedAt: null },
+      AND: {
+        deletedAt: null,
+        createAt: {
+          gte: new Date(`08/01/${fromYear}`),
+          lte: new Date(`06/30/${toYear}`),
+        },
+      },
     },
   });
+};
 
 export const getWorkspacePaths = async () => {
   const [workspaces, domains] = await Promise.all([
