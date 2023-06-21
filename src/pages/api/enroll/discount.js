@@ -6,7 +6,7 @@ const handler = async (req, res) => {
   const { method } = req;
 
   if (method === 'POST') {
-    await validateSession(req, res);
+    // await validateSession(req, res);
     const { code } = req.body;
     const discount = await sanityClient.fetch(
       `*[_type == 'discounts' && code == $code][0]{...}`,
