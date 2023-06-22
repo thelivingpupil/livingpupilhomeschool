@@ -313,7 +313,7 @@ const Transactions = () => {
                             </div>
                           </td>
                           <td className="p-2 text-center">
-                            <div className="flex flex-col">
+                            <div className="flex flex-col items-center">
                               <div className="flex">
                                 {
                                   PAYMENT_TYPE[
@@ -324,7 +324,7 @@ const Transactions = () => {
                               <div className="flex text-sm text-gray-400 italic">
                                 {transaction.schoolFee.paymentType ===
                                 PaymentType.ANNUAL
-                                  ? 'Full Payment'
+                                  ? 'Total Fee'
                                   : transaction.schoolFee.order === 0
                                   ? 'Initial Fee'
                                   : `Payment #${transaction.schoolFee.order}`}
