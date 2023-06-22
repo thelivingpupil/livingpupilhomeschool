@@ -267,22 +267,27 @@ export const getTransactions = async () =>
       NOT: {
         schoolFee: null,
       },
-      user: {
-        createdWorkspace: {
-          some: {
-            AND: [
-              { deletedAt: null },
-              {
-                schoolFees: {
-                  some: {
-                    transaction: {
-                      paymentStatus: TransactionStatus.S,
-                    },
-                  },
-                },
-              },
-            ],
-          },
+      // user: {
+      //   createdWorkspace: {
+      //     some: {
+      //       AND: [
+      //         { deletedAt: null },
+      //         {
+      //           schoolFees: {
+      //             some: {
+      //               transaction: {
+      //                 paymentStatus: TransactionStatus.S,
+      //               },
+      //             },
+      //           },
+      //         },
+      //       ],
+      //     },
+      //   },
+      // },
+      schoolFee: {
+        student: {
+          deletedAt: null,
         },
       },
       deletedAt: null,
