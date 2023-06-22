@@ -265,7 +265,11 @@ export const getTransactions = async () =>
       //   not: TransactionStatus.U,
       // },
       schoolFee: {
-        none: {},
+        is: {
+          id: {
+            not: null,
+          },
+        },
       },
       deletedAt: null,
       source: TransactionSource.ENROLLMENT,
