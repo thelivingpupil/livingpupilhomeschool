@@ -220,7 +220,7 @@ export const getTransaction = async (transactionId, referenceNumber) =>
 
 export const getTransactions = async () =>
   await prisma.transaction.findMany({
-    orderBy: [{ updatedAt: 'desc' }],
+    orderBy: [{ updatedAt: 'desc' }, { schoolFee: { order: 'desc' } }],
     select: {
       transactionId: true,
       amount: true,
@@ -242,6 +242,7 @@ export const getTransactions = async () =>
       schoolFee: {
         select: {
           paymentType: true,
+          order: true,
           student: {
             select: {
               studentRecord: {
@@ -261,30 +262,9 @@ export const getTransactions = async () =>
       },
     },
     where: {
-      // paymentStatus: {
-      //   not: TransactionStatus.U,
-      // },
       NOT: {
         schoolFee: null,
       },
-      // user: {
-      //   createdWorkspace: {
-      //     some: {
-      //       AND: [
-      //         { deletedAt: null },
-      //         {
-      //           schoolFees: {
-      //             some: {
-      //               transaction: {
-      //                 paymentStatus: TransactionStatus.S,
-      //               },
-      //             },
-      //           },
-      //         },
-      //       ],
-      //     },
-      //   },
-      // },
       schoolFee: {
         student: {
           deletedAt: null,

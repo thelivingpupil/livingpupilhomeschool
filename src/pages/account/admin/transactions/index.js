@@ -12,7 +12,7 @@ import Content from '@/components/Content';
 import Card from '@/components/Card';
 import { useTransactions } from '@/hooks/data';
 import { STATUS_CODES } from '@/lib/server/dragonpay';
-import { TransactionStatus } from '@prisma/client';
+import { PaymentType, TransactionStatus } from '@prisma/client';
 import {
   ACCREDITATION,
   GRADE_LEVEL,
@@ -313,7 +313,23 @@ const Transactions = () => {
                             </div>
                           </td>
                           <td className="p-2 text-center">
-                            {PAYMENT_TYPE[transaction.schoolFee.paymentType]}
+                            <div className="flex flex-col">
+                              <div className="flex">
+                                {
+                                  PAYMENT_TYPE[
+                                    transaction.schoolFee.paymentType
+                                  ]
+                                }
+                              </div>
+                              <div className="flex text-sm text-gray-400 italic">
+                                {transaction.schoolFee.paymentType ===
+                                PaymentType.ANNUAL
+                                  ? 'Full Payment'
+                                  : transaction.schoolFee.order === 0
+                                  ? 'Initial Fee'
+                                  : `Payment #${transaction.schoolFee.order}`}
+                              </div>
+                            </div>
                           </td>
                           <td className="p-2 text-left">
                             <div>
