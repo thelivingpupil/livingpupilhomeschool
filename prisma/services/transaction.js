@@ -261,9 +261,9 @@ export const getTransactions = async () =>
       },
     },
     where: {
-      paymentStatus: {
-        not: TransactionStatus.U,
-      },
+      // paymentStatus: {
+      //   not: TransactionStatus.U,
+      // },
       deletedAt: null,
       source: TransactionSource.ENROLLMENT,
     },
