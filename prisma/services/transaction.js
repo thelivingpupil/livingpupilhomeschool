@@ -264,9 +264,9 @@ export const getTransactions = async () =>
       // paymentStatus: {
       //   not: TransactionStatus.U,
       // },
-      // NOT: {
-      //   schoolFee: null,
-      // },
+      NOT: {
+        schoolFee: null,
+      },
       user: {
         createdWorkspace: {
           some: {
