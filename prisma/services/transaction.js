@@ -269,11 +269,13 @@ export const getTransactions = async () =>
       // },
       user: {
         createdWorkspace: {
-          deletedAt: null,
-          schoolFees: {
-            some: {
-              transaction: {
-                paymentStatus: TransactionStatus.S,
+          every: {
+            deletedAt: null,
+            schoolFees: {
+              some: {
+                transaction: {
+                  paymentStatus: TransactionStatus.S,
+                },
               },
             },
           },
