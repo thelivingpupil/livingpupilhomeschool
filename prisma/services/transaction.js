@@ -269,7 +269,20 @@ export const getTransactions = async () =>
       // },
       user: {
         createdWorkspace: {
-          deletedAt: null,
+          some: {
+            AND: [
+              { deletedAt: null },
+              {
+                schoolFees: {
+                  some: {
+                    transaction: {
+                      paymentStatus: TransactionStatus.S,
+                    },
+                  },
+                },
+              },
+            ],
+          },
         },
       },
       deletedAt: null,
