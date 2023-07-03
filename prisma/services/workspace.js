@@ -440,8 +440,8 @@ export const getWorkspaces = async (id, email) => {
       AND: {
         deletedAt: null,
         createdAt: {
-          gte: new Date(`08/01/${fromYear}`),
-          lte: new Date(`06/30/${toYear}`),
+          gte: new Date(`01/01/2023`),
+          lte: new Date(`06/30/2024`),
         },
       },
     },
