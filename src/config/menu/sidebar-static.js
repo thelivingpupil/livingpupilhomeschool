@@ -61,14 +61,6 @@ const sidebarMenu = () => [
         },
       },
       {
-        name: 'Lesson Plans',
-        path: `/account/lesson-plans`,
-        showDefault: false,
-        validateItem: (validate) => {
-          return validate;
-        },
-      },
-      {
         name: 'Settings',
         path: `/account/settings`,
         showDefault: true,
