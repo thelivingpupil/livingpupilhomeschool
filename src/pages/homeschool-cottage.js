@@ -90,12 +90,12 @@ const HomeschoolCottage = ({ page, programs }) => {
             </button>
             <button
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                cottageType === CottageType.WITH_TWO_DAYS_TUTOR &&
+                cottageType === CottageType.FIVE_DAYS_A_WEEK &&
                 'text-white bg-primary-500'
               }`}
-              onClick={() => setCottageType(CottageType.WITH_TWO_DAYS_TUTOR)}
+              onClick={() => setCottageType(CottageType.FIVE_DAYS_A_WEEK)}
             >
-              With 2 days tutor
+              5 days a week
             </button>
           </div>
         </div>

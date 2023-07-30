@@ -342,7 +342,7 @@ enum GuardianType {
 
 enum CottageType {
   THREE_DAYS_A_WEEK
-  WITH_TWO_DAYS_TUTOR
+  FIVE_DAYS_A_WEEK
 }
 
 enum ShippingType {
