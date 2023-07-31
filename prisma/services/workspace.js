@@ -1,4 +1,4 @@
-import { InvitationStatus, TeamRole, TransactionStatus } from '@prisma/client';
+import { InvitationStatus, TeamRole } from '@prisma/client';
 import slugify from 'slugify';
 
 import {
@@ -249,13 +249,6 @@ export const getSingleWorkspace = async (id, email, slug) =>
       AND: {
         deletedAt: null,
         slug,
-        schoolFees: {
-          some: {
-            transaction: {
-              paymentStatus: TransactionStatus.S,
-            },
-          },
-        },
       },
     },
   });
@@ -341,13 +334,6 @@ export const getWorkspace = async (id, email, slug) =>
       AND: {
         deletedAt: null,
         slug,
-        schoolFees: {
-          some: {
-            transaction: {
-              paymentStatus: TransactionStatus.S,
-            },
-          },
-        },
       },
     },
   });
@@ -456,13 +442,6 @@ export const getWorkspaces = async (id, email) => {
         createdAt: {
           gte: new Date(`01/01/2023`),
           lte: new Date(`06/30/2024`),
-        },
-        schoolFees: {
-          some: {
-            transaction: {
-              paymentStatus: TransactionStatus.S,
-            },
-          },
         },
       },
     },

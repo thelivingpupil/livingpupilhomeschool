@@ -45,7 +45,12 @@ const Sidebar = ({ menu, showModal }) => {
         menuCondition={data?.workspaces.length > 0}
         showMenu={true}
         validate={data?.workspaces?.some(
-          (workspace) => !!workspace?.studentRecord
+          (workspace) =>
+            (workspace?.schoolFees?.length > 0 &&
+              workspace?.schoolFees?.filter(
+                (fee) => fee.transaction.paymentStatus === TransactionStatus.S
+              )?.length > 0) ||
+            !!workspace?.studentRecord
         )}
       />
     ));
