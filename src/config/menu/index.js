@@ -10,7 +10,7 @@ const menu = (workspaceId) => [
       {
         name: 'Grades',
         path: `/account/${workspaceId}/grades`,
-        showDefault: false,
+        showDefault: true,
         validateItem: (validate) => {
           return validate;
         },
@@ -18,7 +18,7 @@ const menu = (workspaceId) => [
       {
         name: 'Courses and Training',
         path: `/account/${workspaceId}/training`,
-        showDefault: false,
+        showDefault: true,
         validateItem: (validate) => {
           return validate;
         },
