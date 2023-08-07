@@ -12,8 +12,7 @@ const Menu = ({
       <h5 className="text-sm font-bold text-secondary-500">{data.name}</h5>
       <ul className="ml-5 leading-10">
         {data.menuItems.map((entry, index) =>
-          menuCondition ||
-          entry.showDefault ||
+          (menuCondition && entry.showDefault) ||
           (entry.validateItem && entry.validateItem(validate)) ? (
             <Item key={index} data={entry} isLoading={isLoading} />
           ) : null

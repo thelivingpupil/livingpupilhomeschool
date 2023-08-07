@@ -24,14 +24,14 @@ const Sidebar = ({ menu, showModal }) => {
           key={index}
           data={item}
           isLoading={isLoading}
-          menuCondition={
+          menuCondition={!!workspace?.studentRecord}
+          showMenu={data?.workspaces.length > 0 || isLoading}
+          validate={
             workspace?.schoolFees?.length > 0 &&
             workspace?.schoolFees?.filter(
               (fee) => fee.transaction.paymentStatus === TransactionStatus.S
-            )?.length > 0 &&
-            !!workspace?.studentRecord
+            )?.length > 0
           }
-          showMenu={data?.workspaces.length > 0 || isLoading}
         />
       ))
     );
@@ -42,7 +42,7 @@ const Sidebar = ({ menu, showModal }) => {
       <Menu
         key={index}
         data={item}
-        menuCondition={data?.workspaces.length > 0}
+        menuCondition={data?.workspaces.length > 0 || isLoading}
         showMenu={true}
         validate={data?.workspaces?.some(
           (workspace) =>

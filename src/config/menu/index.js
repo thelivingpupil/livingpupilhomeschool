@@ -11,16 +11,22 @@ const menu = (workspaceId) => [
         name: 'Grades',
         path: `/account/${workspaceId}/grades`,
         showDefault: false,
+        validateItem: (validate) => {
+          return validate;
+        },
       },
       {
         name: 'Courses and Training',
         path: `/account/${workspaceId}/training`,
         showDefault: false,
+        validateItem: (validate) => {
+          return validate;
+        },
       },
       {
         name: 'School Fees',
         path: `/account/${workspaceId}/fees`,
-        showDefault: false,
+        showDefault: true,
       },
     ],
   },
