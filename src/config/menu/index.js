@@ -10,17 +10,17 @@ const menu = (workspaceId) => [
       {
         name: 'Grades',
         path: `/account/${workspaceId}/grades`,
-        showDefault: true,
+        showDefault: false,
       },
       {
         name: 'Courses and Training',
         path: `/account/${workspaceId}/training`,
-        showDefault: true,
+        showDefault: false,
       },
       {
         name: 'School Fees',
         path: `/account/${workspaceId}/fees`,
-        showDefault: true,
+        showDefault: false,
       },
     ],
   },
