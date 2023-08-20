@@ -146,7 +146,7 @@ const HomeschoolCottage = ({ page, programs }) => {
             >
               Form 3
             </button>
-            {cottageType === CottageType.WITH_TWO_DAYS_TUTOR && (
+            {cottageType === CottageType.FIVE_DAYS_A_WEEK && (
               <>
                 <button
                   className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 disabled:opacity-25 ${
