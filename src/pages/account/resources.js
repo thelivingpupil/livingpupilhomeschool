@@ -26,6 +26,16 @@ const Resources = ({ lessonPlans, blueprints }) => {
       ?.map((workspace) => workspace?.studentRecord?.incomingGradeLevel);
   }, [data]);
 
+  const availablePrograms = useMemo(() => {
+    if (!data) {
+      return [];
+    }
+
+    return data?.workspaces
+      ?.filter((workspace) => workspace?.studentRecord)
+      ?.map((workspace) => workspace?.studentRecord?.program);
+  }, [data]);
+
   const availablePlans = useMemo(
     () =>
       lessonPlans
@@ -33,7 +43,14 @@ const Resources = ({ lessonPlans, blueprints }) => {
           (a, b) =>
             Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1])
         )
-        ?.filter((lessonPlan) => availableGrades.includes(lessonPlan?.grade)),
+        ?.filter((lessonPlan) => {
+          const isProgramLevelValid = program
+            ? availablePrograms.includes(lessonPlan?.program)
+            : true;
+          return (
+            availableGrades.includes(lessonPlan?.grade) && isProgramLevelValid
+          );
+        }),
     [availableGrades, lessonPlans]
   );
 
@@ -44,11 +61,16 @@ const Resources = ({ lessonPlans, blueprints }) => {
           (a, b) =>
             Number(a?.form?.split('_')[1]) - Number(b?.form?.split('_')[1])
         )
-        .filter(({ form }) => {
+        .filter(({ form, program }) => {
           const formGradeLevel = formGradeLevels[form];
 
-          return formGradeLevel?.find((gradeLevel) =>
-            availableGrades.includes(gradeLevel)
+          const isProgramLevelValid = program
+            ? availablePrograms.includes(program)
+            : true;
+
+          return formGradeLevel?.find(
+            (gradeLevel) =>
+              availableGrades.includes(gradeLevel) && isProgramLevelValid
           );
         }),
     [availableGrades, blueprints]
@@ -115,11 +137,13 @@ const Resources = ({ lessonPlans, blueprints }) => {
 export const getServerSideProps = async () => {
   const lessonPlans = await sanityClient.fetch(`*[_type == 'lessonPlans']{
     'grade': gradeLevel,
+    'program': 'programType',
     'fileUrl': lessonPlanFile.asset->url
   }`);
 
   const blueprints = await sanityClient.fetch(`*[_type == 'blueprints']{
     'form': formLevel,
+    'program': 'programType',
     'fileUrl': blueprintFile.asset->url
   }`);
 
