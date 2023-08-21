@@ -134,7 +134,7 @@ const Resources = ({ lessonPlans, blueprints }) => {
         <Card>
           <Card.Body title="FAQs">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
-              <div key={idx} className="flex justify-center">
+              <div className="flex justify-center">
                 <a
                   className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-primary-500`}
                   href="/files/lp-faqs.pdf"
