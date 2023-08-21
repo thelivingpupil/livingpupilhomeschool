@@ -53,7 +53,10 @@ const Resources = ({ lessonPlans, blueprints }) => {
             ? availablePrograms.includes(lessonPlan?.program)
             : true;
 
-          console.log('available plans program', { isProgramLevelValid });
+          console.log('available plans program', {
+            isProgramLevelValid,
+            program: lessonPlan?.program,
+          });
           return (
             availableGrades.includes(lessonPlan?.grade) && isProgramLevelValid
           );
@@ -75,7 +78,10 @@ const Resources = ({ lessonPlans, blueprints }) => {
             ? availablePrograms.includes(program)
             : true;
 
-          console.log('available blueprints program', { isProgramLevelValid });
+          console.log('available blueprints program', {
+            isProgramLevelValid,
+            program,
+          });
 
           return formGradeLevel?.find(
             (gradeLevel) =>
