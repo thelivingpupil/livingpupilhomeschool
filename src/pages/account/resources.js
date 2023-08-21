@@ -52,6 +52,8 @@ const Resources = ({ lessonPlans, blueprints }) => {
           const isProgramLevelValid = lessonPlan?.program
             ? availablePrograms.includes(lessonPlan?.program)
             : true;
+
+          console.log('available plans program', { isProgramLevelValid });
           return (
             availableGrades.includes(lessonPlan?.grade) && isProgramLevelValid
           );
@@ -72,6 +74,8 @@ const Resources = ({ lessonPlans, blueprints }) => {
           const isProgramLevelValid = program
             ? availablePrograms.includes(program)
             : true;
+
+          console.log('available blueprints program', { isProgramLevelValid });
 
           return formGradeLevel?.find(
             (gradeLevel) =>
