@@ -138,6 +138,8 @@ const Resources = ({ lessonPlans, blueprints }) => {
                 <a
                   className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-primary-500`}
                   href="/files/lp-faqs.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Frequently Asked Questions
                 </a>
