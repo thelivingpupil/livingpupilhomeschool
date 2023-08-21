@@ -36,6 +36,11 @@ const Resources = ({ lessonPlans, blueprints }) => {
       ?.map((workspace) => workspace?.studentRecord?.program);
   }, [data]);
 
+  console.log('Checking for available', {
+    availableGrades,
+    availablePrograms,
+  });
+
   const availablePlans = useMemo(
     () =>
       lessonPlans
