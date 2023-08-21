@@ -130,10 +130,19 @@ const Resources = ({ lessonPlans, blueprints }) => {
             </div>
           </Card.Body>
         </Card>
-
         <Card>
-          <Card.Body title="FAQs">
+          <Card.Body title="Additional Resources">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
+              <div className="flex justify-center">
+                <a
+                  className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-primary-500`}
+                  href="/files/lp-lingo.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Charlotte Mason LINGO
+                </a>
+              </div>
               <div className="flex justify-center">
                 <a
                   className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-primary-500`}
