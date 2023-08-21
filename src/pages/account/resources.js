@@ -36,11 +36,6 @@ const Resources = ({ lessonPlans, blueprints }) => {
       ?.map((workspace) => workspace?.studentRecord?.program);
   }, [data]);
 
-  console.log('Checking for available', {
-    availableGrades,
-    availablePrograms,
-  });
-
   const availablePlans = useMemo(
     () =>
       lessonPlans
@@ -53,10 +48,6 @@ const Resources = ({ lessonPlans, blueprints }) => {
             ? availablePrograms.includes(lessonPlan?.program)
             : true;
 
-          console.log('available plans program', {
-            isProgramLevelValid,
-            program: lessonPlan?.program,
-          });
           return (
             availableGrades.includes(lessonPlan?.grade) && isProgramLevelValid
           );
@@ -77,11 +68,6 @@ const Resources = ({ lessonPlans, blueprints }) => {
           const isProgramLevelValid = program
             ? availablePrograms.includes(program)
             : true;
-
-          console.log('available blueprints program', {
-            isProgramLevelValid,
-            program,
-          });
 
           return formGradeLevel?.find(
             (gradeLevel) =>
@@ -141,6 +127,21 @@ const Resources = ({ lessonPlans, blueprints }) => {
                     </div>
                   );
                 })}
+            </div>
+          </Card.Body>
+        </Card>
+
+        <Card>
+          <Card.Body title="FAQs">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
+              <div key={idx} className="flex justify-center">
+                <a
+                  className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-primary-500`}
+                  href="/files/lp-faqs.pdf"
+                >
+                  Frequently Asked Questions
+                </a>
+              </div>
             </div>
           </Card.Body>
         </Card>
