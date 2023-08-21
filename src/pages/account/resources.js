@@ -152,13 +152,13 @@ const Resources = ({ lessonPlans, blueprints }) => {
 export const getServerSideProps = async () => {
   const lessonPlans = await sanityClient.fetch(`*[_type == 'lessonPlans']{
     'grade': gradeLevel,
-    'program': 'programType',
+    'program': programType,
     'fileUrl': lessonPlanFile.asset->url
   }`);
 
   const blueprints = await sanityClient.fetch(`*[_type == 'blueprints']{
     'form': formLevel,
-    'program': 'programType',
+    'program': programType,
     'fileUrl': blueprintFile.asset->url
   }`);
 
