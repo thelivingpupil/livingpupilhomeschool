@@ -44,7 +44,7 @@ const Resources = ({ lessonPlans, blueprints }) => {
             Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1])
         )
         ?.filter((lessonPlan) => {
-          const isProgramLevelValid = program
+          const isProgramLevelValid = lessonPlan?.program
             ? availablePrograms.includes(lessonPlan?.program)
             : true;
           return (
