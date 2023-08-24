@@ -36,6 +36,32 @@ const Resources = ({ lessonPlans, blueprints }) => {
       ?.map((workspace) => workspace?.studentRecord?.program);
   }, [data]);
 
+  const isValidCommonSubject = useMemo(() => {
+    if (!data) {
+      return false;
+    }
+
+    return (
+      availablePrograms?.includes('HOMESCHOOL_PROGRAM') &&
+      availableGrades?.reduce(
+        (isValid, grade) =>
+          [
+            'GRADE_1',
+            'GRADE_2',
+            'GRADE_3',
+            'GRADE_4',
+            'GRADE_5',
+            'GRADE_6',
+            'GRADE_7',
+            'GRADE_8',
+            'GRADE_9',
+            'GRADE_10',
+          ].find(grade) || isValid,
+        false
+      )
+    );
+  });
+
   const availablePlans = useMemo(
     () =>
       lessonPlans
@@ -135,6 +161,16 @@ const Resources = ({ lessonPlans, blueprints }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
               <div className="flex justify-center">
                 <a
+                  className={`flex items-center justify-center py-2 px-3 rounded bg-secondary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-secondary-500`}
+                  href="/files/lp-faqs.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Frequently Asked Questions
+                </a>
+              </div>
+              <div className="flex justify-center">
+                <a
                   className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-primary-500`}
                   href="/files/lp-lingo.pdf"
                   target="_blank"
@@ -143,16 +179,30 @@ const Resources = ({ lessonPlans, blueprints }) => {
                   Charlotte Mason LINGO
                 </a>
               </div>
-              <div className="flex justify-center">
-                <a
-                  className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-primary-500`}
-                  href="/files/lp-faqs.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Frequently Asked Questions
-                </a>
-              </div>
+              {isValidCommonSubject && (
+                <>
+                  <div className="flex justify-center">
+                    <a
+                      className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-primary-500`}
+                      href="/files/lp-common-subjects.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      LP Common Subjects
+                    </a>
+                  </div>
+                  <div className="flex justify-center">
+                    <a
+                      className={`flex items-center justify-center py-2 px-3 rounded bg-secondary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-secondary-500`}
+                      href="/files/lp-notebooks.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      LP Notebooks
+                    </a>
+                  </div>
+                </>
+              )}
             </div>
           </Card.Body>
         </Card>
