@@ -86,7 +86,7 @@ const Resources = ({ lessonPlans, blueprints }) => {
       blueprints
         ?.sort(
           (a, b) =>
-            Number(a?.form?.split('_')[1]) - Number(b?.form?.split('_')[1])
+            Number(b?.form?.split('_')[1]) - Number(a?.form?.split('_')[1])
         )
         .filter(({ form, program }) => {
           const formGradeLevel = formGradeLevels[form];
