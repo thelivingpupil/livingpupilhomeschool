@@ -86,6 +86,9 @@ const Resources = ({ lessonPlans, blueprints }) => {
       blueprints
         ?.sort((a, b) => {
           console.log('console logs', { a, b });
+          console.log('a', Number(a?.form?.split('_')[1]));
+
+          console.log('b', Number(b?.form?.split('_')[1]));
           return (
             Number(a?.form?.split('_')[1]) - Number(b?.form?.split('_')[1])
           );
