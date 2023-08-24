@@ -41,23 +41,25 @@ const Resources = ({ lessonPlans, blueprints }) => {
       return false;
     }
 
-    return availablePrograms?.includes('HOMESCHOOL_PROGRAM');
-    // availableGrades?.reduce(
-    //   (isValid, grade) =>
-    //     [
-    //       'GRADE_1',
-    //       'GRADE_2',
-    //       'GRADE_3',
-    //       'GRADE_4',
-    //       'GRADE_5',
-    //       'GRADE_6',
-    //       'GRADE_7',
-    //       'GRADE_8',
-    //       'GRADE_9',
-    //       'GRADE_10',
-    //     ].find(grade) || isValid,
-    //   false
-    // )
+    return (
+      availablePrograms?.includes('HOMESCHOOL_PROGRAM') &&
+      availableGrades?.reduce(
+        (isValid, grade) =>
+          [
+            'GRADE_1',
+            'GRADE_2',
+            'GRADE_3',
+            'GRADE_4',
+            'GRADE_5',
+            'GRADE_6',
+            'GRADE_7',
+            'GRADE_8',
+            'GRADE_9',
+            'GRADE_10',
+          ].includes(grade) || isValid,
+        false
+      )
+    );
   });
 
   const availablePlans = useMemo(
@@ -186,7 +188,7 @@ const Resources = ({ lessonPlans, blueprints }) => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      LP Common Subjects
+                      Common Subjects
                     </a>
                   </div>
                   <div className="flex justify-center">
@@ -196,7 +198,7 @@ const Resources = ({ lessonPlans, blueprints }) => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      LP Notebooks
+                      Notebooks
                     </a>
                   </div>
                 </>
