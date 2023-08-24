@@ -5,6 +5,7 @@ import Card from '@/components/Card';
 import { useWorkspaces } from '@/hooks/data';
 import sanityClient from '@/lib/server/sanity';
 import { useMemo } from 'react';
+import { PROGRAM } from '@/utils/constants';
 
 const formGradeLevels = {
   KINDER: ['K1', 'K2'],
@@ -151,9 +152,11 @@ const Resources = ({ lessonPlans, blueprints }) => {
                         className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
                         href={`${
                           blueprint?.fileUrl
-                        }?dl=${blueprint?.form?.toLowerCase()}-sy_blueprint.pdf`}
+                        }?dl=${blueprint?.program?.toLowerCase()}-${blueprint?.form?.toLowerCase()}-sy_blueprint.pdf`}
                       >
-                        {blueprint?.form?.replace('_', ' ')}
+                        {`${
+                          PROGRAM[blueprint?.program]
+                        } - ${blueprint?.form?.replace('_', ' ')}`}
                       </a>
                     </div>
                   );
