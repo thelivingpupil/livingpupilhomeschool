@@ -85,15 +85,9 @@ const Resources = ({ lessonPlans, blueprints }) => {
   const availableBlueprints = useMemo(
     () =>
       blueprints
-        ?.sort((a, b) => {
-          console.log('console logs', { a, b });
-          console.log('a', Number(a?.form?.split('_')[1]));
-
-          console.log('b', Number(b?.form?.split('_')[1]));
-          return (
-            Number(a?.form?.split('_')[1]) - Number(b?.form?.split('_')[1])
-          );
-        })
+        ?.sort(
+          (a, b) => `${a?.program}-${a?.form}` - `${b?.program}-${b?.form}`
+        )
         .filter(({ form, program }) => {
           const formGradeLevel = formGradeLevels[form];
 
