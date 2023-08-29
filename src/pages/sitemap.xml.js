@@ -7,6 +7,7 @@ export const getServerSideProps = async ({ res }) => {
     'index',
     'homeschool-cottage',
     'homeschool-program',
+    'senior-high',
     'shop',
     'auth/login',
   ];
