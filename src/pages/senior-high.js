@@ -104,7 +104,7 @@ const HomeschoolProgram = ({ page, programs }) => {
             </button>
             <button
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                incomingGradeLevel === Program.HOMESCHOOL_COTTAGE &&
+                incomingGradeLevel === GradeLevel.GRADE_12 &&
                 'text-white bg-primary-500'
               }`}
               onClick={() => setIncomingGradeLevel(GradeLevel.GRADE_12)}
