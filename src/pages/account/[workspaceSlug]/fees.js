@@ -58,8 +58,8 @@ const deadlines = [
   // August
   {
     [PaymentType.ANNUAL]: [0],
-    [PaymentType.SEMI_ANNUAL]: [0, 3, 8],
-    [PaymentType.QUARTERLY]: [0, 3, 6, 8],
+    [PaymentType.SEMI_ANNUAL]: [0, 2, 7],
+    [PaymentType.QUARTERLY]: [0, 2, 5, 7],
   },
   // September
   {
