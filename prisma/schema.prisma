@@ -188,6 +188,7 @@ model StudentRecord {
   program              Program       @default(HOMESCHOOL_PROGRAM)
   cottageType          CottageType?
   accreditation        Accreditation @default(LOCAL)
+  schoolYear           String?
   reason               String?
   formerSchoolName     String
   formerSchoolAddress  String
