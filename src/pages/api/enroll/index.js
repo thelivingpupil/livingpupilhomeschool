@@ -5,6 +5,7 @@ import { createSchoolFees } from '@/prisma/services/school-fee';
 import { createStudentRecord } from '@/prisma/services/student-record';
 import { updateGuardianInformation } from '@/prisma/services/user';
 import { getOwnWorkspace } from '@/prisma/services/workspace';
+import { SCHOOL_YEAR } from '@/utils/constants';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -81,6 +82,7 @@ const handler = async (req, res) => {
         program,
         cottageType,
         accreditation,
+        SCHOOL_YEAR,
         reason,
         formerSchoolName,
         formerSchoolAddress,
