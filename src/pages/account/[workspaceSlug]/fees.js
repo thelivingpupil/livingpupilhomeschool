@@ -165,7 +165,6 @@ const deadlines = {
 
 const Fees = () => {
   const { workspace } = useWorkspace();
-  console.log('workspace', workspace);
   const [isSubmitting, setSubmittingState] = useState(false);
   const fees = {
     [GradeLevel.PRESCHOOL]: { schoolFees: [] },
@@ -211,21 +210,10 @@ const Fees = () => {
   };
 
   const getDeadline = (index, paymentType, createdDate, schoolYear) => {
-    console.log('deadline details', {
-      index,
-      paymentType,
-      createdDate,
-      schoolYear,
-    });
     const date = new Date(createdDate);
     const selectedYear =
       Number(schoolYear) < date.getFullYear() ? 'laterYear' : 'currentYear';
 
-    console.log('details for selected', {
-      createdMonth: date.getMonth(),
-      selectedYear,
-      deadline: deadlines[selectedYear],
-    });
     const monthsToAdd =
       deadlines[selectedYear][date.getMonth()][paymentType][index];
     const deadline = add(new Date(date.getFullYear(), date.getMonth(), 5), {
