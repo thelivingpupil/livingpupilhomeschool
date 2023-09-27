@@ -227,7 +227,7 @@ const Fees = () => {
       deadline: deadline[selectedYear],
     });
     const monthsToAdd =
-      deadlines[selectedYear][date.getMonth()][paymentType][index];
+      deadlines['currentYear'][date.getMonth()][paymentType][index];
     const deadline = add(new Date(date.getFullYear(), date.getMonth(), 5), {
       months: monthsToAdd,
     });
@@ -246,7 +246,7 @@ const Fees = () => {
         <Content.Divider />
         {workspace.studentRecord ? (
           <Content.Container>
-            {Object.keys().map((level) => {
+            {Object.keys(fees).map((level) => {
               if (fees[level].schoolFees.length > 0) {
                 return (
                   <Card key={level}>
