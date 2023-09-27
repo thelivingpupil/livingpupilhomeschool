@@ -165,6 +165,7 @@ const deadlines = {
 
 const Fees = () => {
   const { workspace } = useWorkspace();
+  console.log('workspace', workspace);
   const [isSubmitting, setSubmittingState] = useState(false);
   const fees = {
     [GradeLevel.PRESCHOOL]: { schoolFees: [] },
