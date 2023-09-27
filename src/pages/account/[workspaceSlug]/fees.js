@@ -224,10 +224,10 @@ const Fees = () => {
     console.log('details for selected', {
       createdMonth: date.getMonth(),
       selectedYear,
-      deadline: deadline[selectedYear],
+      deadline: deadlines[selectedYear],
     });
     const monthsToAdd =
-      deadlines['currentYear'][date.getMonth()][paymentType][index];
+      deadlines[selectedYear][date.getMonth()][paymentType][index];
     const deadline = add(new Date(date.getFullYear(), date.getMonth(), 5), {
       months: monthsToAdd,
     });
