@@ -1,3 +1,4 @@
+import { PaymentType } from '@prisma/client';
 import add from 'date-fns/add';
 import format from 'date-fns/format';
 
