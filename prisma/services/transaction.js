@@ -95,7 +95,7 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
   });
 
   const mutatedSchoolFees = workspaces?.flatMap((workspace) =>
-    workspace.schoolFees.filter().map((schoolFee) => {
+    workspace.schoolFees.map((schoolFee) => {
       return {
         transactionId: schoolFee.transaction.transactionId,
         paymentStatus: schoolFee.transaction.paymentStatus,
