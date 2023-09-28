@@ -31,6 +31,10 @@ const filterValueOptions = {
   incomingGradeLevel: GRADE_LEVEL,
   program: PROGRAM,
   religion: RELIGION,
+  schoolYear: {
+    2022: '2022',
+    2023: '2023',
+  },
 };
 
 const filterByOptions = {
@@ -40,6 +44,7 @@ const filterByOptions = {
   incomingGradeLevel: 'Grade Level',
   program: 'Program',
   religion: 'Religion',
+  schoolYear: 'School Year',
 };
 
 const Students = () => {
