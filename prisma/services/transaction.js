@@ -117,7 +117,7 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
 
   const calculatedSchoolFees = Object.keys(groupSchoolFees).map((status) => ({
     [status]: groupSchoolFees[status].reduce(
-      (total, sale) => total + Number(sale.amount),
+      (total, sale) => total + Number(Number(sale.amount).toFixed(2)),
       0
     ),
   }));
