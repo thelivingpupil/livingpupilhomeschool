@@ -129,7 +129,10 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
     }, 0),
   }));
 
-  return calculatedSchoolFees;
+  return {
+    ...calculatedSchoolFees,
+    mutatedSchoolFees,
+  };
 };
 
 export const getTotalStoreRevenuesByStatus = async (startDate, endDate) => {
