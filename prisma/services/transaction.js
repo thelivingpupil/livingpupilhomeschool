@@ -55,17 +55,6 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
   startDate,
   endDate
 ) => {
-  const data = {
-    [TransactionStatus.S]: 0,
-    [TransactionStatus.F]: 0,
-    [TransactionStatus.P]: 0,
-    [TransactionStatus.U]: 0,
-    [TransactionStatus.R]: 0,
-    [TransactionStatus.K]: 0,
-    [TransactionStatus.V]: 0,
-    [TransactionStatus.A]: 0,
-  };
-
   const workspaces = await prisma.workspace.findMany({
     select: {
       studentRecord: {
@@ -130,10 +119,9 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
     }, 0),
   }));
 
-  return {
-    ...calculatedSchoolFees,
-    mutatedSchoolFees,
-  };
+  return Object.keys(TransactionStatus).map((status) => ({
+    [status]: calculatedSchoolFees[status] || 0,
+  }));
 };
 
 export const getTotalStoreRevenuesByStatus = async (startDate, endDate) => {
