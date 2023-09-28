@@ -116,10 +116,17 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
   const groupSchoolFees = groupBy(mutatedSchoolFees, 'paymentStatus');
 
   const calculatedSchoolFees = Object.keys(groupSchoolFees).map((status) => ({
-    [status]: groupSchoolFees[status].reduce(
-      (total, sale) => Number((total + Number(sale.amount)).toFixed(2)),
-      0
-    ),
+    [status]: groupSchoolFees[status].reduce((total, sale) => {
+      const isBothDate = startDate && endDate;
+      const deadlineDate = new Date(sale.deadline);
+      const amount = isBothDate
+        ? deadlineDate >= new Date(startDate) &&
+          deadlineDate <= new Date(endDate)
+          ? sale.amount
+          : 0
+        : sale.amount;
+      return Number((total + Number(amount)).toFixed(2));
+    }, 0),
   }));
 
   return calculatedSchoolFees;
