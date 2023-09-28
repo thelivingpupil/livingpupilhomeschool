@@ -120,7 +120,10 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
   }));
 
   return Object.keys(TransactionStatus).map((status) => ({
-    [status]: calculatedSchoolFees[status] || 0,
+    [status]:
+      calculatedSchoolFees.find((sale) => Object.keys(sale).includes(status))[
+        status
+      ] || 0,
   }));
 };
 
