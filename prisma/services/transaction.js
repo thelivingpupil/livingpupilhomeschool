@@ -9,6 +9,7 @@ import { add } from 'date-fns';
 import api from '@/lib/common/api';
 import { getBasicAuthorization } from '@/lib/server/dragonpay';
 import prisma from '@/prisma/index';
+import { getDeadline } from '@/utils/index';
 
 const modes = { [Fees.ONLINE]: 1, [Fees.OTC]: 2, [Fees.PAYMENT_CENTERS]: 4 };
 
@@ -48,6 +49,71 @@ export const getTotalEnrollmentRevenuesByStatus = async (
     data[status.paymentStatus] = status._sum.amount;
   });
   return data;
+};
+
+export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
+  startDate,
+  endDate
+) => {
+  const data = {
+    [TransactionStatus.S]: 0,
+    [TransactionStatus.F]: 0,
+    [TransactionStatus.P]: 0,
+    [TransactionStatus.U]: 0,
+    [TransactionStatus.R]: 0,
+    [TransactionStatus.K]: 0,
+    [TransactionStatus.V]: 0,
+    [TransactionStatus.A]: 0,
+  };
+
+  const workspaces = await prisma.workspace.findMany({
+    select: {
+      studentRecord: {
+        select: {
+          schoolYear: true,
+        },
+      },
+      schoolFees: {
+        select: {
+          order: true,
+          paymentType: true,
+          createdAt: true,
+          transaction: {
+            select: {
+              amount: true,
+              paymentStatus: true,
+              createdAt: true,
+            },
+          },
+        },
+      },
+    },
+    where: {
+      deletedAt: null,
+    },
+  });
+
+  const calculatedSchoolFees = workspaces?.flatMap((workspace) =>
+    workspace.schoolFees.map((schoolFee) => {
+      return {
+        paymentStatus: schoolFee.transaction.paymentStatus,
+        amount: schoolFee.transaction.amount,
+        deadline:
+          schoolFee.transaction.paymentStatus === TransactionStatus.U
+            ? new Date(
+                getDeadline(
+                  schoolFee.order,
+                  schoolFee.paymentType,
+                  schoolFee.createdAt,
+                  workspace.studentRecord.schoolYear
+                )
+              )
+            : schoolFee.createdAt,
+      };
+    })
+  );
+
+  return calculatedSchoolFees;
 };
 
 export const getTotalStoreRevenuesByStatus = async (startDate, endDate) => {

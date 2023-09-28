@@ -2,6 +2,7 @@ import { validateSession } from '@/config/api-validation';
 import {
   getPendingSales,
   getTotalEnrollmentRevenuesByStatus,
+  getTotalEnrollmentRevenuesByStatusUsingWorkspaces,
   getTotalSales,
   getTotalStoreRevenuesByStatus,
 } from '@/prisma/services/transaction';
@@ -19,9 +20,20 @@ const handler = async (req, res) => {
       startDate,
       endDate
     );
+    const enrollmentSalesFromWorkspaces =
+      await getTotalEnrollmentRevenuesByStatusUsingWorkspaces(
+        startDate,
+        endDate
+      );
     const storeSales = await getTotalStoreRevenuesByStatus(startDate, endDate);
     res.status(200).json({
-      data: { totalSales, pendingSales, enrollmentSales, storeSales },
+      data: {
+        totalSales,
+        pendingSales,
+        enrollmentSales,
+        storeSales,
+        enrollmentSalesFromWorkspaces,
+      },
     });
   } else {
     res.status(405).json({ error: `${method} method unsupported` });
