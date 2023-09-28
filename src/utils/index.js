@@ -166,3 +166,14 @@ export const getDeadline = (index, paymentType, createdDate, schoolYear) => {
 
   return monthsToAdd && format(deadline, 'MMMM dd, yyyy');
 };
+
+export const groupBy = (array, key) => {
+  return array.reduce((result, item) => {
+    const groupKey = item[key];
+    if (!result[groupKey]) {
+      result[groupKey] = [];
+    }
+    result[groupKey].push(item);
+    return result;
+  }, {});
+};

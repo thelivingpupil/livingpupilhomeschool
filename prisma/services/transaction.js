@@ -9,7 +9,7 @@ import { add } from 'date-fns';
 import api from '@/lib/common/api';
 import { getBasicAuthorization } from '@/lib/server/dragonpay';
 import prisma from '@/prisma/index';
-import { getDeadline } from '@/utils/index';
+import { getDeadline, groupBy } from '@/utils/index';
 
 const modes = { [Fees.ONLINE]: 1, [Fees.OTC]: 2, [Fees.PAYMENT_CENTERS]: 4 };
 
@@ -112,17 +112,6 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
       };
     })
   );
-
-  const groupBy = (array, key) => {
-    return array.reduce((result, item) => {
-      const groupKey = item[key];
-      if (!result[groupKey]) {
-        result[groupKey] = [];
-      }
-      result[groupKey].push(item);
-      return result;
-    }, {});
-  };
 
   const groupSchoolFees = groupBy(mutatedSchoolFees, 'paymentStatus');
 
