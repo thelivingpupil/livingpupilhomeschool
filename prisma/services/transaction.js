@@ -118,7 +118,7 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
         ...totalSale,
         [sale.paymentStatus]: Number(
           Number(
-            totalSale[paymentStatus] +
+            totalSale[sale.paymentStatus] +
               (startDate && endDate
                 ? new Date(sale.deadline) >= new Date(startDate) &&
                   new Date(sale.deadline) <= new Date(endDate)
