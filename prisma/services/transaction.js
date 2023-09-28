@@ -80,6 +80,7 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
           createdAt: true,
           transaction: {
             select: {
+              transactionId: true,
               amount: true,
               paymentStatus: true,
               createdAt: true,
@@ -94,8 +95,9 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
   });
 
   const mutatedSchoolFees = workspaces?.flatMap((workspace) =>
-    workspace.schoolFees.map((schoolFee) => {
+    workspace.schoolFees.filter().map((schoolFee) => {
       return {
+        transactionId: schoolFee.transaction.transactionId,
         paymentStatus: schoolFee.transaction.paymentStatus,
         amount: schoolFee.transaction.amount,
         deadline:
@@ -104,11 +106,11 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
                 getDeadline(
                   schoolFee.order,
                   schoolFee.paymentType,
-                  schoolFee.createdAt,
+                  schoolFee.transaction.createdAt,
                   workspace.studentRecord.schoolYear
                 )
               )
-            : schoolFee.createdAt,
+            : schoolFee.transaction.createdAt,
       };
     })
   );
