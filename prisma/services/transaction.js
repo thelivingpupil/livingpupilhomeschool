@@ -93,52 +93,31 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
     },
   });
 
-  const calculatedSchoolFees = workspaces
-    ?.flatMap((workspace) =>
-      workspace.schoolFees.map((schoolFee) => {
-        return {
-          paymentStatus: schoolFee.transaction.paymentStatus,
-          amount: schoolFee.transaction.amount,
-          deadline:
-            schoolFee.transaction.paymentStatus === TransactionStatus.U
-              ? new Date(
-                  getDeadline(
-                    schoolFee.order,
-                    schoolFee.paymentType,
-                    schoolFee.createdAt,
-                    workspace.studentRecord.schoolYear
-                  )
+  const mutatedSchoolFees = workspaces?.flatMap((workspace) =>
+    workspace.schoolFees.map((schoolFee) => {
+      return {
+        paymentStatus: schoolFee.transaction.paymentStatus,
+        amount: schoolFee.transaction.amount,
+        deadline:
+          schoolFee.transaction.paymentStatus === TransactionStatus.U
+            ? new Date(
+                getDeadline(
+                  schoolFee.order,
+                  schoolFee.paymentType,
+                  schoolFee.createdAt,
+                  workspace.studentRecord.schoolYear
                 )
-              : schoolFee.createdAt,
-        };
-      })
-    )
-    .reduce(
-      (totalSale, sale) => ({
-        ...totalSale,
-        [sale.paymentStatus]: Number(
-          Number(
-            totalSale[sale.paymentStatus] +
-              (startDate && endDate
-                ? new Date(sale.deadline) >= new Date(startDate) &&
-                  new Date(sale.deadline) <= new Date(endDate)
-                  ? sale.amount
-                  : 0
-                : sale.amount)
-          ).toFixed(2)
-        ),
-      }),
-      {
-        [TransactionStatus.S]: 0,
-        [TransactionStatus.F]: 0,
-        [TransactionStatus.P]: 0,
-        [TransactionStatus.U]: 0,
-        [TransactionStatus.R]: 0,
-        [TransactionStatus.K]: 0,
-        [TransactionStatus.V]: 0,
-        [TransactionStatus.A]: 0,
-      }
-    );
+              )
+            : schoolFee.createdAt,
+      };
+    })
+  );
+
+  const calculatedSchoolFees = Object.keys(TransactionStatus).map((status) => ({
+    [status]: mutatedSchoolFees
+      .filter(({ paymentStatus }) => status === paymentStatus)
+      .reduce((total, sale) => total + Number(sale.amount), 0),
+  }));
 
   return calculatedSchoolFees;
 };
