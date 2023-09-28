@@ -32,8 +32,8 @@ const filterValueOptions = {
   program: PROGRAM,
   religion: RELIGION,
   schoolYear: {
-    2022: '2022',
-    2023: '2023',
+    2022: '2022 - 2023',
+    2023: '2023 - 2024',
   },
 };
 
@@ -284,6 +284,14 @@ const Students = () => {
                               <h4 className="flex items-center text-xl font-medium capitalize text-primary-500">
                                 <span>{`${student.firstName} ${student.lastName}`}</span>
                               </h4>
+                              <h5>
+                                <span className="text-xs">
+                                  School Year{' '}
+                                  {`${Number(student.schoolYear)} - ${
+                                    Number(student.schoolYear) + 1
+                                  }`}
+                                </span>
+                              </h5>
                               <h5 className="flex items-center font-medium text-gray-400">
                                 <span className="text-xs">
                                   {GRADE_LEVEL[student.incomingGradeLevel]}
