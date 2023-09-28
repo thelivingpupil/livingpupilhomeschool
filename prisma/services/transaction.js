@@ -113,10 +113,24 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
     })
   );
 
-  const calculatedSchoolFees = Object.keys(TransactionStatus).map((status) => ({
-    [status]: mutatedSchoolFees
-      .filter(({ paymentStatus }) => status === paymentStatus)
-      .reduce((total, sale) => total + Number(sale.amount), 0),
+  const groupBy = (array, key) => {
+    return array.reduce((result, item) => {
+      const groupKey = item[key];
+      if (!result[groupKey]) {
+        result[groupKey] = [];
+      }
+      result[groupKey].push(item);
+      return result;
+    }, {});
+  };
+
+  const groupSchoolFees = groupBy(mutatedSchoolFees, 'paymentStatus');
+
+  const calculatedSchoolFees = Object.keys(groupSchoolFees).map((status) => ({
+    [status]: groupSchoolFees[status].reduce(
+      (total, sale) => total + Number(sale.amount),
+      0
+    ),
   }));
 
   return calculatedSchoolFees;
