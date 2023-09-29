@@ -32,7 +32,7 @@ export const SHOP_SHIPPING = {
   pickup: {
     title: 'Pick Up',
     fee: 0,
-    value: ShippingType.PICK_UP,
+    key: ShippingType.PICK_UP,
     value: 'pickup',
   },
   withInCebu: {
