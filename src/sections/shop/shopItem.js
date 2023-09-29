@@ -484,10 +484,12 @@ const ShopItem = ({ item }) => {
               <button
                 className="py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
                 disabled={
-                  !cart.length ||
-                  !shippingFee?.fee ||
-                  !deliveryAddress ||
-                  !contactNumber
+                  !(
+                    cart.length &&
+                    shippingFee?.fee &&
+                    deliveryAddress &&
+                    contactNumber
+                  ) || shippingFee?.value === 'pickup'
                 }
                 onClick={toggleCartVisibility}
               >

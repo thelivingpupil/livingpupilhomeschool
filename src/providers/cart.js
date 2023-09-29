@@ -29,6 +29,12 @@ const LPH_CART_KEY = 'LPHCART';
 const CartContext = createContext(cartInitialState);
 
 export const SHOP_SHIPPING = {
+  pickup: {
+    title: 'Pick Up',
+    fee: 0,
+    value: ShippingType.PICK_UP,
+    value: 'pickup',
+  },
   withInCebu: {
     title: 'Within Cebu',
     fee: 160,
