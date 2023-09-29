@@ -186,7 +186,8 @@ const Dashboard = () => {
                   datasets: [
                     {
                       data: Object.keys(STATUS).map(
-                        (status) => transactions?.enrollmentSales[status]
+                        (status) =>
+                          transactions?.enrollmentSalesFromWorkspaces[status]
                       ),
                       backgroundColor: [
                         '#bbf7d0',
