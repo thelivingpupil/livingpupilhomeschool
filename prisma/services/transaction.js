@@ -119,7 +119,25 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
     }, 0),
   }));
 
-  return calculatedSchoolFees;
+  let data = {
+    [TransactionStatus.S]: 0,
+    [TransactionStatus.F]: 0,
+    [TransactionStatus.P]: 0,
+    [TransactionStatus.U]: 0,
+    [TransactionStatus.R]: 0,
+    [TransactionStatus.K]: 0,
+    [TransactionStatus.V]: 0,
+    [TransactionStatus.A]: 0,
+  };
+
+  calculatedSchoolFees.forEach((total) => {
+    data = {
+      ...data,
+      ...total,
+    };
+  });
+
+  return data;
 };
 
 export const getTotalStoreRevenuesByStatus = async (startDate, endDate) => {
