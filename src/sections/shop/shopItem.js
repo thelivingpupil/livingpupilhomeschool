@@ -490,7 +490,7 @@ const ShopItem = ({ item }) => {
                     deliveryAddress &&
                     contactNumber
                   ) ||
-                  (shippingFee?.value !== 'pickup' && !cart.length)
+                  (shippingFee?.value === 'pickup' && !cart.length)
                 }
                 onClick={toggleCartVisibility}
               >
