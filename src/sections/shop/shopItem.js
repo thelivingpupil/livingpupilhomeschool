@@ -489,8 +489,7 @@ const ShopItem = ({ item }) => {
                     shippingFee?.fee &&
                     deliveryAddress &&
                     contactNumber
-                  ) ||
-                  (shippingFee?.value === 'pickup' && !cart.length)
+                  ) && !(shippingFee?.value === 'pickup' && cart.length)
                 }
                 onClick={toggleCartVisibility}
               >
