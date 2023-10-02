@@ -82,7 +82,7 @@ const handler = async (req, res) => {
         program,
         cottageType,
         accreditation,
-        SCHOOL_YEAR,
+        SCHOOL_YEAR.toString(),
         reason,
         formerSchoolName,
         formerSchoolAddress,
