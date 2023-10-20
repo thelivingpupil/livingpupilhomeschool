@@ -22,6 +22,7 @@ import {
   STATUS,
 } from '@/utils/constants';
 import Modal from '@/components/Modal';
+import toast from 'react-hot-toast';
 
 const filterValueOptions = {
   paymentType: PAYMENT_TYPE,
@@ -38,6 +39,7 @@ const Transactions = () => {
   const { data, isLoading } = useTransactions();
   const [showModal, setModalVisibility] = useState(false);
   const [isSubmitting, setSubmittingState] = useState(false);
+  const [isUpdatingTransaction, setUpdatingTransaction] = useState(false);
   const [updateTransaction, setUpdateTransaction] = useState({
     transactionId: '',
     payment: '',
@@ -139,6 +141,30 @@ const Transactions = () => {
     setModalVisibility(true);
   };
 
+  const handleUpdateTransaction = () => {
+    setUpdatingTransaction(true);
+    api(`/api/transactions/${updateTransaction.transactionId}`, {
+      body: {
+        amount: updateTransaction.payment,
+        status: TransactionStatus.S,
+      },
+      method: 'PUT',
+    })
+      .then(() => {
+        setUpdateTransaction(false);
+        toggleModal();
+        toast.success(
+          `Successfully updated transaction for ${updateTransaction.name}`
+        );
+      })
+      .catch(() => {
+        setUpdateTransaction(false);
+        toast.error(
+          `Error in updating transaction for ${updateTransaction.name}`
+        );
+      });
+  };
+
   const submit = () => {
     inputFileRef.current.click();
   };
@@ -232,9 +258,9 @@ const Transactions = () => {
           <p className="font-medium py-2 text-secondary-500 text-xl">
             {updateTransaction.paymentOrder}
           </p>
-          <div className="grid grid-cols-2 gap-2 my-2 p-2 border-primary-500 rounded">
-            <div className="flex capitalize font-bold text-lg">Status</div>
-            <div className="flex capitalize font-bold text-lg">Amount</div>
+          <div className="grid grid-cols-2 gap-2 my-2 p-2 border border-primary-500 rounded shadow">
+            <div className="flex capitalize font-semibold text-lg">Status</div>
+            <div className="flex capitalize font-semibold text-lg">Amount</div>
             <div className="flex">
               <span
                 className={`px-2 py-0.5 rounded-full ${
@@ -246,8 +272,9 @@ const Transactions = () => {
           </div>
           <div className="w-full flex justify-end">
             <button
-              className="px-3 py-1 text-white text-base rounded bg-cyan-600"
-              onClick={() => console.log('Update')}
+              className="px-3 py-1 text-white text-base text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+              disabled={isUpdatingTransaction}
+              onClick={handleUpdateTransaction}
             >
               Update Transaction
             </button>
