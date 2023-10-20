@@ -270,16 +270,15 @@ const Transactions = () => {
             <div className="flex capitalize font-semibold text-lg">Amount</div>
             <div className="flex">
               <span
-                className={`px-2 py-0.5 rounded-full ${
+                className={`px-6 py-0.5 rounded-full flex items-center ${
                   STATUS_BG_COLOR[updateTransaction.paymentStatus]
                 }`}
               >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
             </div>
             <div className="flex">
               <input
-                className="px-3 py-2 border rounded"
-                type="number"
-                step="0.01"
+                className="px-3 py-2 border rounded truncate"
+                type="text"
                 value={updateTransaction.payment}
                 onChange={handleUpdatePaymentTransaction}
               />
