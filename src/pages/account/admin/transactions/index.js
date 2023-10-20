@@ -158,14 +158,14 @@ const Transactions = () => {
       method: 'PUT',
     })
       .then(() => {
-        setUpdateTransaction(false);
+        setUpdatingTransaction(false);
         toggleModal();
         toast.success(
           `Successfully updated transaction for ${updateTransaction.name}`
         );
       })
       .catch(() => {
-        setUpdateTransaction(false);
+        setUpdatingTransaction(false);
         toast.error(
           `Error in updating transaction for ${updateTransaction.name}`
         );
