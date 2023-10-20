@@ -38,6 +38,10 @@ const Transactions = () => {
   const { data, isLoading } = useTransactions();
   const [showModal, setModalVisibility] = useState(false);
   const [isSubmitting, setSubmittingState] = useState(false);
+  const { updateTransaction, setUpdateTransaction } = useState({
+    transactionId: '',
+    payment: '',
+  });
   const [filter, setFilter] = useState(['', '']);
   const [filterBy, filterValue] = filter;
   const [uploadCount, setUploadCount] = useState(0);
@@ -98,7 +102,21 @@ const Transactions = () => {
 
   const toggleModal = () => setModalVisibility((state) => !state);
 
-  const openUpdateModal = () => {
+  const openUpdateModal = (transaction) => () => {
+    setUpdateTransaction({
+      ...updateTransaction,
+      name: transaction.schoolFee.student.studentRecord.firstName,
+      gradeLevel:
+        transaction.schoolFee.student.studentRecord.incomingGradeLevel,
+      program: transaction.schoolFee.student.studentRecord.program,
+      accreditation: transaction.schoolFee.student.studentRecord.accreditation,
+      createdAt: transaction.createdAt,
+      updatedAt: transaction.updatedAt,
+      guardianInformation: transaction.user.guardianInformation
+        ? transaction.user.guardianInformation.primaryGuardianName
+        : transaction.user.email,
+      email: transaction.user.email,
+    });
     setModalVisibility(true);
   };
 
@@ -166,7 +184,27 @@ const Transactions = () => {
         toggle={toggleModal}
         title="Update Transaction"
       >
-        <h3>Sample update</h3>
+        <div>
+          <h4 className="flex items-center space-x-3 text-xl font-medium capitalize text-primary-500">
+            <span>{`${updateTransaction.name}`}</span>
+            <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${
+              GRADE_LEVEL[updateTransaction.gradeLevel]
+            }`}</span>
+          </h4>
+          <h5 className="font-bold">
+            <span className="text-xs">{`${
+              PROGRAM[updateTransaction.program]
+            } - ${ACCREDITATION[updateTransaction.accreditation]}`}</span>
+          </h5>
+          <p className="text-xs text-gray-400">
+            Created {new Date(updateTransaction.createdAt).toDateString()} by{' '}
+            <strong>{updateTransaction.guardianInformation}</strong>
+          </p>
+          <p className="text-xs text-gray-400">
+            Last Updated {new Date(updateTransaction.updatedAt).toDateString()}
+          </p>
+          <small>{updateTransaction.email}</small>
+        </div>
       </SideModal>
       <Content.Title
         title="Enrollment Transactions"
@@ -317,6 +355,10 @@ const Transactions = () => {
                                     : transaction.user.email}
                                 </strong>
                               </p>
+                              <p className="text-xs text-gray-400">
+                                Last Updated{' '}
+                                {new Date(transaction.updatedAt).toDateString()}
+                              </p>
                               <small>{transaction.user.email}</small>
                             </div>
                           </td>
@@ -374,8 +416,8 @@ const Transactions = () => {
                             {transaction.paymentStatus !==
                               TransactionStatus.S && (
                               <button
-                                className="px-3 py-1 text-white rounded bg-amber-600"
-                                onClick={openUpdateModal}
+                                className="px-3 py-1 text-white rounded bg-cyan-600"
+                                onClick={openUpdateModal(transaction)}
                               >
                                 Update
                               </button>
