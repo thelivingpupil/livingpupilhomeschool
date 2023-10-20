@@ -141,7 +141,7 @@ const Transactions = () => {
     setModalVisibility(true);
   };
 
-  handleUpdatePaymentTransaction = (e) => {
+  const handleUpdatePaymentTransaction = (e) => {
     setUpdateTransaction({
       ...updateTransaction,
       payment: Number(e.target.value),
@@ -281,6 +281,7 @@ const Transactions = () => {
                 type="number"
                 step="0.01"
                 value={updateTransaction.payment}
+                onChange={handleUpdatePaymentTransaction}
               />
             </div>
           </div>
