@@ -141,6 +141,13 @@ const Transactions = () => {
     setModalVisibility(true);
   };
 
+  handleUpdatePaymentTransaction = (e) => {
+    setUpdateTransaction({
+      ...updateTransaction,
+      payment: Number(e.target.value),
+    });
+  };
+
   const handleUpdateTransaction = () => {
     setUpdatingTransaction(true);
     api(`/api/transactions/${updateTransaction.transactionId}`, {
@@ -268,7 +275,13 @@ const Transactions = () => {
                 }`}
               >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
             </div>
-            <div className="flex">{updateTransaction.payment}</div>
+            <div className="flex">
+              <input
+                type="number"
+                step="0.01"
+                value={updateTransaction.payment}
+              />
+            </div>
           </div>
           <div className="w-full flex justify-end">
             <button
