@@ -318,6 +318,7 @@ export const getTransactions = async () =>
       paymentStatus: true,
       paymentReference: true,
       createdAt: true,
+      updateAt: true,
       user: {
         select: {
           name: true,
