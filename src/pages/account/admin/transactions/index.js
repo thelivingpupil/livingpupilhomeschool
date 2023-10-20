@@ -41,6 +41,16 @@ const Transactions = () => {
   const [updateTransaction, setUpdateTransaction] = useState({
     transactionId: '',
     payment: '',
+    name: '',
+    gradeLevel: '',
+    program: '',
+    accreditation: '',
+    createdAt: '',
+    updatedAt: '',
+    guardianInformation: '',
+    email: '',
+    paymentStatus: '',
+    paymentOrder: '',
   });
   const [filter, setFilter] = useState(['', '']);
   const [filterBy, filterValue] = filter;
@@ -116,6 +126,15 @@ const Transactions = () => {
         ? transaction.user.guardianInformation.primaryGuardianName
         : transaction.user.email,
       email: transaction.user.email,
+      paymentStatus: transaction.paymentStatus,
+      transactionId: transaction.transactionId,
+      payment: transaction.amount,
+      paymentOrder:
+        transaction.schoolFee.paymentType === PaymentType.ANNUAL
+          ? 'Total Fee'
+          : transaction.schoolFee.order === 0
+          ? 'Initial Fee'
+          : `Payment #${transaction.schoolFee.order}`,
     });
     setModalVisibility(true);
   };
@@ -190,6 +209,11 @@ const Transactions = () => {
             <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${
               GRADE_LEVEL[updateTransaction.gradeLevel]
             }`}</span>
+            <span
+              className={`px-2 py-0.5 text-xs rounded-full ${
+                STATUS_BG_COLOR[updateTransaction.paymentStatus]
+              }`}
+            >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
           </h4>
           <h5 className="font-bold">
             <span className="text-xs">{`${
@@ -197,13 +221,17 @@ const Transactions = () => {
             } - ${ACCREDITATION[updateTransaction.accreditation]}`}</span>
           </h5>
           <p className="text-xs text-gray-400">
-            Created {new Date(updateTransaction.createdAt).toDateString()} by{' '}
+            Created {new Date(updateTransaction.createdAt).toDateString()} by:{' '}
             <strong>{updateTransaction.guardianInformation}</strong>
           </p>
           <p className="text-xs text-gray-400">
-            Last Updated {new Date(updateTransaction.updatedAt).toDateString()}
+            Last Updated: {new Date(updateTransaction.updatedAt).toDateString()}
           </p>
-          <small>{updateTransaction.email}</small>
+        </div>
+        <div className="flex flex-col py-4">
+          <p className="font-medium p-2 text-secondary-500 font-bold">
+            {updateTransaction.paymentOrder}
+          </p>
         </div>
       </SideModal>
       <Content.Title
@@ -356,7 +384,7 @@ const Transactions = () => {
                                 </strong>
                               </p>
                               <p className="text-xs text-gray-400">
-                                Last Updated{' '}
+                                Last Updated:{' '}
                                 {new Date(transaction.updatedAt).toDateString()}
                               </p>
                               <small>{transaction.user.email}</small>
