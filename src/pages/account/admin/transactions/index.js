@@ -277,6 +277,7 @@ const Transactions = () => {
             </div>
             <div className="flex">
               <input
+                className="px-3 py-2 border rounded"
                 type="number"
                 step="0.01"
                 value={updateTransaction.payment}
