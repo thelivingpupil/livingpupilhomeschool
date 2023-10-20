@@ -96,9 +96,11 @@ const Transactions = () => {
 
   const inputFileRef = useRef();
 
-  const toggleModal = () => setModalVisibility(!showModal);
+  const toggleModal = () => setModalVisibility((state) => !state);
 
-  const renew = () => {};
+  const openUpdateModal = () => {
+    setModalVisibility(true);
+  };
 
   const submit = () => {
     inputFileRef.current.click();
@@ -159,7 +161,13 @@ const Transactions = () => {
           />
         </p>
       </Modal>
-      <SideModal show={showModal} toggle={toggleModal} />
+      <SideModal
+        show={showModal}
+        toggle={toggleModal}
+        title="Update Transaction"
+      >
+        <h3>Sample update</h3>
+      </SideModal>
       <Content.Title
         title="Enrollment Transactions"
         subtitle="View and manage all transactions relevant to enrollment"
@@ -367,9 +375,9 @@ const Transactions = () => {
                               TransactionStatus.S && (
                               <button
                                 className="px-3 py-1 text-white rounded bg-amber-600"
-                                onClick={renew}
+                                onClick={openUpdateModal}
                               >
-                                Renew
+                                Update
                               </button>
                             )}
                             {/* <button

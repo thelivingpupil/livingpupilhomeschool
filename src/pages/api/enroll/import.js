@@ -579,7 +579,6 @@ const handler = async (req, res) => {
         user,
         activeUser,
         existingWorkspace,
-        // fetchExistingWorkspace,
         workspace,
         studentRecord,
         existingStudentRecord,
