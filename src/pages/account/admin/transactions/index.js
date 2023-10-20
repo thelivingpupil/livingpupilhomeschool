@@ -229,9 +229,29 @@ const Transactions = () => {
           </p>
         </div>
         <div className="flex flex-col py-4">
-          <p className="font-medium p-2 text-secondary-500 font-bold">
+          <p className="font-medium py-2 text-secondary-500 text-xl">
             {updateTransaction.paymentOrder}
           </p>
+          <div className="grid grid-cols-2 gap-2 my-2 p-2 border-primary-500 rounded">
+            <div className="flex capitalize font-bold text-lg">Status</div>
+            <div className="flex capitalize font-bold text-lg">Amount</div>
+            <div className="flex">
+              <span
+                className={`px-2 py-0.5 rounded-full ${
+                  STATUS_BG_COLOR[updateTransaction.paymentStatus]
+                }`}
+              >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
+            </div>
+            <div className="flex">{updateTransaction.payment}</div>
+          </div>
+          <div className="w-full flex justify-end">
+            <button
+              className="px-3 py-1 text-white text-base rounded bg-cyan-600"
+              onClick={() => console.log('Update')}
+            >
+              Update Transaction
+            </button>
+          </div>
         </div>
       </SideModal>
       <Content.Title
