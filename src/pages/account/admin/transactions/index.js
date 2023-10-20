@@ -38,7 +38,7 @@ const Transactions = () => {
   const { data, isLoading } = useTransactions();
   const [showModal, setModalVisibility] = useState(false);
   const [isSubmitting, setSubmittingState] = useState(false);
-  const { updateTransaction, setUpdateTransaction } = useState({
+  const [updateTransaction, setUpdateTransaction] = useState({
     transactionId: '',
     payment: '',
   });
