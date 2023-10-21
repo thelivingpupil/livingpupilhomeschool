@@ -53,6 +53,7 @@ const Transactions = () => {
     email: '',
     paymentStatus: '',
     paymentOrder: '',
+    paymentType: '',
   });
   const [filter, setFilter] = useState(['', '']);
   const [filterBy, filterValue] = filter;
@@ -131,6 +132,7 @@ const Transactions = () => {
       paymentStatus: transaction.paymentStatus,
       transactionId: transaction.transactionId,
       payment: transaction.amount,
+      paymentType: transaction.schoolFee.paymentType,
       paymentOrder:
         transaction.schoolFee.paymentType === PaymentType.ANNUAL
           ? 'Total Fee'
@@ -262,6 +264,9 @@ const Transactions = () => {
           </p>
         </div>
         <div className="flex flex-col py-4">
+          <p className="font-medium py-2 text-primary-500 text-xl">
+            {PAYMENT_TYPE[updateTransaction.paymentType]}
+          </p>
           <p className="font-medium py-2 text-secondary-500 text-xl">
             {updateTransaction.paymentOrder}
           </p>
