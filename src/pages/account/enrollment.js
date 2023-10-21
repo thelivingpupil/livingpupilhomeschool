@@ -2228,12 +2228,12 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                           }`}
                         </span>
                       </h6>
-                      <p className="text-sm text-semibold text-primary-500">
-                        <strong>NOTE:&nbsp;</strong>
-                        {fee?._type === 'fullTermPayment'
-                          ? 'Discount applied!'
-                          : 'Discount will be applied to second payment.'}
-                      </p>
+                      {fee?._type !== 'fullTermPayment' && (
+                        <p className="text-xs text-semibold text-primary-500">
+                          <strong>NOTE:</strong> Discount will be applied to
+                          second payment.
+                        </p>
+                      )}
                     </div>
                     <div className="text-right">
                       <span className={discount ? 'text-red-600' : ''}>
