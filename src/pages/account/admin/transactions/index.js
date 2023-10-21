@@ -54,6 +54,7 @@ const Transactions = () => {
     paymentStatus: '',
     paymentOrder: '',
     paymentType: '',
+    currency: '',
   });
   const [filter, setFilter] = useState(['', '']);
   const [filterBy, filterValue] = filter;
@@ -133,6 +134,7 @@ const Transactions = () => {
       transactionId: transaction.transactionId,
       payment: transaction.amount,
       paymentType: transaction.schoolFee.paymentType,
+      currency: transaction.currency,
       paymentOrder:
         transaction.schoolFee.paymentType === PaymentType.ANNUAL
           ? 'Total Fee'
@@ -286,7 +288,7 @@ const Transactions = () => {
                 type="text"
                 value={new Intl.NumberFormat('en-US', {
                   style: 'currency',
-                  currency: transaction.currency,
+                  currency: updateTransaction.currency,
                 }).format(updateTransaction.payment)}
                 onChange={handleUpdatePaymentTransaction}
               />
