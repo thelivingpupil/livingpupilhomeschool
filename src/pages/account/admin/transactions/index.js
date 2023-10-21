@@ -286,10 +286,7 @@ const Transactions = () => {
               <input
                 className="px-3 py-2 border rounded truncate"
                 type="text"
-                value={new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: updateTransaction.currency,
-                }).format(updateTransaction.payment)}
+                value={Number(updateTransaction.payment).toFixed(2)}
                 onChange={handleUpdatePaymentTransaction}
               />
             </div>
