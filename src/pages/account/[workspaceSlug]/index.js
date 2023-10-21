@@ -2171,7 +2171,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                       </h6>
                       {fee?._type !== 'fullTermPayment' && (
                         <p className="text-xs text-semibold text-primary-500">
-                          <strong>NOTE:</strong> Discount will be applied to
+                          <strong>NOTE:</strong> Discount will be applied on the
                           second payment.
                         </p>
                       )}
