@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import {
-  CheckCircleIcon,
   CheckIcon,
   ChevronDownIcon,
   DocumentIcon,
   InformationCircleIcon,
   UserIcon,
 } from '@heroicons/react/outline';
-import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/solid';
 import {
   Accreditation,
   Enrollment,
@@ -20,7 +18,6 @@ import {
   Religion,
 } from '@prisma/client';
 import crypto from 'crypto';
-import differenceInCalendarYears from 'date-fns/differenceInCalendarYears';
 import differenceInYears from 'date-fns/differenceInYears';
 import format from 'date-fns/format';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
@@ -71,6 +68,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const { workspace } = useWorkspace();
   const [step, setStep] = useState(0);
   const [viewFees, setViewFees] = useState(false);
+  const [isSubmittingCode, setSubmittingCodeState] = useState(false);
   const [isSubmitting, setSubmittingState] = useState(false);
   const [review, setReviewVisibility] = useState(false);
   const [agree, setAgree] = useState(false);
@@ -101,6 +99,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const [birthCertificateLink, setBirthCertificateLink] = useState(null);
   const [reportCardLink, setReportCardLink] = useState(null);
   const [discountCode, setDiscountCode] = useState('');
+  const [discount, setDiscount] = useState(null);
 
   const [primaryGuardianName, setPrimaryGuardianName] = useState(
     guardian?.primaryGuardianName || ''
@@ -185,7 +184,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       birthCertificateLink &&
       birthCertificateLink?.length > 0) ||
     (step === 1 && accreditation !== null) ||
-    (step === 2 && payment !== null && paymentMethod && agree);
+    (step === 2 &&
+      payment !== null &&
+      paymentMethod &&
+      agree &&
+      !isSubmittingCode);
 
   const programFee = programs.find((programFee) => {
     let gradeLevel = incomingGradeLevel;
@@ -297,7 +300,26 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     );
   });
 
-  const applyDiscount = () => {};
+  const applyDiscount = () => {
+    setSubmittingCodeState(true);
+    api('/api/enroll/discount', {
+      body: { code: discountCode },
+      method: 'POST',
+    }).then((response) => {
+      setSubmittingCodeState(false);
+      console.log('errors', response.errors);
+      console.log('data', response.data);
+      if (response.errors) {
+        setDiscount(null);
+        Object.keys(response.errors).forEach((error) =>
+          toast.error(response.errors[error].msg)
+        );
+      } else {
+        setDiscount(response.data);
+        toast.success('Discount successfully applied');
+      }
+    });
+  };
 
   const goToStep = (step) => {
     validateNext && setStep(step);
@@ -308,7 +330,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     const file = e.target?.files[0];
 
     if (file) {
-      // 10 MB
+      // 510MB
       if (file.size < 10485760) {
         const extension = file.name.split('.').pop();
         const storageRef = ref(
@@ -355,7 +377,6 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     const file = e.target?.files[0];
 
     if (file) {
-      // 10
       if (file.size < 5242880) {
         const extension = file.name.split('.').pop();
         const storageRef = ref(
@@ -496,22 +517,27 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         anotherEmail,
         address1,
         address2,
+        discountCode,
       },
       method: 'POST',
-    }).then((response) => {
-      setSubmittingState(false);
+    })
+      .then((response) => {
+        setSubmittingState(false);
 
-      if (response.errors) {
-        Object.keys(response.errors).forEach((error) =>
-          toast.error(response.errors[error].msg)
-        );
-      } else {
-        window.open(response.data.schoolFee.url, '_blank');
-        setPaymentLink(response.data.schoolFee.url);
-        setViewFees(true);
-        toast.success('Student information successfully submitted!');
-      }
-    });
+        if (response.errors) {
+          Object.keys(response.errors).forEach((error) =>
+            toast.error(response.errors[error].msg)
+          );
+        } else {
+          window.open(response.data.schoolFee.url, '_blank');
+          setPaymentLink(response.data.schoolFee.url);
+          setViewFees(true);
+          toast.success('Student information successfully submitted!');
+        }
+      })
+      .catch(() => {
+        setSubmittingState(false);
+      });
   };
 
   const toggleReview = () => setReviewVisibility(!review);
@@ -936,7 +962,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
                   onChange={(e) => {
                     setIncomingGradeLevel(e.target.value);
-                    setAccreditation(null);
+                    // setAccreditation(null);
                   }}
                   value={incomingGradeLevel}
                 >
@@ -1682,6 +1708,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     const programFeeByAccreditation = programFee?.tuitionFees.find(
       (tuition) => tuition.type === accreditation
     );
+
     return (
       programFeeByAccreditation && (
         <div className="flex flex-col p-5 space-y-5 overflow-auto">
@@ -1728,6 +1755,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               <ChevronDownIcon className="w-5 h-5" />
             </div>
           </div>
+          <hr />
           <div className="relative flex flex-row space-x-5">
             <div
               className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
@@ -1964,7 +1992,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 a letter of withdrawal/transfer (2) has already paid the tuition
                 and other fees in full. The amount of the refund depends on the
                 following:
-                <ul className="px-5 list-disc">
+                <ul className="py-5 list-disc">
                   <li>
                     When the student withdraws a week after enrollment, LP
                     finance will charge 10% of the amount paid plus the
@@ -2092,12 +2120,16 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   <div className="flex border rounded">
                     <input
                       className="w-3/4 px-3 py-2 rounded-l"
-                      onChange={(e) => setDiscountCode(e.target.value)}
+                      onChange={(e) => {
+                        setDiscountCode(e.target.value);
+                        setDiscount(null);
+                      }}
                       placeholder="Input discount code here"
                       value={discountCode}
                     />
                     <button
                       className="w-1/4 rounded-r bg-secondary-500 hover:bg-secondary-400"
+                      disabled={isSubmittingCode}
                       onClick={applyDiscount}
                     >
                       Apply
@@ -2158,7 +2190,16 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                       <h5 className="font-medium">Discount</h5>
                       <h6 className="text-xs text-gray-400">
                         Based on applied discount code:{' '}
-                        <span className="font-bold">{discountCode || '-'}</span>
+                        <span className="font-bold text-green-600">
+                          {discountCode || '-'}{' '}
+                          {`${
+                            discount
+                              ? `(${Number(discount.value).toFixed(2)}${
+                                  discount.type === 'VALUE' ? 'Php' : '%'
+                                })`
+                              : ''
+                          }`}
+                        </span>
                       </h6>
                       {fee && fee?._type !== 'fullTermPayment' && (
                         <p className="text-xs text-semibold text-primary-500">
@@ -2168,11 +2209,38 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                       )}
                     </div>
                     <div className="text-right">
-                      <span>
+                      <span className={discount ? 'text-red-600' : ''}>
                         {new Intl.NumberFormat('en-US', {
                           style: 'currency',
                           currency: 'PHP',
-                        }).format(0)}
+                        }).format(
+                          discount
+                            ? discount.type === 'VALUE'
+                              ? (discount?.code
+                                  ?.toLowerCase()
+                                  .includes('pastor')
+                                  ? Math.ceil(
+                                      fee?._type === 'fullTermPayment'
+                                        ? fee?.fullPayment
+                                        : fee?._type === 'threeTermPayment'
+                                        ? fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment
+                                        : fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment +
+                                          fee?.fourthPayment
+                                    ) - discount.value
+                                  : Number(discount.value).toFixed(2)) * -1
+                              : Math.ceil(
+                                  fee?._type === 'fullTermPayment'
+                                    ? fee?.fullPayment
+                                    : fee?.secondPayment
+                                ) *
+                                (discount.value / 100) *
+                                -1
+                            : 0
+                        )}
                       </span>
                     </div>
                   </div>
@@ -2180,10 +2248,15 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 <div>
                   <div className="flex items-center justify-between p-5 space-x-5 bg-gray-100 border-t border-dashed">
                     <div>
-                      <h5 className="font-bold">Total Payable</h5>
+                      <h5 className="font-bold">
+                        {fee?._type === 'fullTermPayment'
+                          ? 'Total Payable'
+                          : 'Initial Fee'}
+                      </h5>
                       <h6 className="text-xs text-primary-500">
                         <strong>NOTE</strong>: Succeeding payments will always
-                        incur payment gateway fees per transaction
+                        incur payment gateway fees per transaction and see
+                        breakdown for applicable discounts
                       </h6>
                     </div>
                     <div className="text-right">
@@ -2193,7 +2266,27 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                           currency: 'PHP',
                         }).format(
                           (fee?._type === 'fullTermPayment'
-                            ? fee?.fullPayment
+                            ? fee?.fullPayment -
+                              (discount
+                                ? discount?.type === 'VALUE'
+                                  ? discount?.code
+                                      ?.toLowerCase()
+                                      .includes('pastor')
+                                    ? Math.ceil(
+                                        fee?._type === 'fullTermPayment'
+                                          ? fee?.fullPayment
+                                          : fee?._type === 'threeTermPayment'
+                                          ? fee?.downPayment +
+                                            fee?.secondPayment +
+                                            fee?.thirdPayment
+                                          : fee?.downPayment +
+                                            fee?.secondPayment +
+                                            fee?.thirdPayment +
+                                            fee?.fourthPayment
+                                      ) - discount.value
+                                    : discount.value
+                                  : (discount.value / 100) * fee?.fullPayment
+                                : 0)
                             : fee?.downPayment) + FEES[paymentMethod] || 0
                         )}
                       </span>
