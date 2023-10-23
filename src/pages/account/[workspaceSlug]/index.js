@@ -2158,16 +2158,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                       <h5 className="font-medium">Discount</h5>
                       <h6 className="text-xs text-gray-400">
                         Based on applied discount code:{' '}
-                        <span className="font-bold">
-                          {discountCode || '-'}
-                          {`${
-                            discount
-                              ? `(${Number(discount.value).toFixed(2)}${
-                                  discount.type === 'VALUE' ? 'Php' : '%'
-                                })`
-                              : ''
-                          }`}
-                        </span>
+                        <span className="font-bold">{discountCode || '-'}</span>
                       </h6>
                       {fee && fee?._type !== 'fullTermPayment' && (
                         <p className="text-xs text-semibold text-primary-500">
