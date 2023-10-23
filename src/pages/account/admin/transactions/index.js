@@ -570,11 +570,12 @@ const Transactions = () => {
                 </tbody>
               </table>
             </div>
-            {remainingPayments && (
+            {(remainingPayments && (
               <p className="text-lg font-semibold text-primary-500 py-5">
                 Total remaining payment: {remainingPayments}
               </p>
-            )}
+            )) ||
+              null}
           </Card.Body>
         </Card>
       </Content.Container>
