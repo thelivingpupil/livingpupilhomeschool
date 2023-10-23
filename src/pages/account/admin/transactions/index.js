@@ -456,16 +456,16 @@ const Transactions = () => {
                                 Last Updated:{' '}
                                 {new Date(transaction.updatedAt).toDateString()}
                               </p>
-                              <p className="text-xs font-semibold text-primary-500">
-                                Deadline:{' '}
-                                {getDeadline(
-                                  transaction.schoolFee.order,
-                                  transaction.schoolFee.paymentType,
-                                  transaction.createdAt,
-                                  transaction.schoolFee.student.studentRecord
-                                    .schoolYear
-                                ) || '-'}
-                              </p>
+                              {transaction.schoolFee.student.studentRecord
+                                .discount && (
+                                <p className="text-xs font-semibold text-primary-500">
+                                  Applied discount:{' '}
+                                  {
+                                    transaction.schoolFee.student.studentRecord
+                                      .discount
+                                  }
+                                </p>
+                              )}
                               <small>{transaction.user.email}</small>
                             </div>
                           </td>
@@ -486,6 +486,15 @@ const Transactions = () => {
                                   ? 'Initial Fee'
                                   : `Payment #${transaction.schoolFee.order}`}
                               </div>
+                              <p className="text-xs font-semibold text-primary-500">
+                                {getDeadline(
+                                  transaction.schoolFee.order,
+                                  transaction.schoolFee.paymentType,
+                                  transaction.createdAt,
+                                  transaction.schoolFee.student.studentRecord
+                                    .schoolYear
+                                )}
+                              </p>
                             </div>
                           </td>
                           <td className="p-2 text-left">

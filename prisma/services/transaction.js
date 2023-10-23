@@ -346,6 +346,7 @@ export const getTransactions = async () =>
                   program: true,
                   accreditation: true,
                   schoolYear: true,
+                  discount: true,
                 },
               },
             },
