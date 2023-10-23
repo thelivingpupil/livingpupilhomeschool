@@ -216,6 +216,14 @@ const Transactions = () => {
     });
   };
 
+  const remainingPayments =
+    filterBy === 'emailAccount' &&
+    filterTransactions
+      .filter(
+        (transaction) => transaction.paymentStatus !== TransactionStatus.S
+      )
+      .reduce((total, transaction) => total + transaction.amount, 0);
+
   return (
     <AdminLayout>
       <Meta title="Living Pupil Homeschool - Students List" />
@@ -493,7 +501,7 @@ const Transactions = () => {
                                   transaction.createdAt,
                                   transaction.schoolFee.student.studentRecord
                                     .schoolYear
-                                )}
+                                ) || null}
                               </p>
                             </div>
                           </td>
@@ -562,6 +570,11 @@ const Transactions = () => {
                 </tbody>
               </table>
             </div>
+            {remainingPayments && (
+              <p className="text-lg font-semibold text-primary-500 py-5">
+                Remaining total payments: {remainingPayments}
+              </p>
+            )}
           </Card.Body>
         </Card>
       </Content.Container>
