@@ -23,6 +23,7 @@ import {
 } from '@/utils/constants';
 import Modal from '@/components/Modal';
 import toast from 'react-hot-toast';
+import { getDeadline } from '@/utils/index';
 
 const filterValueOptions = {
   paymentType: PAYMENT_TYPE,
@@ -454,6 +455,15 @@ const Transactions = () => {
                               <p className="text-xs text-gray-400">
                                 Last Updated:{' '}
                                 {new Date(transaction.updatedAt).toDateString()}
+                              </p>
+                              <p className="text-xs font-semibold text-primary-500">
+                                Deadline:{' '}
+                                {getDeadline(
+                                  transaction.schoolFee.order,
+                                  transaction.schoolFee.paymentType,
+                                  transaction.createdAt,
+                                  transaction.schoolFee.studentRecord.schoolYear
+                                ) || '-'}
                               </p>
                               <small>{transaction.user.email}</small>
                             </div>
