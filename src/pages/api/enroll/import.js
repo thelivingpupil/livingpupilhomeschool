@@ -8,9 +8,15 @@ import { validateSession } from '@/config/api-validation';
 import prisma from '@/prisma/index';
 import { createStudentRecord } from '@/prisma/services/student-record';
 import { createWorkspaceWithSlug } from '@/prisma/services/workspace';
-import { ACCREDITATION, GRADE_LEVEL, PROGRAM } from '@/utils/constants';
+import {
+  ACCREDITATION,
+  GRADE_LEVEL,
+  PROGRAM,
+  SCHOOL_YEAR,
+} from '@/utils/constants';
 import slugify from 'slugify';
 import { v4 as uuidv4 } from 'uuid';
+import { createSchoolFees } from '@/prisma/services/school-fee';
 
 const handler = async (req, res) => {
   try {
@@ -488,101 +494,55 @@ const handler = async (req, res) => {
           where: { id: session.user.userId },
         }));
 
-      const existingWorkspace = activeUser.createdWorkspace.find(
-        (workspace) => {
-          const validation =
-            workspace.name.length > firstName.length
-              ? {
-                  compareWith: workspace.name.toLowerCase(),
-                  compareTo: firstName.toLowerCase(),
-                }
-              : {
-                  compareWith: firstName.toLowerCase(),
-                  compareTo: workspace.name.toLowerCase(),
-                };
-
-          return validation.compareWith.includes(validation.compareTo);
-        }
+      const workspace = createWorkspaceWithSlug(
+        activeUser.id,
+        activeUser.email,
+        `${firstName} ${lastName}`,
+        slugify(firstName.toLowerCase())
       );
 
-      const workspace =
-        existingWorkspace ??
-        (await createWorkspaceWithSlug(
-          activeUser.id,
-          activeUser.email,
-          `${firstName} ${lastName}`,
-          slugify(firstName.toLowerCase())
-        ));
+      const studentRecord = await createStudentRecord(
+        workspace.id,
+        student.firstName,
+        student.middleName,
+        student.lastName,
+        new Date(student.birthDate),
+        student.gender,
+        student.religion,
+        student.incomingGradeLevel,
+        student.enrollmentType,
+        student.program,
+        null,
+        student.accreditation,
+        SCHOOL_YEAR.toString(),
+        'From Import',
+        'From Import',
+        'From Import',
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      );
 
-      const existingStudentRecord = await prisma.studentRecord.findUnique({
-        where: {
-          studentId: workspace.id,
-        },
-      });
-
-      const studentRecord =
-        existingStudentRecord ??
-        (await createStudentRecord(
-          workspace.id,
-          student.firstName,
-          student.middleName,
-          student.lastName,
-          new Date(student.birthDate),
-          student.gender,
-          student.religion,
-          student.incomingGradeLevel,
-          student.enrollmentType,
-          student.program,
-          null,
-          student.accreditation,
-          'From Import',
-          'From Import',
-          'From Import',
-          undefined,
-          undefined,
-          undefined,
-          undefined
-        ));
-
-      const existingSchoolFees = await prisma.schoolFee.findMany({
-        where: {
-          student: {
-            is: {
-              id: workspace.id,
-            },
-          },
-        },
-      });
-
-      const schoolFees =
-        existingSchoolFees.length > 0
-          ? existingSchoolFees
-          : await createSchoolFeesInImport({
-              program: student.program,
-              accreditation: student.accreditation,
-              incomingGradeLevel: student.incomingGradeLevel,
-              userId: activeUser.id,
-              workspaceId: workspace.id,
-              payment: student.paymentType,
-              initialPayment: Number(student.initialPayment),
-              initialPaymentPending: Number(student.initialPaymentPending),
-              secondPayment: Number(student.secondPayment),
-              secondPaymentPending: Number(student.secondPaymentPending),
-              thirdPayment: Number(student.thirdPayment),
-              thirdPaymentPending: Number(student.thirdPaymentPending),
-              fourthPayment: Number(student.fourthPayment),
-              fourthPaymentPending: Number(student.fourthPaymentPending),
-            });
+      const schoolFees = await createSchoolFees(
+        activeUser.id,
+        activeUser.email,
+        workspace.id,
+        student.paymentType,
+        student.enrollmentType,
+        student.incomingGradeLevel,
+        student.program,
+        student.cottageType,
+        student.accreditation,
+        Fees.OTC
+      );
 
       return {
         session,
         user,
         activeUser,
-        existingWorkspace,
         workspace,
         studentRecord,
-        existingStudentRecord,
-        existingSchoolFees,
         schoolFees,
       };
     };

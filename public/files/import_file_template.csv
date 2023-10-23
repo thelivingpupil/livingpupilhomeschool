@@ -1,1 +1,1 @@
-lastName,firstName,middleName,incomingGradeLevel,paymentType,email,secondaryEmail,birthDate,gender,religion,enrollmentType,program,accreditation,initialPayment,secondPayment,thirdPayment,fourthPayment,total,initialPaymentPending,secondPaymentPending,thirdPaymentPending,fourthPaymentPending
+lastName,firstName,middleName,incomingGradeLevel,paymentType,email,secondaryEmail,birthDate,gender,religion,enrollmentType,program,cottageType,accreditation
