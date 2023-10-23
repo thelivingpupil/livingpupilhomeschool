@@ -222,7 +222,7 @@ const Transactions = () => {
       .filter(
         (transaction) => transaction.paymentStatus !== TransactionStatus.S
       )
-      .reduce((total, transaction) => total + transaction.amount, 0);
+      .reduce((total, transaction) => total + Number(transaction.amount), 0);
 
   return (
     <AdminLayout>
@@ -572,7 +572,7 @@ const Transactions = () => {
             </div>
             {remainingPayments && (
               <p className="text-lg font-semibold text-primary-500 py-5">
-                Remaining total payments: {remainingPayments}
+                Total remaining payment: {remainingPayments}
               </p>
             )}
           </Card.Body>
