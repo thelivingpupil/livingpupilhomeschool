@@ -7,10 +7,10 @@ import {
   renewTransaction,
 } from '@/prisma/services/transaction';
 
-const handler = async (req, res) => {
+const handler = async (req, res, ren = false) => {
   const { method } = req;
 
-  if (method === 'POST') {
+  if (method === 'POST' && !ren) {
     const session = await validateSession(req, res);
     const { amount, description } = req.body;
     const transaction = await createTransaction(
@@ -21,7 +21,7 @@ const handler = async (req, res) => {
       description
     );
     res.status(200).json({ data: { paymentLink: transaction?.url } });
-  } else if (method === 'PATCH') {
+  } else if (method === 'POST' && ren) {
     const session = await validateSession(req, res);
     const { referenceNumber, transactionId } = req.body;
     const transaction = await getTransaction(transactionId, referenceNumber);
