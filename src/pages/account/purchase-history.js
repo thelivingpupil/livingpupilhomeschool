@@ -18,15 +18,14 @@ const PurchaseHistory = () => {
   const { data, isLoading } = usePurchaseHistory();
   const [isSubmitting, setSubmittingState] = useState(false);
 
-  const renew = (transactionId, referenceNumber, renewflag) => {
+  const renew = (transactionId, referenceNumber) => {
     setSubmittingState(true);
     api(`/api/payments/transaction`, {
       body: {
         transactionId,
         referenceNumber,
-        renewflag,
       },
-      method: 'POST',
+      method: 'PUT',
     }).then((response) => {
       setSubmittingState(false);
 
@@ -154,8 +153,7 @@ const PurchaseHistory = () => {
                     onClick={() =>
                       renew(
                         purchase.transactionId,
-                        purchase.transaction.referenceNumber,
-                        true
+                        purchase.transaction.referenceNumber
                       )
                     }
                   >

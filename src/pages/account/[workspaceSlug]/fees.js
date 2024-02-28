@@ -35,16 +35,15 @@ const Fees = () => {
     fees[fee.gradeLevel].schoolFees[fee.order] = fee;
   });
 
-  const renew = (transactionId, referenceNumber, renewflag) => {
+  const renew = (transactionId, referenceNumber) => {
     setSubmittingState(true);
 
     api(`/api/payments/transaction`, {
       body: {
         transactionId,
         referenceNumber,
-        renewflag,
       },
-      method: 'POST',
+      method: 'PUT',
     }).then((response) => {
       setSubmittingState(false);
 
@@ -140,8 +139,7 @@ const Fees = () => {
                                       onClick={() =>
                                         renew(
                                           f.transaction.transactionId,
-                                          f.transaction.referenceNumber,
-                                          true
+                                          f.transaction.referenceNumber
                                         )
                                       }
                                     >
