@@ -398,7 +398,7 @@ export const renewTransaction = async (
   } = response;
   await prisma.transaction.update({
     data: {
-      referenceNumber,
+      //referenceNumber,
       amount,
       transactionStatus,
       source: source || description,
