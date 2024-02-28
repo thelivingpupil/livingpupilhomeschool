@@ -21,7 +21,7 @@ const handler = async (req, res) => {
       description
     );
     res.status(200).json({ data: { paymentLink: transaction?.url } });
-  } else if (method === 'PUT') {
+  } else if (method === 'PATCH') {
     const session = await validateSession(req, res);
     const { referenceNumber, transactionId } = req.body;
     const transaction = await getTransaction(transactionId, referenceNumber);

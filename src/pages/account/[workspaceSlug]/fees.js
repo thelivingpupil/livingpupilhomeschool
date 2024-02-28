@@ -37,15 +37,13 @@ const Fees = () => {
 
   const renew = (transactionId, referenceNumber) => {
     setSubmittingState(true);
-    console.log('transactionid', transactionId);
-    console.log('referenceNumber', referenceNumber);
 
     api(`/api/payments/transaction`, {
       body: {
         transactionId,
         referenceNumber,
       },
-      method: 'PUT',
+      method: 'PATCH',
     }).then((response) => {
       setSubmittingState(false);
 
