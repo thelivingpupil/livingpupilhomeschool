@@ -10,6 +10,8 @@ import {
 const handler = async (req, res) => {
   const { method } = req;
 
+  console.log('method', method);
+
   if (method === 'POST') {
     const session = await validateSession(req, res);
     const { amount, description } = req.body;
