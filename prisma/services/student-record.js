@@ -232,6 +232,7 @@ export const getStudentRecords = async () =>
   await prisma.studentRecord.findMany({
     orderBy: [{ createdAt: 'desc' }],
     select: {
+      id: true,
       studentId: true,
       firstName: true,
       middleName: true,
@@ -290,5 +291,34 @@ export const getStudentRecords = async () =>
           },
         },
       },
+    },
+  });
+
+  export const getStudentRecord = async (id) =>
+  await prisma.studentRecord.findUnique({
+    select: {
+      id: true,
+      studentId: true,
+      firstName: true,
+      middleName: true,
+      lastName: true,
+      birthDate: true,
+      gender: true,
+      religion: true,
+      incomingGradeLevel: true,
+      enrollmentType: true,
+      program: true,
+      accreditation: true,
+      schoolYear: true,
+      reason: true,
+      formerSchoolName: true,
+      formerSchoolAddress: true,
+      image: true,
+      liveBirthCertificate: true,
+      reportCard: true,
+
+    },
+    where: {
+      studentId: id 
     },
   });

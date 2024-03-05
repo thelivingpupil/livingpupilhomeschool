@@ -22,6 +22,7 @@ const handler = async (req, res) => {
       reason,
       enrollmentType,
       incomingGradeLevel,
+      schoolYear,
       formerSchoolName,
       formerSchoolAddress,
       program,
@@ -68,7 +69,7 @@ const handler = async (req, res) => {
     const workspace = await createWorkspaceWithSlug(
       session.user.userId,
       session.user.email,
-      `${firstName} ${lastName}`,
+      `${firstName} ${lastName} ${schoolYear}`,
       slug
     );
     const [studentRecord, schoolFee] = await Promise.all([
@@ -85,7 +86,7 @@ const handler = async (req, res) => {
         program,
         cottageType,
         accreditation,
-        SCHOOL_YEAR.toString(),
+        schoolYear,
         reason,
         formerSchoolName,
         formerSchoolAddress,

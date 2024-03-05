@@ -46,6 +46,7 @@ import {
   PAYMENT_TYPE,
   PROGRAM,
   RELIGION,
+  SCHOOL_YEAR,
 } from '@/utils/constants';
 import Image from 'next/image';
 import { getSession } from 'next-auth/react';
@@ -82,6 +83,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const [incomingGradeLevel, setIncomingGradeLevel] = useState(
     GradeLevel.PRESCHOOL
   );
+  const [schoolYear, setSchoolYear] = useState('');
   const [formerSchoolName, setFormerSchoolName] = useState('');
   const [formerSchoolAddress, setFormerSchoolAddress] = useState('');
   const [program, setProgram] = useState(Program.HOMESCHOOL_PROGRAM);
@@ -492,6 +494,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         reason,
         enrollmentType,
         incomingGradeLevel,
+        schoolYear,
         formerSchoolName,
         formerSchoolAddress,
         program,
@@ -974,6 +977,38 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                         </option>
                       ))}
                     </optgroup>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-row space-x-5">
+          <div className="flex flex-col w-full">
+            <label className="text-lg font-bold" htmlFor="txtMother">
+              Shool Year <span className="ml-1 text-red-600">*</span>
+            </label>
+            <div className="flex flex-row">
+              <div
+                className={`relative inline-block w-full rounded ${
+                  !schoolYear ? 'border-red-500 border-2' : 'border'
+                }`}
+              >
+                <select
+                  className="w-full px-3 py-2 capitalize rounded appearance-none"
+                  onChange={(e) => {
+                    setSchoolYear(e.target.value);
+                    console.log(e.target.value);
+                  }}
+                  value={schoolYear}
+                >
+                  {Object.keys(SCHOOL_YEAR).map((entry, index) => (
+                    <option key={index} value={entry}>
+                      {SCHOOL_YEAR[entry]}
+                    </option>
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">

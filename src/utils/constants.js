@@ -1,6 +1,9 @@
 import { GradeLevel } from '@prisma/client';
 
-export const SCHOOL_YEAR = 2023;
+export const SCHOOL_YEAR = {
+  SY_2024_2025: '2024-2025',
+  SY_2025_2026: '2025-2026',
+}
 
 export const ACCREDITATION = {
   LOCAL: 'DepEd Accreditation (Local)',

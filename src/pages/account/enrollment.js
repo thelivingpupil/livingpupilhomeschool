@@ -36,6 +36,7 @@ import { storage } from '@/lib/client/firebase';
 import api from '@/lib/common/api';
 import sanityClient from '@/lib/server/sanity';
 import { getGuardianInformation } from '@/prisma/services/user';
+import { getStudentRecord } from '@/prisma/services/student-record';
 import {
   ACCREDITATION,
   COTTAGE_TYPE,
@@ -47,6 +48,7 @@ import {
   PAYMENT_TYPE,
   PROGRAM,
   RELIGION,
+  SCHOOL_YEAR,
 } from '@/utils/constants';
 
 const steps = [
@@ -62,7 +64,7 @@ const payments = [
   'fourthPayment',
 ];
 
-const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
+const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const [step, setStep] = useState(0);
   const [viewFees, setViewFees] = useState(false);
   const [isSubmittingCode, setSubmittingCodeState] = useState(false);
@@ -70,24 +72,39 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
   const [review, setReviewVisibility] = useState(false);
   const [agree, setAgree] = useState(false);
   const [slug, setSlug] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [middleName, setMiddleName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [gender, setGender] = useState(Gender.FEMALE);
-  const [religion, setReligion] = useState(Religion.ROMAN_CATHOLIC);
-  const [reason, setReason] = useState('');
+    const [firstName, setFirstName] = useState(
+    student?.firstName || ''
+  );
+  const [middleName, setMiddleName] = useState(
+    student?.middleName || ''
+  );
+  const [lastName, setLastName] = useState(
+    student?.lastName || ''
+  );
+  const [gender, setGender] = useState(
+    student?.gender || ''
+  );
+  const [religion, setReligion] = useState(student?.religion || Religion.ROMAN_CATHOLIC);
+  const [reason, setReason] = useState(
+    student?.reason || ''
+    );
   const [enrollmentType, setEnrollmentType] = useState(Enrollment.NEW);
   const [incomingGradeLevel, setIncomingGradeLevel] = useState(
-    GradeLevel.PRESCHOOL
+    student?.incomingGradeLevel || GradeLevel.PRESCHOOL
   );
-  const [formerSchoolName, setFormerSchoolName] = useState('');
-  const [formerSchoolAddress, setFormerSchoolAddress] = useState('');
+  const [schoolYear, setSchoolYear] = useState('');
+  const [formerSchoolName, setFormerSchoolName] = useState(
+    student?.formerSchoolName || ''
+  );
+  const [formerSchoolAddress, setFormerSchoolAddress] = useState(
+    student?.formerSchoolAddress || ''
+  );
   const [program, setProgram] = useState(Program.HOMESCHOOL_PROGRAM);
   const [cottageType, setCottageType] = useState(null);
   const [accreditation, setAccreditation] = useState(null);
   const [payment, setPayment] = useState(null);
   const [fee, setFee] = useState(null);
-  const [birthDate, setBirthDate] = useState(new Date());
+  const [birthDate, setBirthDate] = useState(student?.birthDate ? new Date(student.birthDate) : new Date());
   const [paymentMethod, setPaymentMethod] = useState(null);
 
   const [pictureProgress, setPictureProgress] = useState(0);
@@ -476,6 +493,15 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
     } else {
       toggleReview();
     }
+    setSlug(
+      slugify(
+        `${firstName.toLowerCase()} ${lastName.toLowerCase()} ${schoolYear.toLowerCase()} ${crypto
+          .createHash('md5')
+          .update(`${firstName} ${lastName} ${schoolYear}`)
+          .digest('hex')
+          .substring(0, 6)}}`
+      )
+    );
   };
 
   const previous = () => {
@@ -616,12 +642,14 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 }}
                 placeholder="Given Name"
                 value={firstName}
+                disabled={!!student?.firstName}
               />
               <input
                 className="px-3 py-2 border rounded md:w-1/3"
                 onChange={(e) => setMiddleName(e.target.value)}
                 placeholder="Middle Name (Optional)"
                 value={middleName}
+                disabled={!!student?.middleName}
               />
               <input
                 className={`px-3 py-2 rounded md:w-1/3 ${
@@ -642,6 +670,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 }}
                 placeholder="Last Name"
                 value={lastName}
+                disabled={!!student?.lastName}
               />
             </div>
           </div>
@@ -663,6 +692,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                   nextMonthButtonLabel=">"
                   previousMonthButtonLabel="<"
                   popperClassName="react-datepicker-left"
+                  disabled={!!student?.birthDate}
                 />
               </div>
             </div>
@@ -690,6 +720,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                     className="w-full px-3 py-2 capitalize rounded appearance-none"
                     onChange={(e) => setGender(e.target.value)}
                     value={gender}
+                    disabled={!!student?.gender}
                   >
                     {Object.keys(Gender).map((entry, index) => (
                       <option key={index} value={entry}>
@@ -712,6 +743,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
                   onChange={(e) => setReligion(e.target.value)}
                   value={religion}
+                  disabled ={!!student?.religion}
                 >
                   {Object.keys(Religion).map((entry, index) => (
                     <option key={index} value={entry}>
@@ -739,6 +771,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 placeholder="Why did you choose to homeschool your child?"
                 rows={5}
                 value={reason}
+                disabled = {!!student?.reason}
               ></textarea>
             </div>
           </div>
@@ -1010,6 +1043,37 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
             </div>
           </div>
         </div>
+        <div className="flex flex-row space-x-5">
+          <div className="flex flex-col w-full">
+            <label className="text-lg font-bold" htmlFor="txtMother">
+              Shool Year <span className="ml-1 text-red-600">*</span>
+            </label>
+            <div className="flex flex-row">
+              <div
+                className={`relative inline-block w-full rounded ${
+                  !schoolYear ? 'border-red-500 border-2' : 'border'
+                }`}
+              >
+                <select
+                  className="w-full px-3 py-2 capitalize rounded appearance-none"
+                  onChange={(e) => {
+                    setSchoolYear(e.target.value);
+                  }}
+                  value={schoolYear}
+                >
+                  {Object.keys(SCHOOL_YEAR).map((entry, index) => (
+                    <option key={index} value={entry}>
+                      {SCHOOL_YEAR[entry]}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="flex flex-col">
           <label className="text-lg font-bold" htmlFor="txtMother">
             Former School Name <span className="ml-1 text-red-600">*</span>
@@ -1022,6 +1086,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
               onChange={(e) => setFormerSchoolName(e.target.value)}
               placeholder="Former School Name"
               value={formerSchoolName}
+              disabled = {!!student?.formerSchoolName}
             />
           </div>
         </div>
@@ -1038,6 +1103,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
               placeholder="Former School Address"
               rows={3}
               value={formerSchoolAddress}
+              disabled = {!!student?.formerSchoolAddress}
             ></textarea>
           </div>
         </div>
@@ -1060,6 +1126,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
               placeholder="Primary Guardian's Full Name"
               onChange={handlePrimaryGuardianName}
               value={primaryGuardianName}
+              disabled = {!!guardian?.primaryGuardianName}
             />
             <input
               className={`px-3 py-2 rounded md:w-1/4 ${
@@ -1070,6 +1137,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
               placeholder="Occupation"
               onChange={handlePrimaryGuardianOccupation}
               value={primaryGuardianOccupation}
+              disabled = {!!guardian?.primaryGuardianOccupation}
             />
             <div
               className={`relative inline-block rounded md:w-1/4 ${
@@ -1080,6 +1148,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
                 onChange={handlePrimaryGuardianType}
                 value={primaryGuardianType}
+                disabled = {!!guardian?.primaryGuardianType}
               >
                 {Object.keys(GuardianType).map((key, index) => (
                   <option key={index} value={GuardianType[`${key}`]}>
@@ -1101,6 +1170,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
             placeholder="Primary Guardian's Facebook Profile Link"
             onChange={handlePrimaryGuardianProfile}
             value={primaryGuardianProfile}
+            disabled = {!!guardian?.primaryGuardianProfile}
           />
         </div>
         <div className="flex flex-col">
@@ -1115,6 +1185,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
               placeholder="Secondary Guardian's Full Name"
               onChange={handleSecondaryGuardianName}
               value={secondaryGuardianName}
+              disabled = {!!guardian?.secondaryGuardianName}
             />
             <input
               className={`px-3 py-2 rounded md:w-1/4 ${
@@ -1125,6 +1196,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
               placeholder="Occupation"
               onChange={handleSecondaryGuardianOccupation}
               value={secondaryGuardianOccupation}
+              disabled = {!!guardian?.secondaryGuardianOccupation}
             />
             <div
               className={`relative inline-block rounded md:w-1/4 ${
@@ -1135,6 +1207,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
                 onChange={handleSecondaryGuardianType}
                 value={secondaryGuardianType}
+                disabled = {!!guardian?.secondaryGuardianType}
               >
                 {Object.keys(GuardianType).map((key, index) => (
                   <option key={index} value={GuardianType[`${key}`]}>
@@ -1156,6 +1229,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
             placeholder="Secondary Guardian's Facebook Profile Link"
             onChange={handleSecondaryGuardianProfile}
             value={secondaryGuardianProfile}
+            disabled = {guardian?.secondaryGuardianProfile !== null}
           />
         </div>
         <hr className="border border-dashed" />
@@ -2710,13 +2784,30 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const session = await getSession(context);
+  const session = await getSession(context); 
   const [guardian, schoolFees, programs] = await Promise.all([
     getGuardianInformation(session.user?.userId),
     sanityClient.fetch(`*[_type == 'schoolFees']{...}`),
     sanityClient.fetch(`*[_type == 'programs']`),
   ]);
-  return { props: { guardian, schoolFees, programs } };
+
+  const studentID = context.query.studentID;
+  let student = null;
+  let formattedBirthDate = null;
+
+  if (studentID) {
+    student = await getStudentRecord(studentID);
+    formattedBirthDate = student.birthDate.toISOString();
+  }
+
+  return {
+    props: {
+      guardian,
+      schoolFees,
+      programs,
+      student: studentID ? { ...student, birthDate: formattedBirthDate } : null
+    }
+  };
 };
 
 export default EnrollmentProcess;
