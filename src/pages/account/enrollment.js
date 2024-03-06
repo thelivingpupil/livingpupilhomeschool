@@ -19,7 +19,7 @@ import crypto from 'crypto';
 import differenceInCalendarYears from 'date-fns/differenceInCalendarYears';
 import differenceInYears from 'date-fns/differenceInYears';
 import format from 'date-fns/format';
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { ref, getDownloadURL} from 'firebase/storage';
 import { getSession } from 'next-auth/react';
 import Link from 'next/link';
 import DatePicker from 'react-datepicker';
@@ -72,7 +72,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const [review, setReviewVisibility] = useState(false);
   const [agree, setAgree] = useState(false);
   const [slug, setSlug] = useState('');
-    const [firstName, setFirstName] = useState(
+  const [firstName, setFirstName] = useState(
     student?.firstName || ''
   );
   const [middleName, setMiddleName] = useState(
@@ -110,9 +110,15 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const [pictureProgress, setPictureProgress] = useState(0);
   const [birthCertificateProgress, setBirthCertificateProgress] = useState(0);
   const [reportCardProgress, setReportCardProgress] = useState(0);
-  const [pictureLink, setPictureLink] = useState(null);
-  const [birthCertificateLink, setBirthCertificateLink] = useState(null);
-  const [reportCardLink, setReportCardLink] = useState(null);
+  const [pictureLink, setPictureLink] = useState(
+    student?.image || null
+  );
+  const [birthCertificateLink, setBirthCertificateLink] = useState(
+    student?.liveBirthCertificate || null
+  );
+  const [reportCardLink, setReportCardLink] = useState(
+    student?.reportCard || null
+  );
   const [discountCode, setDiscountCode] = useState('');
   const [discount, setDiscount] = useState(null);
 
@@ -181,6 +187,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       firstName.length > 0 &&
       lastName.length > 0 &&
       reason.length > 0 &&
+      schoolYear.length > 0 && 
       formerSchoolName.length > 0 &&
       formerSchoolAddress.length > 0 &&
       primaryGuardianName.length > 0 &&
@@ -195,9 +202,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       telephoneNumber.length > 0 &&
       anotherEmail.length > 0 &&
       address1.length > 0 &&
-      address2.length > 0 &&
-      birthCertificateLink &&
-      birthCertificateLink?.length > 0) ||
+      address2.length > 0
+      //birthCertificateLink>0
+      // birthCertificateLink?.length > 0
+      ) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
       payment !== null &&
@@ -393,51 +401,51 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
     }
   };
 
-  const handleBirthCertificateUpload = (e, auto, studentId) => {
-    const file = e.target?.files[0];
+   const handleBirthCertificateUpload = (e, auto, studentId) => {
+     const file = e.target?.files[0];
+     if (file) {
+       if (file.size < 5242880) {
+         const extension = file.name.split('.').pop();
+         const storageRef = ref(
+           storage,
+           `files/${slug}/birth-${crypto
+             .createHash('md5')
+             .update(file.name)
+             .digest('hex')
+             .substring(0, 12)}-${format(
+             new Date(),
+             'yyyy.MM.dd.kk.mm.ss'
+           )}.${extension}`
+         );
+         const uploadTask = uploadBytesResumable(storageRef, file);
 
-    if (file) {
-      if (file.size < 5242880) {
-        const extension = file.name.split('.').pop();
-        const storageRef = ref(
-          storage,
-          `files/${slug}/birth-${crypto
-            .createHash('md5')
-            .update(file.name)
-            .digest('hex')
-            .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
-        );
-        const uploadTask = uploadBytesResumable(storageRef, file);
 
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {
-            const progress = Math.round(
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-            );
-            setBirthCertificateProgress(progress);
-          },
-          (error) => {
-            toast.error(error);
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              if (!auto) {
-                setBirthCertificateLink(downloadURL);
-              } else {
-                updateFile(studentId, 'birth', downloadURL);
-              }
-            });
-          }
-        );
-      }
-    } else {
-      toast.error('File too large. Size should not exceed 10 MB.');
-    }
-  };
+         uploadTask.on(
+           'state_changed',
+           (snapshot) => {
+             const progress = Math.round(
+               (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+             );
+             setBirthCertificateProgress(progress);
+           },
+           (error) => {
+             toast.error(error);
+           },
+           () => {
+             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+               if (!auto) {
+                 setBirthCertificateLink(downloadURL);
+               } else {
+                 updateFile(studentId, 'birth', downloadURL);
+               }
+             });
+           }
+         );
+       }
+     } else {
+       toast.error('File too large. Size should not exceed 10 MB.');
+     }
+   };
 
   const handleReportCardUpload = (e, auto, studentId) => {
     const file = e.target?.files[0];
@@ -521,6 +529,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         reason,
         enrollmentType,
         incomingGradeLevel,
+        schoolYear,
         formerSchoolName,
         formerSchoolAddress,
         program,
@@ -590,10 +599,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             setPictureLink(url);
             break;
           }
-          case 'birth': {
-            setBirthCertificateLink(url);
-            break;
-          }
+          // case 'birth': {
+          //   setBirthCertificateLink(url);
+          //   break;
+          // }
           case 'card': {
             setReportCardLink(url);
             break;
@@ -862,14 +871,14 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                   copy of the child's birth certificate
                 </p>
               </td>
-              <td className="w-1/4 px-3 py-2 border">
+               <td className="w-1/4 px-3 py-2 border">
                 <input
                   className="text-xs cursor-pointer"
                   accept=".gif,.jpeg,.jpg,.png,.pdf"
-                  disabled={!firstName || !lastName}
+                  disabled={!firstName || !lastName || !!student?.liveBirthCertificate}
                   onChange={handleBirthCertificateUpload}
                   type="file"
-                />
+                /> 
                 <div className="w-full mt-2 rounded-full shadow bg-grey-light">
                   <div
                     className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
@@ -1061,11 +1070,18 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                   }}
                   value={schoolYear}
                 >
-                  {Object.keys(SCHOOL_YEAR).map((entry, index) => (
+                  <option value="">Please select School year...</option>
+                  <option value={SCHOOL_YEAR.SY_2023_2024}>
+                    {SCHOOL_YEAR.SY_2023_2024}
+                  </option>
+                  <option value={SCHOOL_YEAR.SY_2024_2025}>
+                    {SCHOOL_YEAR.SY_2024_2025}
+                  </option>
+                  {/* {Object.keys(SCHOOL_YEAR).map((entry, index) => (
                     <option key={index} value={entry}>
                       {SCHOOL_YEAR[entry]}
                     </option>
-                  ))}
+                  ))} */}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                   <ChevronDownIcon className="w-5 h-5" />
@@ -1229,7 +1245,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             placeholder="Secondary Guardian's Facebook Profile Link"
             onChange={handleSecondaryGuardianProfile}
             value={secondaryGuardianProfile}
-            disabled = {guardian?.secondaryGuardianProfile !== null}
+            disabled = {!!guardian?.secondaryGuardianProfile}
           />
         </div>
         <hr className="border border-dashed" />
@@ -2784,7 +2800,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const session = await getSession(context); 
+  const session = await getSession(context);
+  
   const [guardian, schoolFees, programs] = await Promise.all([
     getGuardianInformation(session.user?.userId),
     sanityClient.fetch(`*[_type == 'schoolFees']{...}`),
@@ -2809,5 +2826,6 @@ export const getServerSideProps = async (context) => {
     }
   };
 };
+
 
 export default EnrollmentProcess;
