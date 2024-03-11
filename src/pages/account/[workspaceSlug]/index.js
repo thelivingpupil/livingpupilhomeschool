@@ -137,6 +137,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   );
   const [address1, setAddress1] = useState(guardian?.address1 || '');
   const [address2, setAddress2] = useState(guardian?.address2 || '');
+  const [primaryTeacherName, setPrimaryTeacherName] = useState('');
+  const [primaryTeacherAge, setPrimaryTeacherAge] = useState('');
+  const [primaryTeacherEducation, setPrimaryTeacherEducation] = useState('');
+  const [primaryTeacherProfile, setPrimaryTeacherProfile] = useState('');
+  const [primaryTeacherRelationship, setPrimaryTeacherRelatiosnship] = useState('');
   const [paymentLink, setPaymentLink] = useState(null);
 
   const handlePrimaryGuardianName = (event) =>
@@ -161,6 +166,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const handleAnotherEmail = (event) => setAnotherEmail(event.target.value);
   const handleAddress1 = (event) => setAddress1(event.target.value);
   const handleAddress2 = (event) => setAddress2(event.target.value);
+  const handlePrimaryTeacherName = (event) => setPrimaryTeacherName(event.target.value);
+  const handlePrimaryTeacherAge = (event) => setPrimaryTeacherAge(event.target.value);
+  const handlePrimaryTeacherEducation = (event) => setPrimaryTeacherEducation(event.target.value);
+  const handlePrimaryTeacherProfile = (event) => setPrimaryTeacherProfile(event.target.value);
+  const handlePrimaryTeacherRelationship = (event) => setPrimaryTeacherRelatiosnship(event.target.value);
 
   const age = differenceInYears(new Date(), birthDate) || 0;
   const validateNext =
@@ -178,6 +188,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       secondaryGuardianOccupation.length > 0 &&
       secondaryGuardianType.length > 0 &&
       secondaryGuardianProfile.length > 0 &&
+      primaryTeacherName.length > 0 &&
+      primaryTeacherAge.length > 0 &&
+      primaryTeacherRelationship.length > 0 &&
+      primaryTeacherProfile.length > 0 &&
+      primaryTeacherEducation.length > 0 &&
       mobileNumber.length > 0 &&
       telephoneNumber.length > 0 &&
       anotherEmail.length > 0 &&
@@ -521,6 +536,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         address1,
         address2,
         discountCode,
+        primaryTeacherName,
+        primaryTeacherAge,
+        primaryTeacherRelationship,
+        primaryTeacherEducation,
+        primaryTeacherProfile,
       },
       method: 'POST',
     })
@@ -725,6 +745,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </Card.Body>
         <Card.Body title="Guardian Information">
           {renderGuardianInformation()}
+        </Card.Body>
+        <Card.Body title="Student's Teacher Information">
+          {renderTeacherInformation()}
         </Card.Body>
       </>
     );
@@ -986,12 +1009,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </div>
           </div>
         </div>
-        <div className="flex flex-row space-x-5">
-          <div className="flex flex-col w-full">
-            <label className="text-lg font-bold" htmlFor="txtMother">
-              Shool Year <span className="ml-1 text-red-600">*</span>
-            </label>
-            <div className="flex flex-row">
+        <div className="flex flex-row">
               <div
                 className={`relative inline-block w-full rounded ${
                   !schoolYear ? 'border-red-500 border-2' : 'border'
@@ -1001,23 +1019,27 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
                   onChange={(e) => {
                     setSchoolYear(e.target.value);
-                    console.log(e.target.value);
                   }}
                   value={schoolYear}
                 >
-                  {Object.keys(SCHOOL_YEAR).map((entry, index) => (
+                  <option value="">Please select School year...</option>
+                  <option value={SCHOOL_YEAR.SY_2023_2024}>
+                    {SCHOOL_YEAR.SY_2023_2024}
+                  </option>
+                  <option value={SCHOOL_YEAR.SY_2024_2025}>
+                    {SCHOOL_YEAR.SY_2024_2025}
+                  </option>
+                  {/* {Object.keys(SCHOOL_YEAR).map((entry, index) => (
                     <option key={index} value={entry}>
                       {SCHOOL_YEAR[entry]}
                     </option>
-                  ))}
+                  ))} */}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                   <ChevronDownIcon className="w-5 h-5" />
                 </div>
               </div>
             </div>
-          </div>
-        </div>
         <div className="flex flex-col">
           <label className="text-lg font-bold" htmlFor="txtMother">
             Former School Name <span className="ml-1 text-red-600">*</span>
@@ -1235,6 +1257,75 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               onChange={handleAddress2}
               value={address2}
             />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderTeacherInformation = () => {
+    return (
+      <div className="flex flex-col p-5 space-y-5 overflow-auto">
+        <div className="flex flex-col">
+          <label className="text-lg font-bold" htmlFor="txtMother">
+            Who will teach the student? <span className="ml-1 text-red-600">*</span>
+          </label>
+          <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
+            <input
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !primaryTeacherName ? 'border-red-500 border-2' : 'border'
+              }`}
+              placeholder="Guardian's Full Name"
+              onChange={handlePrimaryTeacherName}
+              value={primaryTeacherName}
+            />
+            <input
+              className={`px-3 py-2 rounded md:w-1/4 ${
+                !primaryTeacherAge
+                  ? 'border-red-500 border-2'
+                  : 'border'
+              }`}
+              placeholder="Age"
+              onChange={handlePrimaryTeacherAge}
+              value={primaryTeacherRelationship}
+            />
+            <input
+              className={`px-3 py-2 rounded md:w-1/4 ${
+                !primaryTeacherRelationship
+                  ? 'border-red-500 border-2'
+                  : 'border'
+              }`}
+              placeholder="Relationship"
+              onChange={handlePrimaryTeacherRelationship}
+              value={primaryTeacherRelationship}
+            />
+          </div>
+        </div>
+        
+        <div className="flex flex-col">
+          <input
+            className={`px-3 py-2 rounded ${
+              !primaryTeacherProfile ? 'border-red-500 border-2' : 'border'
+            }`}
+            placeholder="Guardian's Facebook Profile Link"
+            onChange={handlePrimaryTeacherProfile}
+            value={primaryTeacherProfile}
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="text-lg font-bold" htmlFor="txtMother">
+            Highest Educational Attainment <span className="ml-1 text-red-600">*</span>
+          </label>
+          <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
+            <input
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !primaryTeacherEducation ? 'border-red-500 border-2' : 'border'
+              }`}
+              placeholder="ex: College Graduate"
+              onChange={handlePrimaryTeacherEducation}
+              value={primaryTeacherEducation}
+            />
+
           </div>
         </div>
       </div>

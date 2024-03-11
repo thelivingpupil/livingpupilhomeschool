@@ -156,6 +156,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   );
   const [address1, setAddress1] = useState(guardian?.address1 || '');
   const [address2, setAddress2] = useState(guardian?.address2 || '');
+  const [primaryTeacherName, setPrimaryTeacherName] = useState('');
+  const [primaryTeacherAge, setPrimaryTeacherAge] = useState('');
+  const [primaryTeacherEducation, setPrimaryTeacherEducation] = useState('');
+  const [primaryTeacherProfile, setPrimaryTeacherProfile] = useState('');
+  const [primaryTeacherRelationship, setPrimaryTeacherRelatiosnship] = useState('');
   const [paymentLink, setPaymentLink] = useState(null);
 
   const handlePrimaryGuardianName = (event) =>
@@ -180,6 +185,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const handleAnotherEmail = (event) => setAnotherEmail(event.target.value);
   const handleAddress1 = (event) => setAddress1(event.target.value);
   const handleAddress2 = (event) => setAddress2(event.target.value);
+  const handlePrimaryTeacherName = (event) => setPrimaryTeacherName(event.target.value);
+  const handlePrimaryTeacherAge = (event) => setPrimaryTeacherAge(event.target.value);
+  const handlePrimaryTeacherEducation = (event) => setPrimaryTeacherEducation(event.target.value);
+  const handlePrimaryTeacherProfile = (event) => setPrimaryTeacherProfile(event.target.value);
+  const handlePrimaryTeacherRelationship = (event) => setPrimaryTeacherRelatiosnship(event.target.value);
 
   const age = differenceInYears(new Date(), birthDate) || 0;
   const validateNext =
@@ -202,9 +212,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       telephoneNumber.length > 0 &&
       anotherEmail.length > 0 &&
       address1.length > 0 &&
-      address2.length > 0
-      //birthCertificateLink>0
-      // birthCertificateLink?.length > 0
+      address2.length > 0 &&
+      birthCertificateLink>0 &&
+       birthCertificateLink?.length > 0
       ) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
@@ -556,6 +566,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         address1,
         address2,
         discountCode,
+        primaryTeacherName,
+        primaryTeacherAge,
+        primaryTeacherRelationship,
+        primaryTeacherEducation,
+        primaryTeacherProfile,
       },
       method: 'POST',
     })
@@ -791,6 +806,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         </Card.Body>
         <Card.Body title="Guardian Information">
           {renderGuardianInformation()}
+        </Card.Body>
+        <Card.Body title="Guardian Information">
+          {renderTeacherInformation()}
         </Card.Body>
       </>
     );
@@ -1317,6 +1335,75 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               onChange={handleAddress2}
               value={address2}
             />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderTeacherInformation = () => {
+    return (
+      <div className="flex flex-col p-5 space-y-5 overflow-auto">
+        <div className="flex flex-col">
+          <label className="text-lg font-bold" htmlFor="txtMother">
+            Who will teach the student? <span className="ml-1 text-red-600">*</span>
+          </label>
+          <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
+            <input
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !primaryTeacherName ? 'border-red-500 border-2' : 'border'
+              }`}
+              placeholder="Guardian's Full Name"
+              onChange={handlePrimaryTeacherName}
+              value={primaryTeacherName}
+            />
+            <input
+              className={`px-3 py-2 rounded md:w-1/4 ${
+                !primaryTeacherAge
+                  ? 'border-red-500 border-2'
+                  : 'border'
+              }`}
+              placeholder="Age"
+              onChange={handlePrimaryTeacherAge}
+              value={primaryTeacherRelationship}
+            />
+            <input
+              className={`px-3 py-2 rounded md:w-1/4 ${
+                !primaryTeacherRelationship
+                  ? 'border-red-500 border-2'
+                  : 'border'
+              }`}
+              placeholder="Relationship"
+              onChange={handlePrimaryTeacherRelationship}
+              value={primaryTeacherRelationship}
+            />
+          </div>
+        </div>
+        
+        <div className="flex flex-col">
+          <input
+            className={`px-3 py-2 rounded ${
+              !primaryTeacherProfile ? 'border-red-500 border-2' : 'border'
+            }`}
+            placeholder="Guardian's Facebook Profile Link"
+            onChange={handlePrimaryTeacherProfile}
+            value={primaryTeacherProfile}
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="text-lg font-bold" htmlFor="txtMother">
+            Highest Educational Attainment <span className="ml-1 text-red-600">*</span>
+          </label>
+          <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
+            <input
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !primaryTeacherEducation ? 'border-red-500 border-2' : 'border'
+              }`}
+              placeholder="ex: College Graduate"
+              onChange={handlePrimaryTeacherEducation}
+              value={primaryTeacherEducation}
+            />
+
           </div>
         </div>
       </div>

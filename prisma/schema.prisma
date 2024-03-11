@@ -199,6 +199,11 @@ model StudentRecord {
   liveBirthCertificate String?
   reportCard           String?
   discount             String?
+  primaryTeacherName   String?             
+  primaryTeacherAge    String?            
+  primaryTeacherRelationship String?      
+  primaryTeacherEducation String?        
+  primaryTeacherProfile  String ?        
   student              Workspace     @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("studentRecord")
