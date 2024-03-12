@@ -807,7 +807,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         <Card.Body title="Guardian Information">
           {renderGuardianInformation()}
         </Card.Body>
-        <Card.Body title="Guardian Information">
+        <Card.Body title="Student's Teacher Information">
           {renderTeacherInformation()}
         </Card.Body>
       </>
