@@ -1365,7 +1365,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               }`}
               placeholder="Age"
               onChange={handlePrimaryTeacherAge}
-              value={handlePrimaryTeacherAge}
+              value={primaryTeacherAge}
             />
             <input
               className={`px-3 py-2 rounded md:w-1/4 ${
