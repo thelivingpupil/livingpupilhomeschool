@@ -208,14 +208,18 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       secondaryGuardianOccupation.length > 0 &&
       secondaryGuardianType.length > 0 &&
       secondaryGuardianProfile.length > 0 &&
+      primaryTeacherName.length > 0 &&
+      primaryTeacherAge.length > 0 &&
+      primaryTeacherRelationship.length > 0 &&
+      primaryTeacherProfile.length > 0 &&
+      primaryTeacherEducation.length > 0 &&
       mobileNumber.length > 0 &&
       telephoneNumber.length > 0 &&
       anotherEmail.length > 0 &&
       address1.length > 0 &&
       address2.length > 0 &&
       birthCertificateLink>0 &&
-       birthCertificateLink?.length > 0
-      ) ||
+      birthCertificateLink?.length > 0) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
       payment !== null &&
