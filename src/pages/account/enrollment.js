@@ -19,7 +19,7 @@ import crypto from 'crypto';
 import differenceInCalendarYears from 'date-fns/differenceInCalendarYears';
 import differenceInYears from 'date-fns/differenceInYears';
 import format from 'date-fns/format';
-import { ref, getDownloadURL} from 'firebase/storage';
+import { ref, getDownloadURL, uploadBytesResumable} from 'firebase/storage';
 import { getSession } from 'next-auth/react';
 import Link from 'next/link';
 import DatePicker from 'react-datepicker';
