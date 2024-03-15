@@ -42,6 +42,12 @@ export const deactivate = async (id) =>
     where: { id },
   });
 
+export const reactivate = async (id) =>
+  await prisma.user.update({
+    data: { deletedAt: null },
+    where: { id },
+  });
+
 export const getGuardianInformation = async (id) =>
   await prisma.guardianInformation.findUnique({
     select: {
@@ -133,14 +139,15 @@ export const getUsers = async () =>
   await prisma.user.findMany({
     orderBy: [{ createdAt: 'desc' }],
     select: {
+      id : true,
       name: true,
       email: true,
       emailVerified: true,
       image: true,
       userType: true,
       createdAt: true,
-    },
-    where: { deletedAt: null },
+      deletedAt: true,
+    }
   });
 
 export const invite = async (email, inviteCode) => {

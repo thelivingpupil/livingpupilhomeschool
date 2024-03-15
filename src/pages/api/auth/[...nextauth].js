@@ -17,6 +17,7 @@ export default NextAuth({
         session.user.userId = user.id;
         session.user.userType = user.userType;
         session.user.userCode = user.userCode;
+        session.user.deletedAt = user.deletedAt;
         session.user.studentRecords = await prisma.workspace.count({
           where: {
             members: {
