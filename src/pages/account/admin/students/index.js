@@ -1,7 +1,7 @@
+import React from 'react';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ChevronDownIcon } from '@heroicons/react/outline';
-
 import Meta from '@/components/Meta';
 import SideModal from '@/components/Modal/side-modal';
 import { AdminLayout } from '@/layouts/index';
@@ -20,6 +20,16 @@ import { UserIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import format from 'date-fns/format';
 import differenceInYears from 'date-fns/differenceInYears';
+import { Menu, MenuItem, IconButton } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { 
+  DataGrid, 
+  GridToolbarContainer, 
+  GridToolbarColumnsButton, 
+  GridToolbarFilterButton, 
+  GridToolbarDensitySelector 
+} from '@mui/x-data-grid';
+import toast from 'react-hot-toast';
 
 const filterValueOptions = {
   accreditation: ACCREDITATION_NEW,
@@ -50,6 +60,8 @@ const filterByOptions = {
 const Students = () => {
   const { data, isLoading } = useStudents();
 
+  const [isSubmitting, setSubmittingState] = useState(false);
+
   const [showModal, setModalVisibility] = useState(false);
   const [filter, setFilter] = useState(['', '']);
 
@@ -67,10 +79,73 @@ const Students = () => {
 
   const toggleModal = () => setModalVisibility(!showModal);
 
+  const [anchorEl, setAnchorEl] = useState(null);
+  
+  const openMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const closeMenu = () => {
+    setAnchorEl(null);
+  };
+
   const view = (student) => {
     toggleModal();
     setStudent(student);
+    console.log(data)
   };
+
+
+  const deleteStudentRecord = async (studentId) => {
+    console.log(studentId)
+     try {
+     setSubmittingState(true);
+
+     const response = await fetch('/api/students', {
+       method: 'DELETE',
+       headers: {
+         'Content-Type': 'application/json',
+       },
+       body: JSON.stringify({ studentId }),
+     });
+
+     if (!response.ok) {
+       throw new Error('Failed to deactivate account');
+     }
+
+     setSubmittingState(false);
+     toast.success('Account has been deactivated!');
+   } catch (error) {
+     setSubmittingState(false);
+     toast.error(`Error deactivating account: ${error.message}`);
+   }
+  }
+
+  function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+    </GridToolbarContainer>
+  );
+  }
+
+    const [columnVisibilityModel, setColumnVisibilityModel] = React.useState({
+    birthDate:false,
+    religion:false,
+    homeAddress:false,
+    gender: false,
+    island: false,
+    primaryGuardianName:false,
+    primaryGuardianProfile:false,
+    secondaryGuardianName: false,
+    secondaryGuardianProfile:false,
+    secondaryEmail: false,
+    telNumber: false,
+    mobileNumber: false,
+
+  });
+    
 
   return (
     <AdminLayout>
@@ -184,7 +259,7 @@ const Students = () => {
         title="Students List"
         subtitle="View and manage all student records and related data"
       />
-      <Content.Divider />
+      <Content.Divider />     
       <Card>
         <Card.Body title="List of Enrolled Students">
           <div>
@@ -242,7 +317,339 @@ const Students = () => {
             </div>
             <div className="text-2xl">Total: {filterStudents?.length || 0}</div>
           </div>
-          <div>
+          <div style={{ height: 680, width: '100%' }}>
+            <DataGrid
+              loading={isLoading}
+              rows={data ? data.students : []}
+              slots={{
+                toolbar: CustomToolbar,
+              }}
+              density="comfortable"
+              columnVisibilityModel={columnVisibilityModel}
+              onColumnVisibilityModelChange={(newModel) =>
+                setColumnVisibilityModel(newModel)
+              }
+              columns={[
+                {
+                  field: 'image',
+                  hideable: true,
+                  align: 'center',
+                    renderCell: (params) => (
+                      <div className="flex items-center justify-center w-12 h-12 overflow-hidden text-white bg-gray-400 rounded-full">
+                        {params.row.image ? (
+                          <div className="relative w-12 h-12 rounded-full">
+                            <Image
+                              alt={params.row.image}
+                              className="rounded-full"
+                              layout="fill"
+                              loading="lazy"
+                              objectFit="cover"
+                              objectPosition="top"
+                              src={params.row.image}
+                            />
+                          </div>
+                        ) : (
+                          <UserIcon className="w-8 h-8" />
+                        )}
+                      </div>
+                  )
+                },
+                {
+                  field: 'firstName',
+                  headerName: 'First Name',
+                  headerAlign: 'left',
+                  align: 'left',
+                  renderCell: (params) => (  
+                     <span>{params.row.firstName}</span>
+                  ),
+                },
+                {
+                  field: 'middleName',
+                  headerName: 'Middle Name',
+                  headerAlign: 'left',
+                  align: 'left',
+                  renderCell: (params) => ( 
+                    <span>{params.row.middleName} {}</span>
+                  ),
+                },
+                {
+                  field: 'lastName',
+                  headerName: 'Last Name',
+                  headerAlign: 'left',
+                  align: 'left',
+                  renderCell: (params) => ( 
+                    <span>{params.row.lastName}</span>
+                  ),
+                },
+                {
+                  field: 'incomingGradeLevel',
+                  headerName: 'Grade Level',
+                  headerAlign: 'center',
+                  align: 'center',
+                  renderCell: (params) =>(                    
+                    <span>
+                      {GRADE_LEVEL[params.row.incomingGradeLevel]}
+                    </span>                     
+                  )
+                },
+                {
+                  field: 'schoolYear',
+                  headerName: 'School Year',
+                  headerAlign: 'left',
+                  align: 'left',
+                  renderCell: (params) => ( 
+                    <span className="text-xs">
+                      {params.row.schoolYear}
+                    </span>
+                  ),
+                },
+                {
+                  field: 'birthDate',
+                  headerName: 'Birthdate',
+                  headerAlign: 'center',
+                  align: 'center',
+                  renderCell: (params) =>(                    
+                    <span>
+                      {params.row.birthDate}
+                    </span>                     
+                  )
+                },
+                {
+                  field: 'gender',
+                  headerName: 'Gender',
+                  headerAlign: 'center',
+                  align: 'center',
+                  renderCell: (params) =>(                    
+                    <span>
+                      {params.row.gender}
+                    </span>                     
+                  )
+                },
+                {
+                  field: 'religion',
+                  headerName: 'Religion',
+                  headerAlign: 'center',
+                  align: 'center',
+                  renderCell: (params) =>(                    
+                    <span>
+                      {params.row.religion}
+                    </span>                     
+                  )
+                },
+                {
+                  field: 'enrollmentType',
+                  headerName: 'Enrollment Type',
+                  headerAlign: 'center',
+                  align: 'center',
+                  renderCell: (params) =>(                    
+                    <span>
+                      {params.row.enrollmentType}
+                    </span>                     
+                  )
+                },
+                {
+                  field: 'accreditation',
+                  headerName: 'Accrediation',
+                  headerAlign: 'center',
+                  align: 'center',
+                  renderCell: (params) =>(                    
+                    <span>
+                      {params.row.accreditation}
+                    </span>                     
+                  )
+                },
+                {
+                  field: 'primaryGuardianName',
+                  headerName: 'Primary Guardian',
+                  headerAlign: 'center',
+                  align: 'center',
+                  valueGetter: (params) =>
+                    params.row.student.creator?.guardianInformation?.primaryGuardianName ||
+                    '',
+                  renderCell: (params) => (
+                    <div>
+                      <p className="font-medium capitalize">{params.value}</p>
+                      <p className="text-sm text-gray-400 capitalize">
+                        {params.row.student.creator?.guardianInformation?.primaryGuardianType?.toLowerCase()}
+                      </p> 
+                    </div>
+                  ),
+                },
+                {
+                  field: 'primaryGuardianProfile',
+                  headerName: 'Primary Guardian Profile',
+                  headerAlign: 'center',
+                  align: 'center',
+                  valueGetter: (params) =>
+                    params.row.student.creator?.guardianInformation?.primaryGuardianProfile ||
+                    '',
+                  renderCell: (params) => (
+                    <div>
+                      <p className="font-medium capitalize">{params.value}</p>
+                    </div>
+                  ),
+                },
+                {
+                  field: 'secondaryGuardianName',
+                  headerName: 'Secondary Guardian',
+                  headerAlign: 'center',
+                  align: 'center',
+                  valueGetter: (params) =>
+                    params.row.student.creator?.guardianInformation?.secondaryGuardianName ||
+                    '',
+                  renderCell: (params) => (
+                    <div>
+                      <p className="font-medium capitalize">{params.value}</p>
+                      <p className="text-sm text-gray-400 capitalize">
+                        {params.row.student.creator?.guardianInformation?.primaryGuardianType?.toLowerCase()}
+                      </p> 
+                    </div>
+                  ),
+                },
+                {
+                  field: 'secondaryGuardianProfile',
+                  headerName: 'Secondary Guardian Profile',
+                  headerAlign: 'center',
+                  align: 'center',
+                  valueGetter: (params) =>
+                    params.row.student.creator?.guardianInformation?.secondaryGuardianProfile ||
+                    '',
+                  renderCell: (params) => (
+                    <div>
+                      <p className="font-medium capitalize">{params.value}</p>
+                    </div>
+                  ),
+                },
+                {
+                  field: 'homeAddress',
+                  headerName: 'Home Address',
+                  headerAlign: 'center',
+                  align: 'center',
+                  valueGetter: (params) =>
+                    params.row.student.creator?.guardianInformation?.address2 ||
+                    '',
+                  renderCell: (params) =>(                    
+                    <span>
+                      {params.row.student.creator?.guardianInformation?.address1}
+                    </span>                     
+                  )
+                },
+                {
+                  field: 'island',
+                  headerName: 'Island',
+                  headerAlign: 'center',
+                  align: 'center',
+                  valueGetter: (params) =>
+                    params.row.student.creator?.guardianInformation?.address2 ||
+                    '',
+                  renderCell: (params) =>(                    
+                    <span>
+                      {params.row.student.creator?.guardianInformation?.address2}
+                    </span>                     
+                  )
+                },
+                {
+                  field: 'email',
+                  headerName: 'Account Email',
+                  headerAlign: 'center',
+                  align: 'center',
+                  valueGetter: (params) =>
+                    params.row.student.creator?.email ||
+                    '',
+                  renderCell: (params) => (
+                    <div>
+                      <span >{params.row.student.creator?.email}school</span>
+                    </div>
+                  ),
+                },
+                {
+                  field: 'secondaryEmail',
+                  headerName: 'Secondary Email',
+                  headerAlign: 'center',
+                  align: 'center',
+                  valueGetter: (params) =>
+                    params.row.student.creator?.guardianInformation?.anotherEmail ||
+                    '',
+                  renderCell: (params) => (
+                    <div>
+                      <p className="font-small">{params.row.student.creator?.guardianInformation?.anotherEmail}</p>
+                    </div>
+                  ),
+                },
+                {
+                  field: 'telNumber',
+                  headerName: 'Tel Number',
+                  headerAlign: 'center',
+                  align: 'center',
+                  valueGetter: (params) =>
+                    params.row.student.creator?.guardianInformation?.telephoneNumber ||
+                    '',
+                  renderCell: (params) =>(                    
+                    <span>
+                      {params.row.student.creator?.guardianInformation?.telephoneNumber}
+                    </span>                     
+                  )
+                },
+                {
+                  field: 'mobileNumber',
+                  headerName: 'Mobile Number',
+                  headerAlign: 'center',
+                  align: 'center',
+                  valueGetter: (params) =>
+                    params.row.student.creator?.guardianInformation?.mobileNumber ||
+                    '',
+                  renderCell: (params) =>(                    
+                    <span>
+                      {params.row.student.creator?.guardianInformation?.mobileNumber}
+                    </span>                     
+                  )
+                },
+                {
+                  field: 'actions',
+                  headerName: 'Actions',
+                  headerAlign: 'center',
+                  align: 'center',
+                  hide: true,
+                  renderCell: (params) => (
+                      <div>
+                        {/* <button
+                            className="px-3 py-1 text-white rounded bg-primary-500 hover:bg-primary-400"
+                            onClick={() => {
+                              view(params.row);
+                            }}
+                          >
+                            View Record
+                          </button> */}
+                          <button
+                            className="px-3 py-1 text-white rounded bg-red-600 hover:bg-primary-400"
+                            onClick={() => {
+                              deleteStudentRecord(params.row.studentId);
+                            }}
+                          >
+                            delete
+                          </button>
+                      {/* <IconButton onClick={openMenu}>
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={closeMenu}
+                      >
+                        <MenuItem onClick={() => {view(params.row)}}>View Record</MenuItem>
+                        <MenuItem onClick={() => {deleteStudentRecord(params.row.studentId); closeMenu();}}>
+                          Delete
+                        </MenuItem>
+                      </Menu> */}
+                    </div>
+                  ),
+                },
+                
+              ]}
+            />
+          </div>
+          
+          {/* <div>
             <table className="w-full">
               <thead>
                 <tr className="bg-gray-200 border-t border-b border-t-gray-300 border-b-gray-300">
@@ -337,7 +744,7 @@ const Students = () => {
                 )}
               </tbody>
             </table>
-          </div>
+          </div> */}
         </Card.Body>
       </Card>
     </AdminLayout>

@@ -265,6 +265,7 @@ export const getStudentRecords = async () =>
         select: {
           creator: {
             select: {
+              email: true,
               guardianInformation: true,
             },
           },
@@ -291,16 +292,16 @@ export const getStudentRecords = async () =>
     },
     where: {
       deletedAt: null,
-      student: {
-        deletedAt: null,
-        schoolFees: {
-          some: {
-            transaction: {
-              paymentStatus: TransactionStatus.S,
-            },
-          },
-        },
-      },
+      // student: {
+      //   deletedAt: null,
+      //   schoolFees: {
+      //     some: {
+      //       transaction: {
+      //         paymentStatus: TransactionStatus.S,
+      //       },
+      //     },
+      //   },
+      // },
     },
   });
 
@@ -332,3 +333,11 @@ export const getStudentRecords = async () =>
       studentId: id 
     },
   });
+
+  export const deleteStudentRecord = async (studentId) =>
+  await prisma.studentRecord.update({
+    data: { deletedAt: new Date() },
+    where: { studentId },
+  });
+
+
