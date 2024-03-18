@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import Meta from '@/components/Meta';
@@ -7,6 +7,7 @@ import SideModal from '@/components/Modal/side-modal';
 import { AdminLayout } from '@/layouts/index';
 import Content from '@/components/Content';
 import Card from '@/components/Card';
+import DatePicker from 'react-datepicker';
 import {
   ACCREDITATION,
   ACCREDITATION_NEW,
@@ -14,8 +15,25 @@ import {
   GRADE_LEVEL,
   PROGRAM,
   RELIGION,
+  COTTAGE_TYPE,
+  FEES,
+  GRADE_LEVEL_GROUPS,
+  GRADE_LEVEL_TYPES,
+  PAYMENT_TYPE,
+  SCHOOL_YEAR,
 } from '@/utils/constants';
-import { useStudents } from '@/hooks/data';
+import {
+  Accreditation,
+  Enrollment,
+  Fees,
+  Gender,
+  GradeLevel,
+  GuardianType,
+  PaymentType,
+  Program,
+  Religion,
+} from '@prisma/client';
+import { useStudents, useWorkspaces } from '@/hooks/data';
 import { UserIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import format from 'date-fns/format';
@@ -59,15 +77,56 @@ const filterByOptions = {
 
 const Students = () => {
   const { data, isLoading } = useStudents();
+  const {data: workspaceData, isLoading: isFetchingWorkspaces } =
+    useWorkspaces();
+    const [isWorkspaceDataFetched, setIsWorkspaceDataFetched] = useState(false);
+    // Effect to handle workspace data change
+    useEffect(() => {
+        if (workspaceData) {
+            setIsWorkspaceDataFetched(true);
+        }
+    }, [workspaceData]);
+  const [studentId, setStudentId] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
 
   const [isSubmitting, setSubmittingState] = useState(false);
 
   const [showModal, setModalVisibility] = useState(false);
+  const [showModal2, setModalVisibility2] = useState(false);
+
   const [filter, setFilter] = useState(['', '']);
 
   const [filterBy, filterValue] = filter;
 
   const [student, setStudent] = useState(null);
+
+  const [firstName, setFirstName] = useState('');
+  const [middleName, setMiddleName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [gender, setGender] = useState(Gender.FEMALE);
+  const [religion, setReligion] = useState(Religion.ROMAN_CATHOLIC);
+  const [reason, setReason] = useState('');
+  const [enrollmentType, setEnrollmentType] = useState(Enrollment.NEW);
+  const [incomingGradeLevel, setIncomingGradeLevel] = useState(
+    GradeLevel.PRESCHOOL
+  );
+  const [schoolYear, setSchoolYear] = useState('');
+  const [formerSchoolName, setFormerSchoolName] = useState('');
+  const [formerSchoolAddress, setFormerSchoolAddress] = useState('');
+  const [program, setProgram] = useState(Program.HOMESCHOOL_PROGRAM);
+  const [cottageType, setCottageType] = useState(null);
+  const [accreditation, setAccreditation] = useState(null);
+  const [payment, setPayment] = useState(null);
+  const [fee, setFee] = useState(null);
+  const [birthDate, setBirthDate] = useState(new Date());
+  const [pictureProgress, setPictureProgress] = useState(0);
+  const [birthCertificateProgress, setBirthCertificateProgress] = useState(0);
+  const [reportCardProgress, setReportCardProgress] = useState(0);
+  const [pictureLink, setPictureLink] = useState(null);
+  const [birthCertificateLink, setBirthCertificateLink] = useState(null);
+  const [reportCardLink, setReportCardLink] = useState(null);
+  const [discountCode, setDiscountCode] = useState('');
+  const age = differenceInYears(new Date(), birthDate) || 0;
 
   const filterStudents = useMemo(() => {
     if (!filterBy || !filterValue) return data?.students;
@@ -78,6 +137,7 @@ const Students = () => {
   }, [data, filterBy, filterValue]);
 
   const toggleModal = () => setModalVisibility(!showModal);
+  const toggleModal2 = () => setModalVisibility2(!showModal2);
 
   const [anchorEl, setAnchorEl] = useState(null);
   
@@ -91,12 +151,85 @@ const Students = () => {
   const view = (student) => {
     toggleModal();
     setStudent(student);
-    console.log(data)
+    setStudentId(student.studentId)
+    //setInviteCode(student.studentId)
+    if (isWorkspaceDataFetched) {
+            const workspaceContainingStudent = workspaceData.workspaces.find(workspace => {
+                return workspace.studentRecord && workspace.studentRecord.studentId === student.studentId;
+            });
+
+            if (workspaceContainingStudent) {
+                setInviteCode(workspaceContainingStudent.inviteCode);
+            } else {
+                setInviteCode(''); // Reset invite code if no workspace is found
+            }
+        }
   };
+  
+  const viewEdit = (student) => {
+    toggleModal2();
+    setStudent(student);
+    setFirstName(student.firstName);
+    setMiddleName(student.middleName);
+    setLastName(student.lastName);
+    setBirthDate(new Date(student.birthDate));
+    setGender(student.gender);
+    setReligion(student.religion)
+    setEnrollmentType(student.enrollmentType)
+    setIncomingGradeLevel(student.incomingGradeLevel)
+    setSchoolYear(student.schoolYear)
+    setFormerSchoolName(student.formerSchoolName)
+    setFormerSchoolAddress(student.formerSchoolAddress)
+    setDiscountCode(student.discount)
+    setBirthCertificateLink(student.liveBirthCertificate)
+    setPictureLink(student.image)
+    setPictureLink(student.reportCard)
+  };
+  
+  const editStudentRecord = async (studentId) => {
+    console.log(studentId);
+    try {
+     setSubmittingState(true);
 
+     const response = await fetch('/api/students', {
+       method: 'PUT',
+       headers: {
+         'Content-Type': 'application/json',
+       },
+       body: JSON.stringify({ 
+        studentId, 
+        firstName,
+        middleName,
+        lastName,
+        gender,
+        religion,
+        enrollmentType,
+        incomingGradeLevel,
+        schoolYear,
+        birthDate,
+        pictureLink,
+        birthCertificateLink,
+        reportCardLink,
+        //discountCode,
+      }),
+     });
 
-  const deleteStudentRecord = async (studentId) => {
-    console.log(studentId)
+     if (!response.ok) {
+       throw new Error('Failed to update record');
+     }
+
+     setSubmittingState(false);
+     toast.success('Student record has been updated');
+     toggleModal2();
+     toggleModal();
+   } catch (error) {
+     setSubmittingState(false);
+     toast.error(`Error updating student record: ${error.message}`);
+   }
+  }
+  
+  const deleteStudentRecord = async (studentId, inviteCode) => {
+
      try {
      setSubmittingState(true);
 
@@ -105,18 +238,19 @@ const Students = () => {
        headers: {
          'Content-Type': 'application/json',
        },
-       body: JSON.stringify({ studentId }),
+       body: JSON.stringify({ studentId, inviteCode }),
      });
 
      if (!response.ok) {
-       throw new Error('Failed to deactivate account');
+       throw new Error('Failed to delete record');
      }
 
      setSubmittingState(false);
-     toast.success('Account has been deactivated!');
+     toast.success('Student record has been deleted');
+     toggleModal();
    } catch (error) {
      setSubmittingState(false);
-     toast.error(`Error deactivating account: ${error.message}`);
+     toast.error(`Error deleting student record: ${error.message}`);
    }
   }
 
@@ -130,7 +264,7 @@ const Students = () => {
   );
   }
 
-    const [columnVisibilityModel, setColumnVisibilityModel] = React.useState({
+  const [columnVisibilityModel, setColumnVisibilityModel] = React.useState({
     birthDate:false,
     religion:false,
     homeAddress:false,
@@ -146,11 +280,258 @@ const Students = () => {
     accreditation: false,
 
   });
-    
 
+  // const renderFileUpload = () => {
+  //   return (
+  //     <div className="flex flex-col space-y-5 overflow-auto">
+  //       <label className="text-lg font-bold" htmlFor="txtMother">
+  //         Documents
+  //       </label>
+  //       <table className="table border border-collapse">
+  //         <tbody>
+  //           <tr>
+  //             <td className="w-1/2 px-3 py-2 border">
+  //               <h3 className="text-xl font-medium">ID Picture</h3>
+  //             </td>
+  //             <td className="w-1/4 px-3 py-2 border">
+  //               <input
+  //                 className="text-xs cursor-pointer"
+  //                 accept=".jpeg,.jpg,.png"
+  //                 disabled={!firstName || !lastName}
+  //                 //onChange={handlePictureUpload}
+  //                 type="file"
+  //               />
+  //               <div className="w-full mt-2 rounded-full shadow bg-grey-light">
+  //                 <div
+  //                   className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
+  //                   style={{ width: `${pictureProgress}%` }}
+  //                 >
+  //                   <span className="px-3">{pictureProgress}%</span>
+  //                 </div>
+  //               </div>
+  //             </td>
+  //             <td className="w-1/4 px-3 py-2 border">
+  //               <div className="flex flex-col items-center justify-center space-y-3">
+  //                 {pictureLink ? (
+  //                   <Link href={pictureLink}>
+  //                     <a
+  //                       className="text-sm text-blue-600 underline"
+  //                       target="_blank"
+  //                     >
+  //                       Preview Image
+  //                     </a>
+  //                   </Link>
+  //                 ) : (
+  //                   <p>No file selected</p>
+  //                 )}
+  //               </div>
+  //             </td>
+  //           </tr>
+  //           <tr>
+  //             <td
+  //               className={`w-1/2 px-3 py-2`}>
+  //               <h3 className="text-xl font-medium">Birth Certificate</h3>
+  //             </td>
+  //             <td className="w-1/4 px-3 py-2 border">
+  //               <input
+  //                 className="text-xs cursor-pointer"
+  //                 accept=".gif,.jpeg,.jpg,.png,.pdf"
+  //                 disabled={!firstName || !lastName}
+  //                 //onChange={handleBirthCertificateUpload}
+  //                 type="file"
+  //               />
+  //               <div className="w-full mt-2 rounded-full shadow bg-grey-light">
+  //                 <div
+  //                   className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
+  //                   style={{ width: `${birthCertificateProgress}%` }}
+  //                 >
+  //                   <span className="px-3">{birthCertificateProgress}%</span>
+  //                 </div>
+  //               </div>
+  //             </td>
+  //             <td className="w-1/4 px-3 py-2 border">
+  //               <div className="flex flex-col items-center justify-center">
+  //                 {birthCertificateLink ? (
+  //                   <Link href={birthCertificateLink}>
+  //                     <a
+  //                       className="text-sm text-blue-600 underline"
+  //                       target="_blank"
+  //                     >
+  //                       Preview Document
+  //                     </a>
+  //                   </Link>
+  //                 ) : (
+  //                   <p>No file selected</p>
+  //                 )}
+  //               </div>
+  //             </td>
+  //           </tr>
+  //           <tr>
+  //             <td className="w-1/2 px-3 py-2 border">
+  //               <h3 className="text-xl font-medium">
+  //                 Report Card / School Card
+  //               </h3>
+  //             </td>
+  //             <td className="w-1/4 px-3 py-2 border">
+  //               <input
+  //                 className="text-xs cursor-pointer"
+  //                 accept=".gif,.jpeg,.jpg,.png,.pdf"
+  //                 disabled={!firstName || !lastName}
+  //                 //onChange={handleReportCardUpload}
+  //                 type="file"
+  //               />
+  //               <div className="w-full mt-2 rounded-full shadow bg-grey-light">
+  //                 <div
+  //                   className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
+  //                   style={{ width: `${reportCardProgress}%` }}
+  //                 >
+  //                   <span className="px-3">{reportCardProgress}%</span>
+  //                 </div>
+  //               </div>
+  //             </td>
+  //             <td className="w-1/4 px-3 py-2 border">
+  //               <div className="flex flex-col items-center justify-center">
+  //                 {reportCardLink ? (
+  //                   <Link href={reportCardLink}>
+  //                     <a
+  //                       className="text-sm text-blue-600 underline"
+  //                       target="_blank"
+  //                     >
+  //                       Preview Document
+  //                     </a>
+  //                   </Link>
+  //                 ) : (
+  //                   <p>No file selected</p>
+  //                 )}
+  //               </div>
+  //             </td>
+  //           </tr>
+  //         </tbody>
+  //       </table>
+  //     </div>
+  //   );
+  // };
+  const renderEducationalBackground = () => {
+    return (
+      <div className="flex flex-col space-y-5 overflow-auto">
+        <label className="text-lg font-bold" htmlFor="txtMother">
+          Educational Background <span className="ml-1 text-red-600">*</span>
+        </label>
+        <div className="flex flex-row">
+          <div
+            className={`relative inline-block w-full rounded ${
+              !enrollmentType ? 'border-red-500 border-2' : 'border'
+            }`}
+          >
+            <select
+              className="w-full px-3 py-2 capitalize rounded appearance-none"
+              onChange={(e) => setEnrollmentType(e.target.value)}
+              value={enrollmentType}
+            >
+              {Object.keys(ENROLLMENT_TYPE).map((entry, index) => (
+                <option key={index} value={entry}>
+                  {ENROLLMENT_TYPE[entry].toLowerCase()}
+                </option>
+              ))}
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <ChevronDownIcon className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
+        <hr className="border border-dashed" />
+        <div className="flex flex-row space-x-5">
+          <div className="flex flex-col w-full">
+            <label className="text-lg font-bold" htmlFor="txtMother">
+              Incoming Grade Level <span className="ml-1 text-red-600">*</span>
+            </label>
+            <div className="flex flex-row">
+              <div
+                className={`relative inline-block w-full rounded ${
+                  !incomingGradeLevel ? 'border-red-500 border-2' : 'border'
+                }`}
+              >
+                <select
+                  className="w-full px-3 py-2 capitalize rounded appearance-none"
+                  onChange={(e) => {
+                    setIncomingGradeLevel(e.target.value);
+                    // setAccreditation(null);
+                  }}
+                  value={incomingGradeLevel}
+                >
+                  {GRADE_LEVEL_GROUPS.map((group, index) => (
+                    <optgroup key={index} label={group.name}>
+                      {group.levels.map((level, index) => (
+                        <option key={index} value={level}>
+                          {GRADE_LEVEL[level]}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-row">
+              <div
+                className={`relative inline-block w-full rounded ${
+                  !schoolYear ? 'border-red-500 border-2' : 'border'
+                }`}
+              >
+                <select
+                  className="w-full px-3 py-2 capitalize rounded appearance-none"
+                  onChange={(e) => {
+                    setSchoolYear(e.target.value);
+                  }}
+                  value={schoolYear}
+                >
+                  <option value="">Please select School year...</option>
+                  <option value={SCHOOL_YEAR.SY_2023_2024}>
+                    {SCHOOL_YEAR.SY_2023_2024}
+                  </option>
+                  <option value={SCHOOL_YEAR.SY_2024_2025}>
+                    {SCHOOL_YEAR.SY_2024_2025}
+                  </option>
+                  {/* {Object.keys(SCHOOL_YEAR).map((entry, index) => (
+                    <option key={index} value={entry}>
+                      {SCHOOL_YEAR[entry]}
+                    </option>
+                  ))} */}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+      </div>
+    );
+  };
+  const renderSchoolFees = () => {
+    return (
+      <div className="flex flex-col space-y-5 overflow-auto">
+        
+        <div className="flex flex-col">
+          <label className="text-lg font-bold" htmlFor="txtMother">
+            Discount Code
+          </label>
+          <input
+            className={`px-3 py-2 rounded border-2`}
+            onChange={(e) => setDiscountCode(e.target.value)}
+            placeholder="Discount Code"
+            value={discountCode}
+          />
+        </div>
+      </div>
+    );
+  };
   return (
     <AdminLayout>
       <Meta title="Living Pupil Homeschool - Students List" />
+    {/* View Student Details Modal */}
       {student && (
         <SideModal
           title={`${student.firstName} ${student.lastName}`}
@@ -253,9 +634,162 @@ const Students = () => {
             <hr className="border-2 border-gray-600" />
             <h2 className="font-medium">School Fees:</h2>
             <div className="flex flex-col p-3 space-y-2 border rounded"></div>
+            <div className="flex flex-col p-3 space-y-2">
+                  <button
+                    className="px-3 py-1 my-1 text-white rounded bg-red-600 hover:bg-red-400"
+                    onClick={() => {
+                      deleteStudentRecord(studentId, inviteCode);
+                      //console.log('invite:' + inviteCode + ' ID:' + studentId)
+                    }}
+                  >
+                    delete
+                  </button>
+                  <button
+                    className="px-3 py-1 my-1 text-white rounded bg-primary-600 hover:bg-primary-400"
+                    onClick={() => {
+                      viewEdit(student);
+                    }}
+                  >
+                    Edit Student Details
+                  </button>
+            </div>
           </div>
         </SideModal>
       )}
+    {/* Edit Student Details Modal */}
+      {student && (
+        <SideModal
+          title={'Edit Student Details'}
+          show={showModal2}
+          toggle={toggleModal2}
+        >
+        <div className="flex flex-col space-y-3 overflow-auto">
+          <div className="flex flex-col">
+            <label className="text-lg font-bold" htmlFor="txtMother">
+              Full Name <span className="ml-1 text-red-600">*</span>
+            </label>
+            <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
+              <input
+                className={`px-3 py-2 rounded md:w-1/3 ${
+                  firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                }`}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Given Name"
+                value={firstName}
+              />
+              <input
+                className="px-3 py-2 border rounded md:w-1/3"
+                onChange={(e) => setMiddleName(e.target.value)}
+                placeholder="Middle Name (Optional)"
+                value={middleName}
+              />
+              <input
+                className={`px-3 py-2 rounded md:w-1/3 ${
+                  lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                }`}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Last Name"
+                value={lastName}
+              />
+            </div>
+          </div>
+          <div className="flex flex-row space-x-5">
+            <div className="flex flex-col">
+              <label className="text-lg font-bold" htmlFor="txtMother">
+                Birthday <span className="ml-1 text-red-600">*</span>
+              </label>
+              <div
+                className={`relative flex flex-row rounded ${
+                  !birthDate ? 'border-red-500 border-2' : 'border'
+                }`}
+              >
+                <DatePicker
+                  selected={birthDate}
+                  onChange={(date) => setBirthDate(date)}
+                  selectsStart
+                  startDate={birthDate}
+                  nextMonthButtonLabel=">"
+                  previousMonthButtonLabel="<"
+                  popperClassName="react-datepicker-left"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col w-full md:w-1/3">
+              <label className="text-lg font-bold" htmlFor="txtMother">
+                Age
+              </label>
+              <div className="relative flex flex-row space-x-5">
+                <input
+                  className="w-full px-3 py-2 border rounded"
+                  disabled
+                  value={`${age} years old`}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
+            <div className="flex flex-col w-full md:w-1/2">
+              <label className="text-lg font-bold" htmlFor="txtMother">
+                Gender <span className="ml-1 text-red-600">*</span>
+              </label>
+              <div className="flex flex-row">
+                <div className="relative inline-block w-full border rounded">
+                  <select
+                    className="w-full px-3 py-2 capitalize rounded appearance-none"
+                    onChange={(e) => setGender(e.target.value)}
+                    value={gender}
+                  >
+                    {Object.keys(Gender).map((entry, index) => (
+                      <option key={index} value={entry}>
+                        {entry.toLowerCase()}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <ChevronDownIcon className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col w-full md:w-1/2">
+              <label className="text-lg font-bold" htmlFor="txtMother">
+                Religion <span className="ml-1 text-red-600">*</span>
+              </label>
+              <div className="relative inline-block w-full border rounded">
+                <select
+                  className="w-full px-3 py-2 capitalize rounded appearance-none"
+                  onChange={(e) => setReligion(e.target.value)}
+                  value={religion}
+                >
+                  {Object.keys(Religion).map((entry, index) => (
+                    <option key={index} value={entry}>
+                      {RELIGION[entry]}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* {renderFileUpload()} */}
+        {renderEducationalBackground()}
+        {/* {renderSchoolFees()} */}
+        <div className="flex flex-col p-3 space-y-2">
+                  <button
+                    className="px-3 py-1 my-1 text-white rounded bg-green-600 hover:bg-green-400"
+                    onClick={() => {
+                      editStudentRecord(studentId);
+                    }}
+                  >
+                    Save Changes
+                  </button>
+            </div>
+        </SideModal>
+      )}
+      
       <Content.Title
         title="Students List"
         subtitle="View and manage all student records and related data"
@@ -270,7 +804,7 @@ const Students = () => {
               </a>
             </Link>
           </div>
-          <div className="flex flex-col md:flex-row space-y-5 py-4 md:justify-between md:items-center">
+          {/* <div className="flex flex-col md:flex-row space-y-5 py-4 md:justify-between md:items-center">
             <div className="flex flex-1 flex-col md:flex-row space-y-3 md:space-x-5 md:items-center">
               <div>Filter By:</div>
               <div className="flex flex-row md:w-1/4">
@@ -317,7 +851,7 @@ const Students = () => {
               )}
             </div>
             <div className="text-2xl">Total: {filterStudents?.length || 0}</div>
-          </div>
+          </div> */}
           <div style={{ height: 680, width: '100%' }}>
             <DataGrid
               loading={isLoading}
@@ -332,7 +866,7 @@ const Students = () => {
               }
               columns={[
                 {
-                  field: 'image',
+                  field: 'Profile',
                   hideable: true,
                   align: 'center',
                     renderCell: (params) => (
@@ -411,7 +945,7 @@ const Students = () => {
                   align: 'center',
                   renderCell: (params) =>(                    
                     <span>
-                      {params.row.birthDate}
+                      {new Date(params.row.birthDate).toLocaleDateString()}
                     </span>                     
                   )
                 },
@@ -612,23 +1146,24 @@ const Students = () => {
                   align: 'center',
                   hide: true,
                   renderCell: (params) => (
-                      <div>
-                        {/* <button
+                      <div className='center'>
+                        <button
                             className="px-3 py-1 text-white rounded bg-primary-500 hover:bg-primary-400"
                             onClick={() => {
                               view(params.row);
                             }}
                           >
                             View Record
-                          </button> */}
-                          <button
-                            className="px-3 py-1 text-white rounded bg-red-600 hover:bg-primary-400"
+                          </button>
+                          <br/>
+                          {/* <button
+                            className="px-3 py-1 my-1 text-white rounded bg-red-600 hover:bg-primary-400"
                             onClick={() => {
                               deleteStudentRecord(params.row.studentId);
                             }}
                           >
                             delete
-                          </button>
+                          </button> */}
                       {/* <IconButton onClick={openMenu}>
                         <MoreVertIcon />
                       </IconButton>

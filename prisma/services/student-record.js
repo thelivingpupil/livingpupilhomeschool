@@ -261,6 +261,7 @@ export const getStudentRecords = async () =>
       image: true,
       liveBirthCertificate: true,
       reportCard: true,
+      discount: true,
       student: {
         select: {
           creator: {
@@ -327,6 +328,7 @@ export const getStudentRecords = async () =>
       image: true,
       liveBirthCertificate: true,
       reportCard: true,
+      discount: true,
 
     },
     where: {
@@ -340,4 +342,24 @@ export const getStudentRecords = async () =>
     where: { studentId },
   });
 
+
+  export const updateStudentRecord = async (studentId, studentNewData) => 
+    await prisma.studentRecord.update({
+      data: {
+        firstName: studentNewData.firstName,
+        middleName: studentNewData.middleName,
+        lastName: studentNewData.lastName,
+        gender: studentNewData.gender,
+        religion: studentNewData.religion,
+        enrollmentType: studentNewData.enrollmentType,
+        incomingGradeLevel: studentNewData.incomingGradeLevel,
+        schoolYear: studentNewData.schoolYear,
+        birthDate: studentNewData.birthDate,
+        image: studentNewData.pictureLink,
+        liveBirthCertificate: studentNewData.birthCertificateLink,
+        reportCard: studentNewData.reportCardLink,
+        //discount: studentNewData.discountCode
+      },  
+      where: { studentId }
+    });
 

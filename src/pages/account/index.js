@@ -151,6 +151,7 @@ const Welcome = () => {
             </Card>
           ) : workspacesData?.workspaces.length > 0 ? (
             workspacesData.workspaces.map((workspace, index) => (
+              workspace.deletedAt !== null &&(
               <Card key={index}>
                 <Card.Body title={workspace.name}>
                   {!workspace.studentRecord ? (
@@ -212,7 +213,7 @@ const Welcome = () => {
                   </Card.Footer>
                 )}
               </Card>
-            ))
+            )))
           ) : (
             <Card.Empty>
               <div className="mb-3">Start creating a student record</div>

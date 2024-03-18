@@ -593,3 +593,23 @@ export const updateSlug = async (id, email, newSlug, pathSlug) => {
     throw new Error('Unable to find workspace');
   }
 };
+
+  export const deleteStudentWorkspace = async (inviteCode) =>
+  //console.log(workSpaceCode)
+  await prisma.workspace.update({
+    data: { deletedAt: new Date() },
+    where: { inviteCode},
+  });
+
+  export const getWorkspaceByStudentId = async (studentId) =>
+    //console.log(workSpaceCode)
+  await prisma.workspace.findFirst({
+    select: {
+      id: true,
+      inviteCode: true,
+      name: true,
+    },
+    where: {
+      workspaceCode: studentId
+    },
+  });
