@@ -97,6 +97,26 @@ const StudentsExport = ({ data }) => {
       key: 'student.creator.guardianInformation.telephoneNumber',
       label: 'Telephone Number',
     },
+    {
+      key: 'primaryTeacherName',
+      label: 'Primary Teacher Name',
+    },
+    {
+      key: 'primaryTeacherAge',
+      label: 'Primary Teacher Age',
+    },
+    {
+      key: 'primaryTeacherEducation',
+      label: 'Primary Teacher Education',
+    },
+    {
+      key: 'primaryTeacherProfile',
+      label: 'Primary Teacher Profile',
+    },
+    {
+      key: 'primaryTeacherRelationship',
+      label: 'Relationship with the student',
+    },
   ];
 
   return (
@@ -128,7 +148,7 @@ const StudentsExport = ({ data }) => {
 
 export const getServerSideProps = async () => {
   const data = await prisma.studentRecord.findMany({
-    orderBy: [{ createdAt: 'asc' }],
+    orderBy: [{ createdAt: 'desc' }],
     select: {
       studentId: true,
       firstName: true,
@@ -148,6 +168,11 @@ export const getServerSideProps = async () => {
       liveBirthCertificate: true,
       reportCard: true,
       createdAt: true,
+      primaryTeacherName: true,
+      primaryTeacherAge: true,
+      primaryTeacherEducation: true,
+      primaryTeacherProfile: true,
+      primaryTeacherRelationship: true,
       student: {
         select: {
           name: true,
@@ -182,17 +207,25 @@ export const getServerSideProps = async () => {
       deletedAt: null,
       student: {
         deletedAt: null,
-        schoolFees: {
-          some: {
-            transaction: {
-              paymentStatus: TransactionStatus.S,
-            },
-          },
-        },
+         schoolFees: {
+           some: {
+             transaction: {
+               paymentStatus: TransactionStatus.S,
+             },
+           },
+         },
       },
     },
   });
-  return { props: { data } };
+  const formattedData = data.map(student => {
+    return {
+      ...student,
+      birthDate: format(new Date(student.birthDate), 'yyyy-MM-dd'),
+      createdAt: format(new Date(student.createdAt), 'yyyy-MM-dd'), // Adjust the format as needed
+      'student.creator.emailVerified': format(new Date(student.student.creator.emailVerified), 'yyyy-MM-dd'),
+    };
+  });
+  return { props: { data: JSON.parse(JSON.stringify(formattedData)) }};
 };
 
 export default StudentsExport;
