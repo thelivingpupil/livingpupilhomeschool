@@ -202,8 +202,7 @@ const Welcome = () => {
                     </button>
                   </Card.Footer>
                 )}
-                {/* workspace.studentRecord.schoolYear === '2023' || */}
-                {workspace.studentRecord != null &&  workspace.studentRecord.schoolYear === '2022' && (
+                {workspace.studentRecord != null && workspace.studentRecord.schoolYear === '2023' && (
                   <Card.Footer>
                     <button
                       className="text-primary-600"
