@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import { Enrollment, GradeLevel } from '@prisma/client';
 
@@ -18,6 +19,7 @@ import {
 import { PortableText } from '@portabletext/react';
 
 const HomeschoolProgram = ({ page, programs }) => {
+  const router = useRouter();
   const { footer, header } = page;
   const [headerSection] = header?.sectionType;
   const [footerSection] = footer?.sectionType;
@@ -26,12 +28,19 @@ const HomeschoolProgram = ({ page, programs }) => {
     GradeLevel.PRESCHOOL
   );
 
+  useEffect(() => {
+    // Extract values from query parameters in the URL
+    const { enrollmentType, incomingGradeLevel } = router.query;
+    if (enrollmentType) setEnrollmentType(enrollmentType);
+    if (incomingGradeLevel) setIncomingGradeLevel(incomingGradeLevel);
+  }, [router.query]);
+
   const program = programs.find(
     (program) =>
       program.enrollmentType === enrollmentType &&
       program.gradeLevel === incomingGradeLevel
   );
-
+  
   return (
     <LandingLayout>
       <Meta title="Living Pupil Homeschool" />
