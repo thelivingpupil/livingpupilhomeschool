@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Image from 'next/image';
 import imageUrlBuilder from '@sanity/image-url';
 import { PortableText } from '@portabletext/react';
@@ -8,6 +9,7 @@ import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
 import sanityClient from '@/lib/server/sanity';
+import ImageModal from '@/components/Modal/Image-Modal';
 
 const imageBuilder = imageUrlBuilder(sanityClient);
 
@@ -17,6 +19,32 @@ const types = {
 };
 
 const Calendar = ({ events }) => {
+  const [expandedImage, setExpandedImage] = useState(null);
+  const [expandedEventId, setExpandedEventId] = useState(null);
+
+  const handleImageClick = (imageUrl) => {
+    setExpandedImage(imageUrl);
+  };
+
+  const handleCloseExpandedImage = () => {
+    setExpandedImage(null);
+  };
+
+  const handleToggleAdditionalInfo = (eventId) => {
+    setExpandedEventId(eventId === expandedEventId ? null : eventId);
+  };
+
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+
+  const handleImageHover = (event, imageId) => {
+    const { clientX, clientY } = event;
+    setTooltipPosition({ x: clientX, y: clientY, imageId });
+  };
+
+  const handleImageLeave = () => {
+    setTooltipPosition({ x: 0, y: 0, imageId: null });
+  };
+
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - School Calendar" />
@@ -37,7 +65,12 @@ const Calendar = ({ events }) => {
             return (
               <div className="cols-span-auto">
                 <Card key={event._id}>
-                  <div className="relative inline-block w-full">
+                  <div 
+                    className="relative inline-block w-full cursor-pointer" 
+                    onClick={() => handleImageClick(image)}
+                    onMouseEnter={(e) => handleImageHover(e, event._id)}
+                    onMouseLeave={handleImageLeave}
+                  >
                     <Image
                       name={event.title}
                       loading="lazy"
@@ -45,19 +78,36 @@ const Calendar = ({ events }) => {
                       height={475}
                       sizes="100vw"
                       objectFit="contain"
+                      className="transition-transform transform hover:scale-105 hover:shadow-md"
                       style={{
                         width: '100%',
                         height: 'auto',
                       }}
                       src={image || '/images/livingpupil-homeschool-logo.png'}
                     />
+                    {tooltipPosition.imageId === event._id && (
+                      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white px-2 py-1 rounded-md text-xs">
+                        Click to zoom
+                      </div>
+                    )}
                   </div>
-                  <div className="flex text-2xl font-bold mt-4">
+                  
+                  <div className="flex text-xl font-bold mt-4">
                     {event.title}
                   </div>
                   <div className="text-sm py-2 space-y-3 justify-center text-gray-600 mt-2 text-justify">
                     <PortableText value={event.description} />
                   </div>
+                  {/* Button to toggle additional info */}
+                  <button
+                    className="text-sm text-gray-600 bg-gray-100 rounded-full px-3 py-1 mt-2"
+                    onClick={() => handleToggleAdditionalInfo(event._id)}
+                  >
+                    {expandedEventId === event._id ? 'Click To Hide Event Details' : 'Click To Show Event Details'}
+                  </button>
+                  {expandedEventId === event._id && (
+                    <>
+                    
                   <div className="flex flex-wrap">
                     {event.types
                       ?.filter((type) => type !== '')
@@ -127,12 +177,19 @@ const Calendar = ({ events }) => {
                       </a>
                     </div>
                   </div>
+                    </>
+                  )}
+                  
                 </Card>
               </div>
             );
           })}
         </div>
       </Content.Container>
+      {/* Expanded image modal */}
+      {expandedImage && (
+        <ImageModal imageUrl={expandedImage} onClose={handleCloseExpandedImage} className/>
+      )}
     </AccountLayout>
   );
 };
