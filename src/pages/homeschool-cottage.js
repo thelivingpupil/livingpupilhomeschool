@@ -1,7 +1,6 @@
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { Enrollment, CottageType } from '@prisma/client';
-
 import Meta from '@/components/Meta/index';
 import { LandingLayout } from '@/layouts/index';
 import sanityClient from '@/lib/server/sanity';
@@ -17,14 +16,21 @@ import {
 import { PortableText } from '@portabletext/react';
 
 const HomeschoolCottage = ({ page, programs }) => {
+  const router = useRouter();
   const { footer, header } = page;
   const [headerSection] = header?.sectionType;
   const [footerSection] = footer?.sectionType;
   const [enrollmentType, setEnrollmentType] = useState(Enrollment.NEW);
-  const [incomingGradeLevel, setIncomingGradeLevel] = useState(
-    GRADE_LEVEL_TYPES.K2
-  );
+  const [incomingGradeLevel, setIncomingGradeLevel] = useState(GRADE_LEVEL_TYPES.K2);
   const [cottageType, setCottageType] = useState(CottageType.THREE_DAYS_A_WEEK);
+
+  useEffect(() => {
+    // Extract values from query parameters in the URL
+    const { enrollmentType, incomingGradeLevel, cottageType } = router.query;
+    if (enrollmentType) setEnrollmentType(enrollmentType);
+    if (incomingGradeLevel) setIncomingGradeLevel(incomingGradeLevel);
+    if (cottageType) setCottageType(cottageType);
+  }, [router.query]);
 
   const program = programs.find(
     (program) =>
