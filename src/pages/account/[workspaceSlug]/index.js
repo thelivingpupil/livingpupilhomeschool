@@ -197,9 +197,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       telephoneNumber.length > 0 &&
       anotherEmail.length > 0 &&
       address1.length > 0 &&
-      address2.length > 0 &&
-      birthCertificateLink &&
-      birthCertificateLink?.length > 0) ||
+      address2.length > 0 
+      //birthCertificateLink &&
+      //birthCertificateLink?.length > 0
+      ) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
       payment !== null &&
@@ -489,6 +490,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       document.getElementById('scroller').scroll(0, 0);
     } else {
       toggleReview();
+      console.log('discount' + fee.value);
     }
   };
 
@@ -2831,205 +2833,306 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </Content.Container>
         )}
         <Modal
-          show={review}
-          toggle={toggleReview}
-          title="Review LPHS Enrollment Details"
-        >
-          <div className="flex items-center px-3 py-3 space-x-3 text-sm text-red-500 border-2 border-red-600 rounded bg-red-50">
-            <div className="w-5 h-5">
-              <InformationCircleIcon />
-            </div>
-            <p>
-              Please make sure that all information and documents submitted are
-              correct before proceeding to pay the application fee.
-            </p>
+        show={review}
+        toggle={toggleReview}
+        title="Review LPHS Enrollment Details"
+      >
+        <div className="flex items-center px-3 py-3 space-x-3 text-sm text-red-500 border-2 border-red-600 rounded bg-red-50">
+          <div className="w-5 h-5">
+            <InformationCircleIcon />
           </div>
-          <h3 className="text-lg font-bold">
-            Student Information -{' '}
-            <span className="text-primary-500">
-              {ENROLLMENT_TYPE[enrollmentType]}
-            </span>
-          </h3>
-          <div className="px-3 text-sm">
-            <p>
-              <strong>Name:</strong> {lastName}, {firstName} {middleName}
-            </p>
-            <p className="capitalize">
-              <strong>Incoming Grade Level:</strong>{' '}
-              {GRADE_LEVEL[incomingGradeLevel].toLowerCase()}
-            </p>
-            <p>
-              <strong>Birth Date:</strong> {birthDate?.toDateString() || 0} (
-              {age} years old)
-            </p>
-            <p className="capitalize">
-              <strong>Gender:</strong> {gender.toLowerCase()}
-            </p>
-            <p className="capitalize">
-              <strong>Religion:</strong> {RELIGION[religion].toLowerCase()}
-            </p>
-            <p className="capitalize">
-              <strong>Reason for homeschooling:</strong> {reason}
-            </p>
-            <p>
-              <strong>Former School:</strong> {formerSchoolName} (
-              {formerSchoolAddress})
-            </p>
-            <div>
-              <strong>ID Picture:</strong>{' '}
-              {pictureLink ? (
-                <Link href={pictureLink}>
-                  <a className="text-blue-600 underline" target="_blank">
-                    Link Preview
-                  </a>
-                </Link>
-              ) : (
-                'N/A'
-              )}
-            </div>
-            <div>
-              <strong>Birth Certificate:</strong>{' '}
-              {birthCertificateLink ? (
-                <Link href={birthCertificateLink}>
-                  <a className="text-blue-600 underline" target="_blank">
-                    Link Preview
-                  </a>
-                </Link>
-              ) : (
-                'N/A'
-              )}
-            </div>
-            <div>
-              <strong>Report Card:</strong>{' '}
-              {reportCardLink ? (
-                <Link href={reportCardLink}>
-                  <a className="text-blue-600 underline" target="_blank">
-                    Link Preview
-                  </a>
-                </Link>
-              ) : (
-                'N/A'
-              )}
-            </div>
+          <p>
+            Please make sure that all information and documents submitted are
+            correct before proceeding to pay the application fee.
+          </p>
+        </div>
+        <h3 className="text-lg font-bold">
+          Student Information -{' '}
+          <span className="text-primary-500">
+            {ENROLLMENT_TYPE[enrollmentType]}
+          </span>
+        </h3>
+        <div className="px-3 text-sm">
+          <p>
+            <strong>Name:</strong> {lastName}, {firstName} {middleName}
+          </p>
+          <p className="capitalize">
+            <strong>Incoming Grade Level:</strong>{' '}
+            {GRADE_LEVEL[incomingGradeLevel].toLowerCase()}
+          </p>
+          <p>
+            <strong>Birth Date:</strong> {birthDate?.toDateString() || 0} ({age}{' '}
+            years old)
+          </p>
+          <p className="capitalize">
+            <strong>Gender:</strong> {gender.toLowerCase()}
+          </p>
+          <p className="capitalize">
+            <strong>Religion:</strong> {RELIGION[religion].toLowerCase()}
+          </p>
+          <p className="capitalize">
+            <strong>Reason for homeschooling:</strong> {reason}
+          </p>
+          <p>
+            <strong>Former School:</strong> {formerSchoolName} (
+            {formerSchoolAddress})
+          </p>
+          <div>
+            <strong>ID Picture:</strong>{' '}
+            {pictureLink ? (
+              <Link href={pictureLink}>
+                <a className="text-blue-600 underline" target="_blank">
+                  Link Preview
+                </a>
+              </Link>
+            ) : (
+              'N/A'
+            )}
           </div>
-          <h3 className="text-lg font-bold">
-            {PROGRAM[program]} for {GRADE_LEVEL[incomingGradeLevel]} -{' '}
-            {ACCREDITATION[accreditation]} Fees
-          </h3>
-          <div className="px-3 text-sm">
-            <div>
-              <p>
-                <strong>School Fees Breakdown</strong>
-              </p>
-              <table className="w-full my-5 border ">
-                <tbody>
+          <div>
+            <strong>Birth Certificate:</strong>{' '}
+            {birthCertificateLink ? (
+              <Link href={birthCertificateLink}>
+                <a className="text-blue-600 underline" target="_blank">
+                  Link Preview
+                </a>
+              </Link>
+            ) : (
+              'N/A'
+            )}
+          </div>
+          <div>
+            <strong>Report Card:</strong>{' '}
+            {reportCardLink ? (
+              <Link href={reportCardLink}>
+                <a className="text-blue-600 underline" target="_blank">
+                  Link Preview
+                </a>
+              </Link>
+            ) : (
+              'N/A'
+            )}
+          </div>
+        </div>
+        <h3 className="text-lg font-bold">
+          {PROGRAM[program]} for {GRADE_LEVEL[incomingGradeLevel]} -{' '}
+          {ACCREDITATION[accreditation]} Fees
+        </h3>
+        <div className="px-3 text-sm">
+          <div>
+            <p>
+              <strong>School Fees Breakdown</strong>
+            </p>
+            <table className="w-full my-5 border ">
+              <tbody>
+                <tr>
+                  <td className="px-3 py-1 border">
+                    {fee?._type === 'fullTermPayment'
+                      ? 'Total Fee'
+                      : 'Initial Fee'}
+                  </td>
+                  <td className="px-3 py-1 text-right border">
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      fee?._type === 'fullTermPayment'
+                        ? fee?.fullPayment
+                        : fee?.downPayment
+                    )}
+                  </td>
+                </tr>
+                {Array.from(
+                  Array(
+                    fee?._type === 'fullTermPayment'
+                      ? 0
+                      : fee?._type === 'threeTermPayment'
+                      ? 2
+                      : 3
+                  ),
+                  (_, index) => (
+                    <tr key={index}>
+                      <td className="px-3 py-1 border">
+                        {fee?._type === 'fullTermPayment'
+                          ? ''
+                          : fee?._type === 'threeTermPayment'
+                          ? `Three (3) Term Payment #${index + 1}`
+                          : `Four (4) Term Payment #${index + 1}`}
+                      </td>
+                      <td className="px-3 py-1 text-right border">
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'PHP',
+                        }).format(
+                          fee?._type === 'fullTermPayment'
+                            ? 0
+                            : fee && fee[payments[index + 1]]
+                        )}{' '}
+                        {discount &&
+                        discount?.code?.toLowerCase().includes('pastor') ? (
+                          <span className="text-red-600">
+                            (-
+                            {new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: 'PHP',
+                            }).format(
+                              fee &&
+                                fee[payments[index + 1]] -
+                                  (discount?.value - fee?.downPayment) / 3
+                            )}
+                            )
+                          </span>
+                        ) : (
+                          index === 0 &&
+                          discount && (
+                            <span className="text-red-600">
+                              (-
+                              {new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'PHP',
+                              }).format(
+                                discount?.type === 'VALUE'
+                                  ? discount?.value
+                                  : (discount?.value / 100) *
+                                      Math.ceil(fee?.secondPayment)
+                              )}
+                              )
+                            </span>
+                          )
+                        )}
+                      </td>
+                    </tr>
+                  )
+                )}
+                {discount && (
                   <tr>
                     <td className="px-3 py-1 border">
-                      {fee?._type === 'annual' ? 'Total Fee' : 'Initial Fee'}
+                      Total Discounts:{' '}
+                      <strong className="text-green-600">
+                        {discountCode || '-'}{' '}
+                        {`${
+                          discount
+                            ? `(${Number(discount.value).toFixed(2)}${
+                                discount.type === 'VALUE' ? 'Php' : '%'
+                              })`
+                            : ''
+                        }`}
+                      </strong>
                     </td>
-                    <td className="px-3 py-1 text-right border">
+                    <td className="px-3 py-1 text-right text-red-600 border">
                       {new Intl.NumberFormat('en-US', {
                         style: 'currency',
                         currency: 'PHP',
                       }).format(
-                        fee?._type === 'fullTermPayment'
-                          ? fee?.fullPayment
-                          : fee?.downPayment
+                        discount
+                          ? discount.type === 'VALUE'
+                            ? (discount?.code?.toLowerCase().includes('pastor')
+                                ? Math.ceil(
+                                    fee?._type === 'fullTermPayment'
+                                      ? fee?.fullPayment
+                                      : fee?._type === 'threeTermPayment'
+                                      ? fee?.downPayment +
+                                        fee?.secondPayment +
+                                        fee?.thirdPayment
+                                      : fee?.downPayment +
+                                        fee?.secondPayment +
+                                        fee?.thirdPayment +
+                                        fee?.fourthPayment
+                                  ) - discount.value
+                                : Number(discount.value).toFixed(2)) * -1
+                            : Math.ceil(
+                                fee?._type === 'fullTermPayment'
+                                  ? fee?.fullPayment
+                                  : fee?.secondPayment
+                              ) *
+                              (discount.value / 100) *
+                              -1
+                          : 0
                       )}
                     </td>
                   </tr>
-                  {Array.from(
-                    Array(
-                      fee?._type === 'fullTermPayment'
-                        ? 0
-                        : fee?._type === 'threeTermPayment'
-                        ? 2
-                        : 3
-                    ),
-                    (_, index) => (
-                      <tr key={index}>
-                        <td className="px-3 py-1 border">
-                          {fee?._type === 'fullTermPayment'
-                            ? ''
-                            : fee?._type === 'threeTermPayment'
-                            ? `Three (3) Term Payment #${index + 1}`
-                            : `Four (4) Term Payment #${index + 1}`}
-                        </td>
-                        <td className="px-3 py-1 text-right border">
-                          {new Intl.NumberFormat('en-US', {
-                            style: 'currency',
-                            currency: 'PHP',
-                          }).format(
-                            fee?._type === 'fullTermPayment'
-                              ? 0
-                              : fee && fee[payments[index + 1]]
-                          )}
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
-            </div>
-            <h4 className="text-lg font-bold">
-              Total School Fees:{' '}
-              <span className="text-primary-500">
-                {new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(
-                  Math.ceil(
-                    fee?._type === 'fullTermPayment'
-                      ? fee?.fullPayment
-                      : fee?._type === 'threeTermPayment'
-                      ? fee?.downPayment +
-                        fee?.secondPayment +
-                        fee?.thirdPayment
-                      : fee?.downPayment +
-                        fee?.secondPayment +
-                        fee?.thirdPayment +
-                        fee?.fourthPayment
-                  ) || 0
                 )}
-              </span>
-            </h4>
+              </tbody>
+            </table>
           </div>
-          <div className="flex items-center px-3 py-3 space-x-3 text-sm text-blue-500 border-2 border-blue-600 rounded bg-blue-50">
-            <div className="w-5 h-5">
-              <InformationCircleIcon />
-            </div>
-            <p>
-              <strong>NOTE</strong>: Succeeding payments will always incur
-              payment gateway fees per transaction.
-            </p>
-          </div>
-          {viewFees ? (
-            <>
-              {paymentLink && (
-                <a
-                  className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-                  href={paymentLink}
-                  target="_blank"
-                >
-                  Pay Now
-                </a>
+          <h4 className="text-lg font-bold">
+            Total School Fees:{' '}
+            <span className="text-primary-500">
+              {new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'PHP',
+              }).format(
+                Math.ceil(
+                  fee?._type === 'fullTermPayment'
+                    ? fee?.fullPayment
+                    : fee?._type === 'threeTermPayment'
+                    ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment
+                    : fee?.downPayment +
+                      fee?.secondPayment +
+                      fee?.thirdPayment +
+                      fee?.fourthPayment
+                ) -
+                  (discount
+                    ? discount?.type === 'VALUE'
+                      ? discount?.code?.toLowerCase().includes('pastor')
+                        ? Math.ceil(
+                            fee?._type === 'fullTermPayment'
+                              ? fee?.fullPayment
+                              : fee?._type === 'threeTermPayment'
+                              ? fee?.downPayment +
+                                fee?.secondPayment +
+                                fee?.thirdPayment
+                              : fee?.downPayment +
+                                fee?.secondPayment +
+                                fee?.thirdPayment +
+                                fee?.fourthPayment
+                          ) - discount.value
+                        : discount.value
+                      : (discount.value / 100) *
+                        (fee?._type === 'fullTermPayment'
+                          ? fee?.fullPayment
+                          : fee?.secondPayment)
+                    : 0) || 0
               )}
-              <Link href={`/account/${workspace.slug}/fees`}>
-                <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25">
-                  View Dashboard
-                </a>
-              </Link>
-            </>
-          ) : (
-            <button
-              className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-              disabled={isSubmitting}
-              onClick={submit}
-            >
-              {isSubmitting ? 'Processing...' : 'Submit & Pay Now'}
-            </button>
-          )}
-        </Modal>
+            </span>
+          </h4>
+        </div>
+        <div className="flex items-center px-3 py-3 space-x-3 text-sm text-blue-500 border-2 border-blue-600 rounded bg-blue-50">
+          <div className="w-5 h-5">
+            <InformationCircleIcon />
+          </div>
+          <p>
+            <strong>NOTE</strong>: Succeeding payments will always incur payment
+            gateway fees per transaction.
+          </p>
+        </div>
+        {viewFees ? (
+          <>
+            {paymentLink && (
+              <a
+                className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+                href={paymentLink}
+                target="_blank"
+              >
+                Pay Now
+              </a>
+            )}
+            <Link href={`/account`}>
+              <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25">
+                View Dashboard
+              </a>
+            </Link>
+          </>
+        ) : (
+          <button
+            className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+            disabled={isSubmitting}
+            onClick={submit}
+          >
+            {isSubmitting ? 'Processing...' : 'Submit & Pay Now'}
+          </button>
+        )}
+      </Modal>
       </AccountLayout>
     )
   );
