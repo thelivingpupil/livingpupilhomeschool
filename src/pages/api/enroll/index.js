@@ -47,7 +47,7 @@ const handler = async (req, res) => {
       anotherEmail,
       address1,
       address2,
-      discount,
+      discountCode,
       primaryTeacherName,
       primaryTeacherAge,
       primaryTeacherRelationship,
@@ -95,7 +95,7 @@ const handler = async (req, res) => {
         pictureLink,
         birthCertificateLink,
         reportCardLink,
-        discount,
+        discountCode,
         primaryTeacherName,
         primaryTeacherAge,
         primaryTeacherRelationship,
@@ -112,7 +112,8 @@ const handler = async (req, res) => {
         program,
         cottageType,
         accreditation,
-        paymentMethod
+        paymentMethod,
+        discountCode
       ),
       updateGuardianInformation(session.user.userId, guardianInformation),
     ]);
