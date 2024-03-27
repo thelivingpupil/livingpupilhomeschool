@@ -229,17 +229,27 @@ const reactivateAccount = async (userId) => {
                           </span>
                         )}
                       </h4>
-                      <h5 className="flex items-center font-bold">
-                        <span className="text-xs">{params.row.email}</span>
-                      </h5>
                     </div>
                   </div>
                 ),
               },
               {
+                field: 'email',
+                headerName: 'Email',
+                flex: 1,
+                headerAlign: 'center',
+                align: 'center',
+                renderCell: (params) => (
+                  <span className="text-xs text-center">
+                    <h5 className="flex items-center font-bold">
+                        <span className="text-xs">{params.row.email}</span>
+                      </h5>
+                  </span>
+                ),
+              },
+              {
                 field: 'createdAt',
                 headerName: 'Joined',
-                flex: 1,
                 headerAlign: 'center',
                 align: 'center',
                 renderCell: (params) => (
@@ -259,7 +269,6 @@ const reactivateAccount = async (userId) => {
               {
                 field: 'deletedAt',
                 headerName: 'Status',
-                flex: 1,
                 headerAlign: 'center',
                 align: 'center',
                 renderCell: (params) => (
