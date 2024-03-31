@@ -144,7 +144,7 @@ const AccountLayout = ({ children }) => {
       )}
       <Content route={router.route}>
         <Toaster position="bottom-left" toastOptions={{ duration: 10000 }} />
-        <Header />
+        <Header menu={menu(workspace?.slug)} />
         {children}
         <Script strategy="lazyOnload">
           {`

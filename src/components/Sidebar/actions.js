@@ -104,7 +104,7 @@ const Actions = ({ show }) => {
           </Button>
         </div>
       </Modal>
-      <Listbox value={workspace} onChange={handleWorkspaceChange}>
+      {/* <Listbox value={workspace} onChange={handleWorkspaceChange}>
         <div className="relative tourSelect">
           <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default">
             <span className="block text-gray-600 truncate">
@@ -167,7 +167,7 @@ const Actions = ({ show }) => {
             </Transition>
           )}
         </div>
-      </Listbox>
+      </Listbox> */}
     </div>
   );
 };
