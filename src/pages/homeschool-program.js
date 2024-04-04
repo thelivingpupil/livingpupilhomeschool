@@ -35,6 +35,22 @@ const HomeschoolProgram = ({ page, programs }) => {
     if (incomingGradeLevel) setIncomingGradeLevel(incomingGradeLevel);
   }, [router.query]);
 
+  const handleEnrollmentTypeChange = (newEnrollmentType) => {
+    setEnrollmentType(newEnrollmentType);
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, enrollmentType: newEnrollmentType }
+    });
+  };
+
+  const handleGradeLevelChange = (newGradeLevel) => {
+    setIncomingGradeLevel(newGradeLevel);
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, incomingGradeLevel: newGradeLevel }
+    });
+  };
+
   const program = programs.find(
     (program) =>
       program.enrollmentType === enrollmentType &&
@@ -59,7 +75,7 @@ const HomeschoolProgram = ({ page, programs }) => {
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
                 enrollmentType === Enrollment.NEW && 'text-white bg-primary-500'
               }`}
-              onClick={() => setEnrollmentType(Enrollment.NEW)}
+              onClick={() => handleEnrollmentTypeChange(Enrollment.NEW)}
             >
               New Family
             </button>
@@ -68,7 +84,7 @@ const HomeschoolProgram = ({ page, programs }) => {
                 enrollmentType === Enrollment.CONTINUING &&
                 'text-white bg-primary-500'
               }`}
-              onClick={() => setEnrollmentType(Enrollment.CONTINUING)}
+              onClick={() => handleEnrollmentTypeChange(Enrollment.CONTINUING)}
             >
               Continuing Family
             </button>
@@ -78,7 +94,7 @@ const HomeschoolProgram = ({ page, programs }) => {
           <div className="relative inline-block w-full border rounded">
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
-              onChange={(e) => setIncomingGradeLevel(e.target.value)}
+              onChange={(e) => handleGradeLevelChange(e.target.value)}
               value={incomingGradeLevel}
             >
               {GRADE_LEVEL_GROUPS.map((group, index) => (

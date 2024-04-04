@@ -39,6 +39,30 @@ const HomeschoolCottage = ({ page, programs }) => {
       program.cottageType === cottageType
   );
 
+    const handleEnrollmentTypeChange = (newEnrollmentType) => {
+    setEnrollmentType(newEnrollmentType);
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, enrollmentType: newEnrollmentType }
+    });
+  };
+
+  const handleCottageTypeChange = (newCottageType) => {
+    setCottageType(newCottageType);
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, cottageType: newCottageType }
+    });
+  };
+
+  const handleGradeLevelChange = (newGradeLevel) => {
+    setIncomingGradeLevel(newGradeLevel);
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, incomingGradeLevel: newGradeLevel }
+    });
+  };
+
   return (
     <LandingLayout>
       <Meta title="Living Pupil Homeschool" />
@@ -57,7 +81,7 @@ const HomeschoolCottage = ({ page, programs }) => {
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
                 enrollmentType === Enrollment.NEW && 'text-white bg-primary-500'
               }`}
-              onClick={() => setEnrollmentType(Enrollment.NEW)}
+              onClick={() => handleEnrollmentTypeChange(Enrollment.NEW)}
             >
               New Family
             </button>
@@ -66,7 +90,7 @@ const HomeschoolCottage = ({ page, programs }) => {
                 enrollmentType === Enrollment.CONTINUING &&
                 'text-white bg-primary-500'
               }`}
-              onClick={() => setEnrollmentType(Enrollment.CONTINUING)}
+              onClick={() => handleEnrollmentTypeChange(Enrollment.CONTINUING)}
             >
               Continuing Family
             </button>
@@ -90,6 +114,7 @@ const HomeschoolCottage = ({ page, programs }) => {
                 ) {
                   setIncomingGradeLevel(GRADE_LEVEL_TYPES.K2);
                 }
+                handleCottageTypeChange(CottageType.THREE_DAYS_A_WEEK);
               }}
             >
               3 days a week
@@ -99,7 +124,9 @@ const HomeschoolCottage = ({ page, programs }) => {
                 cottageType === CottageType.FIVE_DAYS_A_WEEK &&
                 'text-white bg-primary-500'
               }`}
-              onClick={() => setCottageType(CottageType.FIVE_DAYS_A_WEEK)}
+              onClick={() => {
+                handleCottageTypeChange(CottageType.FIVE_DAYS_A_WEEK);
+              }}
             >
               5 days a week
             </button>
@@ -114,7 +141,7 @@ const HomeschoolCottage = ({ page, programs }) => {
                 'text-white bg-primary-500'
               }`}
               onClick={() => {
-                setIncomingGradeLevel(GRADE_LEVEL_TYPES.K2);
+                handleGradeLevelChange(GRADE_LEVEL_TYPES.K2);
               }}
             >
               K2
@@ -125,7 +152,7 @@ const HomeschoolCottage = ({ page, programs }) => {
                 'text-white bg-primary-500'
               }`}
               onClick={() => {
-                setIncomingGradeLevel(GRADE_LEVEL_TYPES.FORM_1);
+                handleGradeLevelChange(GRADE_LEVEL_TYPES.FORM_1);
               }}
             >
               Form 1
@@ -136,7 +163,7 @@ const HomeschoolCottage = ({ page, programs }) => {
                 'text-white bg-primary-500'
               }`}
               onClick={() => {
-                setIncomingGradeLevel(GRADE_LEVEL_TYPES.FORM_2);
+                handleGradeLevelChange(GRADE_LEVEL_TYPES.FORM_2);
               }}
             >
               Form 2
@@ -147,7 +174,7 @@ const HomeschoolCottage = ({ page, programs }) => {
                 'text-white bg-primary-500'
               }`}
               onClick={() => {
-                setIncomingGradeLevel(GRADE_LEVEL_TYPES.FORM_3);
+                handleGradeLevelChange(GRADE_LEVEL_TYPES.FORM_3);
               }}
             >
               Form 3
@@ -161,7 +188,7 @@ const HomeschoolCottage = ({ page, programs }) => {
                   }`}
                   disabled={cottageType === CottageType.THREE_DAYS_A_WEEK}
                   onClick={() => {
-                    setIncomingGradeLevel(GRADE_LEVEL_TYPES.GRADE_11);
+                    handleGradeLevelChange(GRADE_LEVEL_TYPES.GRADE_11);
                   }}
                 >
                   Grade 11
@@ -173,7 +200,7 @@ const HomeschoolCottage = ({ page, programs }) => {
                   }`}
                   disabled={cottageType === CottageType.THREE_DAYS_A_WEEK}
                   onClick={() => {
-                    setIncomingGradeLevel(GRADE_LEVEL_TYPES.GRADE_12);
+                    handleGradeLevelChange(GRADE_LEVEL_TYPES.GRADE_12);
                   }}
                 >
                   Grade 12
