@@ -7,14 +7,15 @@ const handler = async (req, res) => {
   if (method === 'PUT') {
     await validateSession(req, res);
     const { transactionId } = query;
-    const { amount, status } = body;
+    const { balance, payment, status } = body;
 
     const transaction = await updateTransaction(
       transactionId,
       'MANUAL',
       status,
       'Successfully updated transaction manually',
-      amount
+      balance,
+      payment
     );
     res.status(200).json({ data: { transaction } });
   } else {

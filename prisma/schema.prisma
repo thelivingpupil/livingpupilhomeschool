@@ -231,6 +231,8 @@ model Transaction {
   purchaseHistory   PurchaseHistory?  @relation(fields: [purchaseHistoryId], references: [id])
   user              User              @relation(fields: [userId], references: [id])
   schoolFee         SchoolFee?
+  payment           Decimal?
+  balance           Decimal?           
 
   @@unique([transactionId, referenceNumber])
   @@map("transactions")

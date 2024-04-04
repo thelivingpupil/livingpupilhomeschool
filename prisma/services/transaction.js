@@ -314,6 +314,8 @@ export const getTransactions = async () =>
     select: {
       transactionId: true,
       amount: true,
+      payment: true,
+      balance: true,
       currency: true,
       paymentStatus: true,
       paymentReference: true,
@@ -416,14 +418,16 @@ export const updateTransaction = async (
   paymentReference,
   paymentStatus,
   message,
-  amount = undefined
+  balance = undefined,
+  payment = undefined
 ) => {
   const transaction = await prisma.transaction.update({
     data: {
       paymentReference,
       paymentStatus,
       message,
-      ...(amount && { amount }),
+      ...(balance && { balance }),
+      ...(payment && {payment})
     },
     select: {
       transactionId: true,
