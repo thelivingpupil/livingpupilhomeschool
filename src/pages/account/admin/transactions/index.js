@@ -121,7 +121,8 @@ const Transactions = () => {
   const toggleModal = () => setModalVisibility((state) => !state);
 
   const openUpdateModal = (transaction) => () => {
-    const balance = transaction.balance !== null && transaction.balance !== 0 ? transaction.balance : transaction.amount;
+    const balance = transaction.balance !== null ? transaction.balance : transaction.amount;
+    console.log(transaction.balance)
     setUpdateTransaction({
       ...updateTransaction,
       name: transaction.schoolFee.student.studentRecord.firstName,
@@ -150,6 +151,7 @@ const Transactions = () => {
           : `Payment #${transaction.schoolFee.order}`,
     });
     setModalVisibility(true);
+    console.log(transaction.balance)
   };
 
   const handleUpdatePaymentTransaction = (e) => {
@@ -158,13 +160,14 @@ const Transactions = () => {
 
   const handleApply= (e) =>  {
     console.log(updateTransaction.payment + ' ' + newPayment)
-    const newBalance = updateTransaction.balance - newPayment;
+    const newBalance = parseFloat(updateTransaction.balance) - parseFloat(newPayment);
     const totalPaid = parseFloat(newPayment) + parseFloat(updateTransaction.payment);
     setUpdateTransaction({
       ...updateTransaction,
       balance: newBalance,
       payment: totalPaid
     });
+    setNewPayment(Number(0).toFixed(2));
   }
 
   const handleUndo = (e) => {
@@ -176,9 +179,9 @@ const Transactions = () => {
 
     let status;
   
-  if (updateTransaction.amount === 0) {
+  if (updateTransaction.balance === 0) {
     status = TransactionStatus.S; // Set status to S if payment is zero
-  } else if (updateTransaction.payment > 0) {
+  } else if (updateTransaction.balance > 0) {
     status = TransactionStatus.P; // Set status to P if payment is greater than zero
   } else {
     // If payment is less than zero, display a toast and do not proceed with the update
@@ -598,20 +601,33 @@ const Transactions = () => {
                             </div>
                           </td>
                           <td className="p-2 text-center">
-                            {new Intl.NumberFormat('en-US', {
+                            <div>
+                              {new Intl.NumberFormat('en-US', {
                               style: 'currency',
                               currency: transaction.currency,
-                            }).format(transaction.amount)}
+                              }).format(transaction.amount)}
+                            </div>
                           </td>
                           <td className="p-2 text-center">
-                            {transaction.payment?(new Intl.NumberFormat('en-US', {
+                            <div>
+                              {transaction.payment?(new Intl.NumberFormat('en-US', {
                               style: 'currency',
                               currency: transaction.currency,
-                            }).format(transaction.payment)) : (
-                                <h4 className="text-lg font-bold text-gray-300">
-                                  -
-                                </h4>
-                            )}
+                              }).format(transaction.payment)) : (
+                                  <h4 className="text-lg font-bold text-gray-300">
+                                    -
+                                  </h4>
+                              )}
+                              {transaction.balance ? (
+                                <p className="font-mono text-xs text-gray-400 lowercase">
+                                  bal: {transaction.balance}
+                                </p>
+                              ) : (
+                                <p className="font-mono text-xs text-gray-400 lowercase">
+                                  
+                                </p>
+                              )}
+                            </div>
                           </td>
                           <td className="p-2 space-x-2 text-xs text-center">
                             {transaction.paymentStatus !==

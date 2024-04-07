@@ -426,8 +426,8 @@ export const updateTransaction = async (
       paymentReference,
       paymentStatus,
       message,
-      ...(balance && { balance }),
-      ...(payment && {payment})
+      ...(typeof balance !== 'undefined' && { balance }), // Check for undefined
+      ...(typeof payment !== 'undefined' && { payment }), // Check for undefined
     },
     select: {
       transactionId: true,
