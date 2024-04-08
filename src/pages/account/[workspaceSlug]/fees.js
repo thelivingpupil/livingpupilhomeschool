@@ -82,6 +82,7 @@ const Fees = () => {
                           <tr className="text-left">
                             <th className="px-3 py-2">Name</th>
                             <th className="px-3 py-2">Fee</th>
+                            <th className="px-3 text-center py-2">Manual Payment</th>
                             <th className="px-3 py-2 text-center">Deadline</th>
                             <th className="px-3 py-2 text-center">
                               Action / Status
@@ -118,6 +119,25 @@ const Fees = () => {
                                   style: 'currency',
                                   currency: 'PHP',
                                 }).format(f.transaction.amount)}
+                              </td>
+                              <td className="px-3 py-2 text-sm text-center">
+                                <div>
+                                  {f.transaction.payment?(new Intl.NumberFormat('en-US', {
+                                  style: 'currency',
+                                  currency:'PHP',
+                                  }).format(f.transaction.payment)) : (
+                                      '-'
+                                  )}
+                                  {f.transaction.balance ? (
+                                    <p className="font-mono text-xs text-gray-400 lowercase">
+                                      bal: {f.transaction.balance}
+                                    </p>
+                                  ) : (
+                                    <p className="font-mono text-xs text-gray-400 lowercase">
+                                      
+                                    </p>
+                                  )}
+                                </div>
                               </td>
                               <td className="px-3 py-2 text-sm text-center">
                                 {getDeadline(
