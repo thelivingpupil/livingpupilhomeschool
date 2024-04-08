@@ -24,27 +24,29 @@ const Grades = () => {
   const { workspace } = useWorkspace();
 
   return (
-    <AccountLayout>
-      <Meta title="Living Pupil Homeschool - Student Grades" />
-      <Content.Title
-        title={`${workspace.name} - Grades`}
-        subtitle="View your student's grades"
-      />
-      <Content.Divider />
-      <Content.Container>
-        {workspace &&
-            workspace?.studentRecord?.incomingGradeLevel &&
-            forms[workspace?.studentRecord?.incomingGradeLevel] && (
-              <JotFormEmbed
-                src={`https://form.jotform.com/${
-                  forms[workspace?.studentRecord?.incomingGradeLevel]
-                }`}
-                scrolling={true}
-                style={{ height: '100%' }}
-              />
-            )}
-      </Content.Container>
-    </AccountLayout>
+    workspace && (
+      <AccountLayout>
+        <Meta title="Living Pupil Homeschool - Student Grades" />
+        <Content.Title
+          title={`${workspace.name} - School Fees`}
+          subtitle="View your student's grades"
+        />
+        <Content.Divider />
+        <Content.Container>
+          {workspace &&
+              workspace?.studentRecord?.incomingGradeLevel &&
+              forms[workspace?.studentRecord?.incomingGradeLevel] && (
+                <JotFormEmbed
+                  src={`https://form.jotform.com/${
+                    forms[workspace?.studentRecord?.incomingGradeLevel]
+                  }`}
+                  scrolling={true}
+                  style={{ height: '100%' }}
+                />
+              )}
+        </Content.Container>
+      </AccountLayout>
+    )
   );
 };
 
