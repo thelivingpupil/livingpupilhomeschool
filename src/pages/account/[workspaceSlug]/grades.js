@@ -28,7 +28,7 @@ const Grades = () => {
       <AccountLayout>
         <Meta title="Living Pupil Homeschool - Student Grades" />
         <Content.Title
-          title={`${workspace.name} - School Fees`}
+          title={`${workspace.name} - Grades`}
           subtitle="View your student's grades"
         />
         <Content.Divider />
