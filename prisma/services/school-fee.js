@@ -430,3 +430,31 @@ export const createSchoolFees = async (
 
   return result;
 };
+
+export const getSchoolFeeByStudentIdAndOrder = async (studentId, order) => {
+  try {
+    const schoolFees = await prisma.schoolFee.findMany({
+      select: {
+        transactionId: true,
+        order: true,
+        transaction:{
+          select:{
+            transactionId: true,
+            amount: true,
+            payment: true,
+            balance: true,
+            paymentStatus: true,
+          }
+      },
+      },
+      where: {
+        studentId: studentId,
+        order: order,
+      },
+    });
+
+    return schoolFees;
+  } catch (error) {
+    throw new Error(`Error fetching school fees: ${error.message}`);
+  }
+};

@@ -340,6 +340,7 @@ export const getTransactions = async () =>
             select: {
               studentRecord: {
                 select: {
+                  studentId: true,
                   firstName: true,
                   middleName: true,
                   lastName: true,
@@ -419,7 +420,8 @@ export const updateTransaction = async (
   paymentStatus,
   message,
   balance = undefined,
-  payment = undefined
+  payment = undefined,
+  amount = undefined,
 ) => {
   const transaction = await prisma.transaction.update({
     data: {
@@ -428,6 +430,7 @@ export const updateTransaction = async (
       message,
       ...(typeof balance !== 'undefined' && { balance }), // Check for undefined
       ...(typeof payment !== 'undefined' && { payment }), // Check for undefined
+      ...(typeof amount !== 'undefined' && { amount }), // Check for undefined
     },
     select: {
       transactionId: true,

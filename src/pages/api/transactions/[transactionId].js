@@ -7,7 +7,7 @@ const handler = async (req, res) => {
   if (method === 'PUT') {
     await validateSession(req, res);
     const { transactionId } = query;
-    const { balance, payment, status } = body;
+    const { amount, balance, payment, status } = body;
 
     const transaction = await updateTransaction(
       transactionId,
@@ -15,7 +15,8 @@ const handler = async (req, res) => {
       status,
       'Successfully updated transaction manually',
       balance,
-      payment
+      payment,
+      amount
     );
     res.status(200).json({ data: { transaction } });
   } else {

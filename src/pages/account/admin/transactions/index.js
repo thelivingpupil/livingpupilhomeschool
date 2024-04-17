@@ -22,6 +22,7 @@ import {
   STATUS,
 } from '@/utils/constants';
 import Modal from '@/components/Modal';
+import CenteredModal from '@/components/Modal/centered-modal';
 import toast from 'react-hot-toast';
 import { getDeadline } from '@/utils/index';
 
@@ -39,12 +40,19 @@ const filterByOptions = {
 const Transactions = () => {
   const { data, isLoading } = useTransactions();
   const [showModal, setModalVisibility] = useState(false);
+  const [showCenteredModal, setCenteredModalVisibility] = useState(false);
   const [isSubmitting, setSubmittingState] = useState(false);
   const [isUpdatingTransaction, setUpdatingTransaction] = useState(false);
+  const [iterateNext, setIterateNext] = useState({
+    transactionId: '',
+    amount: ''
+  })
   const [updateTransaction, setUpdateTransaction] = useState({
     transactionId: '',
+    studentId: '',
     payment: '',
     amount: '',
+    order: 0,
     balance: '',
     name: '',
     gradeLevel: '',
@@ -58,6 +66,7 @@ const Transactions = () => {
     paymentOrder: '',
     paymentType: '',
     currency: '',
+    deadline: '',
   });
   const [newPayment, setNewPayment] = useState(0.0);
   const [filter, setFilter] = useState(['', '']);
@@ -122,9 +131,11 @@ const Transactions = () => {
 
   const openUpdateModal = (transaction) => () => {
     const balance = transaction.balance !== null ? transaction.balance : transaction.amount;
-    console.log(transaction.balance)
     setUpdateTransaction({
       ...updateTransaction,
+      transactionId: transaction.transactionId,
+      studentId: transaction.schoolFee.student.studentRecord.studentId,
+      order: parseInt(transaction.schoolFee.order),
       name: transaction.schoolFee.student.studentRecord.firstName,
       gradeLevel:
         transaction.schoolFee.student.studentRecord.incomingGradeLevel,
@@ -143,6 +154,13 @@ const Transactions = () => {
       balance: Number(balance).toFixed(2),
       paymentType: transaction.schoolFee.paymentType,
       currency: transaction.currency,
+      deadline: getDeadline(
+              transaction.schoolFee.order,
+              transaction.schoolFee.paymentType,
+              transaction.createdAt,
+              transaction.schoolFee.student.studentRecord
+                .schoolYear
+            ),
       paymentOrder:
         transaction.schoolFee.paymentType === PaymentType.ANNUAL
           ? 'Total Fee'
@@ -151,15 +169,22 @@ const Transactions = () => {
           : `Payment #${transaction.schoolFee.order}`,
     });
     setModalVisibility(true);
-    console.log(transaction.balance)
   };
+
+  const toggleCenteredModal = () => {
+    setCenteredModalVisibility(!showCenteredModal);
+  };
+
+  const handleYes = () => {
+    handleUpdateTransaction()
+    toggleCenteredModal()
+  }
 
   const handleUpdatePaymentTransaction = (e) => {
     setNewPayment(Number(e.target.value).toFixed(2));
   };
 
   const handleApply= (e) =>  {
-    console.log(updateTransaction.payment + ' ' + newPayment)
     const newBalance = parseFloat(updateTransaction.balance) - parseFloat(newPayment);
     const totalPaid = parseFloat(newPayment) + parseFloat(updateTransaction.payment);
     setUpdateTransaction({
@@ -170,24 +195,90 @@ const Transactions = () => {
     setNewPayment(Number(0).toFixed(2));
   }
 
-  const handleUndo = (e) => {
-    console.log(updateTransaction.payment + ' ' + updateTransaction.balance)
+  const calculateBalanceForIteration = (amount) => {
+    console.log(amount)
+    const newAmount = parseFloat(amount) + parseFloat(updateTransaction.balance)
+    return newAmount
   }
+
+  const checkDeadline = () => {
+    const currentDate = new Date();
+    const deadline = new Date(updateTransaction.deadline); // change to 
+
+    if (currentDate > deadline && updateTransaction.balance > 0) {
+      fetchSchoolFees(updateTransaction.studentId, updateTransaction.order + 1)
+        .then((feeData) => {
+          if (feeData[0]?.transactionId === undefined) {
+            toggleCenteredModal();
+          } else {
+            const transactionId = feeData[0].transactionId;
+            const amount = calculateBalanceForIteration(feeData[0].transaction.amount);
+            handleIterateTransaction(transactionId, amount, 0, amount, 'P'); // update next transaction
+            const prevAmount = updateTransaction.payment; // for previous transaction
+            const balance = 0; // for previous transaction
+            const totalPaid = updateTransaction.payment; // for previous transaction
+            handleIterateTransaction(updateTransaction.transactionId, prevAmount, totalPaid, balance, 'S'); // update previous transaction
+          }
+        });
+    } else {
+      handleUpdateTransaction();
+    }
+  };
+
+  const handleIterateTransaction = (transactionId, amount, totalPaid, balance, status) => {
+    setUpdatingTransaction(true);
+     api(`/api/transactions/${transactionId}`, {
+       body: {
+         balance: balance,
+         payment: totalPaid,
+         amount: amount,
+         status: status,
+       },
+       method: 'PUT', 
+     })
+       .then(() => {
+         setUpdatingTransaction(false);
+         toast.success(
+           `Successfully updated transaction for ${updateTransaction.name}`
+         );
+       })
+       .catch(() => {
+         setUpdatingTransaction(false);
+         toast.error(
+           `Error in updating transaction for ${updateTransaction.name}`
+         );
+       });
+    toggleModal();
+  };
+
+  const fetchSchoolFees = async (studentId, order) => {
+    try {
+      const queryString = `?studentId=${studentId}&order=${order}`;
+      const response = await fetch(`/api/transactions/fees${queryString}`);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch school fees');
+      }
+      const feeData = await response.json();
+      return feeData;
+    } catch (error) {
+      console.error('Error fetching school fees:', error.message);
+      throw error;
+    }
+  };
 
   const handleUpdateTransaction = () => {
     setUpdatingTransaction(true);
-
     let status;
-  
-  if (updateTransaction.balance === 0) {
-    status = TransactionStatus.S; // Set status to S if payment is zero
-  } else if (updateTransaction.balance > 0) {
-    status = TransactionStatus.P; // Set status to P if payment is greater than zero
-  } else {
-    // If payment is less than zero, display a toast and do not proceed with the update
-    toast.error(`Payment is greater than amount`);
-    return;
-  }
+    if (updateTransaction.balance === 0) {
+      status = TransactionStatus.S; // Set status to S if payment is zero
+    } else if (updateTransaction.balance > 0) {
+      status = TransactionStatus.P; // Set status to P if payment is greater than zero
+    } else {
+      // If payment is less than zero, display a toast and do not proceed with the update
+      toast.error(`Payment is greater than amount`);
+      return;
+    }
     api(`/api/transactions/${updateTransaction.transactionId}`, {
       body: {
         balance: updateTransaction.balance,
@@ -357,10 +448,11 @@ const Transactions = () => {
             {/* <button
               className="px-3 py-1 text-white text-base text-center rounded bg-gray-500 hover:bg-gray-400 disabled:opacity-25"
               disabled={isUpdatingTransaction}
+              //onClick={console.log(updateTransaction.studentId)}
               onClick={handleUndo}
             >
               Undo
-            </button> */}
+            </button>  */}
             <button
               className="px-3 py-1 text-white text-base text-center rounded bg-blue-500 hover:bg-blue-400 disabled:opacity-25"
               disabled={isUpdatingTransaction}
@@ -373,13 +465,39 @@ const Transactions = () => {
             <button
               className="px-3 py-1 text-white text-base text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
               disabled={isUpdatingTransaction}
-              onClick={handleUpdateTransaction}
+              onClick={checkDeadline}
             >
               Update Transaction
             </button>
           </div>
         </div>
       </SideModal>
+      <CenteredModal
+        show={showCenteredModal}
+        toggle={toggleCenteredModal}
+        title="Final Transaction Overdue"
+      >
+        <div>
+          <p>This transaction is the final payment. Update this transaction instead?</p>
+        </div>
+        <div className="w-full flex justify-end">
+          <button
+            className="px-3 py-1 text-white text-base text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+            disabled={isUpdatingTransaction}
+            onClick={handleYes}
+            style={{ marginRight: '0.5rem' }}
+          >
+            Yes
+          </button>
+          <button
+            className="px-3 py-1 text-white text-base text-center rounded bg-gray-500 hover:bg-gray-400 disabled:opacity-25"
+            disabled={isUpdatingTransaction}
+            onClick={toggleCenteredModal}
+          >
+            No
+          </button>
+        </div>
+      </CenteredModal>
       <Content.Title
         title="Enrollment Transactions"
         subtitle="View and manage all transactions relevant to enrollment"
