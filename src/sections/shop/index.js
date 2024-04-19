@@ -296,7 +296,7 @@ const Shop = ({ categories, items }) => {
                 !data ||
                 isSubmitting ||
                 !cart.length ||
-                !shippingFee?.fee ||
+                shippingFee?.fee < 0 ||
                 !deliveryAddress ||
                 !contactNumber
               }
