@@ -371,15 +371,17 @@ export const getTransactions = async () =>
     },
   });
 
+
 export const renewTransaction = async (
   email,
   transactionId,
+  newTransactionId,
   amount,
   description,
   source
 ) => {
   const response = await api(
-    `${process.env.PAYMENTS_BASE_URL}/${transactionId}/post`,
+    `${process.env.PAYMENTS_BASE_URL}/${newTransactionId}/post`,
     {
       body: {
         Amount: amount,
@@ -401,7 +403,7 @@ export const renewTransaction = async (
   } = response;
   await prisma.transaction.update({
     data: {
-      //referenceNumber,
+      transactionId: newTransactionId, // Update with hashed transaction ID
       amount,
       transactionStatus,
       source: source || description,

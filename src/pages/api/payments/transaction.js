@@ -25,11 +25,12 @@ const handler = async (req, res) => {
     const session = await validateSession(req, res);
     const { referenceNumber, transactionId } = req.body;
     const transaction = await getTransaction(transactionId, referenceNumber);
-
+    const newTransactionId = crypto.randomUUID();
     if (transaction) {
       const newTransaction = await renewTransaction(
         session.user.email,
         transaction.transactionId,
+        newTransactionId,
         transaction.amount,
         transaction.description,
         transaction.source
