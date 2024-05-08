@@ -2,6 +2,8 @@ import { validateSession } from '@/config/api-validation';
 import { getStudentRecords } from '@/prisma/services/student-record';
 import { deleteStudentRecord, getStudentRecord, updateStudentRecord} from '@/prisma/services/student-record';
 import { deleteStudentWorkspace } from '@/prisma/services/workspace';
+import { createSchoolFees, deleteStudentSchoolFees } from '@/prisma/services/school-fee';
+import { promises } from 'nodemailer/lib/xoauth2';
 
 const ALLOW_DELETION = true;
 
@@ -13,35 +15,59 @@ const handler = async (req, res) => {
     const students = await getStudentRecords();
     res.status(200).json({ data: { students } });
   } else if (method === 'PUT') {
-    const { studentId, firstName, middleName, lastName, gender, religion, enrollmentType, incomingGradeLevel, schoolYear, birthDate, pictureLink, birthCertificateLink, reportCardLink } = req.body;
-    
+  try {
+    const {
+      studentId,
+      firstName,
+      middleName,
+      lastName,
+      gender, 
+      religion, 
+      enrollmentType, 
+      incomingGradeLevel, 
+      schoolYear, 
+      birthDate, 
+      pictureLink, 
+      birthCertificateLink, 
+      reportCardLink,
+      discountCode,
+      accreditation,
+      scholarshipCode
+    } = req.body;
+
     if (!studentId) {
-        return res.status(400).json({ error: 'Student ID is required' });
+      return res.status(400).json({ error: 'Student ID is required' });
     }
-    
-    try {
-        const studentNewData = {
-            firstName,
-            middleName,
-            lastName,
-            gender,
-            religion,
-            enrollmentType,
-            incomingGradeLevel,
-            schoolYear,
-            birthDate,
-            pictureLink,
-            birthCertificateLink,
-            reportCardLink,
-            //discountCode,
-        };
-        console.log('Updating student record:', studentId, studentNewData); // Logging to check the data
-        await updateStudentRecord(studentId, studentNewData);
-        res.status(200).json({ message: 'Student record updated successfully' });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to update student record' });
-    }
-  } else if (method === 'DELETE') {
+
+    const studentNewData = {
+      firstName,
+      middleName,
+      lastName,
+      gender,
+      religion,
+      enrollmentType,
+      incomingGradeLevel,
+      schoolYear,
+      birthDate,
+      pictureLink,
+      birthCertificateLink,
+      reportCardLink,
+      discountCode,
+      accreditation,
+      scholarshipCode
+    };
+    console.log(studentNewData)  
+    // update student records
+    const [studentRecord] = await Promise.all([ 
+      updateStudentRecord(studentId, studentNewData),
+    ]);
+
+    res.status(200).json({ message: 'Student record updated successfully', studentRecord});
+  } catch (error) {
+    console.error('Error updating student record:', error);
+    res.status(500).json({ error: 'Failed to update student record' });
+  }
+} else if (method === 'DELETE') {
     // Logic to handle DELETE request (deactivate account)
     const {inviteCode, studentId} = req.body;
     

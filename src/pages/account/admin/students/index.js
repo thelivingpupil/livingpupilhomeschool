@@ -33,13 +33,12 @@ import {
   Program,
   Religion,
 } from '@prisma/client';
+import sanityClient from '@/lib/server/sanity';
 import { useStudents, useWorkspaces } from '@/hooks/data';
 import { UserIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import format from 'date-fns/format';
 import differenceInYears from 'date-fns/differenceInYears';
-import { Menu, MenuItem, IconButton } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { 
   DataGrid, 
   GridToolbarContainer, 
@@ -48,6 +47,7 @@ import {
   GridToolbarDensitySelector 
 } from '@mui/x-data-grid';
 import toast from 'react-hot-toast';
+import api from '@/lib/common/api';
 
 const filterValueOptions = {
   accreditation: ACCREDITATION_NEW,
@@ -65,6 +65,19 @@ const filterValueOptions = {
   },
 };
 
+const scholarships = {
+  semi: 'Semi-scholar-regular',
+  semiCottage: 'Semi-scholar-cottage',
+  full: 'Full-scholar'
+}
+
+const payments = [
+  'downPayment',
+  'secondPayment',
+  'thirdPayment',
+  'fourthPayment',
+];
+
 const filterByOptions = {
   accreditation: 'Accreditation',
   enrollmentType: 'Enrollment Type',
@@ -75,7 +88,7 @@ const filterByOptions = {
   schoolYear: 'School Year',
 };
 
-const Students = () => {
+const Students = ({ schoolFees, programs }) => {
   const { data, isLoading } = useStudents();
   const {data: workspaceData, isLoading: isFetchingWorkspaces } =
     useWorkspaces();
@@ -88,18 +101,12 @@ const Students = () => {
     }, [workspaceData]);
   const [studentId, setStudentId] = useState('');
   const [inviteCode, setInviteCode] = useState('');
-
   const [isSubmitting, setSubmittingState] = useState(false);
-
   const [showModal, setModalVisibility] = useState(false);
   const [showModal2, setModalVisibility2] = useState(false);
-
   const [filter, setFilter] = useState(['', '']);
-
   const [filterBy, filterValue] = filter;
-
   const [student, setStudent] = useState(null);
-
   const [firstName, setFirstName] = useState('');
   const [middleName, setMiddleName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -111,8 +118,6 @@ const Students = () => {
     GradeLevel.PRESCHOOL
   );
   const [schoolYear, setSchoolYear] = useState('');
-  const [formerSchoolName, setFormerSchoolName] = useState('');
-  const [formerSchoolAddress, setFormerSchoolAddress] = useState('');
   const [program, setProgram] = useState(Program.HOMESCHOOL_PROGRAM);
   const [cottageType, setCottageType] = useState(null);
   const [accreditation, setAccreditation] = useState(null);
@@ -126,6 +131,14 @@ const Students = () => {
   const [birthCertificateLink, setBirthCertificateLink] = useState(null);
   const [reportCardLink, setReportCardLink] = useState(null);
   const [discountCode, setDiscountCode] = useState('');
+  const [scholarship, setScholarship] = useState(null);
+  const [scholarshipCode, setScholarshipCode] = useState('');
+  const [discount, setDiscount] = useState(null);
+  const [isSubmittingCode, setSubmittingCodeState] = useState(false);
+  const [userId, setUserId] = useState('');
+  const [email, setEmail] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [workspaceId, setWorkspaceId] = useState('');
   const age = differenceInYears(new Date(), birthDate) || 0;
 
   const filterStudents = useMemo(() => {
@@ -139,17 +152,101 @@ const Students = () => {
   const toggleModal = () => setModalVisibility(!showModal);
   const toggleModal2 = () => setModalVisibility2(!showModal2);
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  
-  const openMenu = (event) => {
-    setAnchorEl(event.currentTarget);
+  const programFee = programs.find((programFee) => {
+    let gradeLevel = incomingGradeLevel;
+
+    if (program === Program.HOMESCHOOL_COTTAGE) {
+      if (
+        [GradeLevel.GRADE_1, GradeLevel.GRADE_2, GradeLevel.GRADE_3].includes(
+          incomingGradeLevel
+        )
+      ) {
+        gradeLevel = GRADE_LEVEL_TYPES.FORM_1;
+      }
+
+      if (
+        [GradeLevel.GRADE_4, GradeLevel.GRADE_5, GradeLevel.GRADE_6].includes(
+          incomingGradeLevel
+        )
+      ) {
+        gradeLevel = GRADE_LEVEL_TYPES.FORM_2;
+      }
+
+      if (
+        [
+          GradeLevel.GRADE_7,
+          GradeLevel.GRADE_8,
+          GradeLevel.GRADE_9,
+          GradeLevel.GRADE_10,
+        ].includes(incomingGradeLevel)
+      ) {
+        gradeLevel = GRADE_LEVEL_TYPES.FORM_3;
+      }
+    }
+
+    const evaluate =
+      program === Program.HOMESCHOOL_COTTAGE
+        ? programFee.programType === program &&
+          programFee.enrollmentType === enrollmentType &&
+          programFee.gradeLevel === gradeLevel &&
+          programFee.cottageType === cottageType
+        : programFee.programType === program &&
+          programFee.enrollmentType === enrollmentType &&
+          programFee.gradeLevel === gradeLevel;
+
+    return evaluate;
+  });
+
+  const applyDiscount = () => {
+    setSubmittingCodeState(true);
+    api('/api/enroll/discount', {
+      body: { code: discountCode },
+      method: 'POST',
+    }).then((response) => {
+      setSubmittingCodeState(false);
+      console.log('errors', response.errors);
+      console.log('data', response.data);
+      if (response.errors) {
+        setDiscount(null);
+        Object.keys(response.errors).forEach((error) =>
+          toast.error(response.errors[error].msg)
+        );
+      } else {
+        setDiscount(response.data);
+        toast.success('Discount successfully applied');
+      }
+    });
   };
-  const closeMenu = () => {
-    setAnchorEl(null);
+
+  const applyScholarship = () => {
+    setSubmittingCodeState(true);
+    api('/api/enroll/scholarship', {
+      body: { code: scholarshipCode },
+      method: 'POST',
+    }).then((response) => {
+      setSubmittingCodeState(false);
+      console.log('errors', response.errors);
+      console.log('data', response.data);
+      if (response.errors) {
+        setScholarship(null);
+        Object.keys(response.errors).forEach((error) =>
+          toast.error(response.errors[error].msg)
+        );
+      } else {
+        setScholarship(response.data);
+        toast.success('Sholarship successfully applied');
+      }
+    });
   };
+
+  const applyAllDiscount = () => {
+    applyDiscount();
+    applyScholarship();
+  }
 
   const view = (student) => {
     toggleModal();
+    console.log(student);
     setStudent(student);
     setStudentId(student.studentId)
     //setInviteCode(student.studentId)
@@ -159,7 +256,9 @@ const Students = () => {
             });
 
             if (workspaceContainingStudent) {
+                console.log(workspaceContainingStudent)
                 setInviteCode(workspaceContainingStudent.inviteCode);
+                setWorkspaceId(workspaceContainingStudent.id)
             } else {
                 setInviteCode(''); // Reset invite code if no workspace is found
             }
@@ -178,16 +277,39 @@ const Students = () => {
     setEnrollmentType(student.enrollmentType)
     setIncomingGradeLevel(student.incomingGradeLevel)
     setSchoolYear(student.schoolYear)
-    setFormerSchoolName(student.formerSchoolName)
-    setFormerSchoolAddress(student.formerSchoolAddress)
     setDiscountCode(student.discount)
     setBirthCertificateLink(student.liveBirthCertificate)
     setPictureLink(student.image)
     setPictureLink(student.reportCard)
+    setAccreditation(student.accreditation)
+    setPayment(student.student.schoolFees[0].paymentType)
+    setScholarship('')
+    setUserId(student.student.creator.guardianInformation.userId)
+    setPaymentMethod('ONLINE')
+    setEmail(student.student.creator.email)
   };
   
   const editStudentRecord = async (studentId) => {
-    console.log(studentId);
+    console.log(
+      JSON.stringify({ 
+        studentId, 
+        firstName,
+        middleName,
+        lastName,
+        gender,
+        religion,
+        schoolYear,
+        birthDate,
+        pictureLink,
+        birthCertificateLink,
+        reportCardLink,
+        enrollmentType,
+        incomingGradeLevel,
+        discountCode,
+        scholarshipCode,
+        accreditation,
+      }),
+    );
     try {
      setSubmittingState(true);
 
@@ -203,21 +325,22 @@ const Students = () => {
         lastName,
         gender,
         religion,
-        enrollmentType,
-        incomingGradeLevel,
         schoolYear,
         birthDate,
         pictureLink,
         birthCertificateLink,
         reportCardLink,
-        //discountCode,
+        enrollmentType,
+        incomingGradeLevel,
+        discountCode,
+        scholarshipCode,
+        accreditation,
       }),
      });
 
      if (!response.ok) {
        throw new Error('Failed to update record');
      }
-
      setSubmittingState(false);
      toast.success('Student record has been updated');
      toggleModal2();
@@ -225,6 +348,63 @@ const Students = () => {
    } catch (error) {
      setSubmittingState(false);
      toast.error(`Error updating student record: ${error.message}`);
+   }
+  }
+
+  const generateNewSchoolFees = async (studentId) => {
+    console.log(
+      JSON.stringify({ 
+        userId,
+        email,
+        workspaceId,
+        payment,
+        enrollmentType,
+        incomingGradeLevel,
+        program,
+        cottageType,
+        accreditation,
+        paymentMethod,
+        discountCode,
+        scholarshipCode, 
+        studentId
+      }),
+    );
+    try {
+     setSubmittingState(true);
+
+     const response = await fetch('/api/transactions', {
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json',
+       },
+       body: JSON.stringify({ 
+        userId,
+        email,
+        workspaceId,
+        payment,
+        enrollmentType,
+        incomingGradeLevel,
+        program,
+        cottageType,
+        accreditation,
+        paymentMethod,
+        discountCode,
+        scholarshipCode,
+        studentId
+      }),
+     });
+
+     if (!response.ok) {
+       throw new Error('Failed to generate school fee(s)');
+     }
+
+     setSubmittingState(false);
+     toast.success('Generate school fees success');
+     toggleModal2();
+     toggleModal();
+   } catch (error) {
+     setSubmittingState(false);
+     toast.error(`Error error generating school fees: ${error.message}`);
    }
   }
   
@@ -511,21 +691,467 @@ const Students = () => {
     );
   };
   const renderSchoolFees = () => {
+    const programFeeByAccreditation = programFee?.tuitionFees.find(
+      (tuition) => tuition.type === accreditation
+    );
+
     return (
-      <div className="flex flex-col space-y-5 overflow-auto">
-        
-        <div className="flex flex-col">
-          <label className="text-lg font-bold" htmlFor="txtMother">
-            Discount Code
-          </label>
-          <input
-            className={`px-3 py-2 rounded border-2`}
-            onChange={(e) => setDiscountCode(e.target.value)}
-            placeholder="Discount Code"
-            value={discountCode}
-          />
+      
+  <div>
+      <div className="flex flex-col my-5 space-y-5 overflow-auto">
+        <label className="text-lg font-bold" htmlFor="txtMother">
+          Select a Program <span className="ml-1 text-red-600">*</span>
+        </label>
+        <div className="flex flex-row">
+          <div
+            className={`relative inline-block w-full rounded ${
+              !program ? 'border-red-500 border-2' : 'border'
+            }`}
+          >
+            <select
+              className="w-full px-3 py-2 capitalize rounded appearance-none"
+              onChange={(e) => {
+                setProgram(e.target.value);
+                // setAccreditation(null);
+              }}
+              value={program}
+            >
+              {Object.keys(PROGRAM).map((entry, index) => (
+                <option
+                  key={index}
+                  disabled={
+                    entry === Program.HOMESCHOOL_COTTAGE &&
+                    incomingGradeLevel === GradeLevel.PRESCHOOL
+                  }
+                  value={entry}
+                >
+                  {PROGRAM[entry].toLowerCase()}
+                </option>
+              ))}
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <ChevronDownIcon className="w-5 h-5" />
+            </div>
+          </div>
         </div>
-      </div>
+        {program === Program.HOMESCHOOL_COTTAGE && (
+          <>
+            <hr className="border border-dashed" />
+            <label className="text-lg font-bold" htmlFor="txtMother">
+              Select a Cottage Type
+              <span className="ml-1 text-red-600">*</span>
+            </label>
+            <div className="flex flex-row">
+              <div
+                className={`relative inline-block w-full rounded ${
+                  !cottageType ? 'border-red-500 border-2' : 'border'
+                }`}
+              >
+                <select
+                  className="w-full px-3 py-2 capitalize rounded appearance-none"
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      setCottageType(e.target.value);
+                    } else {
+                      setCottageType(null);
+                    }
+                  }}
+                  value={cottageType}
+                >
+                  <option value="">Please select cottage type...</option>
+                  {Object.keys(COTTAGE_TYPE).map((entry, index) => (
+                    <option key={index} value={entry}>
+                      {COTTAGE_TYPE[entry]}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+        <label className="text-lg font-bold" htmlFor="txtMother">
+          Select an Accreditation <span className="ml-1 text-red-600">*</span>
+        </label>
+        <div className="flex flex-row">
+          <div
+            className={`relative inline-block w-full rounded ${
+              !accreditation ? 'border-red-500 border-2' : 'border'
+            }`}
+            >
+            <select
+              className="w-full px-3 py-2 capitalize rounded appearance-none"
+              onChange={(e) => {
+                if (e.target.value) {
+                  setAccreditation(e.target.value);
+                } else {
+                  setAccreditation(null);
+                }
+              }}
+              value={accreditation}
+            >
+              <option value="">Please select accreditation...</option>
+              <option value={Accreditation.LOCAL}>
+                {ACCREDITATION[Accreditation.LOCAL]}
+              </option>
+              <option
+                disabled={
+                  !(
+                    incomingGradeLevel !== GradeLevel.PRESCHOOL &&
+                    incomingGradeLevel !== GradeLevel.K1
+                  )
+                }
+                value={Accreditation.INTERNATIONAL}
+              >
+                {ACCREDITATION[Accreditation.INTERNATIONAL]}
+              </option>
+              <option
+                disabled={
+                  !(
+                    incomingGradeLevel !== GradeLevel.PRESCHOOL &&
+                    incomingGradeLevel !== GradeLevel.K1
+                  )
+                }
+                value={Accreditation.DUAL}
+              >
+                {ACCREDITATION[Accreditation.DUAL]}
+              </option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <ChevronDownIcon className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
+        <div>
+          <label className="text-lg font-bold" htmlFor="txtMother">
+            Select Payment Type <span className="ml-1 text-red-600">*</span>
+          </label>
+          <div
+            className={`relative inline-block w-full rounded ${
+              !payment ? 'border-red-500 border-2' : 'border'
+            }`}
+          >
+            <select
+              className="w-full px-3 py-2 capitalize rounded appearance-none"
+              onChange={(e) => {
+                setPayment(e.target.value ? e.target.value : null);
+
+                if (e.target.value === PaymentType.ANNUAL) {
+                  setFee(programFeeByAccreditation?.paymentTerms[0]);
+                } else if (e.target.value === PaymentType.SEMI_ANNUAL) {
+                  setFee(programFeeByAccreditation?.paymentTerms[1]);
+                } else if (e.target.value === PaymentType.QUARTERLY) {
+                  setFee(programFeeByAccreditation?.paymentTerms[2]);
+                }
+              }}
+              value={payment}
+              >
+              <option value="">Please select payment type...</option>
+              <option value={PaymentType.ANNUAL}>Full Payment</option>
+              <option value={PaymentType.SEMI_ANNUAL}>
+                Three (3) Term Payment (Initial Fee + Two Payment Term Fees)
+              </option>
+              <option value={PaymentType.QUARTERLY}>
+                Four (4) Term Payment (Initial Fee + Three Payment Term Fees)
+              </option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <ChevronDownIcon className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
+        <div>
+          <label className="text-lg font-bold" htmlFor="txtMother">
+            Scholarship (optional)
+          </label>
+          <div
+            className="relative inline-block w-full rounded border"
+          >
+            <select
+              className="w-full px-3 py-2 rounded appearance-none"
+              onChange={(e) => {
+                setScholarshipCode(e.target.value ? e.target.value : null);
+              }}
+              value={scholarshipCode}
+              >
+              <option value="">Please select scholarship</option>
+              <option value={scholarships.semi}>{scholarships.semi}</option>
+              <option value={scholarships.semiCottage}>{scholarships.semiCottage}</option>
+              <option value={scholarships.full}>{scholarships.full}</option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <ChevronDownIcon className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
+        </div>
+        <div className="flex flex-col space-y-5 overflow-auto">
+          <div className="flex flex-col">
+            <label className="text-lg font-bold" htmlFor="txtMother">
+              Discount Code (optional)
+            </label>
+            <input
+              className={`px-3 py-2 rounded border-2`}
+              onChange={(e) => setDiscountCode(e.target.value)}
+              placeholder="Discount Code"
+              value={discountCode}
+            />
+            <button
+              className="w-full rounded-r mt-3 bg-secondary-500 hover:bg-secondary-400"
+              disabled={isSubmittingCode}
+              onClick={applyAllDiscount}
+            >
+              Apply Discount and Scholarship
+            </button>
+          </div>
+        </div>
+        <div className="mt-5">
+          <h3 className="text-lg font-bold">
+            {PROGRAM[program]} for {GRADE_LEVEL[incomingGradeLevel]} -{' '}
+            {ACCREDITATION[accreditation]} Fees
+          </h3>
+          <div className="px-3 text-sm">
+            <div>
+              <p>
+                <strong>School Fees Breakdown</strong>
+              </p>
+              <table className="w-full my-5 border ">
+                <tbody>
+                  <tr>
+                    <td className="px-3 py-1 border">
+                      {fee?._type === 'fullTermPayment'
+                        ? 'Total Fee'
+                        : 'Initial Fee'}
+                    </td>
+                    <td className="px-3 py-1 text-right border">
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        fee?._type === 'fullTermPayment'
+                          ? fee?.fullPayment
+                          : fee?.downPayment
+                      )}
+                    </td>
+                  </tr>
+                  {Array.from(
+                    Array(
+                      fee?._type === 'fullTermPayment'
+                        ? 0
+                        : fee?._type === 'threeTermPayment'
+                        ? 2
+                        : 3
+                    ),
+                    (_, index) => (
+                      <tr key={index}>
+                        <td className="px-3 py-1 border">
+                          {fee?._type === 'fullTermPayment'
+                            ? ''
+                            : fee?._type === 'threeTermPayment'
+                            ? `Three (3) Term Payment #${index + 1}`
+                            : `Four (4) Term Payment #${index + 1}`}
+                        </td>
+                        <td className="px-3 py-1 text-right border">
+    {new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'PHP',
+    }).format(
+      fee?._type === 'fullTermPayment'
+        ? 0
+        : fee && fee[payments[index + 1]] -
+            (discount &&
+            discount?.code?.toLowerCase().includes('pastor') &&
+            index === 0
+              ? Math.ceil(discount.value / 3)
+              : 0) -
+            (scholarship &&
+            index < (fee?._type === 'threeTermPayment' ? 2 : 3)
+              ? Math.ceil(
+                  scholarship.value /
+                    (fee?._type === 'threeTermPayment' ? 2 : 3)
+                )
+              : 0)
+    )}{' '}
+    {discount &&
+    discount?.code?.toLowerCase().includes('pastor') ? (
+      <span className="text-red-600">
+        (-
+        {new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'PHP',
+        }).format(
+          fee &&
+            fee[payments[index + 1]] -
+              (discount?.value - fee?.downPayment) / 3
+        )}
+        )
+      </span>
+    ) : (
+      index === 0 &&
+      discount && (
+        <span className="text-red-600">
+          (-
+          {new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'PHP',
+          }).format(
+            discount?.type === 'VALUE'
+              ? discount?.value
+              : (discount?.value / 100) *
+                  Math.ceil(fee?.secondPayment)
+          )}
+          )
+        </span>
+      )
+    )}
+    {scholarship && (
+      <span className="text-blue-600">
+        (-
+        {new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'PHP',
+        }).format(
+          scholarship &&
+            index < (fee?._type === 'threeTermPayment' ? 2 : 3)
+            ? Math.ceil(
+                scholarship.value /
+                  (fee?._type === 'threeTermPayment' ? 2 : 3)
+              )
+            : 0
+        )}
+        )
+      </span>
+    )}
+  </td>
+
+                      </tr>
+                    )
+                  )}
+
+                  {discount && (
+                    <tr>
+                      <td className="px-3 py-1 border">
+                        Total Discounts:{' '}
+                        <strong className="text-green-600">
+                          {discountCode || '-'}{' '}
+                          {`${
+                            discount
+                              ? `(${Number(discount.value).toFixed(2)}${
+                                  discount.type === 'VALUE' ? 'Php' : '%'
+                                })`
+                              : ''
+                          }`}
+                        </strong>
+                      </td>
+                      <td className="px-3 py-1 text-right text-red-600 border">
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'PHP',
+                        }).format(
+                          discount
+                            ? discount.type === 'VALUE'
+                              ? (discount?.code?.toLowerCase().includes('pastor')
+                                  ? Math.ceil(
+                                      fee?._type === 'fullTermPayment'
+                                        ? fee?.fullPayment
+                                        : fee?._type === 'threeTermPayment'
+                                        ? fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment
+                                        : fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment +
+                                          fee?.fourthPayment
+                                    ) - discount.value
+                                  : Number(discount.value).toFixed(2)) * -1
+                              : Math.ceil(
+                                  fee?._type === 'fullTermPayment'
+                                    ? fee?.fullPayment
+                                    : fee?.secondPayment
+                                ) *
+                                (discount.value / 100) *
+                                -1
+                            : 0
+                        )}
+                      </td>
+                    </tr>
+                  )}
+
+                  {scholarship && (
+                    <tr>
+                      <td className="px-3 py-1 border">
+                        Total Scholarships:{' '}
+                        <strong className="text-blue-600">
+                          {scholarshipCode || '-'}{' '}
+                          {`${
+                            scholarship
+                              ? `(${Number(scholarship.value).toFixed(2)}${
+                                  scholarship.type === 'VALUE' ? 'Php' : '%'
+                                })`
+                              : ''
+                          }`}
+                        </strong>
+                      </td>
+                      <td className="px-3 py-1 text-right text-blue-600 border">
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'PHP',
+                        }).format(
+                          scholarship
+                            ? scholarship.type === 'VALUE'
+                              ? (scholarship?.code?.toLowerCase().includes('merit')
+                                  ? Math.ceil(
+                                      fee?._type === 'fullTermPayment'
+                                        ? fee?.fullPayment
+                                        : fee?._type === 'threeTermPayment'
+                                        ? fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment
+                                        : fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment +
+                                          fee?.fourthPayment
+                                    ) - scholarship.value
+                                  : Number(scholarship.value).toFixed(2)) * -1
+                              : Math.ceil(
+                                  fee?._type === 'fullTermPayment'
+                                    ? fee?.fullPayment
+                                    : fee?.secondPayment
+                                ) *
+                                (scholarship.value / 100) *
+                                -1
+                            : 0
+                        )}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <h4 className="text-lg font-bold">
+              Total School Fees:{' '}
+              <span className="text-primary-500">
+                {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(
+                  Math.ceil(
+                    fee?._type === 'fullTermPayment'
+                      ? fee?.fullPayment
+                      : fee?._type === 'threeTermPayment'
+                      ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment
+                      : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment
+                  ) -
+                    ((discount ? (discount?.type === 'VALUE' ? (discount?.code?.toLowerCase().includes('pastor') ? Math.ceil(fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?._type === 'threeTermPayment' ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment) - discount.value : discount.value) : (discount.value / 100) * (fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?.secondPayment)) : 0) +
+                    (scholarship ? (scholarship?.type === 'VALUE' ? (scholarship?.code?.toLowerCase().includes('merit') ? Math.ceil(fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?._type === 'threeTermPayment' ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment) - scholarship.value : scholarship.value) : (scholarship.value / 100) * (fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?.secondPayment)) : 0))
+                )}
+              </span>
+            </h4>
+        </div>
+        </div>
+     </div>
     );
   };
   return (
@@ -776,13 +1402,15 @@ const Students = () => {
         </div>
         {/* {renderFileUpload()} */}
         {renderEducationalBackground()}
-        {/* {renderSchoolFees()} */}
+        {renderSchoolFees()}
         <div className="flex flex-col p-3 space-y-2">
                   <button
                     className="px-3 py-1 my-1 text-white rounded bg-green-600 hover:bg-green-400"
                     onClick={() => {
                       editStudentRecord(studentId);
+                      //generateNewSchoolFees();
                     }}
+                    disabled={isSubmitting}
                   >
                     Save Changes
                   </button>
@@ -1285,6 +1913,14 @@ const Students = () => {
       </Card>
     </AdminLayout>
   );
+};
+
+export const getServerSideProps = async () => {
+  const [schoolFees, programs] = await Promise.all([
+    sanityClient.fetch(`*[_type == 'schoolFees']{...}`),
+    sanityClient.fetch(`*[_type == 'programs']`),
+  ]);
+  return { props: { schoolFees, programs } };
 };
 
 export default Students;
