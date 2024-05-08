@@ -1408,7 +1408,7 @@ const Students = ({ schoolFees, programs }) => {
                     className="px-3 py-1 my-1 text-white rounded bg-green-600 hover:bg-green-400"
                     onClick={() => {
                       editStudentRecord(studentId);
-                      //generateNewSchoolFees();
+                      generateNewSchoolFees(studentId);
                     }}
                     disabled={isSubmitting}
                   >
