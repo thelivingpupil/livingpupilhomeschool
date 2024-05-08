@@ -10,6 +10,7 @@ import { useWorkspace } from '@/providers/workspace';
 import { GRADE_LEVEL } from '@/utils/constants';
 import api from '@/lib/common/api';
 import { getDeadline } from '@/utils/index';
+import { WrongLocation } from '@mui/icons-material';
 
 const Fees = () => {
   const { workspace } = useWorkspace();
@@ -70,7 +71,7 @@ const Fees = () => {
         {workspace.studentRecord ? (
           <Content.Container>
             {Object.keys(fees).map((level) => {
-              if (fees[level].schoolFees.length > 0) {
+              if (fees[level].schoolFees.length > 0 && fees[level].schoolFees[0].deletedAt === null) {
                 return (
                   <Card key={level}>
                     <Card.Body
@@ -90,7 +91,8 @@ const Fees = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {fees[level].schoolFees.map((f, index) => (
+                          {fees[level].schoolFees
+                          .map((f, index) => (
                             <tr key={index}>
                               <td className="px-3 py-2">
                                 <p>
