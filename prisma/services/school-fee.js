@@ -28,8 +28,10 @@ export const createSchoolFees = async (
   cottageType,
   accreditation,
   paymentMethod,
-  discountCode = ''
+  discountCode = '',
+  scholarshipCode = '',
 ) => {
+  console.log("Entering createSchoolFees function...");
   let gradeLevel = incomingGradeLevel;
 
   if (program === Program.HOMESCHOOL_COTTAGE) {
@@ -97,6 +99,15 @@ export const createSchoolFees = async (
       { code: discountCode }
     ));
 
+   const scholarship =
+     scholarshipCode &&
+     (await sanityClient.fetch(
+       `*[_type == 'scholarships' && code == $code][0]{...}`,
+     { code: scholarshipCode }
+   ));
+   const scholarshipValue = scholarship ? scholarship.value : 0;
+   console.log(scholarshipValue)
+
   const isPastorsFee =
     discount && discount?.code?.toLowerCase().includes('pastor');
 
@@ -113,7 +124,7 @@ export const createSchoolFees = async (
       : fee.fullPayment;
 
     const transaction = await prisma.purchaseHistory.create({
-      data: { total: payments + FEES[paymentMethod] },
+      data: { total: payments + FEES[paymentMethod]},
       select: { id: true, transactionId: true },
     });
     const [response] = await Promise.all([
@@ -121,7 +132,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transaction.transactionId,
-        payments + FEES[paymentMethod],
+        payments + FEES[paymentMethod] - scholarshipValue,
         description,
         transaction.id,
         TransactionSource.ENROLLMENT,
@@ -151,6 +162,8 @@ export const createSchoolFees = async (
   } else if (payment === PaymentType.SEMI_ANNUAL) {
     const fee = schoolFee.paymentTerms[1];
 
+    const calculatedScholarship = scholarshipValue / 2
+
     const payments = isPastorsFee
       ? [
           fee.downPayment,
@@ -174,11 +187,11 @@ export const createSchoolFees = async (
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[1] + FEES[paymentMethod] },
+        data: { total: payments[1] + FEES[paymentMethod] - calculatedScholarship},
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[2] + FEES[paymentMethod] },
+        data: { total: payments[2] + FEES[paymentMethod] - calculatedScholarship},
         select: { id: true, transactionId: true },
       }),
     ]);
@@ -197,7 +210,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[1].transactionId,
-        payments[1] + FEES[paymentMethod],
+        payments[1] + FEES[paymentMethod] - calculatedScholarship,
         description,
         transactionIds[1].id,
         TransactionSource.ENROLLMENT,
@@ -207,7 +220,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[2].transactionId,
-        payments[2] + FEES[paymentMethod],
+        payments[2] + FEES[paymentMethod] - calculatedScholarship,
         description,
         transactionIds[2].id,
         TransactionSource.ENROLLMENT,
@@ -271,6 +284,8 @@ export const createSchoolFees = async (
   } else if (payment === PaymentType.QUARTERLY) {
     const fee = schoolFee.paymentTerms[2];
 
+    const calculatedScholarship = scholarshipValue / 3
+
     const payments = isPastorsFee
       ? [
           fee.downPayment,
@@ -301,15 +316,15 @@ export const createSchoolFees = async (
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[1] + FEES[paymentMethod] },
+        data: { total: payments[1] + FEES[paymentMethod] - calculatedScholarship},
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[2] + FEES[paymentMethod] },
+        data: { total: payments[2] + FEES[paymentMethod] - calculatedScholarship},
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[3] + FEES[paymentMethod] },
+        data: { total: payments[3] + FEES[paymentMethod] - calculatedScholarship},
         select: { id: true, transactionId: true },
       }),
     ]);
@@ -328,7 +343,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[1].transactionId,
-        payments[1] + FEES[paymentMethod],
+        payments[1] + FEES[paymentMethod] - calculatedScholarship,
         description,
         transactionIds[1].id,
         TransactionSource.ENROLLMENT,
@@ -338,7 +353,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[2].transactionId,
-        payments[2] + FEES[paymentMethod],
+        payments[2] + FEES[paymentMethod] - calculatedScholarship,
         description,
         transactionIds[2].id,
         TransactionSource.ENROLLMENT,
@@ -348,7 +363,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[3].transactionId,
-        payments[3] + FEES[paymentMethod],
+        payments[3] + FEES[paymentMethod] - calculatedScholarship,
         description,
         transactionIds[3].id,
         TransactionSource.ENROLLMENT,
@@ -429,6 +444,18 @@ export const createSchoolFees = async (
   }
 
   return result;
+};
+
+export const deleteStudentSchoolFees = async (studentId) => {
+  try {
+    await prisma.schoolFee.updateMany({
+      data: { deletedAt: new Date() },
+      where: { studentId },
+    });
+  } catch (error) {
+    console.error('Error deleting student school fees:', error);
+    throw error;
+  }
 };
 
 export const getSchoolFeeByStudentIdAndOrder = async (studentId, order) => {

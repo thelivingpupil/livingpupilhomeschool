@@ -233,6 +233,7 @@ export const getSingleWorkspace = async (id, email, slug) =>
             },
           },
           createdAt: true,
+          deletedAt: true,
         },
       },
     },
@@ -322,6 +323,7 @@ export const getWorkspace = async (id, email, slug) =>
             },
           },
           createdAt: true,
+          deletedAt: true,
         },
       },
     },
@@ -379,6 +381,7 @@ export const getWorkspaces = async (id, email) => {
       name: true,
       slug: true,
       workspaceCode: true,
+      id: true,
       studentRecord: {
         select: {
           studentId: true,
@@ -430,6 +433,7 @@ export const getWorkspaces = async (id, email) => {
             },
           },
           createdAt: true,
+          deletedAt: true,
         },
       },
     },

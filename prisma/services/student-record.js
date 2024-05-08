@@ -358,7 +358,9 @@ export const getStudentRecords = async () =>
         image: studentNewData.pictureLink,
         liveBirthCertificate: studentNewData.birthCertificateLink,
         reportCard: studentNewData.reportCardLink,
-        //discount: studentNewData.discountCode
+        discount: studentNewData.discountCode,
+        accreditation: studentNewData.accreditation,
+        scholarship: studentNewData.scholarshipCode
       },  
       where: { studentId }
     });
