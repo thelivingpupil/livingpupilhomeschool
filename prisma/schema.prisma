@@ -199,6 +199,7 @@ model StudentRecord {
   liveBirthCertificate String?
   reportCard           String?
   discount             String?
+  scholarship          String?
   primaryTeacherName   String?             
   primaryTeacherAge    String?            
   primaryTeacherRelationship String?      
