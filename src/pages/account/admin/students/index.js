@@ -290,7 +290,7 @@ const Students = ({ schoolFees, programs }) => {
   };
 
   if (!response.ok) {
-    throw new Error(`Failed to update record: ${response.text()}`);
+    throw new Error(`Failed to update record: ` + response.text());
   }
 
   const generateNewSchoolFees = async (studentId) => {
