@@ -340,7 +340,7 @@ const Students = ({ schoolFees, programs }) => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update record');
+        throw new Error('Failed to update record' + response);
       }
       generateNewSchoolFees(studentId);
       setSubmittingState(false);
