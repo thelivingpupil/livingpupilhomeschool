@@ -290,29 +290,8 @@ const Students = ({ schoolFees, programs }) => {
   };
 
   const editStudentRecord = async (studentId) => {
-    console.log(
-      JSON.stringify({
-        studentId,
-        firstName,
-        middleName,
-        lastName,
-        gender,
-        religion,
-        schoolYear,
-        birthDate,
-        pictureLink,
-        birthCertificateLink,
-        reportCardLink,
-        enrollmentType,
-        incomingGradeLevel,
-        discountCode,
-        scholarshipCode,
-        accreditation,
-      }),
-    );
+    setSubmittingState(true);
     try {
-      setSubmittingState(true);
-
       const response = await fetch('/api/students', {
         method: 'PUT',
         headers: {
@@ -353,23 +332,6 @@ const Students = ({ schoolFees, programs }) => {
   }
 
   const generateNewSchoolFees = async (studentId) => {
-    console.log(
-      JSON.stringify({
-        userId,
-        email,
-        workspaceId,
-        payment,
-        enrollmentType,
-        incomingGradeLevel,
-        program,
-        cottageType,
-        accreditation,
-        paymentMethod,
-        discountCode,
-        scholarshipCode,
-        studentId
-      }),
-    );
     try {
       setSubmittingState(true);
       const response = await fetch('/api/transactions', {
