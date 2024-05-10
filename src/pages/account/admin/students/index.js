@@ -304,16 +304,16 @@ const Students = ({ schoolFees, programs }) => {
           lastName,
           gender,
           religion,
+          enrollmentType,
+          incomingGradeLevel,
           schoolYear,
           birthDate,
           pictureLink,
           birthCertificateLink,
           reportCardLink,
-          enrollmentType,
-          incomingGradeLevel,
           discountCode,
-          scholarshipCode,
           accreditation,
+          scholarshipCode
         }),
       });
 
@@ -323,8 +323,9 @@ const Students = ({ schoolFees, programs }) => {
       generateNewSchoolFees(studentId)
       setSubmittingState(false);
       toast.success('Student record has been updated');
-      toggleModal2();
-      toggleModal();
+      toast('Generating new school fee(s)', {
+        icon: '⚠️', // Optional: you can customize the icon
+      });
     } catch (error) {
       setSubmittingState(false);
       toast.error('Error updating student record: ${ error.message }');
