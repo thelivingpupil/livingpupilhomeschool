@@ -61,7 +61,6 @@ const handler = async (req, res) => {
       const [studentRecord] = await Promise.all([
         updateStudentRecord(studentId, studentNewData),
       ]);
-
       res.status(200).json({ message: 'Student record updated successfully', studentRecord });
     } catch (error) {
       console.error('Error updating student record:', error);
