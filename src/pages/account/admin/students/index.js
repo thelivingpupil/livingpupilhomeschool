@@ -39,12 +39,12 @@ import { UserIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import format from 'date-fns/format';
 import differenceInYears from 'date-fns/differenceInYears';
-import { 
-  DataGrid, 
-  GridToolbarContainer, 
-  GridToolbarColumnsButton, 
-  GridToolbarFilterButton, 
-  GridToolbarDensitySelector 
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarColumnsButton,
+  GridToolbarFilterButton,
+  GridToolbarDensitySelector
 } from '@mui/x-data-grid';
 import toast from 'react-hot-toast';
 import api from '@/lib/common/api';
@@ -90,15 +90,15 @@ const filterByOptions = {
 
 const Students = ({ schoolFees, programs }) => {
   const { data, isLoading } = useStudents();
-  const {data: workspaceData, isLoading: isFetchingWorkspaces } =
+  const { data: workspaceData, isLoading: isFetchingWorkspaces } =
     useWorkspaces();
-    const [isWorkspaceDataFetched, setIsWorkspaceDataFetched] = useState(false);
-    // Effect to handle workspace data change
-    useEffect(() => {
-        if (workspaceData) {
-            setIsWorkspaceDataFetched(true);
-        }
-    }, [workspaceData]);
+  const [isWorkspaceDataFetched, setIsWorkspaceDataFetched] = useState(false);
+  // Effect to handle workspace data change
+  useEffect(() => {
+    if (workspaceData) {
+      setIsWorkspaceDataFetched(true);
+    }
+  }, [workspaceData]);
   const [studentId, setStudentId] = useState('');
   const [inviteCode, setInviteCode] = useState('');
   const [isSubmitting, setSubmittingState] = useState(false);
@@ -187,12 +187,12 @@ const Students = ({ schoolFees, programs }) => {
     const evaluate =
       program === Program.HOMESCHOOL_COTTAGE
         ? programFee.programType === program &&
-          programFee.enrollmentType === enrollmentType &&
-          programFee.gradeLevel === gradeLevel &&
-          programFee.cottageType === cottageType
+        programFee.enrollmentType === enrollmentType &&
+        programFee.gradeLevel === gradeLevel &&
+        programFee.cottageType === cottageType
         : programFee.programType === program &&
-          programFee.enrollmentType === enrollmentType &&
-          programFee.gradeLevel === gradeLevel;
+        programFee.enrollmentType === enrollmentType &&
+        programFee.gradeLevel === gradeLevel;
 
     return evaluate;
   });
@@ -251,20 +251,20 @@ const Students = ({ schoolFees, programs }) => {
     setStudentId(student.studentId)
     //setInviteCode(student.studentId)
     if (isWorkspaceDataFetched) {
-            const workspaceContainingStudent = workspaceData.workspaces.find(workspace => {
-                return workspace.studentRecord && workspace.studentRecord.studentId === student.studentId;
-            });
+      const workspaceContainingStudent = workspaceData.workspaces.find(workspace => {
+        return workspace.studentRecord && workspace.studentRecord.studentId === student.studentId;
+      });
 
-            if (workspaceContainingStudent) {
-                console.log(workspaceContainingStudent)
-                setInviteCode(workspaceContainingStudent.inviteCode);
-                setWorkspaceId(workspaceContainingStudent.id)
-            } else {
-                setInviteCode(''); // Reset invite code if no workspace is found
-            }
-        }
+      if (workspaceContainingStudent) {
+        console.log(workspaceContainingStudent)
+        setInviteCode(workspaceContainingStudent.inviteCode);
+        setWorkspaceId(workspaceContainingStudent.id)
+      } else {
+        setInviteCode(''); // Reset invite code if no workspace is found
+      }
+    }
   };
-  
+
   const viewEdit = (student) => {
     toggleModal2();
     setStudent(student);
@@ -288,11 +288,12 @@ const Students = ({ schoolFees, programs }) => {
     setPaymentMethod('ONLINE')
     setEmail(student.student.creator.email)
   };
-  
+
   const editStudentRecord = async (studentId) => {
+
     console.log(
-      JSON.stringify({ 
-        studentId, 
+      JSON.stringify({
+        studentId,
         firstName,
         middleName,
         lastName,
@@ -310,74 +311,49 @@ const Students = ({ schoolFees, programs }) => {
         accreditation,
       }),
     );
+
     try {
-     setSubmittingState(true);
+      setSubmittingState(true);
+      const response = await fetch('/api/students', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          studentId,
+          firstName,
+          middleName,
+          lastName,
+          gender,
+          religion,
+          schoolYear,
+          birthDate,
+          pictureLink,
+          birthCertificateLink,
+          reportCardLink,
+          enrollmentType,
+          incomingGradeLevel,
+          discountCode,
+          scholarshipCode,
+          accreditation,
+        }),
+      });
 
-     const response = await fetch('/api/students', {
-       method: 'PUT',
-       headers: {
-         'Content-Type': 'application/json',
-       },
-       body: JSON.stringify({ 
-        studentId, 
-        firstName,
-        middleName,
-        lastName,
-        gender,
-        religion,
-        schoolYear,
-        birthDate,
-        pictureLink,
-        birthCertificateLink,
-        reportCardLink,
-        enrollmentType,
-        incomingGradeLevel,
-        discountCode,
-        scholarshipCode,
-        accreditation,
-      }),
-     });
-
-     if (!response.ok) {
-       throw new Error('Failed to update record');
-     }
-     setSubmittingState(false);
-     toast.success('Student record has been updated');
-     toggleModal2();
-     toggleModal();
-   } catch (error) {
-     setSubmittingState(false);
-     toast.error(`Error updating student record: ${error.message}`);
-   }
+      if (!response.ok) {
+        throw new Error('Failed to update record');
+      }
+      generateNewSchoolFees(studentId);
+      setSubmittingState(false);
+      toast.success('Student record has been updated');
+    } catch (error) {
+      setSubmittingState(false);
+      toast.error(`Error updating student record: ${error.message}`);
+    }
   }
 
   const generateNewSchoolFees = async (studentId) => {
     console.log(
-      JSON.stringify({ 
-        userId,
-        email,
-        workspaceId,
-        payment,
-        enrollmentType,
-        incomingGradeLevel,
-        program,
-        cottageType,
-        accreditation,
-        paymentMethod,
-        discountCode,
-        scholarshipCode, 
-        studentId
-      }),
-    );
-    try {
-     setSubmittingState(true);
-
-     const response = await fetch('/api/transactions', {
-       method: 'POST',
-       headers: {
-         'Content-Type': 'application/json',
-       },
-       body: JSON.stringify({ 
+      JSON.stringify({
         userId,
         email,
         workspaceId,
@@ -392,68 +368,90 @@ const Students = ({ schoolFees, programs }) => {
         scholarshipCode,
         studentId
       }),
-     });
+    );
+    try {
+      setSubmittingState(true);
+      const response = await fetch('/api/transactions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          email,
+          workspaceId,
+          payment,
+          enrollmentType,
+          incomingGradeLevel,
+          program,
+          cottageType,
+          accreditation,
+          paymentMethod,
+          discountCode,
+          scholarshipCode,
+          studentId
+        }),
+      });
 
-     if (!response.ok) {
-       throw new Error('Failed to generate school fee(s)');
-     }
-
-     setSubmittingState(false);
-     toast.success('Generate school fees success');
-     toggleModal2();
-     toggleModal();
-   } catch (error) {
-     setSubmittingState(false);
-     toast.error(`Error error generating school fees: ${error.message}`);
-   }
+      if (!response.ok) {
+        throw new Error('Failed to generate school fee(s)');
+      }
+      setSubmittingState(false);
+      toast.success('Generate school fees success');
+      toggleModal2();
+      toggleModal();
+    } catch (error) {
+      setSubmittingState(false);
+      toast.error(`Error error generating school fees: ${error.message}`);
+    }
   }
-  
+
   const deleteStudentRecord = async (studentId, inviteCode) => {
 
-     try {
-     setSubmittingState(true);
+    try {
+      setSubmittingState(true);
 
-     const response = await fetch('/api/students', {
-       method: 'DELETE',
-       headers: {
-         'Content-Type': 'application/json',
-       },
-       body: JSON.stringify({ studentId, inviteCode }),
-     });
+      const response = await fetch('/api/students', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ studentId, inviteCode }),
+      });
 
-     if (!response.ok) {
-       throw new Error('Failed to delete record');
-     }
+      if (!response.ok) {
+        throw new Error('Failed to delete record');
+      }
 
-     setSubmittingState(false);
-     toast.success('Student record has been deleted');
-     toggleModal();
-   } catch (error) {
-     setSubmittingState(false);
-     toast.error(`Error deleting student record: ${error.message}`);
-   }
+      setSubmittingState(false);
+      toast.success('Student record has been deleted');
+      toggleModal();
+    } catch (error) {
+      setSubmittingState(false);
+      toast.error(`Error deleting student record: ${error.message}`);
+    }
   }
 
   function CustomToolbar() {
-  return (
-    <GridToolbarContainer>
-      <GridToolbarColumnsButton />
-      <GridToolbarFilterButton />
-      <GridToolbarDensitySelector />
-    </GridToolbarContainer>
-  );
+    return (
+      <GridToolbarContainer>
+        <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />
+      </GridToolbarContainer>
+    );
   }
 
   const [columnVisibilityModel, setColumnVisibilityModel] = React.useState({
-    birthDate:false,
-    religion:false,
-    homeAddress:false,
+    birthDate: false,
+    religion: false,
+    homeAddress: false,
     gender: false,
     island: false,
-    primaryGuardianName:false,
-    primaryGuardianProfile:false,
+    primaryGuardianName: false,
+    primaryGuardianProfile: false,
     secondaryGuardianName: false,
-    secondaryGuardianProfile:false,
+    secondaryGuardianProfile: false,
     secondaryEmail: false,
     telNumber: false,
     mobileNumber: false,
@@ -599,9 +597,8 @@ const Students = ({ schoolFees, programs }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${
-              !enrollmentType ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`relative inline-block w-full rounded ${!enrollmentType ? 'border-red-500 border-2' : 'border'
+              }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -627,9 +624,8 @@ const Students = ({ schoolFees, programs }) => {
             </label>
             <div className="flex flex-row">
               <div
-                className={`relative inline-block w-full rounded ${
-                  !incomingGradeLevel ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`relative inline-block w-full rounded ${!incomingGradeLevel ? 'border-red-500 border-2' : 'border'
+                  }`}
               >
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -657,36 +653,35 @@ const Students = ({ schoolFees, programs }) => {
           </div>
         </div>
         <div className="flex flex-row">
-              <div
-                className={`relative inline-block w-full rounded ${
-                  !schoolYear ? 'border-red-500 border-2' : 'border'
-                }`}
-              >
-                <select
-                  className="w-full px-3 py-2 capitalize rounded appearance-none"
-                  onChange={(e) => {
-                    setSchoolYear(e.target.value);
-                  }}
-                  value={schoolYear}
-                >
-                  <option value="">Please select School year...</option>
-                  <option value={SCHOOL_YEAR.SY_2023_2024}>
-                    {SCHOOL_YEAR.SY_2023_2024}
-                  </option>
-                  <option value={SCHOOL_YEAR.SY_2024_2025}>
-                    {SCHOOL_YEAR.SY_2024_2025}
-                  </option>
-                  {/* {Object.keys(SCHOOL_YEAR).map((entry, index) => (
+          <div
+            className={`relative inline-block w-full rounded ${!schoolYear ? 'border-red-500 border-2' : 'border'
+              }`}
+          >
+            <select
+              className="w-full px-3 py-2 capitalize rounded appearance-none"
+              onChange={(e) => {
+                setSchoolYear(e.target.value);
+              }}
+              value={schoolYear}
+            >
+              <option value="">Please select School year...</option>
+              <option value={SCHOOL_YEAR.SY_2023_2024}>
+                {SCHOOL_YEAR.SY_2023_2024}
+              </option>
+              <option value={SCHOOL_YEAR.SY_2024_2025}>
+                {SCHOOL_YEAR.SY_2024_2025}
+              </option>
+              {/* {Object.keys(SCHOOL_YEAR).map((entry, index) => (
                     <option key={index} value={entry}>
                       {SCHOOL_YEAR[entry]}
                     </option>
                   ))} */}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                  <ChevronDownIcon className="w-5 h-5" />
-                </div>
-              </div>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <ChevronDownIcon className="w-5 h-5" />
             </div>
+          </div>
+        </div>
       </div>
     );
   };
@@ -696,196 +691,192 @@ const Students = ({ schoolFees, programs }) => {
     );
 
     return (
-      
-  <div>
-      <div className="flex flex-col my-5 space-y-5 overflow-auto">
-        <label className="text-lg font-bold" htmlFor="txtMother">
-          Select a Program <span className="ml-1 text-red-600">*</span>
-        </label>
-        <div className="flex flex-row">
-          <div
-            className={`relative inline-block w-full rounded ${
-              !program ? 'border-red-500 border-2' : 'border'
-            }`}
-          >
-            <select
-              className="w-full px-3 py-2 capitalize rounded appearance-none"
-              onChange={(e) => {
-                setProgram(e.target.value);
-                // setAccreditation(null);
-              }}
-              value={program}
-            >
-              {Object.keys(PROGRAM).map((entry, index) => (
-                <option
-                  key={index}
-                  disabled={
-                    entry === Program.HOMESCHOOL_COTTAGE &&
-                    incomingGradeLevel === GradeLevel.PRESCHOOL
-                  }
-                  value={entry}
-                >
-                  {PROGRAM[entry].toLowerCase()}
-                </option>
-              ))}
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-              <ChevronDownIcon className="w-5 h-5" />
-            </div>
-          </div>
-        </div>
-        {program === Program.HOMESCHOOL_COTTAGE && (
-          <>
-            <hr className="border border-dashed" />
-            <label className="text-lg font-bold" htmlFor="txtMother">
-              Select a Cottage Type
-              <span className="ml-1 text-red-600">*</span>
-            </label>
-            <div className="flex flex-row">
-              <div
-                className={`relative inline-block w-full rounded ${
-                  !cottageType ? 'border-red-500 border-2' : 'border'
+
+      <div>
+        <div className="flex flex-col my-5 space-y-5 overflow-auto">
+          <label className="text-lg font-bold" htmlFor="txtMother">
+            Select a Program <span className="ml-1 text-red-600">*</span>
+          </label>
+          <div className="flex flex-row">
+            <div
+              className={`relative inline-block w-full rounded ${!program ? 'border-red-500 border-2' : 'border'
                 }`}
+            >
+              <select
+                className="w-full px-3 py-2 capitalize rounded appearance-none"
+                onChange={(e) => {
+                  setProgram(e.target.value);
+                  // setAccreditation(null);
+                }}
+                value={program}
               >
-                <select
-                  className="w-full px-3 py-2 capitalize rounded appearance-none"
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      setCottageType(e.target.value);
-                    } else {
-                      setCottageType(null);
+                {Object.keys(PROGRAM).map((entry, index) => (
+                  <option
+                    key={index}
+                    disabled={
+                      entry === Program.HOMESCHOOL_COTTAGE &&
+                      incomingGradeLevel === GradeLevel.PRESCHOOL
                     }
-                  }}
-                  value={cottageType}
-                >
-                  <option value="">Please select cottage type...</option>
-                  {Object.keys(COTTAGE_TYPE).map((entry, index) => (
-                    <option key={index} value={entry}>
-                      {COTTAGE_TYPE[entry]}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                  <ChevronDownIcon className="w-5 h-5" />
-                </div>
+                    value={entry}
+                  >
+                    {PROGRAM[entry].toLowerCase()}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                <ChevronDownIcon className="w-5 h-5" />
               </div>
             </div>
-          </>
-        )}
-        <label className="text-lg font-bold" htmlFor="txtMother">
-          Select an Accreditation <span className="ml-1 text-red-600">*</span>
-        </label>
-        <div className="flex flex-row">
-          <div
-            className={`relative inline-block w-full rounded ${
-              !accreditation ? 'border-red-500 border-2' : 'border'
-            }`}
+          </div>
+          {program === Program.HOMESCHOOL_COTTAGE && (
+            <>
+              <hr className="border border-dashed" />
+              <label className="text-lg font-bold" htmlFor="txtMother">
+                Select a Cottage Type
+                <span className="ml-1 text-red-600">*</span>
+              </label>
+              <div className="flex flex-row">
+                <div
+                  className={`relative inline-block w-full rounded ${!cottageType ? 'border-red-500 border-2' : 'border'
+                    }`}
+                >
+                  <select
+                    className="w-full px-3 py-2 capitalize rounded appearance-none"
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        setCottageType(e.target.value);
+                      } else {
+                        setCottageType(null);
+                      }
+                    }}
+                    value={cottageType}
+                  >
+                    <option value="">Please select cottage type...</option>
+                    {Object.keys(COTTAGE_TYPE).map((entry, index) => (
+                      <option key={index} value={entry}>
+                        {COTTAGE_TYPE[entry]}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <ChevronDownIcon className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+          <label className="text-lg font-bold" htmlFor="txtMother">
+            Select an Accreditation <span className="ml-1 text-red-600">*</span>
+          </label>
+          <div className="flex flex-row">
+            <div
+              className={`relative inline-block w-full rounded ${!accreditation ? 'border-red-500 border-2' : 'border'
+                }`}
             >
-            <select
-              className="w-full px-3 py-2 capitalize rounded appearance-none"
-              onChange={(e) => {
-                if (e.target.value) {
-                  setAccreditation(e.target.value);
-                } else {
-                  setAccreditation(null);
-                }
-              }}
-              value={accreditation}
-            >
-              <option value="">Please select accreditation...</option>
-              <option value={Accreditation.LOCAL}>
-                {ACCREDITATION[Accreditation.LOCAL]}
-              </option>
-              <option
-                disabled={
-                  !(
-                    incomingGradeLevel !== GradeLevel.PRESCHOOL &&
-                    incomingGradeLevel !== GradeLevel.K1
-                  )
-                }
-                value={Accreditation.INTERNATIONAL}
+              <select
+                className="w-full px-3 py-2 capitalize rounded appearance-none"
+                onChange={(e) => {
+                  if (e.target.value) {
+                    setAccreditation(e.target.value);
+                  } else {
+                    setAccreditation(null);
+                  }
+                }}
+                value={accreditation}
               >
-                {ACCREDITATION[Accreditation.INTERNATIONAL]}
-              </option>
-              <option
-                disabled={
-                  !(
-                    incomingGradeLevel !== GradeLevel.PRESCHOOL &&
-                    incomingGradeLevel !== GradeLevel.K1
-                  )
-                }
-                value={Accreditation.DUAL}
-              >
-                {ACCREDITATION[Accreditation.DUAL]}
-              </option>
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-              <ChevronDownIcon className="w-5 h-5" />
+                <option value="">Please select accreditation...</option>
+                <option value={Accreditation.LOCAL}>
+                  {ACCREDITATION[Accreditation.LOCAL]}
+                </option>
+                <option
+                  disabled={
+                    !(
+                      incomingGradeLevel !== GradeLevel.PRESCHOOL &&
+                      incomingGradeLevel !== GradeLevel.K1
+                    )
+                  }
+                  value={Accreditation.INTERNATIONAL}
+                >
+                  {ACCREDITATION[Accreditation.INTERNATIONAL]}
+                </option>
+                <option
+                  disabled={
+                    !(
+                      incomingGradeLevel !== GradeLevel.PRESCHOOL &&
+                      incomingGradeLevel !== GradeLevel.K1
+                    )
+                  }
+                  value={Accreditation.DUAL}
+                >
+                  {ACCREDITATION[Accreditation.DUAL]}
+                </option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                <ChevronDownIcon className="w-5 h-5" />
+              </div>
             </div>
           </div>
-        </div>
-        <div>
-          <label className="text-lg font-bold" htmlFor="txtMother">
-            Select Payment Type <span className="ml-1 text-red-600">*</span>
-          </label>
-          <div
-            className={`relative inline-block w-full rounded ${
-              !payment ? 'border-red-500 border-2' : 'border'
-            }`}
-          >
-            <select
-              className="w-full px-3 py-2 capitalize rounded appearance-none"
-              onChange={(e) => {
-                setPayment(e.target.value ? e.target.value : null);
+          <div>
+            <label className="text-lg font-bold" htmlFor="txtMother">
+              Select Payment Type <span className="ml-1 text-red-600">*</span>
+            </label>
+            <div
+              className={`relative inline-block w-full rounded ${!payment ? 'border-red-500 border-2' : 'border'
+                }`}
+            >
+              <select
+                className="w-full px-3 py-2 capitalize rounded appearance-none"
+                onChange={(e) => {
+                  setPayment(e.target.value ? e.target.value : null);
 
-                if (e.target.value === PaymentType.ANNUAL) {
-                  setFee(programFeeByAccreditation?.paymentTerms[0]);
-                } else if (e.target.value === PaymentType.SEMI_ANNUAL) {
-                  setFee(programFeeByAccreditation?.paymentTerms[1]);
-                } else if (e.target.value === PaymentType.QUARTERLY) {
-                  setFee(programFeeByAccreditation?.paymentTerms[2]);
-                }
-              }}
-              value={payment}
+                  //  if (e.target.value === PaymentType.ANNUAL) {
+                  //    setFee(programFeeByAccreditation?.paymentTerms[0]);
+                  //  } else if (e.target.value === PaymentType.SEMI_ANNUAL) {
+                  //    setFee(programFeeByAccreditation?.paymentTerms[1]);
+                  //  } else if (e.target.value === PaymentType.QUARTERLY) {
+                  //    setFee(programFeeByAccreditation?.paymentTerms[2]);
+                  //  }
+                }}
+                value={payment}
               >
-              <option value="">Please select payment type...</option>
-              <option value={PaymentType.ANNUAL}>Full Payment</option>
-              <option value={PaymentType.SEMI_ANNUAL}>
-                Three (3) Term Payment (Initial Fee + Two Payment Term Fees)
-              </option>
-              <option value={PaymentType.QUARTERLY}>
-                Four (4) Term Payment (Initial Fee + Three Payment Term Fees)
-              </option>
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-              <ChevronDownIcon className="w-5 h-5" />
+                <option value="">Please select payment type...</option>
+                <option value={PaymentType.ANNUAL}>Full Payment</option>
+                <option value={PaymentType.SEMI_ANNUAL}>
+                  Three (3) Term Payment (Initial Fee + Two Payment Term Fees)
+                </option>
+                <option value={PaymentType.QUARTERLY}>
+                  Four (4) Term Payment (Initial Fee + Three Payment Term Fees)
+                </option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                <ChevronDownIcon className="w-5 h-5" />
+              </div>
             </div>
           </div>
-        </div>
-        <div>
-          <label className="text-lg font-bold" htmlFor="txtMother">
-            Scholarship (optional)
-          </label>
-          <div
-            className="relative inline-block w-full rounded border"
-          >
-            <select
-              className="w-full px-3 py-2 rounded appearance-none"
-              onChange={(e) => {
-                setScholarshipCode(e.target.value ? e.target.value : null);
-              }}
-              value={scholarshipCode}
+          <div>
+            <label className="text-lg font-bold" htmlFor="txtMother">
+              Scholarship (optional)
+            </label>
+            <div
+              className="relative inline-block w-full rounded border"
+            >
+              <select
+                className="w-full px-3 py-2 rounded appearance-none"
+                onChange={(e) => {
+                  setScholarshipCode(e.target.value ? e.target.value : null);
+                }}
+                value={scholarshipCode}
               >
-              <option value="">Please select scholarship</option>
-              <option value={scholarships.semi}>{scholarships.semi}</option>
-              <option value={scholarships.semiCottage}>{scholarships.semiCottage}</option>
-              <option value={scholarships.full}>{scholarships.full}</option>
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-              <ChevronDownIcon className="w-5 h-5" />
+                <option value="">Please select scholarship</option>
+                <option value={scholarships.semi}>{scholarships.semi}</option>
+                <option value={scholarships.semiCottage}>{scholarships.semiCottage}</option>
+                <option value={scholarships.full}>{scholarships.full}</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                <ChevronDownIcon className="w-5 h-5" />
+              </div>
             </div>
           </div>
-        </div>
         </div>
         <div className="flex flex-col space-y-5 overflow-auto">
           <div className="flex flex-col">
@@ -901,10 +892,21 @@ const Students = ({ schoolFees, programs }) => {
             <button
               className="w-full rounded-r mt-3 bg-secondary-500 hover:bg-secondary-400"
               disabled={isSubmittingCode}
-              onClick={applyAllDiscount}
+              onClick={() => {
+                applyAllDiscount();
+
+                if (payment === PaymentType.ANNUAL) {
+                  setFee(programFeeByAccreditation?.paymentTerms[0]);
+                } else if (payment === PaymentType.SEMI_ANNUAL) {
+                  setFee(programFeeByAccreditation?.paymentTerms[1]);
+                } else if (payment === PaymentType.QUARTERLY) {
+                  setFee(programFeeByAccreditation?.paymentTerms[2]);
+                }
+              }}
             >
               Apply Discount and Scholarship
             </button>
+
           </div>
         </div>
         <div className="mt-5">
@@ -941,8 +943,8 @@ const Students = ({ schoolFees, programs }) => {
                       fee?._type === 'fullTermPayment'
                         ? 0
                         : fee?._type === 'threeTermPayment'
-                        ? 2
-                        : 3
+                          ? 2
+                          : 3
                     ),
                     (_, index) => (
                       <tr key={index}>
@@ -950,81 +952,81 @@ const Students = ({ schoolFees, programs }) => {
                           {fee?._type === 'fullTermPayment'
                             ? ''
                             : fee?._type === 'threeTermPayment'
-                            ? `Three (3) Term Payment #${index + 1}`
-                            : `Four (4) Term Payment #${index + 1}`}
+                              ? `Three (3) Term Payment #${index + 1}`
+                              : `Four (4) Term Payment #${index + 1}`}
                         </td>
                         <td className="px-3 py-1 text-right border">
-    {new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'PHP',
-    }).format(
-      fee?._type === 'fullTermPayment'
-        ? 0
-        : fee && fee[payments[index + 1]] -
-            (discount &&
-            discount?.code?.toLowerCase().includes('pastor') &&
-            index === 0
-              ? Math.ceil(discount.value / 3)
-              : 0) -
-            (scholarship &&
-            index < (fee?._type === 'threeTermPayment' ? 2 : 3)
-              ? Math.ceil(
-                  scholarship.value /
-                    (fee?._type === 'threeTermPayment' ? 2 : 3)
-                )
-              : 0)
-    )}{' '}
-    {discount &&
-    discount?.code?.toLowerCase().includes('pastor') ? (
-      <span className="text-red-600">
-        (-
-        {new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'PHP',
-        }).format(
-          fee &&
-            fee[payments[index + 1]] -
-              (discount?.value - fee?.downPayment) / 3
-        )}
-        )
-      </span>
-    ) : (
-      index === 0 &&
-      discount && (
-        <span className="text-red-600">
-          (-
-          {new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'PHP',
-          }).format(
-            discount?.type === 'VALUE'
-              ? discount?.value
-              : (discount?.value / 100) *
-                  Math.ceil(fee?.secondPayment)
-          )}
-          )
-        </span>
-      )
-    )}
-    {scholarship && (
-      <span className="text-blue-600">
-        (-
-        {new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'PHP',
-        }).format(
-          scholarship &&
-            index < (fee?._type === 'threeTermPayment' ? 2 : 3)
-            ? Math.ceil(
-                scholarship.value /
-                  (fee?._type === 'threeTermPayment' ? 2 : 3)
-              )
-            : 0
-        )}
-        )
-      </span>
-    )}
-  </td>
+                          {new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'PHP',
+                          }).format(
+                            fee?._type === 'fullTermPayment'
+                              ? 0
+                              : fee && fee[payments[index + 1]] -
+                              (discount &&
+                                discount?.code?.toLowerCase().includes('pastor') &&
+                                index === 0
+                                ? Math.ceil(discount.value / 3)
+                                : 0) -
+                              (scholarship &&
+                                index < (fee?._type === 'threeTermPayment' ? 2 : 3)
+                                ? Math.ceil(
+                                  scholarship.value /
+                                  (fee?._type === 'threeTermPayment' ? 2 : 3)
+                                )
+                                : 0)
+                          )}{' '}
+                          {discount &&
+                            discount?.code?.toLowerCase().includes('pastor') ? (
+                            <span className="text-red-600">
+                              (-
+                              {new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'PHP',
+                              }).format(
+                                fee &&
+                                fee[payments[index + 1]] -
+                                (discount?.value - fee?.downPayment) / 3
+                              )}
+                              )
+                            </span>
+                          ) : (
+                            index === 0 &&
+                            discount && (
+                              <span className="text-red-600">
+                                (-
+                                {new Intl.NumberFormat('en-US', {
+                                  style: 'currency',
+                                  currency: 'PHP',
+                                }).format(
+                                  discount?.type === 'VALUE'
+                                    ? discount?.value
+                                    : (discount?.value / 100) *
+                                    Math.ceil(fee?.secondPayment)
+                                )}
+                                )
+                              </span>
+                            )
+                          )}
+                          {scholarship && (
+                            <span className="text-blue-600">
+                              (-
+                              {new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'PHP',
+                              }).format(
+                                scholarship &&
+                                  index < (fee?._type === 'threeTermPayment' ? 2 : 3)
+                                  ? Math.ceil(
+                                    scholarship.value /
+                                    (fee?._type === 'threeTermPayment' ? 2 : 3)
+                                  )
+                                  : 0
+                              )}
+                              )
+                            </span>
+                          )}
+                        </td>
 
                       </tr>
                     )
@@ -1036,13 +1038,11 @@ const Students = ({ schoolFees, programs }) => {
                         Total Discounts:{' '}
                         <strong className="text-green-600">
                           {discountCode || '-'}{' '}
-                          {`${
-                            discount
-                              ? `(${Number(discount.value).toFixed(2)}${
-                                  discount.type === 'VALUE' ? 'Php' : '%'
-                                })`
-                              : ''
-                          }`}
+                          {`${discount
+                            ? `(${Number(discount.value).toFixed(2)}${discount.type === 'VALUE' ? 'Php' : '%'
+                            })`
+                            : ''
+                            }`}
                         </strong>
                       </td>
                       <td className="px-3 py-1 text-right text-red-600 border">
@@ -1053,26 +1053,26 @@ const Students = ({ schoolFees, programs }) => {
                           discount
                             ? discount.type === 'VALUE'
                               ? (discount?.code?.toLowerCase().includes('pastor')
-                                  ? Math.ceil(
-                                      fee?._type === 'fullTermPayment'
-                                        ? fee?.fullPayment
-                                        : fee?._type === 'threeTermPayment'
-                                        ? fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment
-                                        : fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment +
-                                          fee?.fourthPayment
-                                    ) - discount.value
-                                  : Number(discount.value).toFixed(2)) * -1
-                              : Math.ceil(
+                                ? Math.ceil(
                                   fee?._type === 'fullTermPayment'
                                     ? fee?.fullPayment
-                                    : fee?.secondPayment
-                                ) *
-                                (discount.value / 100) *
-                                -1
+                                    : fee?._type === 'threeTermPayment'
+                                      ? fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment
+                                      : fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment +
+                                      fee?.fourthPayment
+                                ) - discount.value
+                                : Number(discount.value).toFixed(2)) * -1
+                              : Math.ceil(
+                                fee?._type === 'fullTermPayment'
+                                  ? fee?.fullPayment
+                                  : fee?.secondPayment
+                              ) *
+                              (discount.value / 100) *
+                              -1
                             : 0
                         )}
                       </td>
@@ -1085,13 +1085,11 @@ const Students = ({ schoolFees, programs }) => {
                         Total Scholarships:{' '}
                         <strong className="text-blue-600">
                           {scholarshipCode || '-'}{' '}
-                          {`${
-                            scholarship
-                              ? `(${Number(scholarship.value).toFixed(2)}${
-                                  scholarship.type === 'VALUE' ? 'Php' : '%'
-                                })`
-                              : ''
-                          }`}
+                          {`${scholarship
+                            ? `(${Number(scholarship.value).toFixed(2)}${scholarship.type === 'VALUE' ? 'Php' : '%'
+                            })`
+                            : ''
+                            }`}
                         </strong>
                       </td>
                       <td className="px-3 py-1 text-right text-blue-600 border">
@@ -1102,26 +1100,26 @@ const Students = ({ schoolFees, programs }) => {
                           scholarship
                             ? scholarship.type === 'VALUE'
                               ? (scholarship?.code?.toLowerCase().includes('merit')
-                                  ? Math.ceil(
-                                      fee?._type === 'fullTermPayment'
-                                        ? fee?.fullPayment
-                                        : fee?._type === 'threeTermPayment'
-                                        ? fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment
-                                        : fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment +
-                                          fee?.fourthPayment
-                                    ) - scholarship.value
-                                  : Number(scholarship.value).toFixed(2)) * -1
-                              : Math.ceil(
+                                ? Math.ceil(
                                   fee?._type === 'fullTermPayment'
                                     ? fee?.fullPayment
-                                    : fee?.secondPayment
-                                ) *
-                                (scholarship.value / 100) *
-                                -1
+                                    : fee?._type === 'threeTermPayment'
+                                      ? fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment
+                                      : fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment +
+                                      fee?.fourthPayment
+                                ) - scholarship.value
+                                : Number(scholarship.value).toFixed(2)) * -1
+                              : Math.ceil(
+                                fee?._type === 'fullTermPayment'
+                                  ? fee?.fullPayment
+                                  : fee?.secondPayment
+                              ) *
+                              (scholarship.value / 100) *
+                              -1
                             : 0
                         )}
                       </td>
@@ -1141,23 +1139,23 @@ const Students = ({ schoolFees, programs }) => {
                     fee?._type === 'fullTermPayment'
                       ? fee?.fullPayment
                       : fee?._type === 'threeTermPayment'
-                      ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment
-                      : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment
+                        ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment
+                        : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment
                   ) -
-                    ((discount ? (discount?.type === 'VALUE' ? (discount?.code?.toLowerCase().includes('pastor') ? Math.ceil(fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?._type === 'threeTermPayment' ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment) - discount.value : discount.value) : (discount.value / 100) * (fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?.secondPayment)) : 0) +
+                  ((discount ? (discount?.type === 'VALUE' ? (discount?.code?.toLowerCase().includes('pastor') ? Math.ceil(fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?._type === 'threeTermPayment' ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment) - discount.value : discount.value) : (discount.value / 100) * (fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?.secondPayment)) : 0) +
                     (scholarship ? (scholarship?.type === 'VALUE' ? (scholarship?.code?.toLowerCase().includes('merit') ? Math.ceil(fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?._type === 'threeTermPayment' ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment) - scholarship.value : scholarship.value) : (scholarship.value / 100) * (fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?.secondPayment)) : 0))
                 )}
               </span>
             </h4>
+          </div>
         </div>
-        </div>
-     </div>
+      </div>
     );
   };
   return (
     <AdminLayout>
       <Meta title="Living Pupil Homeschool - Students List" />
-    {/* View Student Details Modal */}
+      {/* View Student Details Modal */}
       {student && (
         <SideModal
           title={`${student.firstName} ${student.lastName}`}
@@ -1261,113 +1259,132 @@ const Students = ({ schoolFees, programs }) => {
             <h2 className="font-medium">School Fees:</h2>
             <div className="flex flex-col p-3 space-y-2 border rounded"></div>
             <div className="flex flex-col p-3 space-y-2">
-                  <button
-                    className="px-3 py-1 my-1 text-white rounded bg-red-600 hover:bg-red-400"
-                    onClick={() => {
-                      deleteStudentRecord(studentId, inviteCode);
-                      //console.log('invite:' + inviteCode + ' ID:' + studentId)
-                    }}
-                  >
-                    delete
-                  </button>
-                  <button
-                    className="px-3 py-1 my-1 text-white rounded bg-primary-600 hover:bg-primary-400"
-                    onClick={() => {
-                      viewEdit(student);
-                    }}
-                  >
-                    Edit Student Details
-                  </button>
+              <button
+                className="px-3 py-1 my-1 text-white rounded bg-red-600 hover:bg-red-400"
+                onClick={() => {
+                  deleteStudentRecord(studentId, inviteCode);
+                  //console.log('invite:' + inviteCode + ' ID:' + studentId)
+                }}
+              >
+                delete
+              </button>
+              <button
+                className="px-3 py-1 my-1 text-white rounded bg-primary-600 hover:bg-primary-400"
+                onClick={() => {
+                  viewEdit(student);
+                }}
+              >
+                Edit Student Details
+              </button>
             </div>
           </div>
         </SideModal>
       )}
-    {/* Edit Student Details Modal */}
+      {/* Edit Student Details Modal */}
       {student && (
         <SideModal
           title={'Edit Student Details'}
           show={showModal2}
           toggle={toggleModal2}
         >
-        <div className="flex flex-col space-y-3 overflow-auto">
-          <div className="flex flex-col">
-            <label className="text-lg font-bold" htmlFor="txtMother">
-              Full Name <span className="ml-1 text-red-600">*</span>
-            </label>
-            <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
-              <input
-                className={`px-3 py-2 rounded md:w-1/3 ${
-                  firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
-                }`}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Given Name"
-                value={firstName}
-              />
-              <input
-                className="px-3 py-2 border rounded md:w-1/3"
-                onChange={(e) => setMiddleName(e.target.value)}
-                placeholder="Middle Name (Optional)"
-                value={middleName}
-              />
-              <input
-                className={`px-3 py-2 rounded md:w-1/3 ${
-                  lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
-                }`}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Last Name"
-                value={lastName}
-              />
-            </div>
-          </div>
-          <div className="flex flex-row space-x-5">
+          <div className="flex flex-col space-y-3 overflow-auto">
             <div className="flex flex-col">
               <label className="text-lg font-bold" htmlFor="txtMother">
-                Birthday <span className="ml-1 text-red-600">*</span>
+                Full Name <span className="ml-1 text-red-600">*</span>
               </label>
-              <div
-                className={`relative flex flex-row rounded ${
-                  !birthDate ? 'border-red-500 border-2' : 'border'
-                }`}
-              >
-                <DatePicker
-                  selected={birthDate}
-                  onChange={(date) => setBirthDate(date)}
-                  selectsStart
-                  startDate={birthDate}
-                  nextMonthButtonLabel=">"
-                  previousMonthButtonLabel="<"
-                  popperClassName="react-datepicker-left"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col w-full md:w-1/3">
-              <label className="text-lg font-bold" htmlFor="txtMother">
-                Age
-              </label>
-              <div className="relative flex flex-row space-x-5">
+              <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
                 <input
-                  className="w-full px-3 py-2 border rounded"
-                  disabled
-                  value={`${age} years old`}
+                  className={`px-3 py-2 rounded md:w-1/3 ${firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                    }`}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Given Name"
+                  value={firstName}
+                />
+                <input
+                  className="px-3 py-2 border rounded md:w-1/3"
+                  onChange={(e) => setMiddleName(e.target.value)}
+                  placeholder="Middle Name (Optional)"
+                  value={middleName}
+                />
+                <input
+                  className={`px-3 py-2 rounded md:w-1/3 ${lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                    }`}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Last Name"
+                  value={lastName}
                 />
               </div>
             </div>
-          </div>
-          <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
-            <div className="flex flex-col w-full md:w-1/2">
-              <label className="text-lg font-bold" htmlFor="txtMother">
-                Gender <span className="ml-1 text-red-600">*</span>
-              </label>
-              <div className="flex flex-row">
+            <div className="flex flex-row space-x-5">
+              <div className="flex flex-col">
+                <label className="text-lg font-bold" htmlFor="txtMother">
+                  Birthday <span className="ml-1 text-red-600">*</span>
+                </label>
+                <div
+                  className={`relative flex flex-row rounded ${!birthDate ? 'border-red-500 border-2' : 'border'
+                    }`}
+                >
+                  <DatePicker
+                    selected={birthDate}
+                    onChange={(date) => setBirthDate(date)}
+                    selectsStart
+                    startDate={birthDate}
+                    nextMonthButtonLabel=">"
+                    previousMonthButtonLabel="<"
+                    popperClassName="react-datepicker-left"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col w-full md:w-1/3">
+                <label className="text-lg font-bold" htmlFor="txtMother">
+                  Age
+                </label>
+                <div className="relative flex flex-row space-x-5">
+                  <input
+                    className="w-full px-3 py-2 border rounded"
+                    disabled
+                    value={`${age} years old`}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
+              <div className="flex flex-col w-full md:w-1/2">
+                <label className="text-lg font-bold" htmlFor="txtMother">
+                  Gender <span className="ml-1 text-red-600">*</span>
+                </label>
+                <div className="flex flex-row">
+                  <div className="relative inline-block w-full border rounded">
+                    <select
+                      className="w-full px-3 py-2 capitalize rounded appearance-none"
+                      onChange={(e) => setGender(e.target.value)}
+                      value={gender}
+                    >
+                      {Object.keys(Gender).map((entry, index) => (
+                        <option key={index} value={entry}>
+                          {entry.toLowerCase()}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                      <ChevronDownIcon className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col w-full md:w-1/2">
+                <label className="text-lg font-bold" htmlFor="txtMother">
+                  Religion <span className="ml-1 text-red-600">*</span>
+                </label>
                 <div className="relative inline-block w-full border rounded">
                   <select
                     className="w-full px-3 py-2 capitalize rounded appearance-none"
-                    onChange={(e) => setGender(e.target.value)}
-                    value={gender}
+                    onChange={(e) => setReligion(e.target.value)}
+                    value={religion}
                   >
-                    {Object.keys(Gender).map((entry, index) => (
+                    {Object.keys(Religion).map((entry, index) => (
                       <option key={index} value={entry}>
-                        {entry.toLowerCase()}
+                        {RELIGION[entry]}
                       </option>
                     ))}
                   </select>
@@ -1377,52 +1394,30 @@ const Students = ({ schoolFees, programs }) => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col w-full md:w-1/2">
-              <label className="text-lg font-bold" htmlFor="txtMother">
-                Religion <span className="ml-1 text-red-600">*</span>
-              </label>
-              <div className="relative inline-block w-full border rounded">
-                <select
-                  className="w-full px-3 py-2 capitalize rounded appearance-none"
-                  onChange={(e) => setReligion(e.target.value)}
-                  value={religion}
-                >
-                  {Object.keys(Religion).map((entry, index) => (
-                    <option key={index} value={entry}>
-                      {RELIGION[entry]}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                  <ChevronDownIcon className="w-5 h-5" />
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
-        {/* {renderFileUpload()} */}
-        {renderEducationalBackground()}
-        {renderSchoolFees()}
-        <div className="flex flex-col p-3 space-y-2">
-                  <button
-                    className="px-3 py-1 my-1 text-white rounded bg-green-600 hover:bg-green-400"
-                    onClick={() => {
-                      editStudentRecord(studentId);
-                      //generateNewSchoolFees();
-                    }}
-                    disabled={isSubmitting}
-                  >
-                    Save Changes
-                  </button>
-            </div>
+          {/* {renderFileUpload()} */}
+          {renderEducationalBackground()}
+          {renderSchoolFees()}
+          <div className="flex flex-col p-3 space-y-2">
+            <button
+              className="px-3 py-1 my-1 text-white rounded bg-green-600 hover:bg-green-400"
+              onClick={() => {
+                editStudentRecord(studentId);
+                //generateNewSchoolFees(studentId);
+              }}
+              disabled={isSubmitting}
+            >
+              Save Changes
+            </button>
+          </div>
         </SideModal>
       )}
-      
+
       <Content.Title
         title="Students List"
         subtitle="View and manage all student records and related data"
       />
-      <Content.Divider />     
+      <Content.Divider />
       <Card>
         <Card.Body title="List of Enrolled Students">
           <div>
@@ -1497,24 +1492,24 @@ const Students = ({ schoolFees, programs }) => {
                   field: 'Profile',
                   hideable: true,
                   align: 'center',
-                    renderCell: (params) => (
-                      <div className="flex items-center justify-center w-12 h-12 overflow-hidden text-white bg-gray-400 rounded-full">
-                        {params.row.image ? (
-                          <div className="relative w-12 h-12 rounded-full">
-                            <Image
-                              alt={params.row.image}
-                              className="rounded-full"
-                              layout="fill"
-                              loading="lazy"
-                              objectFit="cover"
-                              objectPosition="top"
-                              src={params.row.image}
-                            />
-                          </div>
-                        ) : (
-                          <UserIcon className="w-8 h-8" />
-                        )}
-                      </div>
+                  renderCell: (params) => (
+                    <div className="flex items-center justify-center w-12 h-12 overflow-hidden text-white bg-gray-400 rounded-full">
+                      {params.row.image ? (
+                        <div className="relative w-12 h-12 rounded-full">
+                          <Image
+                            alt={params.row.image}
+                            className="rounded-full"
+                            layout="fill"
+                            loading="lazy"
+                            objectFit="cover"
+                            objectPosition="top"
+                            src={params.row.image}
+                          />
+                        </div>
+                      ) : (
+                        <UserIcon className="w-8 h-8" />
+                      )}
+                    </div>
                   )
                 },
                 {
@@ -1522,8 +1517,8 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'First Name',
                   headerAlign: 'left',
                   align: 'left',
-                  renderCell: (params) => (  
-                     <span>{params.row.firstName}</span>
+                  renderCell: (params) => (
+                    <span>{params.row.firstName}</span>
                   ),
                 },
                 {
@@ -1531,8 +1526,8 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Middle Name',
                   headerAlign: 'left',
                   align: 'left',
-                  renderCell: (params) => ( 
-                    <span>{params.row.middleName} {}</span>
+                  renderCell: (params) => (
+                    <span>{params.row.middleName} { }</span>
                   ),
                 },
                 {
@@ -1540,7 +1535,7 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Last Name',
                   headerAlign: 'left',
                   align: 'left',
-                  renderCell: (params) => ( 
+                  renderCell: (params) => (
                     <span>{params.row.lastName}</span>
                   ),
                 },
@@ -1549,10 +1544,10 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Grade Level',
                   headerAlign: 'center',
                   align: 'center',
-                  renderCell: (params) =>(                    
+                  renderCell: (params) => (
                     <span>
                       {GRADE_LEVEL[params.row.incomingGradeLevel]}
-                    </span>                     
+                    </span>
                   )
                 },
                 {
@@ -1560,7 +1555,7 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'School Year',
                   headerAlign: 'left',
                   align: 'left',
-                  renderCell: (params) => ( 
+                  renderCell: (params) => (
                     <span className="text-xs">
                       {params.row.schoolYear}
                     </span>
@@ -1571,10 +1566,10 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Birthdate',
                   headerAlign: 'center',
                   align: 'center',
-                  renderCell: (params) =>(                    
+                  renderCell: (params) => (
                     <span>
                       {new Date(params.row.birthDate).toLocaleDateString()}
-                    </span>                     
+                    </span>
                   )
                 },
                 {
@@ -1582,10 +1577,10 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Gender',
                   headerAlign: 'center',
                   align: 'center',
-                  renderCell: (params) =>(                    
+                  renderCell: (params) => (
                     <span>
                       {params.row.gender}
-                    </span>                     
+                    </span>
                   )
                 },
                 {
@@ -1593,10 +1588,10 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Religion',
                   headerAlign: 'center',
                   align: 'center',
-                  renderCell: (params) =>(                    
+                  renderCell: (params) => (
                     <span>
                       {params.row.religion}
-                    </span>                     
+                    </span>
                   )
                 },
                 {
@@ -1604,10 +1599,10 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Enrollment Type',
                   headerAlign: 'center',
                   align: 'center',
-                  renderCell: (params) =>(                    
+                  renderCell: (params) => (
                     <span>
                       {params.row.enrollmentType}
-                    </span>                     
+                    </span>
                   )
                 },
                 {
@@ -1615,10 +1610,10 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Accrediation',
                   headerAlign: 'center',
                   align: 'center',
-                  renderCell: (params) =>(                    
+                  renderCell: (params) => (
                     <span>
                       {params.row.accreditation}
-                    </span>                     
+                    </span>
                   )
                 },
                 {
@@ -1634,7 +1629,7 @@ const Students = ({ schoolFees, programs }) => {
                       <p className="font-medium capitalize">{params.value}</p>
                       <p className="text-sm text-gray-400 capitalize">
                         {params.row.student.creator?.guardianInformation?.primaryGuardianType?.toLowerCase()}
-                      </p> 
+                      </p>
                     </div>
                   ),
                 },
@@ -1665,7 +1660,7 @@ const Students = ({ schoolFees, programs }) => {
                       <p className="font-medium capitalize">{params.value}</p>
                       <p className="text-sm text-gray-400 capitalize">
                         {params.row.student.creator?.guardianInformation?.primaryGuardianType?.toLowerCase()}
-                      </p> 
+                      </p>
                     </div>
                   ),
                 },
@@ -1691,10 +1686,10 @@ const Students = ({ schoolFees, programs }) => {
                   valueGetter: (params) =>
                     params.row.student.creator?.guardianInformation?.address2 ||
                     '',
-                  renderCell: (params) =>(                    
+                  renderCell: (params) => (
                     <span>
                       {params.row.student.creator?.guardianInformation?.address1}
-                    </span>                     
+                    </span>
                   )
                 },
                 {
@@ -1705,10 +1700,10 @@ const Students = ({ schoolFees, programs }) => {
                   valueGetter: (params) =>
                     params.row.student.creator?.guardianInformation?.address2 ||
                     '',
-                  renderCell: (params) =>(                    
+                  renderCell: (params) => (
                     <span>
                       {params.row.student.creator?.guardianInformation?.address2}
-                    </span>                     
+                    </span>
                   )
                 },
                 {
@@ -1747,10 +1742,10 @@ const Students = ({ schoolFees, programs }) => {
                   valueGetter: (params) =>
                     params.row.student.creator?.guardianInformation?.telephoneNumber ||
                     '',
-                  renderCell: (params) =>(                    
+                  renderCell: (params) => (
                     <span>
                       {params.row.student.creator?.guardianInformation?.telephoneNumber}
-                    </span>                     
+                    </span>
                   )
                 },
                 {
@@ -1761,10 +1756,10 @@ const Students = ({ schoolFees, programs }) => {
                   valueGetter: (params) =>
                     params.row.student.creator?.guardianInformation?.mobileNumber ||
                     '',
-                  renderCell: (params) =>(                    
+                  renderCell: (params) => (
                     <span>
                       {params.row.student.creator?.guardianInformation?.mobileNumber}
-                    </span>                     
+                    </span>
                   )
                 },
                 {
@@ -1774,17 +1769,17 @@ const Students = ({ schoolFees, programs }) => {
                   align: 'center',
                   hide: true,
                   renderCell: (params) => (
-                      <div className='center'>
-                        <button
-                            className="px-3 py-1 text-white rounded bg-primary-500 hover:bg-primary-400"
-                            onClick={() => {
-                              view(params.row);
-                            }}
-                          >
-                            View Record
-                          </button>
-                          <br/>
-                          {/* <button
+                    <div className='center'>
+                      <button
+                        className="px-3 py-1 text-white rounded bg-primary-500 hover:bg-primary-400"
+                        onClick={() => {
+                          view(params.row);
+                        }}
+                      >
+                        View Record
+                      </button>
+                      <br />
+                      {/* <button
                             className="px-3 py-1 my-1 text-white rounded bg-red-600 hover:bg-primary-400"
                             onClick={() => {
                               deleteStudentRecord(params.row.studentId);
@@ -1808,11 +1803,11 @@ const Students = ({ schoolFees, programs }) => {
                     </div>
                   ),
                 },
-                
+
               ]}
             />
           </div>
-          
+
           {/* <div>
             <table className="w-full">
               <thead>
