@@ -342,7 +342,7 @@ const Students = ({ schoolFees, programs }) => {
       if (!response.ok) {
         throw new Error('Failed to update record');
       }
-      ßgenerateNewSchoolFees(studentId);
+      generateNewSchoolFees(studentId);
       setSubmittingState(false);
       toast.success('Student record has been updated');
     } catch (error) {
@@ -1487,6 +1487,8 @@ const Students = ({ schoolFees, programs }) => {
               onColumnVisibilityModelChange={(newModel) =>
                 setColumnVisibilityModel(newModel)
               }
+              autoWidth
+              scroll
               columns={[
                 {
                   field: 'Profile',
