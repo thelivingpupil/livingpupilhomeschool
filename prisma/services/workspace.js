@@ -141,13 +141,13 @@ export const getSiteWorkspace = async (slug, customDomain) =>
         { slug },
         customDomain
           ? {
-              domains: {
-                some: {
-                  name: slug,
-                  deletedAt: null,
-                },
+            domains: {
+              some: {
+                name: slug,
+                deletedAt: null,
               },
-            }
+            },
+          }
           : undefined,
       ],
       AND: { deletedAt: null },
@@ -604,15 +604,15 @@ export const updateSlug = async (id, email, newSlug, pathSlug) => {
   }
 };
 
-  export const deleteStudentWorkspace = async (inviteCode) =>
+export const deleteStudentWorkspace = async (inviteCode) =>
   //console.log(workSpaceCode)
   await prisma.workspace.update({
     data: { deletedAt: new Date() },
-    where: { inviteCode},
+    where: { inviteCode },
   });
 
-  export const getWorkspaceByStudentId = async (studentId) =>
-    //console.log(workSpaceCode)
+export const getWorkspaceByStudentId = async (studentId) =>
+  //console.log(workSpaceCode)
   await prisma.workspace.findFirst({
     select: {
       id: true,

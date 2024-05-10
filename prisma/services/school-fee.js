@@ -66,22 +66,22 @@ export const createSchoolFees = async (
   const sanityFetchArgs =
     program === Program.HOMESCHOOL_COTTAGE
       ? [
-          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType && cottageType == $cottageType][0]{...}`,
-          {
-            enrollmentType,
-            gradeLevel,
-            program,
-            cottageType,
-          },
-        ]
+        `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType && cottageType == $cottageType][0]{...}`,
+        {
+          enrollmentType,
+          gradeLevel,
+          program,
+          cottageType,
+        },
+      ]
       : [
-          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType][0]{...}`,
-          {
-            enrollmentType,
-            gradeLevel,
-            program,
-          },
-        ];
+        `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType][0]{...}`,
+        {
+          enrollmentType,
+          gradeLevel,
+          program,
+        },
+      ];
 
   const fetchProgram = await sanityClient.fetch(...sanityFetchArgs);
 
@@ -99,14 +99,14 @@ export const createSchoolFees = async (
       { code: discountCode }
     ));
 
-   const scholarship =
-     scholarshipCode &&
-     (await sanityClient.fetch(
-       `*[_type == 'scholarships' && code == $code][0]{...}`,
-     { code: scholarshipCode }
-   ));
-   const scholarshipValue = scholarship ? scholarship.value : 0;
-   console.log(scholarshipValue)
+  const scholarship =
+    scholarshipCode &&
+    (await sanityClient.fetch(
+      `*[_type == 'scholarships' && code == $code][0]{...}`,
+      { code: scholarshipCode }
+    ));
+  const scholarshipValue = scholarship ? scholarship.value : 0;
+  console.log(scholarshipValue)
 
   const isPastorsFee =
     discount && discount?.code?.toLowerCase().includes('pastor');
@@ -117,14 +117,14 @@ export const createSchoolFees = async (
     const payments = isPastorsFee
       ? discount.value
       : discount
-      ? fee.fullPayment -
+        ? fee.fullPayment -
         (discount.type === 'VALUE'
           ? discount.value
           : (discount.value / 100) * fee.fullPayment)
-      : fee.fullPayment;
+        : fee.fullPayment;
 
     const transaction = await prisma.purchaseHistory.create({
-      data: { total: payments + FEES[paymentMethod]},
+      data: { total: payments + FEES[paymentMethod] },
       select: { id: true, transactionId: true },
     });
     const [response] = await Promise.all([
@@ -166,20 +166,20 @@ export const createSchoolFees = async (
 
     const payments = isPastorsFee
       ? [
-          fee.downPayment,
-          (discount.value - fee.downPayment) / 2,
-          (discount.value - fee.downPayment) / 2,
-        ]
+        fee.downPayment,
+        (discount.value - fee.downPayment) / 2,
+        (discount.value - fee.downPayment) / 2,
+      ]
       : discount
-      ? [
+        ? [
           fee.downPayment,
           fee.secondPayment -
-            (discount.type === 'VALUE'
-              ? discount.value
-              : (discount.value / 100) * fee.secondPayment),
+          (discount.type === 'VALUE'
+            ? discount.value
+            : (discount.value / 100) * fee.secondPayment),
           fee.thirdPayment,
         ]
-      : [fee.downPayment, fee.secondPayment, fee.thirdPayment];
+        : [fee.downPayment, fee.secondPayment, fee.thirdPayment];
 
     const transactionIds = await Promise.all([
       prisma.purchaseHistory.create({
@@ -187,11 +187,11 @@ export const createSchoolFees = async (
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[1] + FEES[paymentMethod] - calculatedScholarship},
+        data: { total: payments[1] + FEES[paymentMethod] - calculatedScholarship },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[2] + FEES[paymentMethod] - calculatedScholarship},
+        data: { total: payments[2] + FEES[paymentMethod] - calculatedScholarship },
         select: { id: true, transactionId: true },
       }),
     ]);
@@ -288,22 +288,22 @@ export const createSchoolFees = async (
 
     const payments = isPastorsFee
       ? [
-          fee.downPayment,
-          (discount.value - fee.downPayment) / 3,
-          (discount.value - fee.downPayment) / 3,
-          (discount.value - fee.downPayment) / 3,
-        ]
+        fee.downPayment,
+        (discount.value - fee.downPayment) / 3,
+        (discount.value - fee.downPayment) / 3,
+        (discount.value - fee.downPayment) / 3,
+      ]
       : discount
-      ? [
+        ? [
           fee.downPayment,
           fee.secondPayment -
-            (discount.type === 'VALUE'
-              ? discount.value
-              : (discount.value / 100) * fee.secondPayment),
+          (discount.type === 'VALUE'
+            ? discount.value
+            : (discount.value / 100) * fee.secondPayment),
           fee.thirdPayment,
           fee.fourthPayment,
         ]
-      : [
+        : [
           fee.downPayment,
           fee.secondPayment,
           fee.thirdPayment,
@@ -316,15 +316,15 @@ export const createSchoolFees = async (
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[1] + FEES[paymentMethod] - calculatedScholarship},
+        data: { total: payments[1] + FEES[paymentMethod] - calculatedScholarship },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[2] + FEES[paymentMethod] - calculatedScholarship},
+        data: { total: payments[2] + FEES[paymentMethod] - calculatedScholarship },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[3] + FEES[paymentMethod] - calculatedScholarship},
+        data: { total: payments[3] + FEES[paymentMethod] - calculatedScholarship },
         select: { id: true, transactionId: true },
       }),
     ]);
@@ -464,15 +464,15 @@ export const getSchoolFeeByStudentIdAndOrder = async (studentId, order) => {
       select: {
         transactionId: true,
         order: true,
-        transaction:{
-          select:{
+        transaction: {
+          select: {
             transactionId: true,
             amount: true,
             payment: true,
             balance: true,
             paymentStatus: true,
           }
-      },
+        },
       },
       where: {
         studentId: studentId,
