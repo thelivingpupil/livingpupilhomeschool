@@ -1,5 +1,5 @@
 import { validateSession } from '@/config/api-validation';
-import { getTransactions} from '@/prisma/services/transaction';
+import { getTransactions } from '@/prisma/services/transaction';
 import { createSchoolFees, deleteStudentSchoolFees } from '@/prisma/services/school-fee';
 
 const handler = async (req, res) => {
@@ -25,10 +25,10 @@ const handler = async (req, res) => {
       scholarshipCode,
       studentId
     } = req.body;
-      // Delete existing school fees
+    // Delete existing school fees
     await deleteStudentSchoolFees(studentId);
 
-    const [schoolFee] = await Promise.all([ 
+    const [schoolFee] = await Promise.all([
       createSchoolFees(
         userId,
         email,
