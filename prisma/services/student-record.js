@@ -5,11 +5,11 @@ export const countEnrolledStudentsByGradeLevel = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-          AND: [
-            { createdAt: { gte: new Date(startDate) } },
-            { createdAt: { lte: new Date(endDate) } },
-          ],
-        }
+        AND: [
+          { createdAt: { gte: new Date(startDate) } },
+          { createdAt: { lte: new Date(endDate) } },
+        ],
+      }
       : {};
   const result = await prisma.studentRecord.groupBy({
     by: ['incomingGradeLevel'],
@@ -59,11 +59,11 @@ export const countEnrolledStudentsByProgram = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-          AND: [
-            { createdAt: { gte: new Date(startDate) } },
-            { createdAt: { lte: new Date(endDate) } },
-          ],
-        }
+        AND: [
+          { createdAt: { gte: new Date(startDate) } },
+          { createdAt: { lte: new Date(endDate) } },
+        ],
+      }
       : {};
   const result = await prisma.studentRecord.groupBy({
     by: ['program'],
@@ -97,11 +97,11 @@ export const countEnrolledStudents = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-          AND: [
-            { createdAt: { gte: new Date(startDate) } },
-            { createdAt: { lte: new Date(endDate) } },
-          ],
-        }
+        AND: [
+          { createdAt: { gte: new Date(startDate) } },
+          { createdAt: { lte: new Date(endDate) } },
+        ],
+      }
       : {};
   return await prisma.studentRecord.count({
     where: {
@@ -125,11 +125,11 @@ export const countStudents = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-          AND: [
-            { createdAt: { gte: new Date(startDate) } },
-            { createdAt: { lte: new Date(endDate) } },
-          ],
-        }
+        AND: [
+          { createdAt: { gte: new Date(startDate) } },
+          { createdAt: { lte: new Date(endDate) } },
+        ],
+      }
       : {};
 
   return await prisma.studentRecord.count({
@@ -306,7 +306,7 @@ export const getStudentRecords = async () =>
     },
   });
 
-  export const getStudentRecord = async (id) =>
+export const getStudentRecord = async (id) =>
   await prisma.studentRecord.findUnique({
     select: {
       id: true,
@@ -332,36 +332,35 @@ export const getStudentRecords = async () =>
 
     },
     where: {
-      studentId: id 
+      studentId: id
     },
   });
 
-  export const deleteStudentRecord = async (studentId) =>
+export const deleteStudentRecord = async (studentId) =>
   await prisma.studentRecord.update({
     data: { deletedAt: new Date() },
     where: { studentId },
   });
 
-
-  export const updateStudentRecord = async (studentId, studentNewData) => 
-    await prisma.studentRecord.update({
-      data: {
-        firstName: studentNewData.firstName,
-        middleName: studentNewData.middleName,
-        lastName: studentNewData.lastName,
-        gender: studentNewData.gender,
-        religion: studentNewData.religion,
-        enrollmentType: studentNewData.enrollmentType,
-        incomingGradeLevel: studentNewData.incomingGradeLevel,
-        schoolYear: studentNewData.schoolYear,
-        birthDate: studentNewData.birthDate,
-        image: studentNewData.pictureLink,
-        liveBirthCertificate: studentNewData.birthCertificateLink,
-        reportCard: studentNewData.reportCardLink,
-        discount: studentNewData.discountCode,
-        accreditation: studentNewData.accreditation,
-        scholarship: studentNewData.scholarshipCode
-      },  
-      where: { studentId }
-    });
+export const updateStudentRecord = async (studentId, studentNewData) =>
+  await prisma.studentRecord.update({
+    data: {
+      firstName: studentNewData.firstName,
+      middleName: studentNewData.middleName,
+      lastName: studentNewData.lastName,
+      gender: studentNewData.gender,
+      religion: studentNewData.religion,
+      enrollmentType: studentNewData.enrollmentType,
+      incomingGradeLevel: studentNewData.incomingGradeLevel,
+      schoolYear: studentNewData.schoolYear,
+      birthDate: studentNewData.birthDate,
+      image: studentNewData.pictureLink,
+      liveBirthCertificate: studentNewData.birthCertificateLink,
+      reportCard: studentNewData.reportCardLink,
+      discount: studentNewData.discountCode,
+      accreditation: studentNewData.accreditation,
+      scholarship: studentNewData.scholarshipCode
+    },
+    where: { studentId }
+  });
 

@@ -34,11 +34,9 @@ const handler = async (req, res) => {
         accreditation,
         scholarshipCode
       } = req.body;
-
       if (!studentId) {
         return res.status(400).json({ error: 'Student ID is required' });
       }
-
       const studentNewData = {
         firstName,
         middleName,

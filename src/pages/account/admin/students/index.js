@@ -316,7 +316,6 @@ const Students = ({ schoolFees, programs }) => {
           scholarshipCode
         }),
       });
-
       if (!response.ok) {
         throw new Error('Failed to update record');
       }

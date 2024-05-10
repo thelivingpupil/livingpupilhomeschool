@@ -442,7 +442,6 @@ export const createSchoolFees = async (
     ]);
     result = response;
   }
-
   return result;
 };
 

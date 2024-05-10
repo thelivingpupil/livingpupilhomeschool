@@ -45,7 +45,6 @@ const handler = async (req, res) => {
       ),
     ]);
     res.status(200).json({ message: 'School fees generated successfully', schoolFee });
-
   } else {
     res.status(405).json({ error: `${method} method unsupported` });
   }
