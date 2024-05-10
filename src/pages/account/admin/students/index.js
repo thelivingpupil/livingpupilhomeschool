@@ -289,66 +289,8 @@ const Students = ({ schoolFees, programs }) => {
     setEmail(student.student.creator.email)
   };
 
-  const editStudentRecord = async (studentId) => {
-
-    console.log(
-      JSON.stringify({
-        studentId,
-        firstName,
-        middleName,
-        lastName,
-        gender,
-        religion,
-        schoolYear,
-        birthDate,
-        pictureLink,
-        birthCertificateLink,
-        reportCardLink,
-        enrollmentType,
-        incomingGradeLevel,
-        discountCode,
-        scholarshipCode,
-        accreditation,
-      }),
-    );
-
-    try {
-      setSubmittingState(true);
-      const response = await fetch('/api/students', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          studentId,
-          firstName,
-          middleName,
-          lastName,
-          gender,
-          religion,
-          schoolYear,
-          birthDate,
-          pictureLink,
-          birthCertificateLink,
-          reportCardLink,
-          enrollmentType,
-          incomingGradeLevel,
-          discountCode,
-          scholarshipCode,
-          accreditation,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update record' + response);
-      }
-      generateNewSchoolFees(studentId);
-      setSubmittingState(false);
-      toast.success('Student record has been updated');
-    } catch (error) {
-      setSubmittingState(false);
-      toast.error(`Error updating student record: ${error.message}`);
-    }
+  if (!response.ok) {
+    throw new Error(`Failed to update record: ${response.text()}`);
   }
 
   const generateNewSchoolFees = async (studentId) => {
