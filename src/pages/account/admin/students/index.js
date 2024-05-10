@@ -319,7 +319,7 @@ const Students = ({ schoolFees, programs }) => {
       if (!response.ok) {
         throw new Error('Failed to update record');
       }
-      generateNewSchoolFees(studentId)
+      //generateNewSchoolFees(studentId)
       setSubmittingState(false);
       toast.success('Student record has been updated');
       toast('Generating new school fee(s)', {
