@@ -32,9 +32,18 @@ const Fees = () => {
     [GradeLevel.GRADE_11]: { schoolFees: [] },
     [GradeLevel.GRADE_12]: { schoolFees: [] },
   };
-  workspace?.schoolFees.map((fee) => {
-    fees[fee.gradeLevel].schoolFees[fee.order] = fee;
-  });
+  workspace?.schoolFees
+    ?.filter(fee => fee.deletedAt === null)
+    .map((fee) => {
+      fees[fee.gradeLevel].schoolFees[fee.order] = fee;
+    });
+
+
+  for (const gradeLevel in fees) {
+    console.log(`Grade Level: ${gradeLevel}`);
+    console.log("school fees:", fees[gradeLevel].schoolFees);
+  }
+
 
   const renew = (transactionId, referenceNumber) => {
     setSubmittingState(true);
@@ -92,82 +101,82 @@ const Fees = () => {
                         </thead>
                         <tbody>
                           {fees[level].schoolFees
-                          .map((f, index) => (
-                            <tr key={index}>
-                              <td className="px-3 py-2">
-                                <p>
-                                  {index === 0 &&
-                                  f.paymentType === PaymentType.ANNUAL
-                                    ? 'Total School Fee'
-                                    : index === 0 &&
-                                      f.paymentType !== PaymentType.ANNUAL
-                                    ? 'Initial School Fee'
-                                    : index > 0 &&
-                                      f.paymentType === PaymentType.SEMI_ANNUAL
-                                    ? `Three (3) Term Payment School Fee #${index}`
-                                    : `Four (4) Term Payment School Fee #${index}`}
-                                </p>
-                                <p className="text-xs italic text-gray-400">
-                                  <span className="font-medium">
-                                    Reference Number:{' '}
-                                  </span>
-                                  <strong>
-                                    {f.transaction.paymentReference}
-                                  </strong>
-                                </p>
-                              </td>
-                              <td className="px-3 py-2">
-                                {new Intl.NumberFormat('en-US', {
-                                  style: 'currency',
-                                  currency: 'PHP',
-                                }).format(f.transaction.amount)}
-                              </td>
-                              <td className="px-3 py-2 text-sm text-center">
-                                <div>
-                                  {f.transaction.payment?(new Intl.NumberFormat('en-US', {
-                                  style: 'currency',
-                                  currency:'PHP',
-                                  }).format(f.transaction.payment)) : (
+                            .map((f, index) => (
+                              <tr key={index}>
+                                <td className="px-3 py-2">
+                                  <p>
+                                    {index === 0 &&
+                                      f.paymentType === PaymentType.ANNUAL
+                                      ? 'Total School Fee'
+                                      : index === 0 &&
+                                        f.paymentType !== PaymentType.ANNUAL
+                                        ? 'Initial School Fee'
+                                        : index > 0 &&
+                                          f.paymentType === PaymentType.SEMI_ANNUAL
+                                          ? `Three (3) Term Payment School Fee #${index}`
+                                          : `Four (4) Term Payment School Fee #${index}`}
+                                  </p>
+                                  <p className="text-xs italic text-gray-400">
+                                    <span className="font-medium">
+                                      Reference Number:{' '}
+                                    </span>
+                                    <strong>
+                                      {f.transaction.paymentReference}
+                                    </strong>
+                                  </p>
+                                </td>
+                                <td className="px-3 py-2">
+                                  {new Intl.NumberFormat('en-US', {
+                                    style: 'currency',
+                                    currency: 'PHP',
+                                  }).format(f.transaction.amount)}
+                                </td>
+                                <td className="px-3 py-2 text-sm text-center">
+                                  <div>
+                                    {f.transaction.payment ? (new Intl.NumberFormat('en-US', {
+                                      style: 'currency',
+                                      currency: 'PHP',
+                                    }).format(f.transaction.payment)) : (
                                       '-'
-                                  )}
-                                  {f.transaction.balance ? (
-                                    <p className="font-mono text-xs text-gray-400 lowercase">
-                                      bal: {f.transaction.balance}
-                                    </p>
-                                  ) : (
-                                    <p className="font-mono text-xs text-gray-400 lowercase">
-                                      
-                                    </p>
-                                  )}
-                                </div>
-                              </td>
-                              <td className="px-3 py-2 text-sm text-center">
-                                {getDeadline(
-                                  index,
-                                  f.paymentType,
-                                  workspace.studentRecord.createdAt,
-                                  workspace.studentRecord.schoolYear
-                                ) || '-'}
-                              </td>
-                              <td className="px-3 py-2 space-x-3 text-center">
-                                {f.transaction.paymentStatus ===
-                                  TransactionStatus.U ||
-                                f.transaction.paymentStatus ===
-                                  TransactionStatus.P ? (
-                                  <>
-                                    <button
-                                      className="inline-block px-3 py-2 text-xs text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
-                                      disabled={isSubmitting}
-                                      onClick={() =>
-                                        renew(
-                                          f.transaction.transactionId,
-                                          f.transaction.referenceNumber
-                                        )
-                                      }
-                                    >
-                                      Get New Link
-                                    </button>
-                                    {/* <Link href={f.transaction.url}>
+                                    )}
+                                    {f.transaction.balance ? (
+                                      <p className="font-mono text-xs text-gray-400 lowercase">
+                                        bal: {f.transaction.balance}
+                                      </p>
+                                    ) : (
+                                      <p className="font-mono text-xs text-gray-400 lowercase">
+
+                                      </p>
+                                    )}
+                                  </div>
+                                </td>
+                                <td className="px-3 py-2 text-sm text-center">
+                                  {getDeadline(
+                                    index,
+                                    f.paymentType,
+                                    workspace.studentRecord.createdAt,
+                                    workspace.studentRecord.schoolYear
+                                  ) || '-'}
+                                </td>
+                                <td className="px-3 py-2 space-x-3 text-center">
+                                  {f.transaction.paymentStatus ===
+                                    TransactionStatus.U ||
+                                    f.transaction.paymentStatus ===
+                                    TransactionStatus.P ? (
+                                    <>
+                                      <button
+                                        className="inline-block px-3 py-2 text-xs text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
+                                        disabled={isSubmitting}
+                                        onClick={() =>
+                                          renew(
+                                            f.transaction.transactionId,
+                                            f.transaction.referenceNumber
+                                          )
+                                        }
+                                      >
+                                        Get New Link
+                                      </button>
+                                      {/* <Link href={f.transaction.url}>
                                       <a
                                         className="inline-block px-3 py-2 text-xs rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
                                         target="_blank"
@@ -175,17 +184,17 @@ const Fees = () => {
                                         Pay Now
                                       </a>
                                     </Link> */}
-                                  </>
-                                ) : (
-                                  <div>
-                                    <span className="inline-block px-3 py-1 text-xs text-white bg-green-600 rounded-full">
-                                      Paid
-                                    </span>
-                                  </div>
-                                )}
-                              </td>
-                            </tr>
-                          ))}
+                                    </>
+                                  ) : (
+                                    <div>
+                                      <span className="inline-block px-3 py-1 text-xs text-white bg-green-600 rounded-full">
+                                        Paid
+                                      </span>
+                                    </div>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
                         </tbody>
                       </table>
                     </Card.Body>
