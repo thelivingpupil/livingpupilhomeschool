@@ -356,6 +356,14 @@ const Students = ({ schoolFees, programs }) => {
         }),
       });
 
+      // Log response status and status text
+      console.log('Response status:', response.status);
+      console.log('Response status text:', response.statusText);
+
+      // Log response body if available
+      const responseBody = await response.text();
+      console.log('Response body:', responseBody);
+
       if (!response.ok) {
         throw new Error('Failed to generate school fee(s)');
       }
