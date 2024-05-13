@@ -38,13 +38,6 @@ const Fees = () => {
       fees[fee.gradeLevel].schoolFees[fee.order] = fee;
     });
 
-
-  for (const gradeLevel in fees) {
-    console.log(`Grade Level: ${gradeLevel}`);
-    console.log("school fees:", fees[gradeLevel].schoolFees);
-  }
-
-
   const renew = (transactionId, referenceNumber) => {
     setSubmittingState(true);
 

@@ -289,54 +289,49 @@ const Students = ({ schoolFees, programs }) => {
     setEmail(student.student.creator.email)
   };
 
-  const editStudentRecord = async (studentId) => {
+  const editStudentRecord = (studentId) => {
     setSubmittingState(true);
-    try {
-      const response = await fetch('/api/students', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          studentId,
-          firstName,
-          middleName,
-          lastName,
-          gender,
-          religion,
-          schoolYear,
-          birthDate,
-          pictureLink,
-          birthCertificateLink,
-          reportCardLink,
-          enrollmentType,
-          incomingGradeLevel,
-          discountCode,
-          scholarshipCode,
-          accreditation,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to update record');
-      }
-      else {
+    api('/api/students', {
+      body: {
+        studentId,
+        firstName,
+        middleName,
+        lastName,
+        gender,
+        religion,
+        schoolYear,
+        birthDate,
+        pictureLink,
+        birthCertificateLink,
+        reportCardLink,
+        enrollmentType,
+        incomingGradeLevel,
+        discountCode,
+        scholarshipCode,
+        accreditation,
+      },
+      method: 'PUT',
+    })
+      .then((response) => {
         setSubmittingState(false);
-        toast.success('Student record has been updated');
-        toast('Generating new school fee(s)', {
-          icon: '⚠️', // Optional: you can customize the icon
-        });
-        generateNewSchoolFees(studentId);
-      }
+        if (response.errors) {
+          Object.keys(response.errors).forEach((error) =>
+            toast.error(response.errors[error].msg)
+          );
+        } else {
+          toast.success('Student record has been updated');
+        }
+      })
+      .catch(() => {
+        setSubmittingState(false);
+        toast.error('Failed to update record');
+      });
+  };
 
-    } catch (error) {
-      setSubmittingState(false);
-      toast.error(`Error updating student record: ${error.message}`);
-    }
-  }
-
-  const generateNewSchoolFees = async (studentId) => {
-    console.log(
-      JSON.stringify({
+  const generateNewSchoolFees = (studentId) => {
+    setSubmittingState(true);
+    api('/api/transactions', {
+      body: {
         userId,
         email,
         workspaceId,
@@ -350,45 +345,127 @@ const Students = ({ schoolFees, programs }) => {
         discountCode,
         scholarshipCode,
         studentId
-      }),
-    );
-    try {
-      setSubmittingState(true);
-
-      const response = await fetch('/api/transactions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId,
-          email,
-          workspaceId,
-          payment,
-          enrollmentType,
-          incomingGradeLevel,
-          program,
-          cottageType,
-          accreditation,
-          paymentMethod,
-          discountCode,
-          scholarshipCode,
-          studentId
-        }),
+      },
+      method: 'POST',
+    })
+      .then(response => {
+        setSubmittingState(false);
+        if (response.errors) {
+          Object.keys(response.errors).forEach((error) =>
+            toast.error(response.errors[error].msg)
+          );
+        } else {
+          toast.success('Generate school fees success');
+          toggleModal2();
+          toggleModal();
+        }
+      })
+      .catch(error => {
+        setSubmittingState(false);
+        toast.error(`Error generating school fees: ${error.message}`);
       });
+  };
 
-      if (!response.ok) {
-        throw new Error('Failed to generate school fee(s)');
-      }
-      setSubmittingState(false);
-      toast.success('Generate school fees success');
-      toggleModal2();
-      toggleModal();
-    } catch (error) {
-      setSubmittingState(false);
-      toast.error(`Error error generating school fees: ${error.message}`);
-    }
-  }
+  // const editStudentRecord = async (studentId) => {
+  //   setSubmittingState(true);
+  //   try {
+  //     const response = await fetch('/api/students', {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         studentId,
+  //         firstName,
+  //         middleName,
+  //         lastName,
+  //         gender,
+  //         religion,
+  //         schoolYear,
+  //         birthDate,
+  //         pictureLink,
+  //         birthCertificateLink,
+  //         reportCardLink,
+  //         enrollmentType,
+  //         incomingGradeLevel,
+  //         discountCode,
+  //         scholarshipCode,
+  //         accreditation,
+  //       }),
+  //     });
+  //     if (!response.ok) {
+  //       throw new Error('Failed to update record');
+  //     }
+  //     else {
+  //       setSubmittingState(false);
+  //       toast.success('Student record has been updated');
+  //       toast('Generating new school fee(s)', {
+  //         icon: '⚠️', // Optional: you can customize the icon
+  //       });
+  //       generateNewSchoolFees(studentId);
+  //     }
+
+  //   } catch (error) {
+  //     setSubmittingState(false);
+  //     toast.error(`Error updating student record: ${error.message}`);
+  //   }
+  // }
+
+  // const generateNewSchoolFees = async (studentId) => {
+  //   console.log(
+  //     JSON.stringify({
+  //       userId,
+  //       email,
+  //       workspaceId,
+  //       payment,
+  //       enrollmentType,
+  //       incomingGradeLevel,
+  //       program,
+  //       cottageType,
+  //       accreditation,
+  //       paymentMethod,
+  //       discountCode,
+  //       scholarshipCode,
+  //       studentId
+  //     }),
+  //   );
+  //   try {
+  //     setSubmittingState(true);
+
+  //     const response = await fetch('/api/transactions', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         userId,
+  //         email,
+  //         workspaceId,
+  //         payment,
+  //         enrollmentType,
+  //         incomingGradeLevel,
+  //         program,
+  //         cottageType,
+  //         accreditation,
+  //         paymentMethod,
+  //         discountCode,
+  //         scholarshipCode,
+  //         studentId
+  //       }),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error('Failed to generate school fee(s)');
+  //     }
+  //     setSubmittingState(false);
+  //     toast.success('Generate school fees success');
+  //     toggleModal2();
+  //     toggleModal();
+  //   } catch (error) {
+  //     setSubmittingState(false);
+  //     toast.error(`Error error generating school fees: ${error.message}`);
+  //   }
+  // }
 
   const deleteStudentRecord = async (studentId, inviteCode) => {
 
@@ -1386,7 +1463,10 @@ const Students = ({ schoolFees, programs }) => {
               className="px-3 py-1 my-1 text-white rounded bg-green-600 hover:bg-green-400"
               onClick={() => {
                 editStudentRecord(studentId);
-                //generateNewSchoolFees(studentId);
+                toast('Generating new school fee(s)', {
+                  icon: '⚠️', // Optional: you can customize the icon
+                });
+                generateNewSchoolFees(studentId);
               }}
               disabled={isSubmitting}
             >
