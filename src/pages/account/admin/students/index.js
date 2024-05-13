@@ -309,6 +309,7 @@ const Students = ({ schoolFees, programs }) => {
         discountCode,
         scholarshipCode,
         accreditation,
+        email,
       },
       method: 'PUT',
     })

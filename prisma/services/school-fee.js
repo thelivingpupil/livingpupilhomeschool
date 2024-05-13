@@ -464,6 +464,10 @@ export const createSchoolFees = async (
 
 export const deleteStudentSchoolFees = async (studentId) => {
   try {
+    if (studentId === null) {
+      throw new Error('Student ID cannot be null');
+    }
+
     await prisma.schoolFee.updateMany({
       data: { deletedAt: new Date() },
       where: { studentId },
