@@ -105,8 +105,10 @@ export const createSchoolFees = async (
       `*[_type == 'scholarships' && code == $code][0]{...}`,
       { code: scholarshipCode }
     ));
-  const scholarshipValue = scholarship ? scholarship.value : 0;
-  console.log(scholarshipValue)
+
+  let scholarshipValue = 0;
+  console.log(scholarship)
+  console.log(discount)
 
   const isPastorsFee =
     discount && discount?.code?.toLowerCase().includes('pastor');
@@ -123,8 +125,13 @@ export const createSchoolFees = async (
           : (discount.value / 100) * fee.fullPayment)
         : fee.fullPayment;
 
+    scholarshipValue = scholarship ?
+      scholarship.type === 'VALUE' ? scholarship.value :
+        (scholarship.value / 100) * fee.fullPayment
+      : 0;
+
     const transaction = await prisma.purchaseHistory.create({
-      data: { total: payments + FEES[paymentMethod] },
+      data: { total: payments + FEES[paymentMethod] - scholarshipValue },
       select: { id: true, transactionId: true },
     });
     const [response] = await Promise.all([
@@ -161,6 +168,11 @@ export const createSchoolFees = async (
     result = response;
   } else if (payment === PaymentType.SEMI_ANNUAL) {
     const fee = schoolFee.paymentTerms[1];
+
+    scholarshipValue = scholarship ?
+      scholarship.type === 'VALUE' ? scholarship.value :
+        (scholarship.value / 100) * fee.fullPayment
+      : 0;
 
     const calculatedScholarship = scholarshipValue / 2
 
@@ -283,6 +295,11 @@ export const createSchoolFees = async (
     result = response;
   } else if (payment === PaymentType.QUARTERLY) {
     const fee = schoolFee.paymentTerms[2];
+
+    scholarshipValue = scholarship ?
+      scholarship.type === 'VALUE' ? scholarship.value :
+        (scholarship.value / 100) * fee.fullPayment
+      : 0;
 
     const calculatedScholarship = scholarshipValue / 3
 

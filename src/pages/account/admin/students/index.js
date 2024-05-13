@@ -283,7 +283,7 @@ const Students = ({ schoolFees, programs }) => {
     setPictureLink(student.reportCard)
     setAccreditation(student.accreditation)
     setPayment(student.student.schoolFees[0].paymentType)
-    setScholarship('')
+    setScholarship(student.scholarship)
     setUserId(student.student.creator.guardianInformation.userId)
     setPaymentMethod('ONLINE')
     setEmail(student.student.creator.email)
@@ -304,36 +304,57 @@ const Students = ({ schoolFees, programs }) => {
           lastName,
           gender,
           religion,
-          enrollmentType,
-          incomingGradeLevel,
           schoolYear,
           birthDate,
           pictureLink,
           birthCertificateLink,
           reportCardLink,
+          enrollmentType,
+          incomingGradeLevel,
           discountCode,
+          scholarshipCode,
           accreditation,
-          scholarshipCode
         }),
       });
       if (!response.ok) {
         throw new Error('Failed to update record');
       }
-      //generateNewSchoolFees(studentId)
-      setSubmittingState(false);
-      toast.success('Student record has been updated');
-      toast('Generating new school fee(s)', {
-        icon: '⚠️', // Optional: you can customize the icon
-      });
+      else {
+        setSubmittingState(false);
+        toast.success('Student record has been updated');
+        toast('Generating new school fee(s)', {
+          icon: '⚠️', // Optional: you can customize the icon
+        });
+        generateNewSchoolFees(studentId);
+      }
+
     } catch (error) {
       setSubmittingState(false);
-      toast.error('Error updating student record: ${ error.message }');
+      toast.error(`Error updating student record: ${error.message}`);
     }
   }
 
   const generateNewSchoolFees = async (studentId) => {
+    console.log(
+      JSON.stringify({
+        userId,
+        email,
+        workspaceId,
+        payment,
+        enrollmentType,
+        incomingGradeLevel,
+        program,
+        cottageType,
+        accreditation,
+        paymentMethod,
+        discountCode,
+        scholarshipCode,
+        studentId
+      }),
+    );
     try {
       setSubmittingState(true);
+
       const response = await fetch('/api/transactions', {
         method: 'POST',
         headers: {
@@ -355,14 +376,6 @@ const Students = ({ schoolFees, programs }) => {
           studentId
         }),
       });
-
-      // Log response status and status text
-      console.log('Response status:', response.status);
-      console.log('Response status text:', response.statusText);
-
-      // Log response body if available
-      const responseBody = await response.text();
-      console.log('Response body:', responseBody);
 
       if (!response.ok) {
         throw new Error('Failed to generate school fee(s)');
@@ -877,7 +890,6 @@ const Students = ({ schoolFees, programs }) => {
             >
               Apply Discount and Scholarship
             </button>
-
           </div>
         </div>
         <div className="mt-5">
@@ -1458,8 +1470,6 @@ const Students = ({ schoolFees, programs }) => {
               onColumnVisibilityModelChange={(newModel) =>
                 setColumnVisibilityModel(newModel)
               }
-              autoWidth
-              scroll
               columns={[
                 {
                   field: 'Profile',

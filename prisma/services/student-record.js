@@ -262,6 +262,7 @@ export const getStudentRecords = async () =>
       liveBirthCertificate: true,
       reportCard: true,
       discount: true,
+      scholarship: true,
       student: {
         select: {
           creator: {
@@ -329,6 +330,7 @@ export const getStudentRecord = async (id) =>
       liveBirthCertificate: true,
       reportCard: true,
       discount: true,
+      scholarship: true,
 
     },
     where: {
