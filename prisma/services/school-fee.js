@@ -458,6 +458,341 @@ export const createSchoolFees = async (
       }),
     ]);
     result = response;
+  } else if (payment === PaymentType.MONTHLY) {
+    const fee = schoolFee.paymentTerms[3];
+
+    scholarshipValue = scholarship ?
+      scholarship.type === 'VALUE' ? scholarship.value :
+        (scholarship.value / 100) * fee.fullPayment
+      : 0;
+
+    const calculatedScholarship = scholarshipValue / 8
+
+    const payments = isPastorsFee
+      ? [
+        fee.downPayment,
+        (discount.value - fee.downPayment) / 8,
+        (discount.value - fee.downPayment) / 8,
+        (discount.value - fee.downPayment) / 8,
+        (discount.value - fee.downPayment) / 8,
+        (discount.value - fee.downPayment) / 8,
+        (discount.value - fee.downPayment) / 8,
+        (discount.value - fee.downPayment) / 8,
+        (discount.value - fee.downPayment) / 8,
+      ]
+      : discount
+        ? [
+          fee.downPayment,
+          fee.secondPayment -
+          (discount.type === 'VALUE'
+            ? discount.value
+            : (discount.value / 100) * fee.secondPayment),
+          fee.thirdPayment,
+          fee.fourthPayment,
+          fee.fifthPayment,
+          fee.sixthPayment,
+          fee.seventhPayment,
+          fee.eighthPayment,
+          fee.ninthPayment,
+        ]
+        : [
+          fee.downPayment,
+          fee.secondPayment,
+          fee.thirdPayment,
+          fee.fourthPayment,
+          fee.fifthPayment,
+          fee.sixthPayment,
+          fee.seventhPayment,
+          fee.eighthPayment,
+          fee.ninthPayment,
+        ];
+    console.log(payments)
+    const transactionIds = await Promise.all([
+      prisma.purchaseHistory.create({
+        data: { total: payments[0] + FEES[paymentMethod] },
+        select: { id: true, transactionId: true },
+      }),
+      prisma.purchaseHistory.create({
+        data: { total: payments[1] + FEES[paymentMethod] - calculatedScholarship },
+        select: { id: true, transactionId: true },
+      }),
+      prisma.purchaseHistory.create({
+        data: { total: payments[2] + FEES[paymentMethod] - calculatedScholarship },
+        select: { id: true, transactionId: true },
+      }),
+      prisma.purchaseHistory.create({
+        data: { total: payments[3] + FEES[paymentMethod] - calculatedScholarship },
+        select: { id: true, transactionId: true },
+      }),
+      prisma.purchaseHistory.create({
+        data: { total: payments[4] + FEES[paymentMethod] - calculatedScholarship },
+        select: { id: true, transactionId: true },
+      }),
+      prisma.purchaseHistory.create({
+        data: { total: payments[5] + FEES[paymentMethod] - calculatedScholarship },
+        select: { id: true, transactionId: true },
+      }),
+      prisma.purchaseHistory.create({
+        data: { total: payments[6] + FEES[paymentMethod] - calculatedScholarship },
+        select: { id: true, transactionId: true },
+      }),
+      prisma.purchaseHistory.create({
+        data: { total: payments[7] + FEES[paymentMethod] - calculatedScholarship },
+        select: { id: true, transactionId: true },
+      }),
+      prisma.purchaseHistory.create({
+        data: { total: payments[8] + FEES[paymentMethod] - calculatedScholarship },
+        select: { id: true, transactionId: true },
+      }),
+    ]);
+    const [response] = await Promise.all([
+      createTransaction(
+        userId,
+        email,
+        transactionIds[0].transactionId,
+        payments[0] + FEES[paymentMethod],
+        description,
+        transactionIds[0].id,
+        TransactionSource.ENROLLMENT,
+        paymentMethod
+      ),
+      createTransaction(
+        userId,
+        email,
+        transactionIds[1].transactionId,
+        payments[1] + FEES[paymentMethod] - calculatedScholarship,
+        description,
+        transactionIds[1].id,
+        TransactionSource.ENROLLMENT,
+        paymentMethod
+      ),
+      createTransaction(
+        userId,
+        email,
+        transactionIds[2].transactionId,
+        payments[2] + FEES[paymentMethod] - calculatedScholarship,
+        description,
+        transactionIds[2].id,
+        TransactionSource.ENROLLMENT,
+        paymentMethod
+      ),
+      createTransaction(
+        userId,
+        email,
+        transactionIds[3].transactionId,
+        payments[3] + FEES[paymentMethod] - calculatedScholarship,
+        description,
+        transactionIds[3].id,
+        TransactionSource.ENROLLMENT,
+        paymentMethod
+      ),
+      createTransaction(
+        userId,
+        email,
+        transactionIds[4].transactionId,
+        payments[4] + FEES[paymentMethod] - calculatedScholarship,
+        description,
+        transactionIds[4].id,
+        TransactionSource.ENROLLMENT,
+        paymentMethod
+      ),
+      createTransaction(
+        userId,
+        email,
+        transactionIds[5].transactionId,
+        payments[5] + FEES[paymentMethod] - calculatedScholarship,
+        description,
+        transactionIds[5].id,
+        TransactionSource.ENROLLMENT,
+        paymentMethod
+      ),
+      createTransaction(
+        userId,
+        email,
+        transactionIds[6].transactionId,
+        payments[6] + FEES[paymentMethod] - calculatedScholarship,
+        description,
+        transactionIds[6].id,
+        TransactionSource.ENROLLMENT,
+        paymentMethod
+      ),
+      createTransaction(
+        userId,
+        email,
+        transactionIds[7].transactionId,
+        payments[7] + FEES[paymentMethod] - calculatedScholarship,
+        description,
+        transactionIds[7].id,
+        TransactionSource.ENROLLMENT,
+        paymentMethod
+      ),
+      createTransaction(
+        userId,
+        email,
+        transactionIds[8].transactionId,
+        payments[8] + FEES[paymentMethod] - calculatedScholarship,
+        description,
+        transactionIds[8].id,
+        TransactionSource.ENROLLMENT,
+        paymentMethod
+      ),
+    ]);
+    await Promise.all([
+      prisma.schoolFee.create({
+        data: {
+          gradeLevel: incomingGradeLevel,
+          order: 0,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[0].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+      prisma.schoolFee.create({
+        data: {
+          gradeLevel: incomingGradeLevel,
+          order: 1,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[1].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+      prisma.schoolFee.create({
+        data: {
+          gradeLevel: incomingGradeLevel,
+          order: 2,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[2].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+      prisma.schoolFee.create({
+        data: {
+          gradeLevel: incomingGradeLevel,
+          order: 3,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[3].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+      prisma.schoolFee.create({
+        data: {
+          gradeLevel: incomingGradeLevel,
+          order: 4,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[4].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+      prisma.schoolFee.create({
+        data: {
+          gradeLevel: incomingGradeLevel,
+          order: 5,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[5].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+      prisma.schoolFee.create({
+        data: {
+          gradeLevel: incomingGradeLevel,
+          order: 6,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[6].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+      prisma.schoolFee.create({
+        data: {
+          gradeLevel: incomingGradeLevel,
+          order: 7,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[7].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+      prisma.schoolFee.create({
+        data: {
+          gradeLevel: incomingGradeLevel,
+          order: 8,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[8].transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+    ]);
+    result = response;
   }
   return result;
 };

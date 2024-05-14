@@ -375,6 +375,7 @@ enum PaymentType {
   ANNUAL
   SEMI_ANNUAL
   QUARTERLY
+  MONTHLY
 }
 
 enum Program {
