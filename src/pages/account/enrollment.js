@@ -222,9 +222,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       telephoneNumber.length > 0 &&
       anotherEmail.length > 0 &&
       address1.length > 0 &&
-      address2.length > 0) ||
-    //birthCertificateLink>0 &&
-    //birthCertificateLink?.length > 0) ||
+      address2.length > 0 &&
+      birthCertificateLink > 0 &&
+      birthCertificateLink?.length > 0) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
       payment !== null &&
@@ -1937,9 +1937,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               <option value={PaymentType.QUARTERLY}>
                 Four (4) Term Payment (Initial Fee + Three Payment Term Fees)
               </option>
-              <option value={PaymentType.MONTHLY}>
-                Nine (9) Term Payment (Initial Fee + Eight Payment Term Fees)
-              </option>
+              {programFeeByAccreditation?.paymentTerms[3] && (
+                <option value={PaymentType.MONTHLY}>
+                  Nine (9) Term Payment (Initial Fee + Eight Payment Term Fees)
+                </option>
+              )}
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
               <ChevronDownIcon className="w-5 h-5" />
@@ -2127,124 +2129,118 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             </div>
           </div>
           <div className="relative flex flex-row space-x-5">
-            <div
-              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.MONTHLY
-                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-                }`}
-              onClick={() => {
-                setPayment(PaymentType.MONTHLY);
-                setFee(programFeeByAccreditation?.paymentTerms[3]);
-                console.log(programs)
-              }}
-            >
-              {payment === PaymentType.MONTHLY && (
-                <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
-                  <CheckIcon className="w-5 h-5" />
-                </div>
-              )}
-              <div>
-                <h3 className="text-xl font-bold">Nine (9) Term Payment</h3>
-                <div>
-                  <span>
-                    Initial Fee:{' '}
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'PHP',
-                    }).format(
-                      programFeeByAccreditation?.paymentTerms[3]?.downPayment ||
-                      0
-                    )}{' '}
-                    +
-                  </span>
-                  <span>
-                    (
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'PHP',
-                    }).format(
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.secondPayment || 0
-                    )}{' '}
-                    +{' '}
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'PHP',
-                    }).format(
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.thirdPayment || 0
-                    )}{' '}
-                    +{' '}
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'PHP',
-                    }).format(
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.fourthPayment || 0
-                    )}
-                    +{' '}
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'PHP',
-                    }).format(
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.fifthPayment || 0
-                    )}
-                    +{' '}
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'PHP',
-                    }).format(
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.sixthPayment || 0
-                    )}
-                    +{' '}
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'PHP',
-                    }).format(
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.seventhPayment || 0
-                    )}
-                    +{' '}
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'PHP',
-                    }).format(
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.eighthPayment || 0
-                    )}
-                    +{' '}
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'PHP',
-                    }).format(
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.ninthPayment || 0
-                    )}
-                    )
-                  </span>
-                </div>
-              </div>
-              <h3 className="text-xl font-bold">
-                {new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(
-                  programFeeByAccreditation?.paymentTerms[3]?.downPayment +
-                  programFeeByAccreditation?.paymentTerms[3]?.secondPayment +
-                  programFeeByAccreditation?.paymentTerms[3]?.thirdPayment +
-                  programFeeByAccreditation?.paymentTerms[3]?.fourthPayment +
-                  programFeeByAccreditation?.paymentTerms[3]?.fifthPayment +
-                  programFeeByAccreditation?.paymentTerms[3]?.sixthPayment +
-                  programFeeByAccreditation?.paymentTerms[3]?.seventhPayment +
-                  programFeeByAccreditation?.paymentTerms[3]?.eighthPayment +
-                  programFeeByAccreditation?.paymentTerms[3]?.ninthPayment ||
-                  0
+            {programFeeByAccreditation?.paymentTerms[3] && (
+              <div
+                className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.MONTHLY
+                  ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                  : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                  }`}
+                onClick={() => {
+                  setPayment(PaymentType.MONTHLY);
+                  setFee(programFeeByAccreditation?.paymentTerms[3]);
+                  console.log(programs);
+                }}
+              >
+                {payment === PaymentType.MONTHLY && (
+                  <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
+                    <CheckIcon className="w-5 h-5" />
+                  </div>
                 )}
-              </h3>
-            </div>
+                <div>
+                  <h3 className="text-xl font-bold">Nine (9) Term Payment</h3>
+                  <div>
+                    <span>
+                      Initial Fee:{' '}
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        programFeeByAccreditation?.paymentTerms[3]?.downPayment || 0
+                      )}{' '}
+                      +
+                    </span>
+                    <span>
+                      (
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        programFeeByAccreditation?.paymentTerms[3]?.secondPayment || 0
+                      )}{' '}
+                      +{' '}
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        programFeeByAccreditation?.paymentTerms[3]?.thirdPayment || 0
+                      )}{' '}
+                      +{' '}
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        programFeeByAccreditation?.paymentTerms[3]?.fourthPayment || 0
+                      )}
+                      +{' '}
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        programFeeByAccreditation?.paymentTerms[3]?.fifthPayment || 0
+                      )}
+                      +{' '}
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        programFeeByAccreditation?.paymentTerms[3]?.sixthPayment || 0
+                      )}
+                      +{' '}
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        programFeeByAccreditation?.paymentTerms[3]?.seventhPayment || 0
+                      )}
+                      +{' '}
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        programFeeByAccreditation?.paymentTerms[3]?.eighthPayment || 0
+                      )}
+                      +{' '}
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        programFeeByAccreditation?.paymentTerms[3]?.ninthPayment || 0
+                      )}
+                      )
+                    </span>
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold">
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(
+                    programFeeByAccreditation?.paymentTerms[3]?.downPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.secondPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.thirdPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.fourthPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.fifthPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.sixthPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.seventhPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.eighthPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.ninthPayment ||
+                    0
+                  )}
+                </h3>
+              </div>
+            )}
           </div>
+
           <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded">
             <h3 className="text-sm font-bold">Payment Policies:</h3>
             <ol className="px-5 list-decimal">
