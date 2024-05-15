@@ -5,11 +5,17 @@ const handler = async (req, res) => {
   const { method } = req;
 
   if (method === 'GET') {
-    const session = await validateSession(req, res);
-    const workspaces = await getWorkspaces(
-      session.user.userId,
-      session.user.email
-    );
+    try {
+      const session = await validateSession(req, res);
+      const workspaces = await getWorkspaces(
+        session.user.userId,
+        session.user.email
+      );
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+
     res.status(200).json({ data: { workspaces } });
   } else {
     res.status(405).json({ error: `${method} method unsupported` });
