@@ -58,30 +58,35 @@ const deadlines = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 8],
       [PaymentType.QUARTERLY]: [0, 3, 6, 8],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // September
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 7],
       [PaymentType.QUARTERLY]: [0, 2, 5, 8],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // October
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 6],
       [PaymentType.QUARTERLY]: [0, 2, 5, 7],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // November
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 6],
       [PaymentType.QUARTERLY]: [0, 2, 4, 6],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // December
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 5],
       [PaymentType.QUARTERLY]: [0, 2, 4, 5],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
   ],
   laterYear: [
@@ -90,72 +95,84 @@ const deadlines = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 5],
       [PaymentType.QUARTERLY]: [0, 2, 4, 5],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // February
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 1, 4],
       [PaymentType.QUARTERLY]: [0, 1, 3, 4],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // March
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // April
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // May
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // June
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // July
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // August
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // September
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // October
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // November
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
     // December
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
+      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
     },
   ],
 };
