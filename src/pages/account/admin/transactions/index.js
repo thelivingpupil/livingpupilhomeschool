@@ -74,6 +74,8 @@ const Transactions = () => {
   const [uploadCount, setUploadCount] = useState(0);
   const [totalUpload, setTotalUpload] = useState(0);
 
+  console.log(data)
+
   const filterTransactions = useMemo(() => {
     if (!filterBy || !filterValue) return data?.transactions;
 
@@ -114,8 +116,8 @@ const Transactions = () => {
       ?.filter((transaction) =>
         filterBy === 'emailAccount'
           ? transaction?.email
-              ?.toLowerCase()
-              .includes(filterValue.trim().toLowerCase())
+            ?.toLowerCase()
+            .includes(filterValue.trim().toLowerCase())
           : transaction[filterBy] === filterValue
       )
       ?.map(({ id }) => id);
@@ -155,18 +157,18 @@ const Transactions = () => {
       paymentType: transaction.schoolFee.paymentType,
       currency: transaction.currency,
       deadline: getDeadline(
-              transaction.schoolFee.order,
-              transaction.schoolFee.paymentType,
-              transaction.createdAt,
-              transaction.schoolFee.student.studentRecord
-                .schoolYear
-            ),
+        transaction.schoolFee.order,
+        transaction.schoolFee.paymentType,
+        transaction.createdAt,
+        transaction.schoolFee.student.studentRecord
+          .schoolYear
+      ),
       paymentOrder:
         transaction.schoolFee.paymentType === PaymentType.ANNUAL
           ? 'Total Fee'
           : transaction.schoolFee.order === 0
-          ? 'Initial Fee'
-          : `Payment #${transaction.schoolFee.order}`,
+            ? 'Initial Fee'
+            : `Payment #${transaction.schoolFee.order}`,
     });
     setModalVisibility(true);
   };
@@ -184,7 +186,7 @@ const Transactions = () => {
     setNewPayment(Number(e.target.value).toFixed(2));
   };
 
-  const handleApply= (e) =>  {
+  const handleApply = (e) => {
     const newBalance = parseFloat(updateTransaction.balance) - parseFloat(newPayment);
     const totalPaid = parseFloat(newPayment) + parseFloat(updateTransaction.payment);
     setUpdateTransaction({
@@ -227,27 +229,27 @@ const Transactions = () => {
 
   const handleIterateTransaction = (transactionId, amount, totalPaid, balance, status) => {
     setUpdatingTransaction(true);
-     api(`/api/transactions/${transactionId}`, {
-       body: {
-         balance: balance,
-         payment: totalPaid,
-         amount: amount,
-         status: status,
-       },
-       method: 'PUT', 
-     })
-       .then(() => {
-         setUpdatingTransaction(false);
-         toast.success(
-           `Successfully updated transaction for ${updateTransaction.name}`
-         );
-       })
-       .catch(() => {
-         setUpdatingTransaction(false);
-         toast.error(
-           `Error in updating transaction for ${updateTransaction.name}`
-         );
-       });
+    api(`/api/transactions/${transactionId}`, {
+      body: {
+        balance: balance,
+        payment: totalPaid,
+        amount: amount,
+        status: status,
+      },
+      method: 'PUT',
+    })
+      .then(() => {
+        setUpdatingTransaction(false);
+        toast.success(
+          `Successfully updated transaction for ${updateTransaction.name}`
+        );
+      })
+      .catch(() => {
+        setUpdatingTransaction(false);
+        toast.error(
+          `Error in updating transaction for ${updateTransaction.name}`
+        );
+      });
     toggleModal();
   };
 
@@ -285,7 +287,7 @@ const Transactions = () => {
         payment: updateTransaction.payment,
         status: status,
       },
-      method: 'PUT', 
+      method: 'PUT',
     })
       .then(() => {
         setUpdatingTransaction(false);
@@ -349,7 +351,7 @@ const Transactions = () => {
       )
       .reduce((total, transaction) => total + Number(transaction.amount), 0);
 
-   return (
+  return (
     <AdminLayout>
       <Meta title="Living Pupil Homeschool - Students List" />
       <Modal
@@ -377,19 +379,16 @@ const Transactions = () => {
         <div>
           <h4 className="flex items-center space-x-3 text-xl font-medium capitalize text-primary-500">
             <span>{`${updateTransaction.name}`}</span>
-            <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${
-              GRADE_LEVEL[updateTransaction.gradeLevel]
-            }`}</span>
+            <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${GRADE_LEVEL[updateTransaction.gradeLevel]
+              }`}</span>
             <span
-              className={`px-2 py-0.5 text-xs rounded-full ${
-                STATUS_BG_COLOR[updateTransaction.paymentStatus]
-              }`}
+              className={`px-2 py-0.5 text-xs rounded-full ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
+                }`}
             >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
           </h4>
           <h5 className="font-bold">
-            <span className="text-xs">{`${
-              PROGRAM[updateTransaction.program]
-            } - ${ACCREDITATION[updateTransaction.accreditation]}`}</span>
+            <span className="text-xs">{`${PROGRAM[updateTransaction.program]
+              } - ${ACCREDITATION[updateTransaction.accreditation]}`}</span>
           </h5>
           <p className="text-xs text-gray-400">
             Created {new Date(updateTransaction.createdAt).toDateString()} by:{' '}
@@ -410,9 +409,8 @@ const Transactions = () => {
             <div className="flex capitalize font-semibold text-lg">Status:</div>
             <div className="flex">
               <span
-                className={`px-6 py-0.5 rounded-full flex items-center ${
-                  STATUS_BG_COLOR[updateTransaction.paymentStatus]
-                }`}
+                className={`px-6 py-0.5 rounded-full flex items-center ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
+                  }`}
               >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
             </div>
             <div className="flex py-2 capitalize font-semibold text-lg">Payment:</div>
@@ -431,7 +429,7 @@ const Transactions = () => {
                 type="text"
                 value={Number(updateTransaction.balance).toFixed(2)}
                 disabled
-                // onChange={handleUpdatePaymentTransaction}
+              // onChange={handleUpdatePaymentTransaction}
               />
             </div>
             <div className="flex py-2 capitalize font-semibold text-lg">Total Paid:</div>
@@ -441,7 +439,7 @@ const Transactions = () => {
                 type="text"
                 value={Number(updateTransaction.payment).toFixed(2)}
                 disabled
-                // onChange={handleUpdatePaymentTransaction}
+              // onChange={handleUpdatePaymentTransaction}
               />
             </div>
             <div></div>
@@ -616,26 +614,23 @@ const Transactions = () => {
                           <td className="p-2 text-left">
                             <div>
                               <h4 className="flex items-center space-x-3 text-xl font-medium capitalize text-primary-500">
-                                <span>{`${transaction.schoolFee.student.studentRecord.firstName}`}</span>
-                                <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${
-                                  GRADE_LEVEL[
-                                    transaction.schoolFee.student.studentRecord
-                                      .incomingGradeLevel
-                                  ]
-                                }`}</span>
+                                <span>{`${transaction.schoolFee.student.studentRecord?.firstName}`}</span>
+                                <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${GRADE_LEVEL[
+                                  transaction.schoolFee.student.studentRecord
+                                    ?.incomingGradeLevel
+                                ]
+                                  }`}</span>
                               </h4>
                               <h5 className="font-bold">
-                                <span className="text-xs">{`${
-                                  PROGRAM[
-                                    transaction.schoolFee.student.studentRecord
-                                      .program
+                                <span className="text-xs">{`${PROGRAM[
+                                  transaction.schoolFee.student.studentRecord
+                                    ?.program
+                                ]
+                                  } - ${ACCREDITATION[
+                                  transaction.schoolFee.student.studentRecord
+                                    ?.accreditation
                                   ]
-                                } - ${
-                                  ACCREDITATION[
-                                    transaction.schoolFee.student.studentRecord
-                                      .accreditation
-                                  ]
-                                }`}</span>
+                                  }`}</span>
                               </h5>
                               <p className="text-xs text-gray-400">
                                 Created{' '}
@@ -644,7 +639,7 @@ const Transactions = () => {
                                 <strong>
                                   {transaction.user.guardianInformation
                                     ? transaction.user.guardianInformation
-                                        .primaryGuardianName
+                                      .primaryGuardianName
                                     : transaction.user.email}
                                 </strong>
                               </p>
@@ -653,15 +648,14 @@ const Transactions = () => {
                                 {new Date(transaction.updatedAt).toDateString()}
                               </p>
                               {transaction.schoolFee.student.studentRecord
-                                .discount && (
-                                <p className="text-xs font-semibold text-primary-500">
-                                  Applied discount:{' '}
-                                  {
-                                    transaction.schoolFee.student.studentRecord
-                                      .discount
-                                  }
-                                </p>
-                              )}
+                                ?.discount && (
+                                  <p className="text-xs font-semibold text-primary-500">
+                                    Applied discount:{' '}
+                                    {
+                                      transaction.schoolFee.student.studentRecord.discount
+                                    }
+                                  </p>
+                                )}
                               <small>{transaction.user.email}</small>
                             </div>
                           </td>
@@ -670,17 +664,17 @@ const Transactions = () => {
                               <div className="flex">
                                 {
                                   PAYMENT_TYPE[
-                                    transaction.schoolFee.paymentType
+                                  transaction.schoolFee.paymentType
                                   ]
                                 }
                               </div>
                               <div className="flex text-sm text-gray-400 italic">
                                 {transaction.schoolFee.paymentType ===
-                                PaymentType.ANNUAL
+                                  PaymentType.ANNUAL
                                   ? 'Total Fee'
                                   : transaction.schoolFee.order === 0
-                                  ? 'Initial Fee'
-                                  : `Payment #${transaction.schoolFee.order}`}
+                                    ? 'Initial Fee'
+                                    : `Payment #${transaction.schoolFee.order}`}
                               </div>
                               <p className="text-xs font-semibold text-primary-500">
                                 {getDeadline(
@@ -688,7 +682,7 @@ const Transactions = () => {
                                   transaction.schoolFee.paymentType,
                                   transaction.createdAt,
                                   transaction.schoolFee.student.studentRecord
-                                    .schoolYear
+                                    ?.schoolYear
                                 ) || null}
                               </p>
                             </div>
@@ -701,9 +695,8 @@ const Transactions = () => {
                                     {transaction.paymentReference}
                                   </span>
                                   <span
-                                    className={`rounded-full py-0.5 text-xs px-2 ${
-                                      STATUS_BG_COLOR[transaction.paymentStatus]
-                                    }`}
+                                    className={`rounded-full py-0.5 text-xs px-2 ${STATUS_BG_COLOR[transaction.paymentStatus]
+                                      }`}
                                   >
                                     {STATUS_CODES[transaction.paymentStatus]}
                                   </span>
@@ -721,20 +714,20 @@ const Transactions = () => {
                           <td className="p-2 text-center">
                             <div>
                               {new Intl.NumberFormat('en-US', {
-                              style: 'currency',
-                              currency: transaction.currency,
+                                style: 'currency',
+                                currency: transaction.currency,
                               }).format(transaction.amount)}
                             </div>
                           </td>
                           <td className="p-2 text-center">
                             <div>
-                              {transaction.payment?(new Intl.NumberFormat('en-US', {
-                              style: 'currency',
-                              currency: transaction.currency,
+                              {transaction.payment ? (new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: transaction.currency,
                               }).format(transaction.payment)) : (
-                                  <h4 className="text-lg font-bold text-gray-300">
-                                    -
-                                  </h4>
+                                <h4 className="text-lg font-bold text-gray-300">
+                                  -
+                                </h4>
                               )}
                               {transaction.balance ? (
                                 <p className="font-mono text-xs text-gray-400 lowercase">
@@ -742,7 +735,7 @@ const Transactions = () => {
                                 </p>
                               ) : (
                                 <p className="font-mono text-xs text-gray-400 lowercase">
-                                  
+
                                 </p>
                               )}
                             </div>
@@ -750,13 +743,13 @@ const Transactions = () => {
                           <td className="p-2 space-x-2 text-xs text-center">
                             {transaction.paymentStatus !==
                               TransactionStatus.S && (
-                              <button
-                                className="px-3 py-1 text-white rounded bg-cyan-600"
-                                onClick={openUpdateModal(transaction)}
-                              >
-                                Update
-                              </button>
-                            )}
+                                <button
+                                  className="px-3 py-1 text-white rounded bg-cyan-600"
+                                  onClick={openUpdateModal(transaction)}
+                                >
+                                  Update
+                                </button>
+                              )}
                             {/* <button
                             className="px-3 py-1 text-white rounded bg-cyan-600"
                             onClick={renew}
