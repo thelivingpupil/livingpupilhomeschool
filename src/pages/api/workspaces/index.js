@@ -5,9 +5,10 @@ const handler = async (req, res) => {
   const { method } = req;
 
   if (method === 'GET') {
+    var workspaces;
     try {
       const session = await validateSession(req, res);
-      const workspaces = await getWorkspaces(
+      workspaces = await getWorkspaces(
         session.user.userId,
         session.user.email
       );
