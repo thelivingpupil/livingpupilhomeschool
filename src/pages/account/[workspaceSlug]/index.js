@@ -1839,7 +1839,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   setFee(programFeeByAccreditation?.paymentTerms[1]);
                 } else if (e.target.value === PaymentType.QUARTERLY) {
                   setFee(programFeeByAccreditation?.paymentTerms[2]);
-                } else if (false && e.target.value === PaymentType.MONTHLY) {
+                } else if (e.target.value === PaymentType.MONTHLY) {
                   setFee(programFeeByAccreditation?.paymentTerms[3]);
                 }
               }}
@@ -2054,7 +2054,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 console.log(programs)
               }}
             >
-              {false && payment === PaymentType.MONTHLY && (
+              {payment === PaymentType.MONTHLY && (
                 <div className="absolute flex items-center justify-center w-8 h-8 text-white rounded-full -right-3 -top-3 bg-primary-200">
                   <CheckIcon className="w-5 h-5" />
                 </div>
