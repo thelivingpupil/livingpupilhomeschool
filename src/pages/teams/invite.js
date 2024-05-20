@@ -17,7 +17,7 @@ const Invite = ({ workspace }) => {
   const join = () => {
     setSubmittingState(true);
     api(`/api/workspace/team/join`, {
-      body: { workspaceCode: workspace.workspaceCode },
+      body: { workspaceId: workspace.id },
       method: 'POST',
     }).then((response) => {
       setSubmittingState(false);
@@ -32,6 +32,9 @@ const Invite = ({ workspace }) => {
         );
       } else {
         toast.success('Accepted invitation!');
+        if (response.status === 200) {
+          router.replace('/account');
+        }
       }
     });
   };

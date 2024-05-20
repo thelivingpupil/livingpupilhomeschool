@@ -77,6 +77,23 @@ export const toggleRole = async (id, teamRole) =>
 
 export const updateStatus = async (id, status) =>
   await prisma.member.update({
-    data: { status },
+    data: {
+      status: status,
+      joinedAt: new Date(), // Update the joinedAt field with the current date and time
+    },
     where: { id },
+  });
+
+export const joinMembership = async (workspaceCode, status, email) =>
+  await prisma.member.update({
+    data: {
+      status: status,
+      joinedAt: new Date(), // Update the joinedAt field with the current date and time
+    },
+    where: {
+      workspaceId_email: {
+        workspaceId: workspaceCode,
+        email: email,
+      },
+    },
   });

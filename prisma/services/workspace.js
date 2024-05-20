@@ -561,7 +561,12 @@ export const joinWorkspace = async (workspaceCode, email) => {
         status: InvitationStatus.ACCEPTED,
       },
       update: {},
-      where: { email },
+      where: {
+        workspaceId_email: {
+          workspaceId: workspace.id,
+          email: email
+        }
+      },
     });
     return new Date();
   } else {
