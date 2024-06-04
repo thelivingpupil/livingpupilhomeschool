@@ -129,9 +129,9 @@ const ShopItem = ({ item }) => {
                           <p className="text-xs">
                             {`(${quantity}x) @
                               ${new Intl.NumberFormat('en-US', {
-                                style: 'currency',
-                                currency: 'PHP',
-                              }).format(price)}`}
+                              style: 'currency',
+                              currency: 'PHP',
+                            }).format(price)}`}
                           </p>
                         </div>
                       </div>
@@ -279,10 +279,14 @@ const ShopItem = ({ item }) => {
               <button
                 className="px-5 py-2 text-sm text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25 disabled:cursor-not-allowed"
                 disabled={
-                  !cart.length ||
-                  !shippingFee?.fee ||
-                  !deliveryAddress ||
-                  !contactNumber
+                  !(
+                    //cart.length &&
+                    //shippingFee?.fee &&
+                    //shippingFee?.fee < 0 &&
+                    deliveryAddress &&
+                    contactNumber
+                  )
+                  //&& !(shippingFee?.value === 'pickup' && cart.length)
                 }
                 onClick={toggleCartVisibility}
               >
