@@ -37,38 +37,42 @@ const handler = async (req, res) => {
             const newStudentStatus = await Promise.all([
                 updateStudentStatus(studentId, studentStatus),
             ]);
-            await sendMail({
-                html: html({
-                    accreditation,
-                    birthCertificateLink,
-                    enrollmentType,
-                    firstName,
-                    incomingGradeLevel,
-                    payment,
-                    paymentMethod,
-                    pictureLink,
-                    program,
-                    reportCardLink,
-                    schoolFeeUrl,
-                    email
-                }),
-                subject: `[Living Pupil Homeschool] Updated ${firstName}'s Student Record`,
-                text: text({
-                    accreditation,
-                    birthCertificateLink,
-                    enrollmentType,
-                    firstName,
-                    incomingGradeLevel,
-                    payment,
-                    paymentMethod,
-                    pictureLink,
-                    program,
-                    reportCardLink,
-                    schoolFeeUrl,
-                    email
-                }),
-                to: [email],
-            });
+            console.log(studentStatus)
+            if (studentStatus === 'ENROLLED') {
+                await sendMail({
+                    html: html({
+                        accreditation,
+                        birthCertificateLink,
+                        enrollmentType,
+                        firstName,
+                        incomingGradeLevel,
+                        payment,
+                        paymentMethod,
+                        pictureLink,
+                        program,
+                        reportCardLink,
+                        schoolFeeUrl,
+                        email
+                    }),
+                    subject: `[Living Pupil Homeschool] Updated ${firstName}'s Student Record`,
+                    text: text({
+                        accreditation,
+                        birthCertificateLink,
+                        enrollmentType,
+                        firstName,
+                        incomingGradeLevel,
+                        payment,
+                        paymentMethod,
+                        pictureLink,
+                        program,
+                        reportCardLink,
+                        schoolFeeUrl,
+                        email
+                    }),
+                    to: [email],
+                });
+            }
+
             res.status(200).json({ message: 'Student status updated successfully' });
         } catch (error) {
             console.error('Error updating student status:', error);
