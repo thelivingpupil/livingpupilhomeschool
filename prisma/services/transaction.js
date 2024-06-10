@@ -20,11 +20,11 @@ export const getTotalEnrollmentRevenuesByStatus = async (
   const filterDate =
     startDate && endDate
       ? {
-          AND: [
-            { createdAt: { gte: new Date(startDate) } },
-            { createdAt: { lte: new Date(endDate) } },
-          ],
-        }
+        AND: [
+          { createdAt: { gte: new Date(startDate) } },
+          { createdAt: { lte: new Date(endDate) } },
+        ],
+      }
       : {};
   const result = await prisma.transaction.groupBy({
     by: ['paymentStatus'],
@@ -91,13 +91,13 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
         deadline:
           schoolFee.transaction.paymentStatus === TransactionStatus.U
             ? new Date(
-                getDeadline(
-                  schoolFee.order,
-                  schoolFee.paymentType,
-                  schoolFee.transaction.createdAt,
-                  workspace.studentRecord.schoolYear
-                ) || schoolFee.transaction.createdAt
-              )
+              getDeadline(
+                schoolFee.order,
+                schoolFee.paymentType,
+                schoolFee.transaction.createdAt,
+                workspace.studentRecord.schoolYear
+              ) || schoolFee.transaction.createdAt
+            )
             : schoolFee.transaction.createdAt,
       };
     })
@@ -144,11 +144,11 @@ export const getTotalStoreRevenuesByStatus = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-          AND: [
-            { createdAt: { gte: new Date(startDate) } },
-            { createdAt: { lte: new Date(endDate) } },
-          ],
-        }
+        AND: [
+          { createdAt: { gte: new Date(startDate) } },
+          { createdAt: { lte: new Date(endDate) } },
+        ],
+      }
       : {};
   const result = await prisma.transaction.groupBy({
     by: ['paymentStatus'],
@@ -179,11 +179,11 @@ export const getTotalSales = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-          AND: [
-            { createdAt: { gte: new Date(startDate) } },
-            { createdAt: { lte: new Date(endDate) } },
-          ],
-        }
+        AND: [
+          { createdAt: { gte: new Date(startDate) } },
+          { createdAt: { lte: new Date(endDate) } },
+        ],
+      }
       : {};
   const total = await prisma.transaction.aggregate({
     _sum: { amount: true },
@@ -200,11 +200,11 @@ export const getPendingSales = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-          AND: [
-            { createdAt: { gte: new Date(startDate) } },
-            { createdAt: { lte: new Date(endDate) } },
-          ],
-        }
+        AND: [
+          { createdAt: { gte: new Date(startDate) } },
+          { createdAt: { lte: new Date(endDate) } },
+        ],
+      }
       : {};
   const total = await prisma.transaction.aggregate({
     _sum: { amount: true },
@@ -362,6 +362,7 @@ export const getTransactions = async () =>
         schoolFee: null,
       },
       schoolFee: {
+        deletedAt: null,
         student: {
           deletedAt: null,
         },

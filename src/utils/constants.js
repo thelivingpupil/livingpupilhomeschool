@@ -192,6 +192,12 @@ export const STATUS_BG_COLOR = {
   A: 'bg-secondary-500',
 };
 
+export const ENROLLMENT_STATUS_BG_COLOR = {
+  ENROLLED: 'bg-green-600 text-white',
+  DROPEED: 'bg-red-600 text-white',
+  PENDING: 'bg-cyan-600 text-white',
+};
+
 export const SHOP_SHIPPING_TYPE = {
   WITHIN_CEBU: 'Within Cebu',
   NCR: 'NCR',
@@ -201,3 +207,9 @@ export const SHOP_SHIPPING_TYPE = {
   MINDANAO: 'Mindanao',
   ISLANDER: 'Islander',
 };
+
+export const STUDENT_STATUS = {
+  ENROLLED: 'ENROLLED',
+  PENDING: 'PENDING',
+  DROPPED: 'DROPPED'
+}

@@ -1,9 +1,9 @@
 import { validateSession } from '@/config/api-validation';
 import { getStudentRecords } from '@/prisma/services/student-record';
-import { deleteStudentRecord, getStudentRecord, updateStudentRecord } from '@/prisma/services/student-record';
+import { deleteStudentRecord, updateStudentRecord } from '@/prisma/services/student-record';
+import { sendMail } from '@/lib/server/mail';
+import { html, text } from '@/config/email-templates/workspace-create';
 import { deleteStudentWorkspace } from '@/prisma/services/workspace';
-import { createSchoolFees, deleteStudentSchoolFees } from '@/prisma/services/school-fee';
-import { promises } from 'nodemailer/lib/xoauth2';
 
 const ALLOW_DELETION = true;
 
@@ -32,7 +32,8 @@ const handler = async (req, res) => {
         reportCardLink,
         discountCode,
         accreditation,
-        scholarshipCode
+        scholarshipCode,
+        email,
       } = req.body;
       if (!studentId) {
         return res.status(400).json({ error: 'Student ID is required' });
@@ -52,13 +53,43 @@ const handler = async (req, res) => {
         reportCardLink,
         discountCode,
         accreditation,
-        scholarshipCode
+        scholarshipCode,
       };
       console.log(studentNewData)
       // update student records
       const [studentRecord] = await Promise.all([
         updateStudentRecord(studentId, studentNewData),
       ]);
+      await sendMail({
+        html: html({
+          accreditation,
+          birthCertificateLink,
+          enrollmentType,
+          firstName,
+          incomingGradeLevel,
+          payment,
+          paymentMethod,
+          pictureLink,
+          program,
+          reportCardLink,
+          schoolFee,
+        }),
+        subject: `[Living Pupil Homeschool] Updated ${firstName}'s Student Record`,
+        text: text({
+          accreditation,
+          birthCertificateLink,
+          enrollmentType,
+          firstName,
+          incomingGradeLevel,
+          payment,
+          paymentMethod,
+          pictureLink,
+          program,
+          reportCardLink,
+          schoolFee,
+        }),
+        to: [email],
+      });
       res.status(200).json({ message: 'Student record updated successfully' });
     } catch (error) {
       console.error('Error updating student record:', error);

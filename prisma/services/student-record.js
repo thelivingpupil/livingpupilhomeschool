@@ -180,7 +180,8 @@ export const createStudentRecord = async (
   primaryTeacherAge,
   primaryTeacherRelationship,
   primaryTeacherEducation,
-  primaryTeacherProfile
+  primaryTeacherProfile,
+  studentStatus
 ) =>
   await prisma.studentRecord.create({
     data: {
@@ -208,7 +209,8 @@ export const createStudentRecord = async (
       primaryTeacherAge,
       primaryTeacherRelationship,
       primaryTeacherEducation,
-      primaryTeacherProfile
+      primaryTeacherProfile,
+      studentStatus
     },
   });
 
@@ -262,6 +264,7 @@ export const getStudentRecords = async () =>
       liveBirthCertificate: true,
       reportCard: true,
       discount: true,
+      studentStatus: true,
       student: {
         select: {
           creator: {
@@ -283,6 +286,7 @@ export const getStudentRecords = async () =>
                   paymentStatus: true,
                   message: true,
                   referenceNumber: true,
+                  url: true,
                 },
               },
             },
@@ -293,16 +297,16 @@ export const getStudentRecords = async () =>
     },
     where: {
       deletedAt: null,
-      student: {
-        deletedAt: null,
-        schoolFees: {
-          some: {
-            transaction: {
-              paymentStatus: TransactionStatus.S,
-            },
-          },
-        },
-      },
+      // student: {
+      //   deletedAt: null,
+      //   schoolFees: {
+      //     some: {
+      //       transaction: {
+      //         paymentStatus: TransactionStatus.S,
+      //       },
+      //     },
+      //   },
+      // },
     },
   });
 
@@ -361,6 +365,14 @@ export const updateStudentRecord = async (studentId, studentNewData) =>
       discount: studentNewData.discountCode,
       accreditation: studentNewData.accreditation,
       scholarship: studentNewData.scholarshipCode
+    },
+    where: { studentId }
+  });
+
+export const updateStudentStatus = async (studentId, newStudentStatus) =>
+  await prisma.studentRecord.update({
+    data: {
+      studentStatus: newStudentStatus,
     },
     where: { studentId }
   });

@@ -6,6 +6,10 @@ import GoogleProvider from 'next-auth/providers/google';
 
 import prisma from '@/prisma/index';
 import { html, text } from '@/config/email-templates/signin';
+import {
+  html as onboardHtml,
+  text as onboardText,
+} from '@/config/email-templates/onboarding';
 import { emailConfig, sendMail } from '@/lib/server/mail';
 import { InvitationStatus } from '@prisma/client';
 
@@ -43,6 +47,24 @@ export default NextAuth({
     //     await createPaymentAccount(user.email, user.id);
     //   }
     // },
+    createUser: async (message) => {
+      const { user } = message;
+      const email = user.email;
+      console.log('createUser event triggered for:', email); // Debug log
+
+      // Send onboarding email
+      try {
+        await sendMail({
+          html: onboardHtml({ email }),
+          subject: `[Living Pupil Homeschool] Welcome to Living Pupil Homeschool`,
+          text: onboardText({ email }),
+          to: email,
+        });
+        console.log('Onboarding email sent to:', email); // Debug log
+      } catch (error) {
+        console.error('Error sending onboarding email:', error); // Debug log for errors
+      }
+    },
   },
   providers: [
     EmailProvider({

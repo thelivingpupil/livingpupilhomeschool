@@ -21,6 +21,8 @@ import {
   GRADE_LEVEL_TYPES,
   PAYMENT_TYPE,
   SCHOOL_YEAR,
+  ENROLLMENT_STATUS_BG_COLOR,
+  STUDENT_STATUS
 } from '@/utils/constants';
 import {
   Accreditation,
@@ -90,8 +92,10 @@ const filterByOptions = {
 
 const Students = ({ schoolFees, programs }) => {
   const { data, isLoading } = useStudents();
+  console.log(data)
   const { data: workspaceData, isLoading: isFetchingWorkspaces } =
     useWorkspaces();
+  console.log(workspaceData)
   const [isWorkspaceDataFetched, setIsWorkspaceDataFetched] = useState(false);
   // Effect to handle workspace data change
   useEffect(() => {
@@ -104,6 +108,8 @@ const Students = ({ schoolFees, programs }) => {
   const [isSubmitting, setSubmittingState] = useState(false);
   const [showModal, setModalVisibility] = useState(false);
   const [showModal2, setModalVisibility2] = useState(false);
+  const [showModal3, setModalVisibility3] = useState(false);
+  const [showUpdateStudentStatusModal, setUpdateStudentStatusModalVisibility] = useState(false);
   const [filter, setFilter] = useState(['', '']);
   const [filterBy, filterValue] = filter;
   const [student, setStudent] = useState(null);
@@ -112,6 +118,7 @@ const Students = ({ schoolFees, programs }) => {
   const [lastName, setLastName] = useState('');
   const [gender, setGender] = useState(Gender.FEMALE);
   const [religion, setReligion] = useState(Religion.ROMAN_CATHOLIC);
+  const [studentStatus, setStudentStatus] = useState('');
   const [reason, setReason] = useState('');
   const [enrollmentType, setEnrollmentType] = useState(Enrollment.NEW);
   const [incomingGradeLevel, setIncomingGradeLevel] = useState(
@@ -139,6 +146,7 @@ const Students = ({ schoolFees, programs }) => {
   const [email, setEmail] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [workspaceId, setWorkspaceId] = useState('');
+  const [schoolFeeUrl, setSchoolFeeUrl] = useState('');
   const age = differenceInYears(new Date(), birthDate) || 0;
 
   const filterStudents = useMemo(() => {
@@ -151,6 +159,8 @@ const Students = ({ schoolFees, programs }) => {
 
   const toggleModal = () => setModalVisibility(!showModal);
   const toggleModal2 = () => setModalVisibility2(!showModal2);
+  const toggleModal3 = () => setModalVisibility3(!showModal3);
+  const toggleUpdateStudentStatusModal = () => setUpdateStudentStatusModalVisibility(!showUpdateStudentStatusModal)
 
   const programFee = programs.find((programFee) => {
     let gradeLevel = incomingGradeLevel;
@@ -246,7 +256,6 @@ const Students = ({ schoolFees, programs }) => {
 
   const view = (student) => {
     toggleModal();
-    console.log(student);
     setStudent(student);
     setStudentId(student.studentId)
     //setInviteCode(student.studentId)
@@ -256,7 +265,6 @@ const Students = ({ schoolFees, programs }) => {
       });
 
       if (workspaceContainingStudent) {
-        console.log(workspaceContainingStudent)
         setInviteCode(workspaceContainingStudent.inviteCode);
         setWorkspaceId(workspaceContainingStudent.id)
       } else {
@@ -280,13 +288,56 @@ const Students = ({ schoolFees, programs }) => {
     setDiscountCode(student.discount)
     setBirthCertificateLink(student.liveBirthCertificate)
     setPictureLink(student.image)
-    setPictureLink(student.reportCard)
+    setReportCardLink(student.reportCard)
     setAccreditation(student.accreditation)
     setPayment(student.student.schoolFees[0].paymentType)
     setScholarship(student.scholarship)
     setUserId(student.student.creator.guardianInformation.userId)
     setPaymentMethod('ONLINE')
     setEmail(student.student.creator.email)
+    setStudentStatus(student.studentStatus)
+  };
+
+  const viewEditSchoolFees = (student) => {
+    toggleModal3();
+    setStudent(student);
+    setFirstName(student.firstName);
+    setMiddleName(student.middleName);
+    setLastName(student.lastName);
+    setBirthDate(new Date(student.birthDate));
+    setGender(student.gender);
+    setReligion(student.religion)
+    setEnrollmentType(student.enrollmentType)
+    setIncomingGradeLevel(student.incomingGradeLevel)
+    setSchoolYear(student.schoolYear)
+    setDiscountCode(student.discount)
+    setBirthCertificateLink(student.liveBirthCertificate)
+    setPictureLink(student.image)
+    setReportCardLink(student.reportCard)
+    setAccreditation(student.accreditation)
+    setPayment(student.student.schoolFees[0].paymentType)
+    setScholarship(student.scholarship)
+    setUserId(student.student.creator.guardianInformation.userId)
+    setPaymentMethod('ONLINE')
+    setEmail(student.student.creator.email)
+  };
+
+  const viewUpdateStudentStatus = (student) => {
+    toggleUpdateStudentStatusModal();
+    setStudent(student);
+    setFirstName(student.firstName);
+    setAccreditation(student.accreditation)
+    setBirthCertificateLink(student.liveBirthCertificate)
+    setEnrollmentType(student.enrollmentType)
+    setIncomingGradeLevel(student.incomingGradeLevel)
+    setPayment(student.student.schoolFees[0].paymentType)
+    setPaymentMethod('ONLINE')
+    setPictureLink(student.image)
+    setReportCardLink(student.reportCard)
+    setSchoolFeeUrl(student.student.schoolFees[0].transaction.url)
+    setEmail(student.student.creator.email)
+    setStudentStatus(student.studentStatus)
+    console.log(student.student.schoolFees[0].transaction.url)
   };
 
   const editStudentRecord = (studentId) => {
@@ -310,6 +361,7 @@ const Students = ({ schoolFees, programs }) => {
         scholarshipCode,
         accreditation,
         email,
+        studentStatus
       },
       method: 'PUT',
     })
@@ -321,6 +373,8 @@ const Students = ({ schoolFees, programs }) => {
           );
         } else {
           toast.success('Student record has been updated');
+          toggleModal2();
+          toggleModal();
         }
       })
       .catch(() => {
@@ -357,7 +411,46 @@ const Students = ({ schoolFees, programs }) => {
           );
         } else {
           toast.success('Generate school fees success');
-          toggleModal2();
+          toggleModal3();
+          toggleModal();
+        }
+      })
+      .catch(error => {
+        setSubmittingState(false);
+        toast.error(`Error generating school fees: ${error.message}`);
+      });
+  };
+
+  const updateStudentStatus = (studentId) => {
+    setSubmittingState(true);
+    api('/api/students/student-status', {
+      body: {
+        studentId,
+        firstName,
+        accreditation,
+        birthCertificateLink,
+        enrollmentType,
+        incomingGradeLevel,
+        payment,
+        paymentMethod,
+        pictureLink,
+        program,
+        reportCardLink,
+        schoolFeeUrl,
+        email,
+        studentStatus
+      },
+      method: 'PUT',
+    })
+      .then(response => {
+        setSubmittingState(false);
+        if (response.errors) {
+          Object.keys(response.errors).forEach((error) =>
+            toast.error(response.errors[error].msg)
+          );
+        } else {
+          toast.success('Update student status success');
+          toggleUpdateStudentStatusModal();
           toggleModal();
         }
       })
@@ -1337,6 +1430,22 @@ const Students = ({ schoolFees, programs }) => {
               >
                 Edit Student Details
               </button>
+              <button
+                className="px-3 py-1 my-1 text-white rounded bg-primary-600 hover:bg-primary-400"
+                onClick={() => {
+                  viewEditSchoolFees(student);
+                }}
+              >
+                Edit Student School Fees
+              </button>
+              <button
+                className="px-3 py-1 my-1 text-white rounded bg-primary-600 hover:bg-primary-400"
+                onClick={() => {
+                  viewUpdateStudentStatus(student);
+                }}
+              >
+                Update Student Status
+              </button>
             </div>
           </div>
         </SideModal>
@@ -1454,8 +1563,34 @@ const Students = ({ schoolFees, programs }) => {
                   </div>
                 </div>
               </div>
+
             </div>
+
           </div>
+          {/* {renderFileUpload()} */}
+          <div className="flex flex-col p-3 space-y-2">
+            <button
+              className="px-3 py-1 my-1 text-white rounded bg-green-600 hover:bg-green-400"
+              onClick={() => {
+                toast('Updating Student Details', {
+                  icon: '⚠️', // Optional: you can customize the icon
+                });
+                editStudentRecord(studentId);
+                //generateNewSchoolFees(studentId);
+              }}
+              disabled={isSubmitting}
+            >
+              Save Changes
+            </button>
+          </div>
+        </SideModal>
+      )}
+      {student && (
+        <SideModal
+          title={'Edit Student Details'}
+          show={showModal3}
+          toggle={toggleModal3}
+        >
           {/* {renderFileUpload()} */}
           {renderEducationalBackground()}
           {renderSchoolFees()}
@@ -1463,11 +1598,58 @@ const Students = ({ schoolFees, programs }) => {
             <button
               className="px-3 py-1 my-1 text-white rounded bg-green-600 hover:bg-green-400"
               onClick={() => {
-                editStudentRecord(studentId);
+                //editStudentRecord(studentId);
                 toast('Generating new school fee(s)', {
                   icon: '⚠️', // Optional: you can customize the icon
                 });
                 generateNewSchoolFees(studentId);
+              }}
+              disabled={isSubmitting}
+            >
+              Save Changes
+            </button>
+          </div>
+        </SideModal>
+      )}
+      {student && (
+        <SideModal
+          title={'Update Student Status'}
+          show={showUpdateStudentStatusModal}
+          toggle={toggleUpdateStudentStatusModal}
+        >
+          <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
+            <div className="flex flex-col w-full md:w-1/2">
+              <label className="text-lg font-bold" htmlFor="txtMother">
+                Student Status <span className="ml-1 text-red-600">*</span>
+              </label>
+              <div className="relative inline-block w-full border rounded">
+                <select
+                  className="w-full px-3 py-2 capitalize rounded appearance-none"
+                  onChange={(e) => setStudentStatus(e.target.value)}
+                  value={studentStatus}
+                >
+                  {Object.keys(STUDENT_STATUS).map((entry, index) => (
+                    <option key={index} value={entry}>
+                      {STUDENT_STATUS[entry]}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col p-3 space-y-2">
+            <button
+              className="px-3 py-1 my-1 text-white rounded bg-green-600 hover:bg-green-400"
+              onClick={() => {
+                //editStudentRecord(studentId);
+                toast('Updating Student Status', {
+                  icon: '⚠️', // Optional: you can customize the icon
+                });
+                updateStudentStatus(studentId);
               }}
               disabled={isSubmitting}
             >
@@ -1824,6 +2006,27 @@ const Students = ({ schoolFees, programs }) => {
                     <span>
                       {params.row.student.creator?.guardianInformation?.mobileNumber}
                     </span>
+                  )
+                },
+                {
+                  field: 'status',
+                  headerName: 'Status',
+                  headerAlign: 'center',
+                  align: 'center',
+                  valueGetter: (params) =>
+                    params.row.studentStatus ||
+                    '',
+                  renderCell: (params) => (
+                    <div>
+                      <h4 className="flex space-x-3">
+                        <span
+                          className={`rounded-full py-0.5 text-xs px-2 ${ENROLLMENT_STATUS_BG_COLOR[params.row.studentStatus]
+                            }`}
+                        >
+                          {params.row.studentStatus}
+                        </span>
+                      </h4>
+                    </div>
                   )
                 },
                 {

@@ -1,17 +1,21 @@
 import { validateSession } from '@/config/api-validation';
-import { html, text } from '@/config/email-templates/enrollment';
+import { html, text } from '@/config/email-templates/enrollment-received';
 import { sendMail } from '@/lib/server/mail';
 import { createSchoolFees } from '@/prisma/services/school-fee';
 import { createStudentRecord } from '@/prisma/services/student-record';
 import { updateGuardianInformation } from '@/prisma/services/user';
 import { getOwnWorkspace } from '@/prisma/services/workspace';
 //import { SCHOOL_YEAR } from '@/utils/constants';
+import { STUDENT_STATUS } from '@/utils/constants';
 
 const handler = async (req, res) => {
   const { method } = req;
 
   if (method === 'POST') {
     const session = await validateSession(req, res);
+    const studentStatus = STUDENT_STATUS.PENDING.toString();
+    console.log(studentStatus)
+    const parentName = session.user.name;
     const {
       firstName,
       middleName,
@@ -100,7 +104,8 @@ const handler = async (req, res) => {
         primaryTeacherAge,
         primaryTeacherRelationship,
         primaryTeacherEducation,
-        primaryTeacherProfile
+        primaryTeacherProfile,
+        STUDENT_STATUS.PENDING,
       ),
       createSchoolFees(
         session.user.userId,
@@ -119,34 +124,17 @@ const handler = async (req, res) => {
     ]);
     await sendMail({
       html: html({
-        accreditation,
-        birthCertificateLink,
-        enrollmentType,
+        parentName,
         firstName,
-        incomingGradeLevel,
-        payment,
-        paymentMethod,
-        pictureLink,
-        program,
-        reportCardLink,
-        schoolFee,
       }),
       subject: `[Living Pupil Homeschool] Received ${firstName}'s Student Record`,
       text: text({
-        accreditation,
-        birthCertificateLink,
-        enrollmentType,
+        parentName,
         firstName,
-        incomingGradeLevel,
-        payment,
-        paymentMethod,
-        pictureLink,
-        program,
-        reportCardLink,
-        schoolFee,
       }),
       to: [session.user.email],
     });
+    console.log()
     res.status(200).json({ data: { studentRecord, schoolFee } });
   } else {
     res

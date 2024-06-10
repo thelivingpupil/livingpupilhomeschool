@@ -204,7 +204,8 @@ model StudentRecord {
   primaryTeacherAge    String?            
   primaryTeacherRelationship String?      
   primaryTeacherEducation String?        
-  primaryTeacherProfile  String ?        
+  primaryTeacherProfile  String ?
+  studentStatus          String?        
   student              Workspace     @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("studentRecord")
@@ -423,4 +424,10 @@ enum TransactionStatus {
 enum UserType {
   ADMIN
   USER
+}
+
+enum studentStatus{
+  ENROLLED
+  PENDING
+  DROPPED
 }

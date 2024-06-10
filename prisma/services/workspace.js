@@ -403,6 +403,7 @@ export const getWorkspaces = async (id, email) => {
           liveBirthCertificate: true,
           reportCard: true,
           createdAt: true,
+          studentStatus: true,
         },
       },
       schoolFees: {
