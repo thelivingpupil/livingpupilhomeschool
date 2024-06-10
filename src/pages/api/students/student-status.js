@@ -54,7 +54,7 @@ const handler = async (req, res) => {
                         schoolFeeUrl,
                         email
                     }),
-                    subject: `[Living Pupil Homeschool] Updated ${firstName}'s Student Record`,
+                    subject: `[Living Pupil Homeschool] Received ${firstName}'s Student Record`,
                     text: text({
                         accreditation,
                         birthCertificateLink,

@@ -127,7 +127,7 @@ const handler = async (req, res) => {
         parentName,
         firstName,
       }),
-      subject: `[Living Pupil Homeschool] Received ${firstName}'s Student Record`,
+      subject: `Enrollment Form Received - Verification in Progress!`,
       text: text({
         parentName,
         firstName,
