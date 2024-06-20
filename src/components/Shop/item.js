@@ -14,6 +14,7 @@ const Item = ({
   price,
   categories,
   description,
+  inventory
 }) => {
   const [showDescription, setDescriptionVisibility] = useState(false);
   const [quantity, setQuantity] = useState(count);
@@ -70,24 +71,28 @@ const Item = ({
         </button>
         {showDescription
           ? description && (
-              <div className="flex flex-col items-start justify-center py-2 space-y-3 text-sm">
-                <PortableText value={description} />
-              </div>
-            )
+            <div className="flex flex-col items-start justify-center py-2 space-y-3 text-sm">
+              <PortableText value={description} />
+            </div>
+          )
           : null}
       </div>
+      <p className={`text-xs ${inventory === 0 ? 'text-red-600' : 'text-gray-600'}`}>
+        {inventory === 0 ? 'Out of stock' : `${inventory} available pieces`}
+      </p>
       <div className="space-y-3">
         <div className="flex flex-row justify-between space-x-3">
           <button
             className="p-2 text-white rounded bg-primary-400 disabled:opacity-25"
-            disabled={quantity === 0}
+            disabled={quantity === 0 || inventory === 0}
             onClick={decrease}
           >
             <MinusIcon className="w-3 h-3" />
           </button>
           <p>{quantity}x</p>
           <button
-            className="p-2 text-white rounded bg-primary-400"
+            className="p-2 text-white rounded bg-primary-400 disabled:opacity-25"
+            disabled={inventory === 0 || quantity >= inventory}
             onClick={increase}
           >
             <PlusIcon className="w-3 h-3" />

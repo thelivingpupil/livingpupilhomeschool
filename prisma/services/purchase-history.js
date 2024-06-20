@@ -1,4 +1,5 @@
 import { TransactionSource } from '@prisma/client';
+import sanityClient from '@/lib/server/sanity';
 import prisma from '@/prisma/index';
 import crypto from 'crypto';
 
@@ -125,6 +126,39 @@ export const createPurchase = async ({
   deliveryAddress,
   contactNumber,
 }) => {
+  const itemIds = items.map(item => item.id);
+  const currentInventory = await sanityClient.fetch(`*[_type == "shopItems" && _id in $itemIds]`, { itemIds });
+  console.log(currentInventory)
+
+  // Update inventory quantities
+  const inventoryUpdates = items.map(purchasedItem => {
+    const inventoryItem = currentInventory.find(item => item._id === purchasedItem.id);
+    if (inventoryItem) {
+      const newQuantity = inventoryItem.inventory - purchasedItem.quantity;
+      return {
+        id: inventoryItem._id,
+        patch: {
+          set: { inventory: newQuantity >= 0 ? newQuantity : 0 },
+        },
+      };
+    }
+    return null;
+  }).filter(Boolean);
+
+  // Log the inventory updates to inspect
+  console.log('Inventory Updates:', JSON.stringify(inventoryUpdates, null, 2));
+
+  // Step 3: Commit each mutation to Sanity CMS individually
+  const results = [];
+  for (const update of inventoryUpdates) {
+    const result = await sanityClient
+      .patch(update.id)
+      .set(update.patch.set)
+      .commit();
+    results.push(result);
+    console.log('Mutation result:', result);
+  }
+
   const orderItems = items.map(({ code, image, name, price, quantity }) => ({
     code:
       code ||

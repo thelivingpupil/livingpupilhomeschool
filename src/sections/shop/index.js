@@ -17,7 +17,6 @@ const builder = imageUrlBuilder(sanityClient);
 
 const Shop = ({ categories, items }) => {
   const { data } = useUser();
-
   const [sortBy, setSortBy] = useState('alphaAsc');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [shopItems, setShopItems] = useState(items);
@@ -429,7 +428,7 @@ const Shop = ({ categories, items }) => {
               {shopItems ? (
                 shopItems.map(
                   (
-                    { _id, code, image, name, price, categories, description },
+                    { _id, code, image, name, price, categories, description, inventory },
                     index
                   ) => {
                     const imageAsset = builder.image(image?.asset);
@@ -455,6 +454,7 @@ const Shop = ({ categories, items }) => {
                         }
                         name={name}
                         price={price}
+                        inventory={inventory}
                       />
                     ) : null;
                   }
