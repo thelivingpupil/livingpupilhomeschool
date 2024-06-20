@@ -41,6 +41,11 @@ export const getStaticProps = async ({ params }) => {
     `*[_type == 'pages' && index != true && slug.current == $slug][0]{..., content[]->{...}}`,
     { slug }
   );
+
+  if (!page) {
+    return { notFound: true };
+  }
+
   return {
     props: { page },
     revalidate: 10,
