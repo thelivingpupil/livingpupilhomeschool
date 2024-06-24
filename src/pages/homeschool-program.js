@@ -56,7 +56,7 @@ const HomeschoolProgram = ({ page, programs }) => {
       program.enrollmentType === enrollmentType &&
       program.gradeLevel === incomingGradeLevel
   );
-  
+
   return (
     <LandingLayout>
       <Meta title="Living Pupil Homeschool" />
@@ -72,18 +72,16 @@ const HomeschoolProgram = ({ page, programs }) => {
           </h3>
           <div className="flex flex-row items-center justify-center space-x-3">
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                enrollmentType === Enrollment.NEW && 'text-white bg-primary-500'
-              }`}
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${enrollmentType === Enrollment.NEW && 'text-white bg-primary-500'
+                }`}
               onClick={() => handleEnrollmentTypeChange(Enrollment.NEW)}
             >
               New Family
             </button>
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                enrollmentType === Enrollment.CONTINUING &&
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${enrollmentType === Enrollment.CONTINUING &&
                 'text-white bg-primary-500'
-              }`}
+                }`}
               onClick={() => handleEnrollmentTypeChange(Enrollment.CONTINUING)}
             >
               Continuing Family
@@ -183,8 +181,8 @@ const HomeschoolProgram = ({ page, programs }) => {
                     currency: 'PHP',
                   }).format(
                     tuitionFee?.paymentTerms[1]?.downPayment +
-                      tuitionFee?.paymentTerms[1]?.secondPayment +
-                      tuitionFee?.paymentTerms[1]?.thirdPayment || 0
+                    tuitionFee?.paymentTerms[1]?.secondPayment +
+                    tuitionFee?.paymentTerms[1]?.thirdPayment || 0
                   )}`}
                 </div>
               </div>
@@ -222,9 +220,9 @@ const HomeschoolProgram = ({ page, programs }) => {
                     currency: 'PHP',
                   }).format(
                     tuitionFee?.paymentTerms[2]?.downPayment +
-                      tuitionFee?.paymentTerms[2]?.secondPayment +
-                      tuitionFee?.paymentTerms[2]?.thirdPayment +
-                      tuitionFee?.paymentTerms[2]?.fourthPayment || 0
+                    tuitionFee?.paymentTerms[2]?.secondPayment +
+                    tuitionFee?.paymentTerms[2]?.thirdPayment +
+                    tuitionFee?.paymentTerms[2]?.fourthPayment || 0
                   )}`}
                 </div>
               </div>

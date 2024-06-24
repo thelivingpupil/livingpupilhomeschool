@@ -39,7 +39,7 @@ const HomeschoolCottage = ({ page, programs }) => {
       program.cottageType === cottageType
   );
 
-    const handleEnrollmentTypeChange = (newEnrollmentType) => {
+  const handleEnrollmentTypeChange = (newEnrollmentType) => {
     setEnrollmentType(newEnrollmentType);
     router.push({
       pathname: router.pathname,
@@ -78,18 +78,16 @@ const HomeschoolCottage = ({ page, programs }) => {
           </h3>
           <div className="flex flex-row items-center justify-center space-x-3">
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                enrollmentType === Enrollment.NEW && 'text-white bg-primary-500'
-              }`}
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${enrollmentType === Enrollment.NEW && 'text-white bg-primary-500'
+                }`}
               onClick={() => handleEnrollmentTypeChange(Enrollment.NEW)}
             >
               New Family
             </button>
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                enrollmentType === Enrollment.CONTINUING &&
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${enrollmentType === Enrollment.CONTINUING &&
                 'text-white bg-primary-500'
-              }`}
+                }`}
               onClick={() => handleEnrollmentTypeChange(Enrollment.CONTINUING)}
             >
               Continuing Family
@@ -100,10 +98,9 @@ const HomeschoolCottage = ({ page, programs }) => {
           <h3 className="text-lg font-bold text-center">for cottage program</h3>
           <div className="flex flex-row items-center justify-center space-x-3">
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                cottageType === CottageType.THREE_DAYS_A_WEEK &&
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${cottageType === CottageType.THREE_DAYS_A_WEEK &&
                 'text-white bg-primary-500'
-              }`}
+                }`}
               onClick={() => {
                 setCottageType(CottageType.THREE_DAYS_A_WEEK);
                 if (
@@ -120,10 +117,9 @@ const HomeschoolCottage = ({ page, programs }) => {
               3 days a week
             </button>
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                cottageType === CottageType.FIVE_DAYS_A_WEEK &&
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${cottageType === CottageType.FIVE_DAYS_A_WEEK &&
                 'text-white bg-primary-500'
-              }`}
+                }`}
               onClick={() => {
                 handleCottageTypeChange(CottageType.FIVE_DAYS_A_WEEK);
               }}
@@ -136,10 +132,9 @@ const HomeschoolCottage = ({ page, programs }) => {
           <h3 className="text-lg font-bold text-center">for</h3>
           <div className="flex flex-row items-center justify-center space-x-3">
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                incomingGradeLevel === GRADE_LEVEL_TYPES.K2 &&
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${incomingGradeLevel === GRADE_LEVEL_TYPES.K2 &&
                 'text-white bg-primary-500'
-              }`}
+                }`}
               onClick={() => {
                 handleGradeLevelChange(GRADE_LEVEL_TYPES.K2);
               }}
@@ -147,10 +142,9 @@ const HomeschoolCottage = ({ page, programs }) => {
               K2
             </button>
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                incomingGradeLevel === GRADE_LEVEL_TYPES.FORM_1 &&
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${incomingGradeLevel === GRADE_LEVEL_TYPES.FORM_1 &&
                 'text-white bg-primary-500'
-              }`}
+                }`}
               onClick={() => {
                 handleGradeLevelChange(GRADE_LEVEL_TYPES.FORM_1);
               }}
@@ -158,10 +152,9 @@ const HomeschoolCottage = ({ page, programs }) => {
               Form 1
             </button>
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                incomingGradeLevel === GRADE_LEVEL_TYPES.FORM_2 &&
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${incomingGradeLevel === GRADE_LEVEL_TYPES.FORM_2 &&
                 'text-white bg-primary-500'
-              }`}
+                }`}
               onClick={() => {
                 handleGradeLevelChange(GRADE_LEVEL_TYPES.FORM_2);
               }}
@@ -169,10 +162,9 @@ const HomeschoolCottage = ({ page, programs }) => {
               Form 2
             </button>
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                incomingGradeLevel === GRADE_LEVEL_TYPES.FORM_3 &&
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${incomingGradeLevel === GRADE_LEVEL_TYPES.FORM_3 &&
                 'text-white bg-primary-500'
-              }`}
+                }`}
               onClick={() => {
                 handleGradeLevelChange(GRADE_LEVEL_TYPES.FORM_3);
               }}
@@ -182,10 +174,9 @@ const HomeschoolCottage = ({ page, programs }) => {
             {cottageType === CottageType.FIVE_DAYS_A_WEEK && (
               <>
                 <button
-                  className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 disabled:opacity-25 ${
-                    incomingGradeLevel === GRADE_LEVEL_TYPES.GRADE_11 &&
+                  className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 disabled:opacity-25 ${incomingGradeLevel === GRADE_LEVEL_TYPES.GRADE_11 &&
                     'text-white bg-primary-500'
-                  }`}
+                    }`}
                   disabled={cottageType === CottageType.THREE_DAYS_A_WEEK}
                   onClick={() => {
                     handleGradeLevelChange(GRADE_LEVEL_TYPES.GRADE_11);
@@ -194,10 +185,9 @@ const HomeschoolCottage = ({ page, programs }) => {
                   Grade 11
                 </button>
                 <button
-                  className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 disabled:opacity-25 ${
-                    incomingGradeLevel === GRADE_LEVEL_TYPES.GRADE_12 &&
+                  className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 disabled:opacity-25 ${incomingGradeLevel === GRADE_LEVEL_TYPES.GRADE_12 &&
                     'text-white bg-primary-500'
-                  }`}
+                    }`}
                   disabled={cottageType === CottageType.THREE_DAYS_A_WEEK}
                   onClick={() => {
                     handleGradeLevelChange(GRADE_LEVEL_TYPES.GRADE_12);
@@ -280,8 +270,8 @@ const HomeschoolCottage = ({ page, programs }) => {
                     currency: 'PHP',
                   }).format(
                     tuitionFee?.paymentTerms[1]?.downPayment +
-                      tuitionFee?.paymentTerms[1]?.secondPayment +
-                      tuitionFee?.paymentTerms[1]?.thirdPayment || 0
+                    tuitionFee?.paymentTerms[1]?.secondPayment +
+                    tuitionFee?.paymentTerms[1]?.thirdPayment || 0
                   )}`}
                 </div>
               </div>
@@ -319,9 +309,9 @@ const HomeschoolCottage = ({ page, programs }) => {
                     currency: 'PHP',
                   }).format(
                     tuitionFee?.paymentTerms[2]?.downPayment +
-                      tuitionFee?.paymentTerms[2]?.secondPayment +
-                      tuitionFee?.paymentTerms[2]?.thirdPayment +
-                      tuitionFee?.paymentTerms[2]?.fourthPayment || 0
+                    tuitionFee?.paymentTerms[2]?.secondPayment +
+                    tuitionFee?.paymentTerms[2]?.thirdPayment +
+                    tuitionFee?.paymentTerms[2]?.fourthPayment || 0
                   )}`}
                 </div>
               </div>

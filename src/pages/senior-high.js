@@ -49,18 +49,16 @@ const HomeschoolProgram = ({ page, programs }) => {
           </h3>
           <div className="flex flex-row items-center justify-center space-x-3">
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                enrollmentType === Enrollment.NEW && 'text-white bg-primary-500'
-              }`}
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${enrollmentType === Enrollment.NEW && 'text-white bg-primary-500'
+                }`}
               onClick={() => setEnrollmentType(Enrollment.NEW)}
             >
               New Family
             </button>
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                enrollmentType === Enrollment.CONTINUING &&
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${enrollmentType === Enrollment.CONTINUING &&
                 'text-white bg-primary-500'
-              }`}
+                }`}
               onClick={() => setEnrollmentType(Enrollment.CONTINUING)}
             >
               Continuing Family
@@ -71,19 +69,17 @@ const HomeschoolProgram = ({ page, programs }) => {
           <h3 className="text-lg font-bold text-center">for program</h3>
           <div className="flex flex-row items-center justify-center space-x-3">
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                incomingProgram === Program.HOMESCHOOL_PROGRAM &&
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${incomingProgram === Program.HOMESCHOOL_PROGRAM &&
                 'text-white bg-primary-500'
-              }`}
+                }`}
               onClick={() => setIncomingProgram(Program.HOMESCHOOL_PROGRAM)}
             >
               Homeschool Program
             </button>
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                incomingProgram === Program.HOMESCHOOL_COTTAGE &&
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${incomingProgram === Program.HOMESCHOOL_COTTAGE &&
                 'text-white bg-primary-500'
-              }`}
+                }`}
               onClick={() => setIncomingProgram(Program.HOMESCHOOL_COTTAGE)}
             >
               Homeschool Cottage
@@ -94,19 +90,17 @@ const HomeschoolProgram = ({ page, programs }) => {
           <h3 className="text-lg font-bold text-center">for grade</h3>
           <div className="flex flex-row items-center justify-center space-x-3">
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                incomingGradeLevel === GradeLevel.GRADE_11 &&
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${incomingGradeLevel === GradeLevel.GRADE_11 &&
                 'text-white bg-primary-500'
-              }`}
+                }`}
               onClick={() => setIncomingGradeLevel(GradeLevel.GRADE_11)}
             >
               Grade 11
             </button>
             <button
-              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${
-                incomingGradeLevel === GradeLevel.GRADE_12 &&
+              className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${incomingGradeLevel === GradeLevel.GRADE_12 &&
                 'text-white bg-primary-500'
-              }`}
+                }`}
               onClick={() => setIncomingGradeLevel(GradeLevel.GRADE_12)}
             >
               Grade 12
@@ -184,8 +178,8 @@ const HomeschoolProgram = ({ page, programs }) => {
                     currency: 'PHP',
                   }).format(
                     tuitionFee?.paymentTerms[1]?.downPayment +
-                      tuitionFee?.paymentTerms[1]?.secondPayment +
-                      tuitionFee?.paymentTerms[1]?.thirdPayment || 0
+                    tuitionFee?.paymentTerms[1]?.secondPayment +
+                    tuitionFee?.paymentTerms[1]?.thirdPayment || 0
                   )}`}
                 </div>
               </div>
@@ -223,9 +217,9 @@ const HomeschoolProgram = ({ page, programs }) => {
                     currency: 'PHP',
                   }).format(
                     tuitionFee?.paymentTerms[2]?.downPayment +
-                      tuitionFee?.paymentTerms[2]?.secondPayment +
-                      tuitionFee?.paymentTerms[2]?.thirdPayment +
-                      tuitionFee?.paymentTerms[2]?.fourthPayment || 0
+                    tuitionFee?.paymentTerms[2]?.secondPayment +
+                    tuitionFee?.paymentTerms[2]?.thirdPayment +
+                    tuitionFee?.paymentTerms[2]?.fourthPayment || 0
                   )}`}
                 </div>
               </div>

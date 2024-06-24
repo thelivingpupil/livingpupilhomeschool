@@ -26,14 +26,20 @@ const Page = ({ page }) => {
 };
 
 export const getStaticPaths = async () => {
-  const paths = await sanityClient.fetch(
-    `*[_type == 'pages' && index != true && defined(slug.current)][].slug.current`
+  const pages = await sanityClient.fetch(
+    `*[_type == 'pages' && index != true && defined(slug.current)]{slug, locale}`
   );
+
+  const paths = pages.map(({ slug, locale }) => ({
+    params: { slug, locale }
+  }));
+
   return {
-    paths: paths.map((slug) => ({ params: { slug } })),
+    paths,
     fallback: true,
   };
 };
+
 
 export const getStaticProps = async ({ params }) => {
   const { slug } = params;
