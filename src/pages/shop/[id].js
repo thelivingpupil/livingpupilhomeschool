@@ -53,7 +53,7 @@ export const getStaticProps = async ({ params }) => {
     sanityClient.fetch(
       `*[_type == 'sections' && (name == 'Common Header' || name == 'Common Footer')]`
     ),
-    sanityClient.fetch(`*[_type == 'shopItems' && _id == $id && !(_id in path("drafts.**"))][0]`, {
+    sanityClient.fetch(`*[_type == 'shopItems' && _id == $id][0]`, {
       id,
     }),
   ]);
