@@ -24,21 +24,24 @@ const Shop = ({ page, shop }) => {
 export const getStaticProps = async () => {
   const [[header, footer], items] = await Promise.all([
     sanityClient.fetch(
-      `*[_type == 'sections' && (name == 'Common Header' || name == 'Common Footer')]`
+      `*[_type == 'sections' && (name == 'Common Header' || name == 'Common Footer') && !(_id in path("drafts.**"))]`
     ),
-    sanityClient.fetch(`*[_type == 'shopItems'] | order(name asc)`),
+    sanityClient.fetch(`*[_type == 'shopItems' && !(_id in path("drafts.**"))] | order(name asc)`),
   ]);
+
   const categories = [];
   items.forEach((item) => {
     if (item.categories) {
       categories.push(...item.categories);
     }
   });
+
   const uniqueCategories = categories
     .sort()
     .filter(
       (value, index, self) => self.indexOf(value) === index && value !== ''
     );
+
   return {
     props: {
       page: { footer, header },
