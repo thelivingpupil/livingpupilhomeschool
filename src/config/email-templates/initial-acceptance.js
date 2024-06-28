@@ -1,28 +1,10 @@
-import {
-	ACCREDITATION,
-	ENROLLMENT_TYPE,
-	GRADE_LEVEL,
-	PAYMENT_METHOD,
-	PAYMENT_TYPE,
-	PROGRAM,
-} from '@/utils/constants';
-
 const html = ({
-	accreditation,
-	birthCertificateLink,
-	enrollmentType,
-	firstName,
-	incomingGradeLevel,
-	payment,
-	paymentMethod,
-	pictureLink,
-	program,
-	reportCardLink,
-	schoolFee,
 	primaryGuardianName,
+	firstName,
+	middleName,
+	lastName,
 }) => {
-	return `
-    <!DOCTYPE html>
+	return `<!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 
 <head>
@@ -39,10 +21,6 @@ const html = ({
 			padding: 0;
 		}
 
-		a[x-apple-data-detectors] {
-			color: inherit !important;
-			text-decoration: inherit !important;
-		}
 
 		#MessageViewBody a {
 			color: inherit;
@@ -64,6 +42,20 @@ const html = ({
 		.image_block img+div {
 			display: none;
 		}
+
+        ul {
+            list-style-type: none; /* Remove default bullets */
+            padding: 0; /* Remove default padding */
+        }
+
+        li {
+            margin-bottom: 4px; /* Space between list items */
+        }
+
+        a {
+            text-decoration: underline !important;
+            color: #ffffff !important;
+        }
 
 		@media (max-width:620px) {
 			.mobile_hide {
@@ -146,39 +138,33 @@ const html = ({
 													<table class="paragraph_block block-2" width="100%" border="0" cellpadding="35" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
 														<tr>
 															<td class="pad">
-																<div style="direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:14.399999999999999px;">
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Hi ${primaryGuardianName},</p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Thank you for choosing Living Pupil Homeschool.</p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">We are glad to inform you that we have received <strong>${firstName}'s</strong> records and will be processed for enrollment.</p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">For confirmation, below are the details you have submitted.</p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Enrollment Details</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Incoming Grade Level: ${GRADE_LEVEL[incomingGradeLevel]}</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Enrollment Type: ${ENROLLMENT_TYPE[enrollmentType]}</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Program: ${PROGRAM[program]}</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Accreditation: ${ACCREDITATION[accreditation]}</p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Submitted Documents</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">ID Picture: ${pictureLink ? '<li>Picture</li>' : ''}</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Birth Certificate: ${birthCertificateLink ? '* Birth Certificate\n' : ''}</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Report Card / School Card: ${reportCardLink ? '* Report Card' : ''}</p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Payment Details</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Payment Method: ${PAYMENT_METHOD[paymentMethod]}</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Payment Type: ${PAYMENT_TYPE[payment]}</p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">You can access the payment URL here if you have not yet paid the school fees.</p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Payment URL: <a href="${schoolFee.url}" target="_blank"><strong>Payment URL</strong></a></p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">In case you need any assistance and found any discrepancies, just hit reply.</p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; color:#ffffff;">Thank you and have a wonderful day.</p>
+																<div style="color:#ffffff;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:150%;text-align:left;mso-line-height-alt:21px;">
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Dear ${primaryGuardianName},</p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">&nbsp;</p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">It is with great pleasure that I share the news of your child, <strong><em>${firstName} ${middleName} ${lastName}'s</em></strong> initial acceptance into Living Pupil Homeschool for the academic year 2024-2025.</p>
+																	<p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">To complete the admission process smoothly, please proceed with the following steps:</p>
+																	<p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">School ID Form: <a href="https://forms.gle/SngPGpevT7cPNtrP6" style="text-decoration: underline; color: #ffffff;">https://forms.gle/SngPGpevT7cPNtrP6</a> <em>(Please submit a form for each student)</em></p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Report Card <em>(Please upload for each student on the portal)</em></p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;"><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- an incomplete one is fine as long as it has the child's name, grade level, and the school's information</em></p>
+																	<p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Training Videos:</p>
+																	<ul>
+                                                                        <li style="color:#ffffff;" aria-level="1">&nbsp;Week 1: <a href="https://docs.google.com/forms/d/e/1FAIpQLScchekkC2kZYOxjuBBpwPvBWZRSVnwAp5RK81VsI5MwYGHVHg/viewform">https://docs.google.com/forms/d/e/1FAIpQLScchekkC2kZYOxjuBBpwPvBWZRSVnwAp5RK81VsI5MwYGHVHg/viewform</a></li>
+                                                                        <li style="color:#ffffff;" aria-level="1">&nbsp;Week 2: <a href="https://docs.google.com/forms/d/e/1FAIpQLSfErY89O_D6THqZyZ1aKo9shcrwXpb4B_fLz8vqWyAYZzoUZw/viewform">https://docs.google.com/forms/d/e/1FAIpQLSfErY89O_D6THqZyZ1aKo9shcrwXpb4B_fLz8vqWyAYZzoUZw/viewform</a></li>
+                                                                        <li style="color:#ffffff;" aria-level="1">&nbsp;Week 3: <a href="https://docs.google.com/forms/d/e/1FAIpQLSdFN8IJqcFEtrrJes07ZOKB7NvVgy8LpCl-bStden4C5I7v1A/viewform">https://docs.google.com/forms/d/e/1FAIpQLSdFN8IJqcFEtrrJes07ZOKB7NvVgy8LpCl-bStden4C5I7v1A/viewform</a></li>
+                                                                        <li style="color:#ffffff;" aria-level="1">&nbsp;&nbsp;Week 4: <a href="https://docs.google.com/forms/d/e/1FAIpQLSdPhBOjqeF6YFymjfsUfZzfgEIm62uSTX3M1CK2EbOJkS12Hw/viewform">https://docs.google.com/forms/d/e/1FAIpQLSdPhBOjqeF6YFymjfsUfZzfgEIm62uSTX3M1CK2EbOJkS12Hw/viewform</a></li>
+                                                                    </ul><p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Upon successful completion of the above tasks, your children will be officially enrolled. Subsequently, we will send you a Letter of Acceptance.</p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">&nbsp;</p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">We eagerly anticipate welcoming your children to our school community and are poised for an outstanding year ahead. Should you have any queries, please don't hesitate to contact us.</p>
+																	<p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Warm regards,</p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;"><strong>Ameline C. Baran</strong></p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Admin Officer</p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Living Pupil Homeschool</p>
+																	<p style="margin: 0;">0945-647-6682</p>
 																</div>
 															</td>
 														</tr>
@@ -231,51 +217,42 @@ const html = ({
 	</table><!-- End -->
 </body>
 
-</html>
-`;
+</html>`;
 };
 
 const text = ({
-	accreditation,
-	birthCertificateLink,
-	enrollmentType,
+	primaryGuardianName,
 	firstName,
-	incomingGradeLevel,
-	payment,
-	paymentMethod,
-	pictureLink,
-	program,
-	reportCardLink,
-	schoolFee,
 }) => {
 	return `
-Thank you for choosing Living Pupil Homeschool.
-We are glad to inform you that we have updated <strong>${firstName}'s</strong> records and school fees.
+Dear ${primaryGuardianName},
 
-For confirmation, below are the details updated upon your request.
+It is with great pleasure that I share the news of ${firstName}'s initial acceptance into Living Pupil Homeschool for the academic year 2024-2025:
 
-Enrollment Details
-1. Incoming Grade Level: ${GRADE_LEVEL[incomingGradeLevel]}
-2. Enrollment Type: ${ENROLLMENT_TYPE[enrollmentType]}
-3. Program: ${PROGRAM[program]}
-4. Accreditation: ${ACCREDITATION[accreditation]}
+Amanda Gaia U. Espiritu - Grade 10
+Villamor U. Espiritu III - Grade 6
+David Niño U. Jacalan - Grade 6
 
-Submitted Documents
-${pictureLink ? '* Picture\n' : ''}
-${birthCertificateLink ? '* Birth Certificate\n' : ''}
-${reportCardLink ? '* Report Card' : ''}
+To complete the admission process smoothly, please proceed with the following steps:
 
-Payment Details
-1. Payment Method: ${PAYMENT_METHOD[paymentMethod]}
-2. Payment Type: ${PAYMENT_TYPE[payment]}
+1. School ID Form: https://forms.gle/SngPGpevT7cPNtrP6 (Please submit a form for each student)
+2. Report Card (Please upload for each student on the portal)
+                  - an incomplete one is fine as long as it has the child's name, grade level, and the school's information
+3. Training Videos:
+ Week 1: https://docs.google.com/forms/d/e/1FAIpQLScchekkC2kZYOxjuBBpwPvBWZRSVnwAp5RK81VsI5MwYGHVHg/viewform
+ Week 2: https://docs.google.com/forms/d/e/1FAIpQLSfErY89O_D6THqZyZ1aKo9shcrwXpb4B_fLz8vqWyAYZzoUZw/viewform
+ Week 3: https://docs.google.com/forms/d/e/1FAIpQLSdFN8IJqcFEtrrJes07ZOKB7NvVgy8LpCl-bStden4C5I7v1A/viewform
+  Week4 :https://docs.google.com/forms/d/e/1FAIpQLSdPhBOjqeF6YFymjfsUfZzfgEIm62uSTX3M1CK2EbOJkS12Hw/viewform
 
-You can access the payment URL here if you have not yet paid the school fees.
-Payment URL: ${schoolFee.url}
+Upon successful completion of the above tasks, your children will be officially enrolled. Subsequently, we will send you a Letter of Acceptance.
 
-In case you need any assistance and found any discrepancies, just hit reply.
+We eagerly anticipate welcoming your children to our school community and are poised for an outstanding year ahead. Should you have any queries, please don't hesitate to contact us.
 
-Cheers,
-${process.env.EMAIL_FROM}
+Warm regards,
+Ameline C. Baran
+Admin Officer
+Living Pupil Homeschool
+0945-647-6682
 `;
 };
 

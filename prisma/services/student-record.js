@@ -265,6 +265,7 @@ export const getStudentRecords = async () =>
       reportCard: true,
       discount: true,
       studentStatus: true,
+      cottageType: true,
       student: {
         select: {
           creator: {

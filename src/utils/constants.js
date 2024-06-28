@@ -70,6 +70,24 @@ export const GRADE_LEVEL_TYPES = {
   GRADE_12: 'GRADE_12',
 };
 
+export const GRADE_TO_FORM_MAP = {
+  PRESCHOOL: 'PRESCHOOL',
+  K1: 'K1',
+  K2: 'K2',
+  GRADE_1: 'FORM_1',
+  GRADE_2: 'FORM_1',
+  GRADE_3: 'FORM_1',
+  GRADE_4: 'FORM_2',
+  GRADE_5: 'FORM_2',
+  GRADE_6: 'FORM_2',
+  GRADE_7: 'FORM_3',
+  GRADE_8: 'FORM_3',
+  GRADE_9: 'FORM_3',
+  GRADE_10: 'FORM_3',
+  GRADE_11: 'GRADE_11',
+  GRADE_12: 'GRADE_12',
+};
+
 export const GRADE_LEVEL_HEADER = {
   PRESCHOOL: 'Preschool',
   K1: 'K1',
@@ -194,8 +212,9 @@ export const STATUS_BG_COLOR = {
 
 export const ENROLLMENT_STATUS_BG_COLOR = {
   ENROLLED: 'bg-green-600 text-white',
+  INITIALLY_ENROLLED: 'bg-blue-600 text-white',
   DROPEED: 'bg-red-600 text-white',
-  PENDING: 'bg-cyan-600 text-white',
+  PENDING: 'bg-yellow-600 text-white',
 };
 
 export const SHOP_SHIPPING_TYPE = {
@@ -211,5 +230,6 @@ export const SHOP_SHIPPING_TYPE = {
 export const STUDENT_STATUS = {
   ENROLLED: 'ENROLLED',
   PENDING: 'PENDING',
-  DROPPED: 'DROPPED'
+  DROPPED: 'DROPPED',
+  INITIALLY_ENROLLED: 'INITIALLY ENROLLED',
 }

@@ -118,6 +118,7 @@ const Students = ({ schoolFees, programs }) => {
   const [lastName, setLastName] = useState('');
   const [gender, setGender] = useState(Gender.FEMALE);
   const [religion, setReligion] = useState(Religion.ROMAN_CATHOLIC);
+  const [primaryGuardianName, setPrimaryGuardianName] = useState('');
   const [studentStatus, setStudentStatus] = useState('');
   const [reason, setReason] = useState('');
   const [enrollmentType, setEnrollmentType] = useState(Enrollment.NEW);
@@ -148,6 +149,7 @@ const Students = ({ schoolFees, programs }) => {
   const [workspaceId, setWorkspaceId] = useState('');
   const [schoolFeeUrl, setSchoolFeeUrl] = useState('');
   const age = differenceInYears(new Date(), birthDate) || 0;
+
 
   const filterStudents = useMemo(() => {
     if (!filterBy || !filterValue) return data?.students;
@@ -326,18 +328,18 @@ const Students = ({ schoolFees, programs }) => {
     toggleUpdateStudentStatusModal();
     setStudent(student);
     setFirstName(student.firstName);
+    setLastName(student.lastName);
+    setMiddleName(student.middleName);
     setAccreditation(student.accreditation)
+    setProgram(student.program)
     setBirthCertificateLink(student.liveBirthCertificate)
     setEnrollmentType(student.enrollmentType)
     setIncomingGradeLevel(student.incomingGradeLevel)
-    setPayment(student.student.schoolFees[0].paymentType)
-    setPaymentMethod('ONLINE')
-    setPictureLink(student.image)
-    setReportCardLink(student.reportCard)
-    setSchoolFeeUrl(student.student.schoolFees[0].transaction.url)
     setEmail(student.student.creator.email)
     setStudentStatus(student.studentStatus)
-    console.log(student.student.schoolFees[0].transaction.url)
+    setPrimaryGuardianName(student.student.creator.guardianInformation.primaryGuardianName)
+    setCottageType(student.cottageType)
+    console.log(cottageType)
   };
 
   const editStudentRecord = (studentId) => {
@@ -427,18 +429,16 @@ const Students = ({ schoolFees, programs }) => {
       body: {
         studentId,
         firstName,
+        middleName,
+        lastName,
         accreditation,
-        birthCertificateLink,
         enrollmentType,
         incomingGradeLevel,
-        payment,
-        paymentMethod,
-        pictureLink,
         program,
-        reportCardLink,
-        schoolFeeUrl,
         email,
-        studentStatus
+        studentStatus,
+        primaryGuardianName,
+        cottageType,
       },
       method: 'PUT',
     })
@@ -2023,7 +2023,7 @@ const Students = ({ schoolFees, programs }) => {
                           className={`rounded-full py-0.5 text-xs px-2 ${ENROLLMENT_STATUS_BG_COLOR[params.row.studentStatus]
                             }`}
                         >
-                          {params.row.studentStatus}
+                          {STUDENT_STATUS[params.row.studentStatus]}
                         </span>
                       </h4>
                     </div>

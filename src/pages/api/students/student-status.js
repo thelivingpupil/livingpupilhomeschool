@@ -2,8 +2,11 @@ import { validateSession } from '@/config/api-validation';
 import { getStudentRecords } from '@/prisma/services/student-record';
 import { updateStudentStatus } from '@/prisma/services/student-record';
 import { sendMail } from '@/lib/server/mail';
-import { html, text } from '@/config/email-templates/enrollment-update';
-
+import { html, text } from '@/config/email-templates/initial-acceptance';
+import {
+    html as acceptanceHtml,
+    text as acceptanceText,
+} from '@/config/email-templates/letter-of-acceptance';
 
 const handler = async (req, res) => {
     const { method } = req;
@@ -17,18 +20,16 @@ const handler = async (req, res) => {
             const {
                 studentId,
                 firstName,
+                middleName,
+                lastName,
                 accreditation,
-                birthCertificateLink,
                 enrollmentType,
                 incomingGradeLevel,
-                payment,
-                paymentMethod,
-                pictureLink,
                 program,
-                reportCardLink,
-                schoolFeeUrl,
                 email,
-                studentStatus
+                studentStatus,
+                primaryGuardianName,
+                cottageType,
             } = req.body;
             if (!studentId) {
                 return res.status(400).json({ error: 'Student ID is required' });
@@ -38,39 +39,45 @@ const handler = async (req, res) => {
                 updateStudentStatus(studentId, studentStatus),
             ]);
             console.log(studentStatus)
-            if (studentStatus === 'ENROLLED') {
+            if (studentStatus === 'INITIALLY_ENROLLED') {
                 await sendMail({
                     html: html({
-                        accreditation,
-                        birthCertificateLink,
-                        enrollmentType,
+                        primaryGuardianName,
                         firstName,
-                        incomingGradeLevel,
-                        payment,
-                        paymentMethod,
-                        pictureLink,
-                        program,
-                        reportCardLink,
-                        schoolFeeUrl,
-                        email
+                        middleName,
+                        lastName
                     }),
-                    subject: `[Living Pupil Homeschool] Received ${firstName}'s Student Record`,
+                    subject: `[Living Pupil Homeschool] Initial Acceptance of ${firstName}`,
                     text: text({
-                        accreditation,
-                        birthCertificateLink,
-                        enrollmentType,
+                        primaryGuardianName,
                         firstName,
-                        incomingGradeLevel,
-                        payment,
-                        paymentMethod,
-                        pictureLink,
-                        program,
-                        reportCardLink,
-                        schoolFeeUrl,
-                        email
                     }),
                     to: [email],
                 });
+            }
+            else if (studentStatus === 'ENROLLED') {
+                await sendMail({
+                    html: acceptanceHtml({
+                        primaryGuardianName,
+                        firstName,
+                        middleName,
+                        lastName,
+                        incomingGradeLevel,
+                        program,
+                        accreditation,
+                        enrollmentType,
+                        cottageType
+                    }),
+                    subject: `[Living Pupil Homeschool] Letter of Acceptance for ${firstName}`,
+                    text: acceptanceText({
+                        primaryGuardianName,
+                        firstName,
+                    }),
+                    to: [email],
+                });
+            }
+            else {
+                res.status(500).json({ error: 'Status invalid' });
             }
 
             res.status(200).json({ message: 'Student status updated successfully' });

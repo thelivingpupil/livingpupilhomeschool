@@ -1,5 +1,9 @@
 import { validateSession } from '@/config/api-validation';
 import { html, text } from '@/config/email-templates/enrollment-received';
+import {
+  html as recordHtml,
+  text as recordText,
+} from '@/config/email-templates/enrollment-update';
 import { sendMail } from '@/lib/server/mail';
 import { createSchoolFees } from '@/prisma/services/school-fee';
 import { createStudentRecord } from '@/prisma/services/student-record';
@@ -105,7 +109,6 @@ const handler = async (req, res) => {
         primaryTeacherRelationship,
         primaryTeacherEducation,
         primaryTeacherProfile,
-        STUDENT_STATUS.PENDING,
       ),
       createSchoolFees(
         session.user.userId,
@@ -131,6 +134,37 @@ const handler = async (req, res) => {
       text: text({
         parentName,
         firstName,
+      }),
+      to: [session.user.email],
+    });
+    await sendMail({
+      html: recordHtml({
+        accreditation,
+        birthCertificateLink,
+        enrollmentType,
+        firstName,
+        incomingGradeLevel,
+        payment,
+        paymentMethod,
+        pictureLink,
+        program,
+        reportCardLink,
+        schoolFee,
+        primaryGuardianName,
+      }),
+      subject: `[Living Pupil Homeschool] Received ${firstName} Student Record`,
+      text: recordText({
+        accreditation,
+        birthCertificateLink,
+        enrollmentType,
+        firstName,
+        incomingGradeLevel,
+        payment,
+        paymentMethod,
+        pictureLink,
+        program,
+        reportCardLink,
+        schoolFee,
       }),
       to: [session.user.email],
     });
