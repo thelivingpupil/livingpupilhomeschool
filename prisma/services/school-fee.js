@@ -32,6 +32,7 @@ export const createSchoolFees = async (
   scholarshipCode = '',
 ) => {
   console.log("Entering createSchoolFees function...");
+  console.log("workspaceId: " + workspaceId)
   let gradeLevel = incomingGradeLevel;
 
   if (program === Program.HOMESCHOOL_COTTAGE) {
@@ -107,8 +108,6 @@ export const createSchoolFees = async (
     ));
 
   let scholarshipValue = 0;
-  console.log(scholarship)
-  console.log(discount)
 
   const isPastorsFee =
     discount && discount?.code?.toLowerCase().includes('pastor');
@@ -130,8 +129,21 @@ export const createSchoolFees = async (
         (scholarship.value / 100) * fee.fullPayment
       : 0;
 
+    let total;
+
+    if (scholarshipCode === 'Full-scholar') {
+      total = 0;
+    } else {
+      total = payments + FEES[paymentMethod] - scholarshipValue;
+    }
+
+    console.log('Total:', total);
+
+    if (typeof total !== 'number' || isNaN(total)) {
+      throw new Error('Invalid total value');
+    }
     const transaction = await prisma.purchaseHistory.create({
-      data: { total: payments + FEES[paymentMethod] - scholarshipValue },
+      data: { total: total },
       select: { id: true, transactionId: true },
     });
     const [response] = await Promise.all([
