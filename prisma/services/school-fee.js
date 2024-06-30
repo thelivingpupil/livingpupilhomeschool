@@ -137,8 +137,6 @@ export const createSchoolFees = async (
       total = payments + FEES[paymentMethod] - scholarshipValue;
     }
 
-    console.log('Total:', total);
-
     if (typeof total !== 'number' || isNaN(total)) {
       throw new Error('Invalid total value');
     }

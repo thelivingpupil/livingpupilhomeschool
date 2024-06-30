@@ -248,7 +248,7 @@ export const createTransaction = async (
   description,
   purchaseId,
   source,
-  fee = Fees.ONLINE
+  fee
 ) => {
   const response = await api(
     `${process.env.PAYMENTS_BASE_URL}/${transactionId}/post`,
