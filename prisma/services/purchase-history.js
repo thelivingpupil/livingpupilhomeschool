@@ -126,11 +126,12 @@ export const createPurchase = async ({
   deliveryAddress,
   contactNumber,
 }) => {
+  // Step 1: Fetch current inventory
   const itemIds = items.map(item => item.id);
   const currentInventory = await sanityClient.fetch(`*[_type == "shopItems" && _id in $itemIds]`, { itemIds });
-  console.log(currentInventory)
+  console.log(currentInventory);
 
-  // Update inventory quantities
+  // Step 2: Update inventory quantities
   const inventoryUpdates = items.map(purchasedItem => {
     const inventoryItem = currentInventory.find(item => item._id === purchasedItem.id);
     if (inventoryItem) {
@@ -148,15 +149,17 @@ export const createPurchase = async ({
   // Log the inventory updates to inspect
   console.log('Inventory Updates:', JSON.stringify(inventoryUpdates, null, 2));
 
-  // Step 3: Commit each mutation to Sanity CMS individually
-  const results = [];
-  for (const update of inventoryUpdates) {
-    const result = await sanityClient
-      .patch(update.id)
-      .set(update.patch.set)
-      .commit();
-    results.push(result);
-    console.log('Mutation result:', result);
+  // Step 3: Batch update inventory
+  try {
+    const transaction = sanityClient.transaction();
+    inventoryUpdates.forEach(update => {
+      transaction.patch(update.id, update.patch);
+    });
+
+    const result = await transaction.commit();
+    console.log('Batch mutation result:', result);
+  } catch (error) {
+    console.error('Batch mutation error:', error);
   }
 
   const orderItems = items.map(({ code, image, name, price, quantity }) => ({
