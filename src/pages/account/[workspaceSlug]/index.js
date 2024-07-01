@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   CheckIcon,
   ChevronDownIcon,
@@ -51,6 +51,7 @@ import {
 import Image from 'next/image';
 import { getSession } from 'next-auth/react';
 import { getGuardianInformation } from '@/prisma/services/user';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 const steps = [
   'Student Information',
@@ -76,6 +77,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const [viewFees, setViewFees] = useState(false);
   const [isSubmittingCode, setSubmittingCodeState] = useState(false);
   const [isSubmitting, setSubmittingState] = useState(false);
+  const [captchaValue, setCaptchaValue] = useState(null);
+  const recaptchaRef = useRef(null);
   const [review, setReviewVisibility] = useState(false);
   const [agree, setAgree] = useState(false);
   const [firstName, setFirstName] = useState('');
@@ -176,6 +179,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const handlePrimaryTeacherEducation = (event) => setPrimaryTeacherEducation(event.target.value);
   const handlePrimaryTeacherProfile = (event) => setPrimaryTeacherProfile(event.target.value);
   const handlePrimaryTeacherRelationship = (event) => setPrimaryTeacherRelatiosnship(event.target.value);
+  const handleCaptchaChange = (value) => setCaptchaValue(value);
 
   const age = differenceInYears(new Date(), birthDate) || 0;
   const validateNext =
@@ -1853,11 +1857,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               <option value={PaymentType.QUARTERLY}>
                 Four (4) Term Payment (Initial Fee + Three Payment Term Fees)
               </option>
-              {programFeeByAccreditation?.paymentTerms[3] && (
+              {/* {programFeeByAccreditation?.paymentTerms[3] && (
                 <option value={PaymentType.MONTHLY}>
                   Nine (9) Term Payment (Initial Fee + Eight Payment Term Fees)
                 </option>
-              )}
+              )} */}
 
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -2045,7 +2049,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               </h3>
             </div>
           </div>
-          <div className="relative flex flex-row space-x-5">
+          {/* <div className="relative flex flex-row space-x-5">
             {programFeeByAccreditation?.paymentTerms[3] && (
               <div
                 className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.MONTHLY
@@ -2156,7 +2160,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 </h3>
               </div>
             )}
-          </div>
+          </div> */}
 
           <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded">
             <h3 className="text-sm font-bold">Payment Policies:</h3>
@@ -3247,6 +3251,13 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               <strong>NOTE</strong>: Succeeding payments will always incur payment
               gateway fees per transaction.
             </p>
+          </div>
+          <div className="flex items-center px-3 py-3 space-x-3 text-sm text-blue-500 border-2 border-blue-600 rounded bg-blue-50">
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+              onChange={handleCaptchaChange}
+            />
           </div>
           {viewFees ? (
             <>

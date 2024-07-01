@@ -224,7 +224,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       address1.length > 0 &&
       address2.length > 0 &&
       //birthCertificateLink > 0 &&
-      birthCertificateLink?.length > 0) ||
+      birthCertificateLink?.length > 0
+    ) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
       payment !== null &&
@@ -1937,11 +1938,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               <option value={PaymentType.QUARTERLY}>
                 Four (4) Term Payment (Initial Fee + Three Payment Term Fees)
               </option>
-              {programFeeByAccreditation?.paymentTerms[3] && (
+              {/* {programFeeByAccreditation?.paymentTerms[3] && (
                 <option value={PaymentType.MONTHLY}>
                   Nine (9) Term Payment (Initial Fee + Eight Payment Term Fees)
                 </option>
-              )}
+              )} */}
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
               <ChevronDownIcon className="w-5 h-5" />
@@ -2128,7 +2129,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               </h3>
             </div>
           </div>
-          <div className="relative flex flex-row space-x-5">
+          {/* <div className="relative flex flex-row space-x-5">
             {programFeeByAccreditation?.paymentTerms[3] && (
               <div
                 className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.MONTHLY
@@ -2239,7 +2240,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                 </h3>
               </div>
             )}
-          </div>
+          </div> */}
 
           <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded">
             <h3 className="text-sm font-bold">Payment Policies:</h3>
