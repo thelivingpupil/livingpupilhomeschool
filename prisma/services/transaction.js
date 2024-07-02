@@ -250,6 +250,7 @@ export const createTransaction = async (
   source,
   fee
 ) => {
+  console.log(transactionId)
   const response = await api(
     `${process.env.PAYMENTS_BASE_URL}/${transactionId}/post`,
     {
@@ -281,7 +282,7 @@ export const createTransaction = async (
       source: source || description,
       description,
       message,
-      url: `${url}&mode=${modes[fee]}`,
+      url: `${url}`,
       fee,
       user: {
         connect: {
@@ -295,7 +296,7 @@ export const createTransaction = async (
       },
     },
   });
-  return { url: `${url}&mode=${modes[fee]}`, referenceNumber };
+  return { url: `${url}`, referenceNumber };
 };
 
 export const getTransaction = async (transactionId, referenceNumber) =>

@@ -78,7 +78,7 @@ const Item = ({
           : null}
       </div>
       <p className={`text-xs ${inventory === 0 ? 'text-red-600' : 'text-gray-600'}`}>
-        {inventory === 0 ? 'Out of stock' : `${inventory} available pieces`}
+        {inventory === 0 ? 'Out of stock' : `available pieces ${inventory} `}
       </p>
       <div className="space-y-3">
         <div className="flex flex-row justify-between space-x-3">
