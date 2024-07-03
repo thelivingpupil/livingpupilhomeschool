@@ -22,7 +22,9 @@ import {
   PAYMENT_TYPE,
   SCHOOL_YEAR,
   ENROLLMENT_STATUS_BG_COLOR,
-  STUDENT_STATUS
+  STUDENT_STATUS,
+  STATUS_BG_COLOR,
+  STATUS
 } from '@/utils/constants';
 import {
   Accreditation,
@@ -336,10 +338,8 @@ const Students = ({ schoolFees, programs }) => {
     setEnrollmentType(student.enrollmentType)
     setIncomingGradeLevel(student.incomingGradeLevel)
     setEmail(student.student.creator.email)
-    setStudentStatus(student.studentStatus)
     setPrimaryGuardianName(student.student.creator.guardianInformation.primaryGuardianName)
     setCottageType(student.cottageType)
-    console.log(cottageType)
   };
 
   const editStudentRecord = (studentId) => {
@@ -1618,7 +1618,8 @@ const Students = ({ schoolFees, programs }) => {
           toggle={toggleUpdateStudentStatusModal}
         >
           <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
-            <div className="flex flex-col w-full md:w-1/2">
+            <div className="flex flex-col w-full">
+              <h4 className="font-bold text-gray-600">Current Status: {STUDENT_STATUS[student.studentStatus]}</h4>
               <label className="text-lg font-bold" htmlFor="txtMother">
                 Student Status <span className="ml-1 text-red-600">*</span>
               </label>
@@ -1628,6 +1629,7 @@ const Students = ({ schoolFees, programs }) => {
                   onChange={(e) => setStudentStatus(e.target.value)}
                   value={studentStatus}
                 >
+                  <option value="">Select status</option>
                   {Object.keys(STUDENT_STATUS).map((entry, index) => (
                     <option key={index} value={entry}>
                       {STUDENT_STATUS[entry]}
@@ -2024,6 +2026,27 @@ const Students = ({ schoolFees, programs }) => {
                             }`}
                         >
                           {STUDENT_STATUS[params.row.studentStatus]}
+                        </span>
+                      </h4>
+                    </div>
+                  )
+                },
+                {
+                  field: 'paymentStatus',
+                  headerName: 'Payment Status',
+                  headerAlign: 'center',
+                  align: 'center',
+                  valueGetter: (params) =>
+                    params.row.student.schoolFees[0].paymentStatus ||
+                    '',
+                  renderCell: (params) => (
+                    <div>
+                      <h4 className="flex space-x-3">
+                        <span
+                          className={`rounded-full py-0.5 text-xs px-2 ${STATUS_BG_COLOR[params.row.student.schoolFees[0].transaction.paymentStatus]
+                            }`}
+                        >
+                          {STATUS[params.row.student.schoolFees[0].transaction.paymentStatus]}
                         </span>
                       </h4>
                     </div>
