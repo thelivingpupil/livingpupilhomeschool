@@ -156,10 +156,7 @@ const Fees = () => {
                                   ) || '-'}
                                 </td>
                                 <td className="px-3 py-2 space-x-3 text-center">
-                                  {f.transaction.paymentStatus ===
-                                    TransactionStatus.U ||
-                                    f.transaction.paymentStatus ===
-                                    TransactionStatus.P ? (
+                                  {f.transaction.paymentStatus !== TransactionStatus.S ? (
                                     <>
                                       <button
                                         className="inline-block px-3 py-2 text-xs text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
@@ -174,13 +171,13 @@ const Fees = () => {
                                         Get New Link
                                       </button>
                                       {/* <Link href={f.transaction.url}>
-                                      <a
-                                        className="inline-block px-3 py-2 text-xs rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-                                        target="_blank"
-                                      >
-                                        Pay Now
-                                      </a>
-                                    </Link> */}
+      <a
+        className="inline-block px-3 py-2 text-xs rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+        target="_blank"
+      >
+        Pay Now
+      </a>
+    </Link> */}
                                     </>
                                   ) : (
                                     <div>
@@ -190,6 +187,7 @@ const Fees = () => {
                                     </div>
                                   )}
                                 </td>
+
                               </tr>
                             ))}
                         </tbody>
