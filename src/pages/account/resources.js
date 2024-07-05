@@ -15,6 +15,7 @@ const formGradeLevels = {
 };
 
 const Resources = ({ lessonPlans, blueprints, booklist }) => {
+  console.log(booklist)
   const { data } = useWorkspaces();
 
   const availableGrades = useMemo(() => {
@@ -132,7 +133,7 @@ const Resources = ({ lessonPlans, blueprints, booklist }) => {
           (a, b) =>
             Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1])
         )
-        ?.filter((lessonPlan) => {
+        ?.filter((booklist) => {
           const isProgramLevelValid = booklist?.program
             ? availablePrograms.includes(booklist?.program)
             : true;
@@ -319,7 +320,7 @@ export const getServerSideProps = async () => {
   const booklist = await sanityClient.fetch(`*[_type == 'booklist']{
     'grade': gradeLevel,
     'program': programType,
-    'fileUrl': blueprintFile.asset->url
+    'fileUrl': booklistFile.asset->url
   }`);
 
   return {
