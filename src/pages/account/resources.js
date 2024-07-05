@@ -15,7 +15,6 @@ const formGradeLevels = {
 };
 
 const Resources = ({ lessonPlans, blueprints, booklist }) => {
-  console.log(blueprints)
   const { data } = useWorkspaces();
 
   const availableGrades = useMemo(() => {
