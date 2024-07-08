@@ -2037,7 +2037,7 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   valueGetter: (params) =>
-                    params.row.student.schoolFees[0].paymentStatus ||
+                    params.row.student.schoolFees[0]?.transaction?.paymentStatus ||
                     '',
                   renderCell: (params) => (
                     <div>
@@ -2046,7 +2046,7 @@ const Students = ({ schoolFees, programs }) => {
                           className={`rounded-full py-0.5 text-xs px-2 ${STATUS_BG_COLOR[params.row.student.schoolFees[0].transaction.paymentStatus]
                             }`}
                         >
-                          {STATUS[params.row.student.schoolFees[0].transaction.paymentStatus]}
+                          {STATUS[params.row.student.schoolFees[0]?.transaction?.paymentStatus]}
                         </span>
                       </h4>
                     </div>
