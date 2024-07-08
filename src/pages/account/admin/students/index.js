@@ -94,10 +94,8 @@ const filterByOptions = {
 
 const Students = ({ schoolFees, programs }) => {
   const { data, isLoading } = useStudents();
-  console.log(data)
   const { data: workspaceData, isLoading: isFetchingWorkspaces } =
     useWorkspaces();
-  console.log(workspaceData)
   const [isWorkspaceDataFetched, setIsWorkspaceDataFetched] = useState(false);
   // Effect to handle workspace data change
   useEffect(() => {
@@ -2037,20 +2035,24 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   valueGetter: (params) =>
-                    params.row.student.schoolFees[0].transaction.paymentStatus ||
-                    '',
-                  renderCell: (params) => (
-                    <div>
-                      <h4 className="flex space-x-3">
-                        <span
-                          className={`rounded-full py-0.5 text-xs px-2 ${STATUS_BG_COLOR[params.row.student.schoolFees[0].transaction.paymentStatus]
-                            }`}
-                        >
-                          {STATUS[params.row.student.schoolFees[0]?.transaction?.paymentStatus]}
-                        </span>
-                      </h4>
-                    </div>
-                  )
+                    params.row.student.schoolFees?.[0]?.transaction?.paymentStatus || '',
+
+                  renderCell: (params) => {
+                    const paymentStatus = params.row.student.schoolFees?.[0]?.transaction?.paymentStatus;
+                    const statusClass = paymentStatus ? STATUS_BG_COLOR[paymentStatus] : '';
+                    const statusText = paymentStatus ? STATUS[paymentStatus] : '';
+
+                    return (
+                      <div>
+                        <h4 className="flex space-x-3">
+                          <span className={`rounded-full py-0.5 text-xs px-2 ${statusClass}`}>
+                            {statusText}
+                          </span>
+                        </h4>
+                      </div>
+                    );
+                  }
+
                 },
                 {
                   field: 'actions',
