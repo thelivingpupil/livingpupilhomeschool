@@ -3,7 +3,13 @@ const html = ({
 	firstName,
 	middleName,
 	lastName,
+	enrollmentType,
+	incomingGradeLevel
 }) => {
+	const isContinuingOrPreK = enrollmentType === 'CONTINUING' ||
+		incomingGradeLevel === 'PRESCHOOL' ||
+		incomingGradeLevel === 'K1' ||
+		incomingGradeLevel === 'K2';
 	return `<!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 
@@ -139,26 +145,39 @@ const html = ({
 														<tr>
 															<td class="pad">
 																<div style="color:#ffffff;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:150%;text-align:left;mso-line-height-alt:21px;">
-																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Dear ${primaryGuardianName},</p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Dear Ms./Mr. <strong>${primaryGuardianName}</strong>,</p>
 																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">It is with great pleasure that I share the news of your child, <strong><em>${firstName} ${middleName} ${lastName}'s</em></strong> initial acceptance into Living Pupil Homeschool for the academic year 2024-2025.</p>
 																	<p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">To complete the admission process smoothly, please proceed with the following steps:</p>
 																	<p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">School ID Form: <a href="https://forms.gle/SngPGpevT7cPNtrP6" style="text-decoration: underline; color: #ffffff;">https://forms.gle/SngPGpevT7cPNtrP6</a> <em>(Please submit a form for each student)</em></p>
-																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Report Card <em>(Please upload for each student on the portal)</em></p>
-																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;"><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- an incomplete one is fine as long as it has the child's name, grade level, and the school's information</em></p>
-																	<p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Training Videos:</p>
-																	<ul>
-                                                                        <li style="color:#ffffff;" aria-level="1">&nbsp;Week 1: <a href="https://docs.google.com/forms/d/e/1FAIpQLScchekkC2kZYOxjuBBpwPvBWZRSVnwAp5RK81VsI5MwYGHVHg/viewform">https://docs.google.com/forms/d/e/1FAIpQLScchekkC2kZYOxjuBBpwPvBWZRSVnwAp5RK81VsI5MwYGHVHg/viewform</a></li>
-                                                                        <li style="color:#ffffff;" aria-level="1">&nbsp;Week 2: <a href="https://docs.google.com/forms/d/e/1FAIpQLSfErY89O_D6THqZyZ1aKo9shcrwXpb4B_fLz8vqWyAYZzoUZw/viewform">https://docs.google.com/forms/d/e/1FAIpQLSfErY89O_D6THqZyZ1aKo9shcrwXpb4B_fLz8vqWyAYZzoUZw/viewform</a></li>
-                                                                        <li style="color:#ffffff;" aria-level="1">&nbsp;Week 3: <a href="https://docs.google.com/forms/d/e/1FAIpQLSdFN8IJqcFEtrrJes07ZOKB7NvVgy8LpCl-bStden4C5I7v1A/viewform">https://docs.google.com/forms/d/e/1FAIpQLSdFN8IJqcFEtrrJes07ZOKB7NvVgy8LpCl-bStden4C5I7v1A/viewform</a></li>
-                                                                        <li style="color:#ffffff;" aria-level="1">&nbsp;&nbsp;Week 4: <a href="https://docs.google.com/forms/d/e/1FAIpQLSdPhBOjqeF6YFymjfsUfZzfgEIm62uSTX3M1CK2EbOJkS12Hw/viewform">https://docs.google.com/forms/d/e/1FAIpQLSdPhBOjqeF6YFymjfsUfZzfgEIm62uSTX3M1CK2EbOJkS12Hw/viewform</a></li>
-                                                                    </ul><p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Upon successful completion of the above tasks, your children will be officially enrolled. Subsequently, we will send you a Letter of Acceptance.</p>
+																	<ul style="list-style-type: disc; color:#ffffff;">
+																		<li style="margin: 0 0 10px 0;">
+																			<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">School ID Form: <a href="https://forms.gle/SngPGpevT7cPNtrP6" style="text-decoration: underline; color: #ffffff;">https://forms.gle/SngPGpevT7cPNtrP6</a></p>
+																		</li>
+																		
+																		${!isContinuingOrPreK ? `<li style="margin: 0 0 10px 0;">
+																				<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Report Card 
+																					<em>(Please upload on the portal)</em>
+																				</p>
+																				<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
+																					<em>-an incomplete one is fine as long as it has the child's name, grade level, and the school's information</em>
+																				</p> 
+																			</li>`: ''}
+																		<li style="margin: 0 0 10px 0;">
+																			<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Training Videos:</p>
+																			<ul>
+																				<li style="color:#ffffff; margin: 0 0 4px 0;" aria-level="1">&nbsp;Week 1: <a href="https://bit.ly/3RUjZ48">https://bit.ly/3RUjZ48</a></li>
+																				<li style="color:#ffffff; margin: 0 0 4px 0;" aria-level="1">&nbsp;Week 2: <a href="https://bit.ly/3LgR7PI">https://bit.ly/3LgR7PI</a></li>
+																				<li style="color:#ffffff; margin: 0 0 4px 0;" aria-level="1">&nbsp;Week 3: <a href="https://bit.ly/3RWfxBC">https://bit.ly/3RWfxBC</a></li>
+																				<li style="color:#ffffff; margin: 0 0 4px 0;" aria-level="1">&nbsp;Week 4: <a href="https://bit.ly/462ZLLm">https://bit.ly/462ZLLm</a></li>
+																				<li style="color:#ffffff; margin: 0 0 4px 0;" aria-level="1">&nbsp;Week 5: <a href="https://bit.ly/3VV6RwD">https://bit.ly/3VV6RwD</a></li>
+																			</ul><p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
+																		</li>
+																	</ul>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Upon successful completion of the above tasks, your child will be officially enrolled. Subsequently, we will send you a Letter of Acceptance.</p>
 																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">We eagerly anticipate welcoming your children to our school community and are poised for an outstanding year ahead. Should you have any queries, please don't hesitate to contact us.</p>
+																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">We eagerly anticipate welcoming your child to our school community and are poised for an outstanding year ahead. Should you have any queries, please don't hesitate to contact us.</p>
 																	<p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;">Warm regards,</p>
 																	<p style="margin: 0; margin-bottom: 4px; color:#ffffff;"><strong>Ameline C. Baran</strong></p>
@@ -235,14 +254,14 @@ David Niño U. Jacalan - Grade 6
 
 To complete the admission process smoothly, please proceed with the following steps:
 
-1. School ID Form: https://forms.gle/SngPGpevT7cPNtrP6 (Please submit a form for each student)
-2. Report Card (Please upload for each student on the portal)
+1. School ID Form: https://forms.gle/SngPGpevT7cPNtrP6
+2. Report Card (Please upload on the portal)
                   - an incomplete one is fine as long as it has the child's name, grade level, and the school's information
 3. Training Videos:
  Week 1: https://docs.google.com/forms/d/e/1FAIpQLScchekkC2kZYOxjuBBpwPvBWZRSVnwAp5RK81VsI5MwYGHVHg/viewform
  Week 2: https://docs.google.com/forms/d/e/1FAIpQLSfErY89O_D6THqZyZ1aKo9shcrwXpb4B_fLz8vqWyAYZzoUZw/viewform
  Week 3: https://docs.google.com/forms/d/e/1FAIpQLSdFN8IJqcFEtrrJes07ZOKB7NvVgy8LpCl-bStden4C5I7v1A/viewform
-  Week4 :https://docs.google.com/forms/d/e/1FAIpQLSdPhBOjqeF6YFymjfsUfZzfgEIm62uSTX3M1CK2EbOJkS12Hw/viewform
+ Week4 :https://docs.google.com/forms/d/e/1FAIpQLSdPhBOjqeF6YFymjfsUfZzfgEIm62uSTX3M1CK2EbOJkS12Hw/viewform
 
 Upon successful completion of the above tasks, your children will be officially enrolled. Subsequently, we will send you a Letter of Acceptance.
 

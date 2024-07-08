@@ -45,7 +45,9 @@ const handler = async (req, res) => {
                         primaryGuardianName,
                         firstName,
                         middleName,
-                        lastName
+                        lastName,
+                        enrollmentType,
+                        incomingGradeLevel
                     }),
                     subject: `[Living Pupil Homeschool] Initial Acceptance of ${firstName}`,
                     text: text({
