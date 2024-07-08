@@ -2037,7 +2037,7 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   valueGetter: (params) =>
-                    params.row.student.schoolFees[0]?.transaction?.paymentStatus ||
+                    params.row.student.schoolFees[0].transaction.paymentStatus ||
                     '',
                   renderCell: (params) => (
                     <div>
