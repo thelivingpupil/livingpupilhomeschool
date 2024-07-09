@@ -344,7 +344,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
               </div>
               {isValidCommonSubject && (
                 <>
-                  <div className="flex justify-center">
+                  {/* <div className="flex justify-center">
                     <a
                       className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-primary-500`}
                       href="/files/lp-common-subjects.pdf"
@@ -352,6 +352,16 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                       rel="noopener noreferrer"
                     >
                       Common Subjects
+                    </a>
+                  </div> */}
+                  <div className="flex justify-center">
+                    <a
+                      className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-primary-500`}
+                      href="/files/SY-Planner.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      SY Planner
                     </a>
                   </div>
                   <div className="flex justify-center">
@@ -362,16 +372,6 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                       rel="noopener noreferrer"
                     >
                       Notebooks
-                    </a>
-                  </div>
-                  <div className="flex justify-center">
-                    <a
-                      className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-primary-500`}
-                      href="/files/SY-Planner.pdf"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      SY Planner
                     </a>
                   </div>
                 </>
