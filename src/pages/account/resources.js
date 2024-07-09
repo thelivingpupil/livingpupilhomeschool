@@ -14,7 +14,7 @@ const formGradeLevels = {
   FORM_3: ['GRADE_7', 'GRADE_8', 'GRADE_9', 'GRADE_10'],
 };
 
-const Resources = ({ lessonPlans, blueprints, booklist }) => {
+const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjects }) => {
   console.log(booklist)
   const { data } = useWorkspaces();
 
@@ -145,6 +145,44 @@ const Resources = ({ lessonPlans, blueprints, booklist }) => {
     [availableGrades, lessonPlans]
   );
 
+  const availableRecitation = useMemo(
+    () =>
+      recitation
+        ?.sort(
+          (a, b) =>
+            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1])
+        )
+        ?.filter((recitation) => {
+          const isProgramLevelValid = recitation?.program
+            ? availablePrograms.includes(recitation?.program)
+            : true;
+
+          return (
+            availableGrades.includes(recitation?.grade) && isProgramLevelValid
+          );
+        }),
+    [availableGrades, recitation]
+  );
+
+  const availableCommonSubjects = useMemo(
+    () =>
+      commonSubjects
+        ?.sort(
+          (a, b) =>
+            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1])
+        )
+        ?.filter((commonSubjects) => {
+          const isProgramLevelValid = commonSubjects?.program
+            ? availablePrograms.includes(commonSubjects?.program)
+            : true;
+
+          return (
+            availableGrades.includes(commonSubjects?.grade) && isProgramLevelValid
+          );
+        }),
+    [availableGrades, commonSubjects]
+  );
+
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Guides and Resources" />
@@ -229,9 +267,51 @@ const Resources = ({ lessonPlans, blueprints, booklist }) => {
                       <a
                         className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
                         href={`${booklist?.fileUrl
-                          }?dl=${booklist?.grade?.toLowerCase()}-lesson_plan.pdf`}
+                          }?dl=${booklist?.grade?.toLowerCase()}-booklist.pdf`}
                       >
                         {booklist?.grade?.replace('_', ' ')}
+                      </a>
+                    </div>
+                  );
+                })}
+            </div>
+          </Card.Body>
+        </Card>
+        <Card>
+          <Card.Body title="Recitation">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
+              {availableRecitation?.length > 0 &&
+                availableRecitation?.map((recitation, idx) => {
+                  const bgColor = idx % 2 === 0 ? 'bg-primary' : 'bg-secondary';
+                  return (
+                    <div key={idx} className="flex justify-center">
+                      <a
+                        className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
+                        href={`${recitation?.fileUrl
+                          }?dl=${recitation?.grade?.toLowerCase()}-recitation.pdf`}
+                      >
+                        {recitation?.grade?.replace('_', ' ')}
+                      </a>
+                    </div>
+                  );
+                })}
+            </div>
+          </Card.Body>
+        </Card>
+        <Card>
+          <Card.Body title="Common Subjects">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
+              {availableCommonSubjects?.length > 0 &&
+                availableCommonSubjects?.map((commonSubjects, idx) => {
+                  const bgColor = idx % 2 === 0 ? 'bg-primary' : 'bg-secondary';
+                  return (
+                    <div key={idx} className="flex justify-center">
+                      <a
+                        className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
+                        href={`${commonSubjects?.fileUrl
+                          }?dl=${commonSubjects?.grade?.toLowerCase()}-common-subjects.pdf`}
+                      >
+                        {commonSubjects?.grade?.replace('_', ' ')}
                       </a>
                     </div>
                   );
@@ -323,11 +403,25 @@ export const getServerSideProps = async () => {
     'fileUrl': booklistFile.asset->url
   }`);
 
+  const recitation = await sanityClient.fetch(`*[_type == 'recitation']{
+    'grade': gradeLevel,
+    'program': programType,
+    'fileUrl': recitaionFile.asset->url
+  }`);
+
+  const commonSubjects = await sanityClient.fetch(`*[_type == 'commonSubjects']{
+    'grade': gradeLevel,
+    'program': programType,
+    'fileUrl': commonSubjectsFile.asset->url
+  }`);
+
   return {
     props: {
       lessonPlans,
       blueprints,
       booklist,
+      recitation,
+      commonSubjects,
     },
   };
 };
