@@ -15,7 +15,7 @@ const formGradeLevels = {
 };
 
 const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjects }) => {
-  console.log(booklist)
+  console.log(blueprints)
   const { data } = useWorkspaces();
 
   const availableGrades = useMemo(() => {
@@ -48,8 +48,8 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
       availableGrades?.reduce(
         (isValid, grade) =>
           [
-            'KINDERGARTEN_1',
-            'KINDERGARTEN_2',
+            'K1',
+            'K2',
             'GRADE_1',
             'GRADE_2',
             'GRADE_3',
