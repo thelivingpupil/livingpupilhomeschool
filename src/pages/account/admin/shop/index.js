@@ -47,7 +47,7 @@ const Shop = () => {
                 <span className="text-xs text-gray-400">
                   {purchase.transaction.user.guardianInformation
                     ? purchase.transaction.user.guardianInformation
-                        .primaryGuardianName
+                      .primaryGuardianName
                     : ''}{' '}
                   - {purchase.transaction.user.email}
                 </span>
@@ -187,7 +187,7 @@ const Shop = () => {
                                 <strong>
                                   {purchase.transaction.user.guardianInformation
                                     ? purchase.transaction.user
-                                        .guardianInformation.primaryGuardianName
+                                      .guardianInformation.primaryGuardianName
                                     : ''}{' '}
                                   - {purchase.transaction.user.email}
                                 </strong>
@@ -198,9 +198,9 @@ const Shop = () => {
                                   {purchase?.deliveryAddress
                                     ? purchase?.deliveryAddress
                                     : purchase.transaction.user
-                                        .guardianInformation
-                                    ? `${purchase.transaction.user.guardianInformation.address1} ${purchase.transaction.user.guardianInformation.address2}`
-                                    : 'Not provided by guardian'}
+                                      .guardianInformation
+                                      ? `${purchase.transaction.user.guardianInformation.address1} ${purchase.transaction.user.guardianInformation.address2}`
+                                      : 'Not provided by guardian'}
                                 </strong>
                               </p>
                               <p className="text-xs text-gray-400">
@@ -209,10 +209,10 @@ const Shop = () => {
                                   {purchase?.contactNumber
                                     ? purchase?.contactNumber
                                     : purchase.transaction.user
+                                      .guardianInformation?.mobilenumber
+                                      ? purchase.transaction.user
                                         .guardianInformation?.mobilenumber
-                                    ? purchase.transaction.user
-                                        .guardianInformation?.mobilenumber
-                                    : 'Not provided by guardian'}
+                                      : 'Not provided by guardian'}
                                 </strong>
                               </p>
                             </div>
@@ -231,15 +231,14 @@ const Shop = () => {
                                     {purchase.transaction.paymentReference}
                                   </span>
                                   <span
-                                    className={`rounded-full py-0.5 text-xs px-2 ${
-                                      STATUS_BG_COLOR[
-                                        purchase.transaction.paymentStatus
+                                    className={`rounded-full py-0.5 text-xs px-2 ${STATUS_BG_COLOR[
+                                      purchase.transaction.paymentStatus
                                       ]
-                                    }`}
+                                      }`}
                                   >
                                     {
                                       STATUS_CODES[
-                                        purchase.transaction.paymentStatus
+                                      purchase.transaction.paymentStatus
                                       ]
                                     }
                                   </span>
@@ -250,7 +249,7 @@ const Shop = () => {
                                 </h4>
                               )}
                               <p className="font-mono text-xs text-gray-400 lowercase">
-                                {purchase.transactionId}
+                                {purchase.transaction.transactionId}
                               </p>
                             </div>
                           </td>

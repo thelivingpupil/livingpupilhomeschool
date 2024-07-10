@@ -82,6 +82,7 @@ export const getStorePurchases = async () =>
       },
       transaction: {
         select: {
+          transactionId: true,
           amount: true,
           currency: true,
           referenceNumber: true,
