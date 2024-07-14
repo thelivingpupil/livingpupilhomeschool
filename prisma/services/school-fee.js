@@ -29,6 +29,7 @@ export const createSchoolFees = async (
   accreditation,
   paymentMethod,
   discountCode = '',
+  monthIndex,
   scholarshipCode = '',
 ) => {
   console.log("Entering createSchoolFees function...");
@@ -476,186 +477,71 @@ export const createSchoolFees = async (
         (scholarship.value / 100) * fee.fullPayment
       : 0;
 
-    const calculatedScholarship = scholarshipValue / 8
+    const calculatedScholarship = scholarshipValue / monthIndex
 
-    const payments = isPastorsFee
-      ? [
+    let payments;
+    if (isPastorsFee) {
+      const discountedPayment = (discount.value - fee.downPayment) / monthIndex;
+      payments = [
         fee.downPayment,
-        (discount.value - fee.downPayment) / 8,
-        (discount.value - fee.downPayment) / 8,
-        (discount.value - fee.downPayment) / 8,
-        (discount.value - fee.downPayment) / 8,
-        (discount.value - fee.downPayment) / 8,
-        (discount.value - fee.downPayment) / 8,
-        (discount.value - fee.downPayment) / 8,
-        (discount.value - fee.downPayment) / 8,
-      ]
-      : discount
-        ? [
-          fee.downPayment,
-          fee.secondPayment -
-          (discount.type === 'VALUE'
-            ? discount.value
-            : (discount.value / 100) * fee.secondPayment),
-          fee.thirdPayment,
-          fee.fourthPayment,
-          fee.fifthPayment,
-          fee.sixthPayment,
-          fee.seventhPayment,
-          fee.eighthPayment,
-          fee.ninthPayment,
-        ]
-        : [
-          fee.downPayment,
-          fee.secondPayment,
-          fee.thirdPayment,
-          fee.fourthPayment,
-          fee.fifthPayment,
-          fee.sixthPayment,
-          fee.seventhPayment,
-          fee.eighthPayment,
-          fee.ninthPayment,
-        ];
-    console.log(payments)
-    const transactionIds = await Promise.all([
-      prisma.purchaseHistory.create({
-        data: { total: payments[0] + FEES[paymentMethod] },
+        ...Array(monthIndex).fill(discountedPayment),
+      ];
+    } else {
+      // Calculate total payment before applying discount
+      const totalPayment = fee.secondPayment + fee.thirdPayment + fee.fourthPayment + fee.fifthPayment + fee.sixthPayment + fee.seventhPayment + fee.eighthPayment + fee.ninthPayment;
+
+      // Calculate monthly payments
+      const monthlyPayment = (totalPayment / monthIndex) - calculatedScholarship;
+
+      // Create payments array with monthly payments
+      payments = [
+        fee.downPayment,
+        ...Array(monthIndex).fill(monthlyPayment),
+      ];
+
+      // Apply discount to the second payment
+      if (discount) {
+        const discountValue = discount.type === 'VALUE'
+          ? discount.value
+          : (discount.value / 100) * fee.secondPayment;
+        payments[1] -= discountValue;
+      }
+    }
+
+    const purchaseHistoryPromises = payments.map((payment, index) => {
+      const total = payment + FEES[paymentMethod] - (index > 0 ? calculatedScholarship : 0); // Apply scholarship only from the second payment onwards
+      return prisma.purchaseHistory.create({
+        data: { total },
         select: { id: true, transactionId: true },
-      }),
-      prisma.purchaseHistory.create({
-        data: { total: payments[1] + FEES[paymentMethod] - calculatedScholarship },
-        select: { id: true, transactionId: true },
-      }),
-      prisma.purchaseHistory.create({
-        data: { total: payments[2] + FEES[paymentMethod] - calculatedScholarship },
-        select: { id: true, transactionId: true },
-      }),
-      prisma.purchaseHistory.create({
-        data: { total: payments[3] + FEES[paymentMethod] - calculatedScholarship },
-        select: { id: true, transactionId: true },
-      }),
-      prisma.purchaseHistory.create({
-        data: { total: payments[4] + FEES[paymentMethod] - calculatedScholarship },
-        select: { id: true, transactionId: true },
-      }),
-      prisma.purchaseHistory.create({
-        data: { total: payments[5] + FEES[paymentMethod] - calculatedScholarship },
-        select: { id: true, transactionId: true },
-      }),
-      prisma.purchaseHistory.create({
-        data: { total: payments[6] + FEES[paymentMethod] - calculatedScholarship },
-        select: { id: true, transactionId: true },
-      }),
-      prisma.purchaseHistory.create({
-        data: { total: payments[7] + FEES[paymentMethod] - calculatedScholarship },
-        select: { id: true, transactionId: true },
-      }),
-      prisma.purchaseHistory.create({
-        data: { total: payments[8] + FEES[paymentMethod] - calculatedScholarship },
-        select: { id: true, transactionId: true },
-      }),
-    ]);
-    const [response] = await Promise.all([
-      createTransaction(
+      });
+    });
+
+    const transactionIds = await Promise.all(purchaseHistoryPromises);
+    const transactionPromises = transactionIds.map((transaction, index) => {
+      const total = payments[index] + FEES[paymentMethod] - (index > 0 ? calculatedScholarship : 0); // Apply scholarship only from the second payment onwards
+      return createTransaction(
         userId,
         email,
-        transactionIds[0].transactionId,
-        payments[0] + FEES[paymentMethod],
+        transaction.transactionId,
+        total,
         description,
-        transactionIds[0].id,
+        transaction.id,
         TransactionSource.ENROLLMENT,
         paymentMethod
-      ),
-      createTransaction(
-        userId,
-        email,
-        transactionIds[1].transactionId,
-        payments[1] + FEES[paymentMethod] - calculatedScholarship,
-        description,
-        transactionIds[1].id,
-        TransactionSource.ENROLLMENT,
-        paymentMethod
-      ),
-      createTransaction(
-        userId,
-        email,
-        transactionIds[2].transactionId,
-        payments[2] + FEES[paymentMethod] - calculatedScholarship,
-        description,
-        transactionIds[2].id,
-        TransactionSource.ENROLLMENT,
-        paymentMethod
-      ),
-      createTransaction(
-        userId,
-        email,
-        transactionIds[3].transactionId,
-        payments[3] + FEES[paymentMethod] - calculatedScholarship,
-        description,
-        transactionIds[3].id,
-        TransactionSource.ENROLLMENT,
-        paymentMethod
-      ),
-      createTransaction(
-        userId,
-        email,
-        transactionIds[4].transactionId,
-        payments[4] + FEES[paymentMethod] - calculatedScholarship,
-        description,
-        transactionIds[4].id,
-        TransactionSource.ENROLLMENT,
-        paymentMethod
-      ),
-      createTransaction(
-        userId,
-        email,
-        transactionIds[5].transactionId,
-        payments[5] + FEES[paymentMethod] - calculatedScholarship,
-        description,
-        transactionIds[5].id,
-        TransactionSource.ENROLLMENT,
-        paymentMethod
-      ),
-      createTransaction(
-        userId,
-        email,
-        transactionIds[6].transactionId,
-        payments[6] + FEES[paymentMethod] - calculatedScholarship,
-        description,
-        transactionIds[6].id,
-        TransactionSource.ENROLLMENT,
-        paymentMethod
-      ),
-      createTransaction(
-        userId,
-        email,
-        transactionIds[7].transactionId,
-        payments[7] + FEES[paymentMethod] - calculatedScholarship,
-        description,
-        transactionIds[7].id,
-        TransactionSource.ENROLLMENT,
-        paymentMethod
-      ),
-      createTransaction(
-        userId,
-        email,
-        transactionIds[8].transactionId,
-        payments[8] + FEES[paymentMethod] - calculatedScholarship,
-        description,
-        transactionIds[8].id,
-        TransactionSource.ENROLLMENT,
-        paymentMethod
-      ),
-    ]);
-    await Promise.all([
-      prisma.schoolFee.create({
+      );
+    });
+
+    const [responses] = await Promise.all(transactionPromises);
+
+    const schoolFeePromises = transactionIds.map((transaction, index) => {
+      return prisma.schoolFee.create({
         data: {
           gradeLevel: incomingGradeLevel,
-          order: 0,
+          order: index,
           paymentType: payment,
           transaction: {
             connect: {
-              transactionId: transactionIds[0].transactionId,
+              transactionId: transaction.transactionId,
             },
           },
           student: {
@@ -664,146 +550,13 @@ export const createSchoolFees = async (
             },
           },
         },
-      }),
-      prisma.schoolFee.create({
-        data: {
-          gradeLevel: incomingGradeLevel,
-          order: 1,
-          paymentType: payment,
-          transaction: {
-            connect: {
-              transactionId: transactionIds[1].transactionId,
-            },
-          },
-          student: {
-            connect: {
-              id: workspaceId,
-            },
-          },
-        },
-      }),
-      prisma.schoolFee.create({
-        data: {
-          gradeLevel: incomingGradeLevel,
-          order: 2,
-          paymentType: payment,
-          transaction: {
-            connect: {
-              transactionId: transactionIds[2].transactionId,
-            },
-          },
-          student: {
-            connect: {
-              id: workspaceId,
-            },
-          },
-        },
-      }),
-      prisma.schoolFee.create({
-        data: {
-          gradeLevel: incomingGradeLevel,
-          order: 3,
-          paymentType: payment,
-          transaction: {
-            connect: {
-              transactionId: transactionIds[3].transactionId,
-            },
-          },
-          student: {
-            connect: {
-              id: workspaceId,
-            },
-          },
-        },
-      }),
-      prisma.schoolFee.create({
-        data: {
-          gradeLevel: incomingGradeLevel,
-          order: 4,
-          paymentType: payment,
-          transaction: {
-            connect: {
-              transactionId: transactionIds[4].transactionId,
-            },
-          },
-          student: {
-            connect: {
-              id: workspaceId,
-            },
-          },
-        },
-      }),
-      prisma.schoolFee.create({
-        data: {
-          gradeLevel: incomingGradeLevel,
-          order: 5,
-          paymentType: payment,
-          transaction: {
-            connect: {
-              transactionId: transactionIds[5].transactionId,
-            },
-          },
-          student: {
-            connect: {
-              id: workspaceId,
-            },
-          },
-        },
-      }),
-      prisma.schoolFee.create({
-        data: {
-          gradeLevel: incomingGradeLevel,
-          order: 6,
-          paymentType: payment,
-          transaction: {
-            connect: {
-              transactionId: transactionIds[6].transactionId,
-            },
-          },
-          student: {
-            connect: {
-              id: workspaceId,
-            },
-          },
-        },
-      }),
-      prisma.schoolFee.create({
-        data: {
-          gradeLevel: incomingGradeLevel,
-          order: 7,
-          paymentType: payment,
-          transaction: {
-            connect: {
-              transactionId: transactionIds[7].transactionId,
-            },
-          },
-          student: {
-            connect: {
-              id: workspaceId,
-            },
-          },
-        },
-      }),
-      prisma.schoolFee.create({
-        data: {
-          gradeLevel: incomingGradeLevel,
-          order: 8,
-          paymentType: payment,
-          transaction: {
-            connect: {
-              transactionId: transactionIds[8].transactionId,
-            },
-          },
-          student: {
-            connect: {
-              id: workspaceId,
-            },
-          },
-        },
-      }),
-    ]);
-    result = response;
+      });
+    });
+    const schoolFeeResponses = await Promise.all(schoolFeePromises);
+    // Log the school fee responses for verification
+    result = responses;
   }
+  console.log("Exiting createSchoolFees function...")
   return result;
 };
 

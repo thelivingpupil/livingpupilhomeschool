@@ -1,3 +1,4 @@
+import { MarkChatRead } from '@mui/icons-material';
 import { GradeLevel } from '@prisma/client';
 
 export const SCHOOL_YEAR = {
@@ -232,4 +233,22 @@ export const STUDENT_STATUS = {
   PENDING: 'PENDING',
   DROPPED: 'DROPPED',
   INITIALLY_ENROLLED: 'INITIALLY ENROLLED',
+}
+
+export const MONTHLY_INDEX = {
+  FEBRAURY_2024: 7,
+  MARCH_2024: 7,
+  APRIL_2024: 7,
+  MAY_2024: 7,
+  JUNE_2024: 7,
+  JULY_2024: 7,
+  AUGUST_2024: 7,
+  SEPTEMBER_2024: 7,
+  OCTOBER_2024: 6,
+  NOVEMBER_2024: 5,
+  DECEMBER_2024: 4,
+  JANRUARY_2025: 3,
+  FEBRAURY_2025: 2,
+  MARCH_2025: 2,
+  APRIL_2025: 1,
 }

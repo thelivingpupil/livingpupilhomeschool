@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
   CheckIcon,
   ChevronDownIcon,
@@ -49,6 +49,7 @@ import {
   PROGRAM,
   RELIGION,
   SCHOOL_YEAR,
+  MONTHLY_INDEX,
 } from '@/utils/constants';
 
 const steps = [
@@ -222,9 +223,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       telephoneNumber.length > 0 &&
       anotherEmail.length > 0 &&
       address1.length > 0 &&
-      address2.length > 0 &&
+      address2.length > 0
       //birthCertificateLink > 0 &&
-      birthCertificateLink?.length > 0
+      //birthCertificateLink?.length > 0
     ) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
@@ -581,6 +582,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         primaryTeacherRelationship,
         primaryTeacherEducation,
         primaryTeacherProfile,
+        monthIndex,
       },
       method: 'POST',
     })
@@ -638,6 +640,48 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       }
     });
   };
+
+  //format the month and year for monthyl payament
+  const getFormattedMonthYear = (date) => {
+    const monthNames = [
+      "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
+      "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
+    ];
+
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${month}_${year}`;
+  };
+  //format the month and year for monthyl payament
+  const [monthIndex, setMonthIndex] = useState(null);
+  useEffect(() => {
+    const today = new Date();
+    const formattedMonthYear = getFormattedMonthYear(today);
+    const value = MONTHLY_INDEX[formattedMonthYear];
+    setMonthIndex(value);
+  }, []);
+
+
+  const calculateMonthlyPayment = () => {
+    const programFeeByAccreditation = programFee?.tuitionFees.find(
+      (tuition) => tuition.type === accreditation
+    );
+    const payments = programFeeByAccreditation?.paymentTerms[3] || {};
+    const sum = (payments.secondPayment || 0)
+      + (payments.thirdPayment || 0)
+      + (payments.fourthPayment || 0)
+      + (payments.fifthPayment || 0)
+      + (payments.sixthPayment || 0)
+      + (payments.seventhPayment || 0)
+      + (payments.eighthPayment || 0)
+      + (payments.ninthPayment || 0);
+
+    const result = sum / monthIndex;
+    return result
+  };
+
+  const monthlyPayment = calculateMonthlyPayment();
 
   const renderTab = () => {
     const tabs = [
@@ -1938,11 +1982,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               <option value={PaymentType.QUARTERLY}>
                 Four (4) Term Payment (Initial Fee + Three Payment Term Fees)
               </option>
-              {/* {programFeeByAccreditation?.paymentTerms[3] && (
+              {programFeeByAccreditation?.paymentTerms[3] && (
                 <option value={PaymentType.MONTHLY}>
-                  Nine (9) Term Payment (Initial Fee + Eight Payment Term Fees)
+                  Monthly Term Payment (Initial Fee + Monthly Payment Term Fees)
                 </option>
-              )} */}
+              )}
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
               <ChevronDownIcon className="w-5 h-5" />
@@ -2129,7 +2173,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               </h3>
             </div>
           </div>
-          {/* <div className="relative flex flex-row space-x-5">
+          <div className="relative flex flex-row space-x-5">
             {programFeeByAccreditation?.paymentTerms[3] && (
               <div
                 className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.MONTHLY
@@ -2148,7 +2192,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                   </div>
                 )}
                 <div>
-                  <h3 className="text-xl font-bold">Nine (9) Term Payment</h3>
+                  <h3 className="text-xl font-bold">Monthly Term Payment</h3>
                   <div>
                     <span>
                       Initial Fee:{' '}
@@ -2158,10 +2202,14 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                       }).format(
                         programFeeByAccreditation?.paymentTerms[3]?.downPayment || 0
                       )}{' '}
-                      +
+                      + {' '}
                     </span>
                     <span>
-                      (
+                      {monthIndex} monthly payment(s) of {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(calculateMonthlyPayment())}
+                      {/* (
                       {new Intl.NumberFormat('en-US', {
                         style: 'currency',
                         currency: 'PHP',
@@ -2217,7 +2265,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                       }).format(
                         programFeeByAccreditation?.paymentTerms[3]?.ninthPayment || 0
                       )}
-                      )
+                      ) */}
                     </span>
                   </div>
                 </div>
@@ -2240,7 +2288,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                 </h3>
               </div>
             )}
-          </div> */}
+          </div>
 
           <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded">
             <h3 className="text-sm font-bold">Payment Policies:</h3>
@@ -2816,7 +2864,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                         : fee?._type === 'fourTermPayment'
                           ? 3
                           : fee?._type === 'nineTermPayment'
-                            ? 8
+                            ? monthIndex
                             : 0 // Default to 0 if none of the specified types match
                   ),
                   (_, index) => (
@@ -2829,7 +2877,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                             : fee?._type === 'fourTermPayment'
                               ? `Four (4) Term Payment #${index + 1}`
                               : fee?._type === 'nineTermPayment'
-                                ? `Nine (9) Term Payment #${index + 1}`
+                                ? `Monthly Term Payment #${index + 1}`
                                 : `Unknown Payment Type #${index + 1}`}
                       </td>
                       <td className="px-3 py-1 text-right border">
@@ -2839,7 +2887,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                         }).format(
                           fee?._type === 'fullTermPayment'
                             ? 0
-                            : fee && fee[payments[index + 1]]
+                            : fee?._type === 'nineTermPayment'
+                              ? monthlyPayment // Render monthly payment for nineTermPayment
+                              : fee && fee[payments[index + 1]]
                         )}{' '}
                         {discount &&
                           discount?.code?.toLowerCase().includes('pastor') ? (
@@ -2849,9 +2899,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                               style: 'currency',
                               currency: 'PHP',
                             }).format(
-                              fee &&
-                              fee[payments[index + 1]] -
-                              (discount?.value - fee?.downPayment) / 3
+                              fee?._type === 'nineTermPayment'
+                                ? monthlyPayment - (discount?.value - fee?.downPayment) / 9
+                                : fee && fee[payments[index + 1]] -
+                                (discount?.value - fee?.downPayment) / 3
                             )}
                             )
                           </span>

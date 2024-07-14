@@ -58,7 +58,8 @@ const handler = async (req, res) => {
       primaryTeacherAge,
       primaryTeacherRelationship,
       primaryTeacherEducation,
-      primaryTeacherProfile
+      primaryTeacherProfile,
+      monthIndex
     } = req.body;
     const guardianInformation = {
       primaryGuardianName,
@@ -109,6 +110,7 @@ const handler = async (req, res) => {
         primaryTeacherRelationship,
         primaryTeacherEducation,
         primaryTeacherProfile,
+        STUDENT_STATUS.PENDING,
       ),
       createSchoolFees(
         session.user.userId,
@@ -121,7 +123,8 @@ const handler = async (req, res) => {
         cottageType,
         accreditation,
         paymentMethod,
-        discountCode
+        discountCode,
+        monthIndex,
       ),
       updateGuardianInformation(session.user.userId, guardianInformation),
     ]);
