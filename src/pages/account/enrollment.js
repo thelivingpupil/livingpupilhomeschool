@@ -223,9 +223,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       telephoneNumber.length > 0 &&
       anotherEmail.length > 0 &&
       address1.length > 0 &&
-      address2.length > 0
+      address2.length > 0 &&
       //birthCertificateLink > 0 &&
-      //birthCertificateLink?.length > 0
+      birthCertificateLink?.length > 0
     ) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&

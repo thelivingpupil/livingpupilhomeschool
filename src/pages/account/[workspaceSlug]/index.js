@@ -207,9 +207,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       telephoneNumber.length > 0 &&
       anotherEmail.length > 0 &&
       address1.length > 0 &&
-      address2.length > 0
-      //birthCertificateLink &&
-      //birthCertificateLink?.length > 0
+      address2.length > 0 &&
+      birthCertificateLink &&
+      birthCertificateLink?.length > 0
     ) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&

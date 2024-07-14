@@ -169,7 +169,7 @@ const html = ({
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Payment Details</p>
 																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Payment Method: ${PAYMENT_METHOD[paymentMethod]}</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Payment Type: ${PAYMENT_TYPE[payment]}</p>
+																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Payment Type: ${payment === 'MONTHLY' ? 'Monthly Term Payment' : PAYMENT_TYPE[payment]}</p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">You can access the payment URL here if you have not yet paid the school fees.</p>
