@@ -24,7 +24,9 @@ import {
   ENROLLMENT_STATUS_BG_COLOR,
   STUDENT_STATUS,
   STATUS_BG_COLOR,
-  STATUS
+  STATUS,
+  getMonthIndex,
+  calculateMonthlyPayment,
 } from '@/utils/constants';
 import {
   Accreditation,
@@ -399,7 +401,8 @@ const Students = ({ schoolFees, programs }) => {
         paymentMethod,
         discountCode,
         scholarshipCode,
-        studentId
+        studentId,
+        monthIndex
       },
       method: 'POST',
     })
@@ -457,6 +460,35 @@ const Students = ({ schoolFees, programs }) => {
         toast.error(`Error generating school fees: ${error.message}`);
       });
   };
+
+  //Get month index for calculations of monthly payments
+  const [monthIndex, setMonthIndex] = useState(null);
+  const [monthlyPayment, setMonthlyPayment] = useState(0)
+  useEffect(() => {
+    setMonthIndex(getMonthIndex(new Date()));
+  }, []);
+
+  useEffect(() => {
+    if (accreditation !== null) {
+      const programFeeByAccreditation = programFee?.tuitionFees.find(
+        (tuition) => tuition.type === accreditation
+      );
+      setMonthlyPayment(calculateMonthlyPayment(monthIndex, programFeeByAccreditation));
+    } else {
+      console.log("Accreditation Empty");
+    }
+  }, [accreditation, programFee, monthIndex, calculateMonthlyPayment]);
+
+  const handleAccreditationChange = (e) => {
+    const selectedAccreditation = e.target.value;
+    if (selectedAccreditation) {
+      setAccreditation(selectedAccreditation);
+    } else {
+      setAccreditation(null);
+    }
+  };
+
+  console.log("Month Index: " + monthIndex + "\nMonthly Payment: " + monthlyPayment + "\nAccreditation: " + accreditation);
 
   // const editStudentRecord = async (studentId) => {
   //   setSubmittingState(true);
@@ -928,13 +960,7 @@ const Students = ({ schoolFees, programs }) => {
             >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
-                onChange={(e) => {
-                  if (e.target.value) {
-                    setAccreditation(e.target.value);
-                  } else {
-                    setAccreditation(null);
-                  }
-                }}
+                onChange={handleAccreditationChange}
                 value={accreditation}
               >
                 <option value="">Please select accreditation...</option>
@@ -1000,6 +1026,9 @@ const Students = ({ schoolFees, programs }) => {
                 <option value={PaymentType.QUARTERLY}>
                   Four (4) Term Payment (Initial Fee + Three Payment Term Fees)
                 </option>
+                <option value={PaymentType.MONTHLY}>
+                  Monthly Term Payment (Initial Fee + Monthly Payment Term Fees)
+                </option>
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                 <ChevronDownIcon className="w-5 h-5" />
@@ -1054,6 +1083,8 @@ const Students = ({ schoolFees, programs }) => {
                   setFee(programFeeByAccreditation?.paymentTerms[1]);
                 } else if (payment === PaymentType.QUARTERLY) {
                   setFee(programFeeByAccreditation?.paymentTerms[2]);
+                } else if (payment === PaymentType.MONTHLY) {
+                  setFee(programFeeByAccreditation?.paymentTerms[3]);
                 }
               }}
             >
@@ -1096,7 +1127,11 @@ const Students = ({ schoolFees, programs }) => {
                         ? 0
                         : fee?._type === 'threeTermPayment'
                           ? 2
-                          : 3
+                          : fee?._type === 'fourTermPayment'
+                            ? 3
+                            : fee?._type === 'nineTermPayment'
+                              ? monthIndex
+                              : 0 // Default to 0 if none of the specified types match
                     ),
                     (_, index) => (
                       <tr key={index}>
@@ -1105,7 +1140,11 @@ const Students = ({ schoolFees, programs }) => {
                             ? ''
                             : fee?._type === 'threeTermPayment'
                               ? `Three (3) Term Payment #${index + 1}`
-                              : `Four (4) Term Payment #${index + 1}`}
+                              : fee?._type === 'fourTermPayment'
+                                ? `Four (4) Term Payment #${index + 1}`
+                                : fee?._type === 'nineTermPayment'
+                                  ? `Monthly Term Payment #${index + 1}`
+                                  : `Unknown Payment Type #${index + 1}`}
                         </td>
                         <td className="px-3 py-1 text-right border">
                           {new Intl.NumberFormat('en-US', {
@@ -1114,19 +1153,9 @@ const Students = ({ schoolFees, programs }) => {
                           }).format(
                             fee?._type === 'fullTermPayment'
                               ? 0
-                              : fee && fee[payments[index + 1]] -
-                              (discount &&
-                                discount?.code?.toLowerCase().includes('pastor') &&
-                                index === 0
-                                ? Math.ceil(discount.value / 3)
-                                : 0) -
-                              (scholarship &&
-                                index < (fee?._type === 'threeTermPayment' ? 2 : 3)
-                                ? Math.ceil(
-                                  scholarship.value /
-                                  (fee?._type === 'threeTermPayment' ? 2 : 3)
-                                )
-                                : 0)
+                              : fee?._type === 'nineTermPayment'
+                                ? monthlyPayment // Render monthly payment for nineTermPayment
+                                : fee && fee[payments[index + 1]]
                           )}{' '}
                           {discount &&
                             discount?.code?.toLowerCase().includes('pastor') ? (
@@ -1136,9 +1165,10 @@ const Students = ({ schoolFees, programs }) => {
                                 style: 'currency',
                                 currency: 'PHP',
                               }).format(
-                                fee &&
-                                fee[payments[index + 1]] -
-                                (discount?.value - fee?.downPayment) / 3
+                                fee?._type === 'nineTermPayment'
+                                  ? monthlyPayment - (discount?.value - fee?.downPayment) / 9
+                                  : fee && fee[payments[index + 1]] -
+                                  (discount?.value - fee?.downPayment) / 3
                               )}
                               )
                             </span>
@@ -1168,10 +1198,22 @@ const Students = ({ schoolFees, programs }) => {
                                 currency: 'PHP',
                               }).format(
                                 scholarship &&
-                                  index < (fee?._type === 'threeTermPayment' ? 2 : 3)
+                                  index < (fee?._type === 'threeTermPayment'
+                                    ? 2
+                                    : fee?._type === 'fourTermPayment'
+                                      ? 3
+                                      : fee?._type === 'nineTermPayment'
+                                        ? 9
+                                        : 0)
                                   ? Math.ceil(
                                     scholarship.value /
-                                    (fee?._type === 'threeTermPayment' ? 2 : 3)
+                                    (fee?._type === 'threeTermPayment'
+                                      ? 2
+                                      : fee?._type === 'fourTermPayment'
+                                        ? 3
+                                        : fee?._type === 'nineTermPayment'
+                                          ? 9
+                                          : 1)
                                   )
                                   : 0
                               )}
@@ -1179,7 +1221,6 @@ const Students = ({ schoolFees, programs }) => {
                             </span>
                           )}
                         </td>
-
                       </tr>
                     )
                   )}
@@ -1291,11 +1332,80 @@ const Students = ({ schoolFees, programs }) => {
                     fee?._type === 'fullTermPayment'
                       ? fee?.fullPayment
                       : fee?._type === 'threeTermPayment'
-                        ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment
-                        : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment
+                        ? fee?.downPayment +
+                        fee?.secondPayment +
+                        fee?.thirdPayment
+                        : fee?._type === 'fourTermPayment'
+                          ? fee?.downPayment +
+                          fee?.secondPayment +
+                          fee?.thirdPayment +
+                          fee?.fourthPayment
+                          : fee?.downPayment +
+                          fee?.secondPayment +
+                          fee?.thirdPayment +
+                          fee?.fourthPayment +
+                          fee?.fifthPayment +
+                          fee?.sixthPayment +
+                          fee?.seventhPayment +
+                          fee?.eighthPayment +
+                          fee?.ninthPayment
                   ) -
-                  ((discount ? (discount?.type === 'VALUE' ? (discount?.code?.toLowerCase().includes('pastor') ? Math.ceil(fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?._type === 'threeTermPayment' ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment) - discount.value : discount.value) : (discount.value / 100) * (fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?.secondPayment)) : 0) +
-                    (scholarship ? (scholarship?.type === 'VALUE' ? (scholarship?.code?.toLowerCase().includes('merit') ? Math.ceil(fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?._type === 'threeTermPayment' ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment) - scholarship.value : scholarship.value) : (scholarship.value / 100) * (fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?.secondPayment)) : 0))
+                  ((discount
+                    ? discount?.type === 'VALUE'
+                      ? discount?.code?.toLowerCase().includes('pastor')
+                        ? Math.ceil(
+                          fee?._type === 'fullTermPayment'
+                            ? fee?.fullPayment
+                            : fee?._type === 'threeTermPayment'
+                              ? fee?.downPayment +
+                              fee?.secondPayment +
+                              fee?.thirdPayment
+                              : fee?._type === 'fourTermPayment'
+                                ? fee?.downPayment +
+                                fee?.secondPayment +
+                                fee?.thirdPayment +
+                                fee?.fourthPayment
+                                : fee?.downPayment +
+                                fee?.secondPayment +
+                                fee?.thirdPayment +
+                                fee?.fourthPayment +
+                                fee?.fifthPayment +
+                                fee?.sixthPayment +
+                                fee?.seventhPayment +
+                                fee?.eighthPayment +
+                                fee?.ninthPayment
+                        ) - discount.value
+                        : discount.value
+                      : (discount.value / 100) *
+                      (fee?._type === 'fullTermPayment'
+                        ? fee?.fullPayment
+                        : fee?.secondPayment)
+                    : 0) +
+                    (scholarship
+                      ? (scholarship?.type === 'VALUE'
+                        ? (scholarship?.code?.toLowerCase().includes('merit')
+                          ? Math.ceil(fee?._type === 'fullTermPayment'
+                            ? fee?.fullPayment
+                            : fee?._type === 'threeTermPayment'
+                              ? fee?.downPayment +
+                              fee?.secondPayment +
+                              fee?.thirdPayment
+                              : fee?._type === 'fourTermPayment'
+                                ? fee?.downPayment +
+                                fee?.secondPayment +
+                                fee?.thirdPayment +
+                                fee?.fourthPayment
+                                : fee?.downPayment +
+                                fee?.secondPayment +
+                                fee?.thirdPayment +
+                                fee?.fourthPayment +
+                                fee?.fifthPayment +
+                                fee?.sixthPayment +
+                                fee?.seventhPayment +
+                                fee?.eighthPayment +
+                                fee?.ninthPayment
+                          ) - scholarship.value : scholarship.value)
+                        : (scholarship.value / 100) * (fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?.secondPayment)) : 0))
                 )}
               </span>
             </h4>

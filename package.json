@@ -55,7 +55,8 @@
     "stripe": "^8.203.0",
     "swr": "^1.2.1",
     "uuid": "^9.0.0",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "zipcodes-ph": "^1.1.2"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.0",

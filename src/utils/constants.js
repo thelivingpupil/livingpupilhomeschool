@@ -1,4 +1,3 @@
-import { MarkChatRead } from '@mui/icons-material';
 import { GradeLevel } from '@prisma/client';
 
 export const SCHOOL_YEAR = {
@@ -235,6 +234,7 @@ export const STUDENT_STATUS = {
   INITIALLY_ENROLLED: 'INITIALLY ENROLLED',
 }
 
+//this is used for the monthly iteration in createSchoolFees()
 export const MONTHLY_INDEX = {
   FEBRAURY_2024: 7,
   MARCH_2024: 7,
@@ -252,3 +252,32 @@ export const MONTHLY_INDEX = {
   MARCH_2025: 2,
   APRIL_2025: 1,
 }
+
+//function to get the current month and year with format with the format of MONTHLY_INDEX
+export const getMonthIndex = (date) => {
+  const monthNames = [
+    "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
+    "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
+  ];
+
+  const formattedMonthYear = monthNames[date.getMonth()] + '_' + date.getFullYear();
+
+  return MONTHLY_INDEX[formattedMonthYear];
+};
+
+//function to get monthly payment
+export const calculateMonthlyPayment = (monthIndex, programFeeByAccreditation) => {
+  const payments = programFeeByAccreditation?.paymentTerms[3] || {};
+  const sum = (payments.secondPayment || 0)
+    + (payments.thirdPayment || 0)
+    + (payments.fourthPayment || 0)
+    + (payments.fifthPayment || 0)
+    + (payments.sixthPayment || 0)
+    + (payments.seventhPayment || 0)
+    + (payments.eighthPayment || 0)
+    + (payments.ninthPayment || 0);
+
+  const result = sum / monthIndex;
+  return result
+};
+

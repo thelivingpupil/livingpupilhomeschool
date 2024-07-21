@@ -378,3 +378,16 @@ export const updateStudentStatus = async (studentId, newStudentStatus) =>
     where: { studentId }
   });
 
+export const updateStudentRecordForSchoolFees = async (studentId, newgradeLevel, newEnrollmentType, newAccreditation, newDiscountCode, newScholarshipCode, newCottageType) =>
+  await prisma.studentRecord.update({
+    data: {
+      incomingGradeLevel: newgradeLevel,
+      enrollmentType: newEnrollmentType,
+      accreditation: newAccreditation,
+      discount: newDiscountCode,
+      scholarship: newScholarshipCode,
+      cottageType: newCottageType,
+    },
+    where: { studentId }
+  });
+

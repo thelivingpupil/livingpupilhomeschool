@@ -1,6 +1,7 @@
 import { validateSession } from '@/config/api-validation';
 import { getTransactions } from '@/prisma/services/transaction';
 import { createSchoolFees, deleteStudentSchoolFees } from '@/prisma/services/school-fee';
+import { updateStudentRecordForSchoolFees } from '@/prisma/services/student-record';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -23,12 +24,21 @@ const handler = async (req, res) => {
       paymentMethod,
       discountCode,
       scholarshipCode,
-      studentId
+      studentId,
+      monthIndex
     } = req.body;
     // Delete existing school fees
     await deleteStudentSchoolFees(studentId);
-
-    const [schoolFee] = await Promise.all([
+    const [studentRecord, schoolFee] = await Promise.all([
+      updateStudentRecordForSchoolFees(
+        studentId,
+        incomingGradeLevel,
+        enrollmentType,
+        accreditation,
+        discountCode,
+        scholarshipCode,
+        cottageType
+      ),
       createSchoolFees(
         userId,
         email,
@@ -41,10 +51,11 @@ const handler = async (req, res) => {
         accreditation,
         paymentMethod,
         discountCode,
+        monthIndex,
         scholarshipCode
       ),
     ]);
-    res.status(200).json({ message: 'School fees generated successfully', schoolFee });
+    res.status(200).json({ message: 'School fees generated successfully' }, { data: { studentRecord, schoolFee } });
   } else {
     res.status(405).json({ error: `${method} method unsupported` });
   }

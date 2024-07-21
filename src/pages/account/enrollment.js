@@ -49,7 +49,8 @@ import {
   PROGRAM,
   RELIGION,
   SCHOOL_YEAR,
-  MONTHLY_INDEX,
+  getMonthIndex,
+  calculateMonthlyPayment,
 } from '@/utils/constants';
 
 const steps = [
@@ -641,47 +642,55 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
     });
   };
 
-  //format the month and year for monthyl payament
-  const getFormattedMonthYear = (date) => {
-    const monthNames = [
-      "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
-      "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
-    ];
-
-    const month = monthNames[date.getMonth()];
-    const year = date.getFullYear();
-
-    return `${month}_${year}`;
-  };
-  //format the month and year for monthyl payament
+  //Get month index for calculations of monthly payments
   const [monthIndex, setMonthIndex] = useState(null);
+  const [monthlyPayment, setMonthlyPayment] = useState(0)
   useEffect(() => {
-    const today = new Date();
-    const formattedMonthYear = getFormattedMonthYear(today);
-    const value = MONTHLY_INDEX[formattedMonthYear];
-    setMonthIndex(value);
+    setMonthIndex(getMonthIndex(new Date()));
   }, []);
 
+  useEffect(() => {
+    if (accreditation !== null) {
+      const programFeeByAccreditation = programFee?.tuitionFees.find(
+        (tuition) => tuition.type === accreditation
+      );
+      console.log("Payment Terms: " + programFeeByAccreditation)
+      setMonthlyPayment(calculateMonthlyPayment(monthIndex, programFeeByAccreditation));
+    } else {
+      console.log("Accreditation Empty");
+    }
+  }, [accreditation, programFee, monthIndex, calculateMonthlyPayment]);
 
-  const calculateMonthlyPayment = () => {
-    const programFeeByAccreditation = programFee?.tuitionFees.find(
-      (tuition) => tuition.type === accreditation
-    );
-    const payments = programFeeByAccreditation?.paymentTerms[3] || {};
-    const sum = (payments.secondPayment || 0)
-      + (payments.thirdPayment || 0)
-      + (payments.fourthPayment || 0)
-      + (payments.fifthPayment || 0)
-      + (payments.sixthPayment || 0)
-      + (payments.seventhPayment || 0)
-      + (payments.eighthPayment || 0)
-      + (payments.ninthPayment || 0);
-
-    const result = sum / monthIndex;
-    return result
+  const handleAccreditationChange = (e) => {
+    const selectedAccreditation = e.target.value;
+    if (selectedAccreditation) {
+      setAccreditation(selectedAccreditation);
+    } else {
+      setAccreditation(null);
+    }
   };
 
-  const monthlyPayment = calculateMonthlyPayment();
+  console.log("Month Index: " + monthIndex + "\nMonthly Payment: " + monthlyPayment + "\nAccreditation: " + accreditation);
+
+  // const calculateMonthlyPayment = () => {
+  //   const programFeeByAccreditation = programFee?.tuitionFees.find(
+  //     (tuition) => tuition.type === accreditation
+  //   );
+  //   const payments = programFeeByAccreditation?.paymentTerms[3] || {};
+  //   const sum = (payments.secondPayment || 0)
+  //     + (payments.thirdPayment || 0)
+  //     + (payments.fourthPayment || 0)
+  //     + (payments.fifthPayment || 0)
+  //     + (payments.sixthPayment || 0)
+  //     + (payments.seventhPayment || 0)
+  //     + (payments.eighthPayment || 0)
+  //     + (payments.ninthPayment || 0);
+
+  //   const result = sum / monthIndex;
+  //   return result
+  // };
+
+  // const monthlyPayment = calculateMonthlyPayment();
 
   const renderTab = () => {
     const tabs = [
@@ -1593,13 +1602,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
-              onChange={(e) => {
-                if (e.target.value) {
-                  setAccreditation(e.target.value);
-                } else {
-                  setAccreditation(null);
-                }
-              }}
+              onChange={handleAccreditationChange}
               value={accreditation}
             >
               <option value="">Please select accreditation...</option>
@@ -2174,7 +2177,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             </div>
           </div>
           <div className="relative flex flex-row space-x-5">
-            {programFeeByAccreditation?.paymentTerms[3] && (
+            {programFeeByAccreditation?.paymentTerms?.[3] && (
               <div
                 className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.MONTHLY
                   ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
@@ -2208,7 +2211,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                       {monthIndex} monthly payment(s) of {new Intl.NumberFormat('en-US', {
                         style: 'currency',
                         currency: 'PHP',
-                      }).format(calculateMonthlyPayment())}
+                      }).format(monthlyPayment)}
                       {/* (
                       {new Intl.NumberFormat('en-US', {
                         style: 'currency',
