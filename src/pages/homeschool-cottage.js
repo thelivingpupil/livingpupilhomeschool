@@ -12,6 +12,7 @@ import {
   ENROLLMENT_TYPE,
   GRADE_LEVEL_HEADER,
   GRADE_LEVEL_TYPES,
+  getMonthIndex
 } from '@/utils/constants';
 import { PortableText } from '@portabletext/react';
 
@@ -21,7 +22,7 @@ const HomeschoolCottage = ({ page, programs }) => {
   const [headerSection] = header?.sectionType;
   const [footerSection] = footer?.sectionType;
   const [enrollmentType, setEnrollmentType] = useState(Enrollment.NEW);
-  const [incomingGradeLevel, setIncomingGradeLevel] = useState(GRADE_LEVEL_TYPES.K2);
+  const [incomingGradeLevel, setIncomingGradeLevel] = useState(GRADE_LEVEL_TYPES.FORM_1);
   const [cottageType, setCottageType] = useState(CottageType.THREE_DAYS_A_WEEK);
 
   useEffect(() => {
@@ -62,6 +63,11 @@ const HomeschoolCottage = ({ page, programs }) => {
       query: { ...router.query, incomingGradeLevel: newGradeLevel }
     });
   };
+
+  const [monthIndex, setMonthIndex] = useState(null);
+  useEffect(() => {
+    setMonthIndex(getMonthIndex(new Date()));
+  }, []);
 
   return (
     <LandingLayout>
@@ -138,6 +144,7 @@ const HomeschoolCottage = ({ page, programs }) => {
               onClick={() => {
                 handleGradeLevelChange(GRADE_LEVEL_TYPES.K2);
               }}
+              hidden
             >
               K2
             </button>
@@ -224,7 +231,7 @@ const HomeschoolCottage = ({ page, programs }) => {
             style={{ color: '#7189BE' }}
           >
             Tuition Fees and Payment Plan for{' '}
-            {ENROLLMENT_TYPE[program?.enrollmentType]} for SY 2023-2024
+            {ENROLLMENT_TYPE[program?.enrollmentType]} for SY 2024-2025
           </div>
         </div>
         {program?.tuitionFees?.map((tuitionFee) => (
@@ -235,7 +242,7 @@ const HomeschoolCottage = ({ page, programs }) => {
             <div className="flex flex-col md:flex-wrap md:flex-row gap-4">
               <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
                 <div className="text-xl font-medium mb-5">Full Payment</div>
-                <div className="text-secondary-500 text-2xl font-bold font-display">
+                <div className="text-secondary-500 text-xl font-bold font-display">
                   {`Total: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
@@ -246,25 +253,25 @@ const HomeschoolCottage = ({ page, programs }) => {
                 <div className="text-xl font-medium mb-5">
                   Three (3) Term Payment
                 </div>
-                <div className="text-primary-500 text-2xl font-bold font-display">
+                <div className="text-primary-500 text-xl font-bold font-display">
                   {`Down payment: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
                   }).format(tuitionFee?.paymentTerms[1]?.downPayment || 0)}`}
                 </div>
-                <div className="text-primary-500 text-2xl font-bold font-display">
+                <div className="text-primary-500 text-xl font-bold font-display">
                   {`2nd payment: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
                   }).format(tuitionFee?.paymentTerms[1]?.secondPayment || 0)}`}
                 </div>
-                <div className="text-primary-500 text-2xl font-bold font-display">
+                <div className="text-primary-500 text-xl font-bold font-display">
                   {`3rd payment: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
                   }).format(tuitionFee?.paymentTerms[1]?.thirdPayment || 0)}`}
                 </div>
-                <div className="text-secondary-500 text-2xl font-bold font-display">
+                <div className="text-secondary-500 text-xl font-bold font-display">
                   {`Total: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
@@ -279,31 +286,31 @@ const HomeschoolCottage = ({ page, programs }) => {
                 <div className="text-xl font-medium mb-5">
                   Four (4) Term Payment
                 </div>
-                <div className="text-primary-500 text-2xl font-bold font-display">
+                <div className="text-primary-500 text-xl font-bold font-display">
                   {`Down payment: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
                   }).format(tuitionFee?.paymentTerms[2]?.downPayment || 0)}`}
                 </div>
-                <div className="text-primary-500 text-2xl font-bold font-display">
+                <div className="text-primary-500 text-xl font-bold font-display">
                   {`2nd payment: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
                   }).format(tuitionFee?.paymentTerms[2]?.secondPayment || 0)}`}
                 </div>
-                <div className="text-primary-500 text-2xl font-bold font-display">
+                <div className="text-primary-500 text-xl font-bold font-display">
                   {`3rd payment: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
                   }).format(tuitionFee?.paymentTerms[2]?.thirdPayment || 0)}`}
                 </div>
-                <div className="text-primary-500 text-2xl font-bold font-display">
+                <div className="text-primary-500 text-xl font-bold font-display">
                   {`4th payment: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
                   }).format(tuitionFee?.paymentTerms[2]?.fourthPayment || 0)}`}
                 </div>
-                <div className="text-secondary-500 text-2xl font-bold font-display">
+                <div className="text-secondary-500 text-xl font-bold font-display">
                   {`Total: ${new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'PHP',
@@ -312,6 +319,49 @@ const HomeschoolCottage = ({ page, programs }) => {
                     tuitionFee?.paymentTerms[2]?.secondPayment +
                     tuitionFee?.paymentTerms[2]?.thirdPayment +
                     tuitionFee?.paymentTerms[2]?.fourthPayment || 0
+                  )}`}
+                </div>
+              </div>
+              <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
+                <div className="text-xl font-medium mb-5">
+                  Monthly Term Payment
+                </div>
+                <div className="text-primary-500 text-xl font-bold font-display">
+                  {`Down payment: ${new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(tuitionFee?.paymentTerms[3]?.downPayment || 0)}`}
+                </div>
+                <div className="text-primary-500 text-xl font-bold font-display">
+                  {`${monthIndex} monthly payments: ${new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(
+                    (tuitionFee?.paymentTerms[3]?.downPayment +
+                      tuitionFee?.paymentTerms[3]?.secondPayment +
+                      tuitionFee?.paymentTerms[3]?.thirdPayment +
+                      tuitionFee?.paymentTerms[3]?.fourthPayment +
+                      tuitionFee?.paymentTerms[3]?.fifthPayment +
+                      tuitionFee?.paymentTerms[3]?.sixthPayment +
+                      tuitionFee?.paymentTerms[3]?.seventhPayment +
+                      tuitionFee?.paymentTerms[3]?.eighthPayment +
+                      tuitionFee?.paymentTerms[3]?.ninthPayment || 0) / monthIndex
+                  )}`}
+                </div>
+                <div className="text-secondary-500 text-xl font-bold font-display">
+                  {`Total: ${new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(
+                    tuitionFee?.paymentTerms[3]?.downPayment +
+                    tuitionFee?.paymentTerms[3]?.secondPayment +
+                    tuitionFee?.paymentTerms[3]?.thirdPayment +
+                    tuitionFee?.paymentTerms[3]?.fourthPayment +
+                    tuitionFee?.paymentTerms[3]?.fifthPayment +
+                    tuitionFee?.paymentTerms[3]?.sixthPayment +
+                    tuitionFee?.paymentTerms[3]?.seventhPayment +
+                    tuitionFee?.paymentTerms[3]?.eighthPayment +
+                    tuitionFee?.paymentTerms[3]?.ninthPayment || 0
                   )}`}
                 </div>
               </div>
@@ -324,7 +374,7 @@ const HomeschoolCottage = ({ page, programs }) => {
           </div>
         </div>
         <div className="flex flex-col px-5 py-5 w-full md:w-3/4">
-          <div className="text-justify font-bold space-y-3">
+          <div className="text-left font-bold space-y-3">
             <PortableText value={program?.inclusions} />
           </div>
         </div>
