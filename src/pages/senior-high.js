@@ -225,12 +225,15 @@ const HomeschoolProgram = ({ page, programs }) => {
                     style: 'currency',
                     currency: 'PHP',
                   }).format(
-                    tuitionFee?.paymentTerms[2]?.downPayment +
-                    tuitionFee?.paymentTerms[2]?.secondPayment +
-                    tuitionFee?.paymentTerms[2]?.thirdPayment +
-                    tuitionFee?.paymentTerms[2]?.fourthPayment || 0
+                    Math.ceil(
+                      (tuitionFee?.paymentTerms[2]?.downPayment || 0) +
+                      (tuitionFee?.paymentTerms[2]?.secondPayment || 0) +
+                      (tuitionFee?.paymentTerms[2]?.thirdPayment || 0) +
+                      (tuitionFee?.paymentTerms[2]?.fourthPayment || 0)
+                    )
                   )}`}
                 </div>
+
               </div>
               <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
                 <div className="text-xl font-medium mb-5">
@@ -247,7 +250,7 @@ const HomeschoolProgram = ({ page, programs }) => {
                     style: 'currency',
                     currency: 'PHP',
                   }).format(
-                    (tuitionFee?.paymentTerms[3]?.downPayment +
+                    (
                       tuitionFee?.paymentTerms[3]?.secondPayment +
                       tuitionFee?.paymentTerms[3]?.thirdPayment +
                       tuitionFee?.paymentTerms[3]?.fourthPayment +
