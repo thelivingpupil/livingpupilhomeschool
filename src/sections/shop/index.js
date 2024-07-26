@@ -161,7 +161,7 @@ const Shop = ({ categories, items }) => {
           />
           <h1 className="text-4xl font-bold text-center text-primary-500">Under Maintenance</h1>
           <p className="text-center">
-            We regret to inform you that our shop is temporarily closed today due to maintenance. We apologize for any inconvenience caused. We will reopen promptly at 5 PM. Thank you for your understanding and continued support.
+            We regret to inform you that our shop is temporarily closed today due to maintenance. We apologize for any inconvenience caused. We will reopen promptly at 5 PM tomorrow, July 27th. Thank you for your understanding and continued support.
           </p>
         </div>
       ) : (
