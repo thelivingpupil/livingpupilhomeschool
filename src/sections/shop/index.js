@@ -155,13 +155,19 @@ const Shop = ({ categories, items }) => {
         <div className="flex flex-col items-center justify-center h-screen p-5 m-auto space-y-5 md:w-1/2">
           <Image
             alt="Living Pupil Homeschool"
-            src="/images/maintenance.png"
+            src="/images/megaphone.png"
             width={550}
             height={420}
           />
-          <h1 className="text-4xl font-bold text-center text-primary-500">Under Maintenance</h1>
+          <h1 className="text-4xl font-bold text-center text-primary-500">Shop Announcement</h1>
           <p className="text-center">
-            We regret to inform you that our shop is temporarily closed today due to maintenance. We apologize for any inconvenience caused. We will reopen promptly at 5 PM tomorrow, July 27th. Thank you for your understanding and continued support.
+            Our shop will be closed today for preparations as we get ready for the exciting Cebu Pagbukas event! 🌟 We will be back in business tomorrow, July 27, 2024.
+          </p>
+          <p className="text-center">
+            If you’re in Cebu and looking to order books or shirts, we invite you to visit us at the Cebu Pagbukas tomorrow. We’ll be thrilled to assist you with your purchases and any other needs you may have.
+          </p>
+          <p className="text-center">
+            Thank you for your understanding and support. See you soon!
           </p>
         </div>
       ) : (
