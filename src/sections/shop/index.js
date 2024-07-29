@@ -147,7 +147,7 @@ const Shop = ({ categories, items }) => {
     [items, categories]
   );
 
-  const disableShop = true;
+  const disableShop = false;
 
   return (
     <>
