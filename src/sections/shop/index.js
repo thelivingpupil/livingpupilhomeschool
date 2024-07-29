@@ -147,7 +147,7 @@ const Shop = ({ categories, items }) => {
     [items, categories]
   );
 
-  const disableShop = false;
+  const disableShop = true;
 
   return (
     <>
@@ -161,7 +161,7 @@ const Shop = ({ categories, items }) => {
           />
           <h1 className="text-4xl font-bold text-center text-primary-500">Shop Announcement</h1>
           <p className="text-center">
-            Our shop will be closed today for preparations as we get ready for the exciting Cebu Pagbukas event! 🌟 We will be back in business tomorrow, July 27, 2024.
+            Our shop will be closed today for preparations as we get ready for the exciting Cebu Pagbukas event! 🌟 We will be back in business tomorrow, July 30, 2024.
           </p>
           <p className="text-center">
             If you’re in Cebu and looking to order books or shirts, we invite you to visit us at the Cebu Pagbukas tomorrow. We’ll be thrilled to assist you with your purchases and any other needs you may have.
