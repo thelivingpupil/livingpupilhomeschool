@@ -15,7 +15,6 @@ const formGradeLevels = {
 };
 
 const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjects }) => {
-  console.log(blueprints)
   const { data } = useWorkspaces();
 
   const availableGrades = useMemo(() => {
@@ -44,7 +43,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
     }
 
     return (
-      availablePrograms?.includes('HOMESCHOOL_PROGRAM') &&
+      availablePrograms?.includes('HOMESCHOOL_PROGRAM') || availablePrograms?.includes('HOMESCHOOL_COTTAGE') &&
       availableGrades?.reduce(
         (isValid, grade) =>
           [
@@ -81,7 +80,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
             : true;
 
           return (
-            availableGrades.includes(lessonPlan?.grade) && isProgramLevelValid
+            availableGrades.includes(lessonPlan?.grade) //&& isProgramLevelValid
           );
         }),
     [availableGrades, lessonPlans]
@@ -100,7 +99,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
             : true;
 
           return (
-            availableGrades.includes(blueprints?.grade) && isProgramLevelValid
+            availableGrades.includes(blueprints?.grade) //&& isProgramLevelValid
           );
         }),
     [availableGrades, blueprints]
@@ -139,10 +138,10 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
             : true;
 
           return (
-            availableGrades.includes(booklist?.grade) && isProgramLevelValid
+            availableGrades.includes(booklist?.grade) //&& isProgramLevelValid
           );
         }),
-    [availableGrades, lessonPlans]
+    [availableGrades, booklist]
   );
 
   const availableRecitation = useMemo(
@@ -158,7 +157,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
             : true;
 
           return (
-            availableGrades.includes(recitation?.grade) && isProgramLevelValid
+            availableGrades.includes(recitation?.grade) //&& isProgramLevelValid
           );
         }),
     [availableGrades, recitation]
@@ -177,7 +176,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
             : true;
 
           return (
-            availableGrades.includes(commonSubjects?.grade) && isProgramLevelValid
+            availableGrades.includes(commonSubjects?.grade) //&& isProgramLevelValid
           );
         }),
     [availableGrades, commonSubjects]
