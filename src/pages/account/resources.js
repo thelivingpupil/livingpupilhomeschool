@@ -80,7 +80,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
             : true;
 
           return (
-            availableGrades.includes(lessonPlan?.grade) //&& isProgramLevelValid
+            availableGrades.includes(lessonPlan?.grade) && isProgramLevelValid
           );
         }),
     [availableGrades, lessonPlans]
@@ -99,7 +99,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
             : true;
 
           return (
-            availableGrades.includes(blueprints?.grade) //&& isProgramLevelValid
+            availableGrades.includes(blueprints?.grade) && isProgramLevelValid
           );
         }),
     [availableGrades, blueprints]
@@ -138,7 +138,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
             : true;
 
           return (
-            availableGrades.includes(booklist?.grade) //&& isProgramLevelValid
+            availableGrades.includes(booklist?.grade) && isProgramLevelValid
           );
         }),
     [availableGrades, booklist]
@@ -157,7 +157,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
             : true;
 
           return (
-            availableGrades.includes(recitation?.grade) //&& isProgramLevelValid
+            availableGrades.includes(recitation?.grade) && isProgramLevelValid
           );
         }),
     [availableGrades, recitation]
@@ -176,7 +176,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
             : true;
 
           return (
-            availableGrades.includes(commonSubjects?.grade) //&& isProgramLevelValid
+            availableGrades.includes(commonSubjects?.grade) && isProgramLevelValid
           );
         }),
     [availableGrades, commonSubjects]
@@ -204,7 +204,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                         href={`${plan?.fileUrl
                           }?dl=${plan?.grade?.toLowerCase()}-lesson_plan.pdf`}
                       >
-                        {plan?.grade?.replace('_', ' ')}
+                        {plan?.grade?.replace('_', ' ')} - {plan?.program?.replace('_', ' ')}
                       </a>
                     </div>
                   );
@@ -225,7 +225,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                         href={`${blueprint?.fileUrl
                           }?dl=${blueprint?.grade?.toLowerCase()}-sy_blueprint.pdf`}
                       >
-                        {blueprint?.grade?.replace('_', ' ')}
+                        {blueprint?.grade?.replace('_', ' ')} - {blueprint?.program?.replace('_', ' ')}
                       </a>
                     </div>
                   );
@@ -268,7 +268,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                         href={`${booklist?.fileUrl
                           }?dl=${booklist?.grade?.toLowerCase()}-booklist.pdf`}
                       >
-                        {booklist?.grade?.replace('_', ' ')}
+                        {booklist?.grade?.replace('_', ' ')} - {booklist?.program?.replace('_', ' ')}
                       </a>
                     </div>
                   );
@@ -289,7 +289,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                         href={`${recitation?.fileUrl
                           }?dl=${recitation?.grade?.toLowerCase()}-recitation.pdf`}
                       >
-                        {recitation?.grade?.replace('_', ' ')}
+                        {recitation?.grade?.replace('_', ' ')} - {recitation?.program?.replace('_', ' ')}
                       </a>
                     </div>
                   );
@@ -310,7 +310,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                         href={`${commonSubjects?.fileUrl
                           }?dl=${commonSubjects?.grade?.toLowerCase()}-common-subjects.pdf`}
                       >
-                        {commonSubjects?.grade?.replace('_', ' ')}
+                        {commonSubjects?.grade?.replace('_', ' ')} - {commonSubjects?.program?.replace('_', ' ')}
                       </a>
                     </div>
                   );
