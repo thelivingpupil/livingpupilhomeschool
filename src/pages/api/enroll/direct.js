@@ -157,10 +157,10 @@ const handler = async (req, res) => {
     const attachments = [
       {
         filename: 'Payment Policies.pdf',
-        path: 'public/files/Payment Policies.pdf' // Ensure this path is correct and accessible
+        path: 'public/files/Payment_Policies.pdf' // Ensure this path is correct and accessible
       },
       {
-        filename: 'Homeschool Agreement.pdf',
+        filename: 'Homeschool_Agreement.pdf',
         path: 'public/files/Homeschool Agreement.pdf' // Example of another attachment
       }
     ];

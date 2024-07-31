@@ -125,7 +125,7 @@ const html = ({ parentName }) => {
 														<tr>
 															<td class="pad">
 																<div style="color:#ffffff;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:14.399999999999999px;">
-																	<p style="margin: 0; margin-bottom: 3px;">Hello ${parentName},</p>
+																	<p style="margin: 0; margin-bottom: 3px;">Hello Mr./Ms. ${parentName},</p>
                                                                     <p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">
                                                                         I hope this email finds you well.
