@@ -149,6 +149,10 @@ const Shop = ({ categories, items }) => {
 
   const disableShop = false;
 
+  const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+  console.log(shippingFee)
+  console.log(itemCount)
+
   return (
     <>
       {disableShop ? (
@@ -555,11 +559,16 @@ const Shop = ({ categories, items }) => {
                           {Object.entries(SHOP_SHIPPING).map(
                             ([value, { title, fee }]) => (
                               <option key={value} value={value}>
-                                {title}{' '}
-                                {new Intl.NumberFormat('en-US', {
-                                  style: 'currency',
-                                  currency: 'PHP',
-                                }).format(fee)}
+                                {title}{" "}
+                                {typeof fee === 'function'
+                                  ? `${new Intl.NumberFormat('en-US', {
+                                    style: 'currency',
+                                    currency: 'PHP',
+                                  }).format(fee(itemCount))}`
+                                  : `${new Intl.NumberFormat('en-US', {
+                                    style: 'currency',
+                                    currency: 'PHP',
+                                  }).format(fee)}`}
                               </option>
                             )
                           )}
@@ -570,6 +579,7 @@ const Shop = ({ categories, items }) => {
                       </div>
                     </div>
                   </div>
+
                   <div className="flex justify-between text-2xl font-bold">
                     <div>Total</div>
                     <div>

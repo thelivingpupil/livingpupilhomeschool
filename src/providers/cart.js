@@ -13,20 +13,34 @@ const cartInitialState = {
   shippingFee: {},
   deliveryAddress: '',
   contactNumber: '',
-  addToCart: () => {},
-  removeFromCart: () => {},
-  setShippingFee: () => {},
-  setDeliveryAddress: () => {},
-  setContactNumber: () => {},
-  clearCart: () => {},
-  toggleCartVisibility: () => {},
-  togglePaymentLinkVisibility: () => {},
-  checkoutCart: () => {},
+  addToCart: () => { },
+  removeFromCart: () => { },
+  setShippingFee: () => { },
+  setDeliveryAddress: () => { },
+  setContactNumber: () => { },
+  clearCart: () => { },
+  toggleCartVisibility: () => { },
+  togglePaymentLinkVisibility: () => { },
+  checkoutCart: () => { },
 };
 
 const LPH_CART_KEY = 'LPHCART';
 
 const CartContext = createContext(cartInitialState);
+
+const calculateShippingFee = (shippingType, itemCount) => {
+  if (shippingType === ShippingType.WITHIN_CEBU) {
+    return 160;
+  }
+
+  if (itemCount >= 25) {
+    return 500;
+  } else if (itemCount >= 10) {
+    return 400;
+  } else {
+    return 300;
+  }
+};
 
 export const SHOP_SHIPPING = {
   pickup: {
@@ -43,37 +57,37 @@ export const SHOP_SHIPPING = {
   },
   ncr: {
     title: 'NCR',
-    fee: 200,
+    fee: (itemCount) => calculateShippingFee(ShippingType.NCR, itemCount),
     key: ShippingType.NCR,
     value: 'ncr',
   },
   northLuzon: {
     title: 'North Luzon',
-    fee: 210,
+    fee: (itemCount) => calculateShippingFee(ShippingType.NORTH_LUZON, itemCount),
     key: ShippingType.NORTH_LUZON,
     value: 'northLuzon',
   },
   southLuzon: {
     title: 'South Luzon',
-    fee: 210,
+    fee: (itemCount) => calculateShippingFee(ShippingType.SOUTH_LUZON, itemCount),
     key: ShippingType.SOUTH_LUZON,
     value: 'southLuzon',
   },
   visayas: {
     title: 'Other Visayas Region',
-    fee: 200,
+    fee: (itemCount) => calculateShippingFee(ShippingType.VISAYAS, itemCount),
     key: ShippingType.VISAYAS,
     value: 'visayas',
   },
   mindanao: {
     title: 'Mindanao',
-    fee: 200,
+    fee: (itemCount) => calculateShippingFee(ShippingType.MINDANAO, itemCount),
     key: ShippingType.MINDANAO,
     value: 'mindanao',
   },
   islander: {
     title: 'Islander',
-    fee: 210,
+    fee: (itemCount) => calculateShippingFee(ShippingType.ISLANDER, itemCount),
     key: ShippingType.ISLANDER,
     value: 'islander',
   },
@@ -92,12 +106,21 @@ const CartProvider = ({ children }) => {
   const [contactNumber, setContactNumber] = useState('');
 
   useEffect(() => {
-    const cart = JSON.parse(localStorage.getItem(LPH_CART_KEY));
+    const storedCart = JSON.parse(localStorage.getItem(LPH_CART_KEY));
 
-    if (cart) {
-      setCart([...cart]);
+    if (storedCart) {
+      setCart([...storedCart]);
     }
   }, []);
+
+  const itemCount = useMemo(() => cart.reduce((total, item) => total + item.quantity, 0), [cart]);
+
+  useEffect(() => {
+    if (shippingFee.key) {
+      const fee = typeof shippingFee.fee === 'function' ? shippingFee.fee(itemCount) : shippingFee.fee || 0;
+      setShippingFee((prev) => ({ ...prev, fee }));
+    }
+  }, [cart, shippingFee.key]);
 
   const total = useMemo(
     () =>
@@ -142,27 +165,45 @@ const CartProvider = ({ children }) => {
 
     const newCart =
       findExistingItem !== -1
-        ? [...cart].splice(findExistingItem, 1, item)
+        ? [...cart].map((cartItem, index) =>
+          index === findExistingItem ? { ...cartItem, quantity: cartItem.quantity + item.quantity } : cartItem)
         : [...cart, item];
 
     setCart([...newCart]);
     localStorage.setItem(LPH_CART_KEY, JSON.stringify([...newCart]));
+
+    // Update shipping fee based on the new cart
+    const itemCount = newCart.reduce((total, item) => total + item.quantity, 0);
+    if (shippingFee.key) {
+      const fee = typeof SHOP_SHIPPING[shippingFee.value].fee === 'function'
+        ? SHOP_SHIPPING[shippingFee.value].fee(itemCount)
+        : SHOP_SHIPPING[shippingFee.value].fee;
+      setShippingFee((prev) => ({ ...prev, fee }));
+    }
   };
 
   const removeFromCart = (id) => {
-    const findExistingCartIndex = cart.findIndex((item) => item.id === id);
+    const newCart = cart.filter((item) => item.id !== id);
 
-    const cloneCart = [...cart];
+    setCart([...newCart]);
+    localStorage.setItem(LPH_CART_KEY, JSON.stringify([...newCart]));
 
-    cloneCart.splice(findExistingCartIndex, 1);
-
-    setCart([...cloneCart]);
-    localStorage.setItem(LPH_CART_KEY, JSON.stringify([...cloneCart]));
+    // Update shipping fee based on the new cart
+    const itemCount = newCart.reduce((total, item) => total + item.quantity, 0);
+    if (shippingFee.key) {
+      const fee = typeof SHOP_SHIPPING[shippingFee.value].fee === 'function'
+        ? SHOP_SHIPPING[shippingFee.value].fee(itemCount)
+        : SHOP_SHIPPING[shippingFee.value].fee;
+      setShippingFee((prev) => ({ ...prev, fee }));
+    }
   };
 
   const clearCart = () => {
     setCart([]);
     localStorage.setItem(LPH_CART_KEY, JSON.stringify([]));
+
+    // Clear shipping fee
+    setShippingFee({});
   };
 
   return (
