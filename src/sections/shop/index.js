@@ -77,7 +77,7 @@ const Shop = ({ categories, items }) => {
   };
 
   const handleSearch = (e) => {
-    const query = e.target.value;
+    const query = e.target.value.toLowerCase(); // Convert the search query to lowercase
     setQuery(query);
 
     if (query !== '') {
@@ -86,7 +86,7 @@ const Shop = ({ categories, items }) => {
           (item) =>
             (categoryFilter === 'all' ||
               item?.categories?.includes(categoryFilter)) &&
-            item?.name?.toLowerCase().includes(query)
+            item?.name?.toLowerCase().includes(query) // Convert item name to lowercase
         ),
       ];
     } else {
@@ -95,6 +95,7 @@ const Shop = ({ categories, items }) => {
 
     handleSort(sortBy);
   };
+
 
   const handleSort = (sortBy) => {
     let sort = (a, b) => {
@@ -372,11 +373,16 @@ const Shop = ({ categories, items }) => {
                         {Object.entries(SHOP_SHIPPING).map(
                           ([value, { title, fee }]) => (
                             <option key={value} value={value}>
-                              {title}{' '}
-                              {new Intl.NumberFormat('en-US', {
-                                style: 'currency',
-                                currency: 'PHP',
-                              }).format(fee)}
+                              {title}{" "}
+                              {typeof fee === 'function'
+                                ? `${new Intl.NumberFormat('en-US', {
+                                  style: 'currency',
+                                  currency: 'PHP',
+                                }).format(fee(itemCount))}`
+                                : `${new Intl.NumberFormat('en-US', {
+                                  style: 'currency',
+                                  currency: 'PHP',
+                                }).format(fee)}`}
                             </option>
                           )
                         )}
