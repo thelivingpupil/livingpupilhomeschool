@@ -5,6 +5,10 @@ import {
   html as recordHtml,
   text as recordText,
 } from '@/config/email-templates/enrollment-update';
+import {
+  html as policiesHtml,
+  text as policiesText,
+} from '@/config/email-templates/enrollment-update';
 import { createSchoolFees } from '@/prisma/services/school-fee';
 import { createStudentRecord } from '@/prisma/services/student-record';
 import { updateGuardianInformation } from '@/prisma/services/user';
@@ -19,7 +23,6 @@ const handler = async (req, res) => {
     const session = await validateSession(req, res);
     const studentStatus = STUDENT_STATUS.PENDING.toString();
     console.log(studentStatus)
-    const parentName = session.user.name;
     const {
       firstName,
       middleName,
@@ -78,6 +81,18 @@ const handler = async (req, res) => {
       address1,
       address2,
     };
+
+    const getParentName = (str) => {
+      str = str.trim();
+      if (str === '') return '';
+
+      const words = str.split(/\s+/);
+      const lastWord = words[words.length - 1];
+      return lastWord.replace(/[.,?!;:]$/, ''); // Remove common punctuation
+    };
+
+    const parentName = getParentName(primaryGuardianName);
+
     const workspace = await getOwnWorkspace(
       session.user.userId,
       session.user.email,
@@ -139,6 +154,27 @@ const handler = async (req, res) => {
         firstName,
       }),
       to: [session.user.email],
+    });
+    const attachments = [
+      {
+        filename: 'Payment Policies.pdf',
+        path: 'public/files/Payment Policies.pdf' // Ensure this path is correct and accessible
+      },
+      {
+        filename: 'Homeschool Agreement.pdf',
+        path: 'public/files/Homeschool Agreement.pdf' // Example of another attachment
+      }
+    ];
+    await sendMail({
+      html: policiesHtml({
+        parentName,
+      }),
+      subject: `[Living Pupil Homeschool] Signed Homeschool Agreement and Payment Policy`,
+      text: policiesText({
+        parentName,
+      }),
+      to: [session.user.email],
+      attachments,
     });
     await sendMail({
       html: recordHtml({

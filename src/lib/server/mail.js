@@ -10,13 +10,14 @@ export const emailConfig = {
 
 const transporter = nodemailer.createTransport(emailConfig);
 
-export const sendMail = async ({ from, html, subject, text, to }) => {
+export const sendMail = async ({ from, html, subject, text, to, attachments = [] }) => {
   const data = {
     from: from ?? process.env.EMAIL_FROM,
     to,
     subject,
     text,
     html,
+    attachments: attachments.length > 0 ? attachments : undefined, // Include attachments only if there are any
   };
 
   process.env.NODE_ENV === 'production'
