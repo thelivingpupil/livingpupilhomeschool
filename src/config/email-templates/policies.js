@@ -1,5 +1,5 @@
 const html = ({ parentName }) => {
-    return `
+	return `
 <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 
@@ -132,8 +132,8 @@ const html = ({ parentName }) => {
                                                                     </p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">
-                                                                        Attached, you will find a copy of your signed Homeschool Agreement 
-                                                                        and the Payment Policy for SY 2024-2025. These documents outline the 
+                                                                        Attached, you will find a copy of your signed <strong> Homeschool Agreement </strong>
+                                                                        and the <strong>Payment Policy</strong> for SY 2024-2025. These documents outline the 
                                                                         terms and conditions of our homeschool program as well as the financial obligations 
                                                                         and procedures.
                                                                     </p>
@@ -142,10 +142,6 @@ const html = ({ parentName }) => {
                                                                         Please review the attached files carefully and keep them for your records. 
                                                                         Should you have any questions or need further clarification on any points, 
                                                                         do not hesitate to reach out.
-                                                                    </p>
-                                                                    <p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">
-                                                                        Thank you for choosing Living Pupil Homeschool.
                                                                     </p>
                                                                     <p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">
@@ -216,7 +212,7 @@ const html = ({ parentName }) => {
 };
 
 const text = ({ parentName }) => {
-    return `
+	return `
 Dear ${parentName},
 
 I hope this email finds you well.
