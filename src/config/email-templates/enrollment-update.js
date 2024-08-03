@@ -18,7 +18,7 @@ const html = ({
 	pictureLink,
 	program,
 	reportCardLink,
-	schoolFee,
+	url,
 	primaryGuardianName,
 }) => {
 	return `
@@ -174,7 +174,7 @@ const html = ({
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">You can access the payment URL here if you have not yet paid the school fees.</p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Payment URL: <a href="${schoolFee.url}" target="_blank"><strong>Payment URL</strong></a></p>
+																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Payment URL: <a href="${url}" target="_blank"><strong>Payment URL</strong></a></p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">In case you need any assistance and found any discrepancies, just hit reply.</p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
@@ -246,7 +246,7 @@ const text = ({
 	pictureLink,
 	program,
 	reportCardLink,
-	schoolFee,
+	url,
 }) => {
 	return `
 Thank you for choosing Living Pupil Homeschool.
@@ -270,7 +270,7 @@ Payment Details
 2. Payment Type: ${PAYMENT_TYPE[payment]}
 
 You can access the payment URL here if you have not yet paid the school fees.
-Payment URL: ${schoolFee.url}
+Payment URL: ${url}
 
 In case you need any assistance and found any discrepancies, just hit reply.
 

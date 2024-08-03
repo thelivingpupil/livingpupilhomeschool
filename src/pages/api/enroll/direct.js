@@ -142,6 +142,7 @@ const handler = async (req, res) => {
       ),
       updateGuardianInformation(session.user.userId, guardianInformation),
     ]);
+    const url = schoolFee.url;
     await sendMail({
       html: html({
         parentName,
@@ -161,7 +162,7 @@ const handler = async (req, res) => {
       },
       {
         filename: 'Homeschool_Agreement.pdf',
-        path: 'public/files/Homeschool Agreement.pdf' // Example of another attachment
+        path: 'public/files/Homeschool_Agreement.pdf' // Example of another attachment
       }
     ];
     await sendMail({
@@ -187,7 +188,7 @@ const handler = async (req, res) => {
         pictureLink,
         program,
         reportCardLink,
-        schoolFee,
+        url,
         primaryGuardianName,
       }),
       subject: `[Living Pupil Homeschool] Received ${firstName} Student Record`,
@@ -202,7 +203,7 @@ const handler = async (req, res) => {
         pictureLink,
         program,
         reportCardLink,
-        schoolFee,
+        url,
       }),
       to: [session.user.email],
     });
