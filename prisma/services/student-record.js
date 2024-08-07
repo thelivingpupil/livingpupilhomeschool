@@ -181,7 +181,8 @@ export const createStudentRecord = async (
   primaryTeacherRelationship,
   primaryTeacherEducation,
   primaryTeacherProfile,
-  studentStatus
+  studentStatus,
+  signatureLink
 ) =>
   await prisma.studentRecord.create({
     data: {
@@ -210,7 +211,8 @@ export const createStudentRecord = async (
       primaryTeacherRelationship,
       primaryTeacherEducation,
       primaryTeacherProfile,
-      studentStatus
+      studentStatus,
+      signatureLink
     },
   });
 

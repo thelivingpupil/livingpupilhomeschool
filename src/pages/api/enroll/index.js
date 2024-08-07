@@ -64,7 +64,8 @@ const handler = async (req, res) => {
       primaryTeacherRelationship,
       primaryTeacherEducation,
       primaryTeacherProfile,
-      monthIndex
+      monthIndex,
+      signatureLink,
     } = req.body;
     const guardianInformation = {
       primaryGuardianName,
@@ -126,6 +127,7 @@ const handler = async (req, res) => {
         primaryTeacherEducation,
         primaryTeacherProfile,
         STUDENT_STATUS.PENDING,
+        signatureLink,
       ),
       createSchoolFees(
         session.user.userId,

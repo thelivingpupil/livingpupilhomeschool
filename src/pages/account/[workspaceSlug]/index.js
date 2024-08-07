@@ -215,9 +215,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       telephoneNumber.length > 0 &&
       anotherEmail.length > 0 &&
       address1.length > 0 &&
-      address2.length > 0
-      //birthCertificateLink &&
-      //birthCertificateLink?.length > 0
+      address2.length > 0 &&
+      birthCertificateLink &&
+      birthCertificateLink?.length > 0
     ) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
@@ -610,6 +610,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         primaryTeacherEducation,
         primaryTeacherProfile,
         monthIndex,
+        signatureLink,
       },
       method: 'POST',
     })
@@ -2632,7 +2633,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   ref={sigCanvas}
                   canvasProps={{
                     className: `sigCanvas border ${signatureLink ? 'border-gray-400' : 'border-red-500'} w-full h-40 sm:h-48 md:h-56 lg:h-64` // Conditional border color
-                  }} // Responsive height classes
+                  }}
                 />
                 <div className="flex space-x-3 mt-3">
                   <button onClick={clearSignature} className="bg-red-500 text-white px-3 py-1 rounded">
