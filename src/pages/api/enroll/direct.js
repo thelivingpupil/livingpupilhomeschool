@@ -160,11 +160,11 @@ const handler = async (req, res) => {
     const attachments = [
       {
         filename: 'Payment Policies.pdf',
-        path: 'public/files/Payment_Policies.pdf' // Ensure this path is correct and accessible
+        path: '/files/Payment_Policies.pdf'
       },
       {
         filename: 'Homeschool_Agreement.pdf',
-        path: 'public/files/Homeschool_Agreement.pdf' // Example of another attachment
+        path: '/files/Homeschool_Agreement.pdf'
       }
     ];
     await sendMail({
