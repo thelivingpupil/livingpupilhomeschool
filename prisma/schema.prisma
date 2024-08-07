@@ -198,6 +198,7 @@ model StudentRecord {
   image                String?
   liveBirthCertificate String?
   reportCard           String?
+  signature            String?
   discount             String?
   scholarship          String?
   primaryTeacherName   String?             
