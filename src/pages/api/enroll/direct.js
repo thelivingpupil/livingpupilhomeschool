@@ -7,7 +7,7 @@ import {
 import {
   html as policiesHtml,
   text as policiesText,
-} from '@/config/email-templates/enrollment-update';
+} from '@/config/email-templates/policies';
 import { sendMail } from '@/lib/server/mail';
 import { createSchoolFees } from '@/prisma/services/school-fee';
 import { createStudentRecord } from '@/prisma/services/student-record';
