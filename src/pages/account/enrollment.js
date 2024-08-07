@@ -232,7 +232,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       anotherEmail.length > 0 &&
       address1.length > 0 &&
       address2.length > 0 &&
-      birthCertificateLink > 0 &&
+      //birthCertificateLink > 0 &&
       birthCertificateLink?.length > 0
     ) ||
     (step === 1 && accreditation !== null) ||
