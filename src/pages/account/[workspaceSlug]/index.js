@@ -2632,7 +2632,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 <SignatureCanvas
                   ref={sigCanvas}
                   canvasProps={{
-                    className: `sigCanvas border ${signatureLink ? 'border-gray-400' : 'border-red-500'} w-full h-40 sm:h-48 md:h-56 lg:h-64` // Conditional border color
+                    className: `sigCanvas bg-gray-100 border ${signatureLink ? 'border-gray-400' : 'border-red-500'} w-full h-40 sm:h-48 md:h-56 lg:h-64`,
                   }}
                 />
                 <div className="flex space-x-3 mt-3">
