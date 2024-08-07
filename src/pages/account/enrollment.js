@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import {
   CheckIcon,
   ChevronDownIcon,
@@ -25,6 +25,7 @@ import Link from 'next/link';
 import DatePicker from 'react-datepicker';
 import toast from 'react-hot-toast';
 import slugify from 'slugify';
+import SignatureCanvas from 'react-signature-canvas';
 
 import Button from '@/components/Button';
 import Card from '@/components/Card';
@@ -78,6 +79,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const [isSubmitting, setSubmittingState] = useState(false);
   const [review, setReviewVisibility] = useState(false);
   const [agree, setAgree] = useState(false);
+  const sigCanvas = useRef({});
+  const clearSignature = () => {
+    sigCanvas.current.clear();
+  };
   const [slug, setSlug] = useState('');
   const [firstName, setFirstName] = useState(
     student?.firstName || ''
@@ -117,6 +122,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const [pictureProgress, setPictureProgress] = useState(0);
   const [birthCertificateProgress, setBirthCertificateProgress] = useState(0);
   const [reportCardProgress, setReportCardProgress] = useState(0);
+  const [signatureProgress, setSignatureProgress] = useState(0);
   const [pictureLink, setPictureLink] = useState(
     student?.image || null
   );
@@ -126,6 +132,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const [reportCardLink, setReportCardLink] = useState(
     student?.reportCard || null
   );
+  const [signatureLink, setSignatureLink] = useState(null);
   const [discountCode, setDiscountCode] = useState('');
   const [discount, setDiscount] = useState(null);
 
@@ -225,7 +232,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       anotherEmail.length > 0 &&
       address1.length > 0 &&
       address2.length > 0 &&
-      //birthCertificateLink > 0 &&
+      birthCertificateLink > 0 &&
       birthCertificateLink?.length > 0
     ) ||
     (step === 1 && accreditation !== null) ||
@@ -233,6 +240,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       payment !== null &&
       paymentMethod &&
       agree &&
+      signatureLink?.length > 0 &&
       !isSubmittingCode);
 
   const programFee = programs.find((programFee) => {
@@ -516,6 +524,52 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
     }
   };
 
+  const saveSignature = () => {
+    const dataUrl = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
+    uploadSignature(dataUrl);
+  };
+
+  const dataURLToBlob = (dataURL) => {
+    const arr = dataURL.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = Buffer.from(arr[1], 'base64');
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr[n];
+    }
+    return new Blob([u8arr], { type: mime });
+  };
+
+  const uploadSignature = (dataUrl) => {
+    const blob = dataURLToBlob(dataUrl);
+    const extension = 'png';
+    const fileName = `signature-${crypto
+      .createHash('md5')
+      .update(dataUrl)
+      .digest('hex')
+      .substring(0, 12)}-${format(new Date(), 'yyyy.MM.dd.kk.mm.ss')}.${extension}`;
+
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, blob);
+
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {
+        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        setSignatureProgress(progress);
+      },
+      (error) => {
+        toast.error(error.message);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setSignatureLink(downloadURL);
+        });
+      }
+    );
+  };
+
   const next = () => {
     if (step < steps.length - 1) {
       setStep(step + 1);
@@ -584,6 +638,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         primaryTeacherEducation,
         primaryTeacherProfile,
         monthIndex,
+        signatureLink
       },
       method: 'POST',
     })
@@ -2652,6 +2707,45 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                 Homeschool's Database
               </span>
             </label>
+            <div className="flex flex-col items-center mt-5">
+              <p className="text-center text-xs mb-3">By signing, you are agreeing to the Homeschool Agreement and Payment Policy.</p>
+              <SignatureCanvas
+                ref={sigCanvas}
+                canvasProps={{
+                  className: `sigCanvas border ${signatureLink ? 'border-gray-400' : 'border-red-500'} w-full h-40 sm:h-48 md:h-56 lg:h-64` // Conditional border color
+                }}
+              />
+              <div className="flex space-x-3 mt-3">
+                <button onClick={clearSignature} className="bg-red-500 text-white px-3 py-1 rounded">
+                  Clear
+                </button>
+                <button onClick={saveSignature} className="bg-blue-500 text-white px-3 py-1 rounded">
+                  Save
+                </button>
+              </div>
+              <div className="w-full mt-2 rounded-full shadow bg-grey-light">
+                <div
+                  className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
+                  style={{ width: `${signatureProgress}%` }}
+                >
+                  <span className="px-3">{signatureProgress}%</span>
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-center space-y-3">
+                {signatureLink ? (
+                  <Link href={signatureLink}>
+                    <a
+                      className="text-sm text-blue-600 underline"
+                      target="_blank"
+                    >
+                      Preview Image
+                    </a>
+                  </Link>
+                ) : (
+                  <p>No signature uploaded</p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )

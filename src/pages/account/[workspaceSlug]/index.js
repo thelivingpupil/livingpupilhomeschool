@@ -2650,20 +2650,20 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   >
                     <span className="px-3">{signatureProgress}%</span>
                   </div>
-                  <div className="flex flex-col items-center justify-center space-y-3">
-                    {signatureLink ? (
-                      <Link href={signatureLink}>
-                        <a
-                          className="text-sm text-blue-600 underline"
-                          target="_blank"
-                        >
-                          Preview Image
-                        </a>
-                      </Link>
-                    ) : (
-                      <p>No signature uploaded</p>
-                    )}
-                  </div>
+                </div>
+                <div className="flex flex-col items-center justify-center space-y-3">
+                  {signatureLink ? (
+                    <Link href={signatureLink}>
+                      <a
+                        className="text-sm text-blue-600 underline"
+                        target="_blank"
+                      >
+                        Preview Image
+                      </a>
+                    </Link>
+                  ) : (
+                    <p>No signature uploaded</p>
+                  )}
                 </div>
               </div>
             </div>
