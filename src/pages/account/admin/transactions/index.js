@@ -683,7 +683,8 @@ const Transactions = () => {
                                     transaction.schoolFee.order,
                                     transaction.schoolFee.paymentType,
                                     transaction.createdAt,
-                                    transaction.schoolFee.student.studentRecord?.schoolYear
+                                    transaction.schoolFee.student.studentRecord?.schoolYear,
+                                    'S'
                                   ) || null}
                               </p>
                             </div>
