@@ -677,13 +677,14 @@ const Transactions = () => {
                                     : `Payment #${transaction.schoolFee.order}`}
                               </div>
                               <p className="text-xs font-semibold text-primary-500">
-                                {getDeadline(
-                                  transaction.schoolFee.order,
-                                  transaction.schoolFee.paymentType,
-                                  transaction.createdAt,
-                                  transaction.schoolFee.student.studentRecord
-                                    ?.schoolYear
-                                ) || null}
+                                {transaction.schoolFee.order === 0
+                                  ? ''
+                                  : getDeadline(
+                                    transaction.schoolFee.order,
+                                    transaction.schoolFee.paymentType,
+                                    transaction.createdAt,
+                                    transaction.schoolFee.student.studentRecord?.schoolYear
+                                  ) || null}
                               </p>
                             </div>
                           </td>
