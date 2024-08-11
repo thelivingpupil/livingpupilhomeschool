@@ -38,6 +38,8 @@ const Fees = () => {
       fees[fee.gradeLevel].schoolFees[fee.order] = fee;
     });
 
+  console.log(fees)
+
   const renew = (transactionId, referenceNumber) => {
     setSubmittingState(true);
 
@@ -110,7 +112,7 @@ const Fees = () => {
                                           : index > 0 &&
                                             f.paymentType === PaymentType.QUARTERLY
                                             ? `Three (4) Term Payment School Fee #${index}`
-                                            : `Nine (9) Term Payment School Fee #${index}`
+                                            : `Monthly Payment School Fee #${index}`
                                     }
                                   </p>
                                   <p className="text-xs italic text-gray-400">
@@ -151,33 +153,33 @@ const Fees = () => {
                                   {getDeadline(
                                     index,
                                     f.paymentType,
-                                    workspace.studentRecord.createdAt,
-                                    workspace.studentRecord.schoolYear
+                                    fees[level].schoolFees[0].transaction.updatedAt,
+                                    //workspace.studentRecord.createdAt,
+                                    workspace.studentRecord.schoolYear,
+                                    fees[level].schoolFees[0].transaction.paymentStatus
                                   ) || '-'}
                                 </td>
                                 <td className="px-3 py-2 space-x-3 text-center">
                                   {f.transaction.paymentStatus !== TransactionStatus.S ? (
                                     <>
-                                      <button
-                                        className="inline-block px-3 py-2 text-xs text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
-                                        disabled={isSubmitting}
-                                        onClick={() =>
-                                          renew(
-                                            f.transaction.transactionId,
-                                            f.transaction.referenceNumber
-                                          )
-                                        }
-                                      >
-                                        Get New Link
-                                      </button>
-                                      {/* <Link href={f.transaction.url}>
-      <a
-        className="inline-block px-3 py-2 text-xs rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-        target="_blank"
-      >
-        Pay Now
-      </a>
-    </Link> */}
+                                      {index !== 0 &&
+                                        fees[level].schoolFees[0].transaction.paymentStatus !== 'S'
+                                        ? <span className="inline-block px-3 py-1 text-xs text-white bg-red-600 rounded-full">
+                                          Unpaid Initial Fee
+                                        </span>
+                                        : <button
+                                          className="inline-block px-3 py-2 text-xs text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
+                                          disabled={isSubmitting}
+                                          onClick={() =>
+                                            renew(
+                                              f.transaction.transactionId,
+                                              f.transaction.referenceNumber
+                                            )
+                                          }
+                                        >
+                                          Get New Link
+                                        </button>
+                                      }
                                     </>
                                   ) : (
                                     <div>

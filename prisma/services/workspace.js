@@ -431,6 +431,7 @@ export const getWorkspaces = async (id, email) => {
               url: true,
               purchaseHistoryId: true,
               createdAt: true,
+              updatedAt: true,
             },
           },
           createdAt: true,

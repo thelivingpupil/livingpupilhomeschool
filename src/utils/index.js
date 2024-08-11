@@ -1,6 +1,7 @@
 import { PaymentType } from '@prisma/client';
 import add from 'date-fns/add';
 import format from 'date-fns/format';
+import { addMonths, setDate } from 'date-fns';
 
 const deadlines = {
   currentYear: [
@@ -9,84 +10,84 @@ const deadlines = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
-      [PaymentType.MONTHLY]: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [PaymentType.MONTHLY]: [0, 0, 0, 0, 0, 0, 0, 0],
     },
     // February
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 6, 11],
       [PaymentType.QUARTERLY]: [0, 6, 9, 12],
-      [PaymentType.MONTHLY]: [4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
     },
     // March
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 5, 10],
       [PaymentType.QUARTERLY]: [0, 5, 8, 11],
-      [PaymentType.MONTHLY]: [5, 6, 7, 8, 9, 10, 11, 12],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
     },
     // April
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 4, 9],
       [PaymentType.QUARTERLY]: [0, 4, 7, 10],
-      [PaymentType.MONTHLY]: [6, 7, 8, 9, 10, 11, 12, 1],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
     },
     // May
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 8],
       [PaymentType.QUARTERLY]: [0, 3, 6, 9],
-      [PaymentType.MONTHLY]: [0, 2, 3, 4, 5, 6, 7, 8, 9],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
     },
     // June
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 7],
       [PaymentType.QUARTERLY]: [0, 2, 5, 8],
-      [PaymentType.MONTHLY]: [0, 3, 4, 5, 6, 7, 8, 9, 10],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
     },
     // July
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 8],
       [PaymentType.QUARTERLY]: [0, 3, 6, 8],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
     },
     // August
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 8],
       [PaymentType.QUARTERLY]: [0, 3, 6, 8],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
     },
     // September
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 7],
       [PaymentType.QUARTERLY]: [0, 2, 5, 8],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
     },
     // October
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 6],
       [PaymentType.QUARTERLY]: [0, 2, 5, 7],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7],
     },
     // November
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 6],
       [PaymentType.QUARTERLY]: [0, 2, 4, 6],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6],
     },
     // December
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 5],
       [PaymentType.QUARTERLY]: [0, 2, 4, 5],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5],
     },
   ],
   laterYear: [
@@ -95,95 +96,107 @@ const deadlines = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 5],
       [PaymentType.QUARTERLY]: [0, 2, 4, 5],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4],
     },
     // February
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 1, 4],
       [PaymentType.QUARTERLY]: [0, 1, 3, 4],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3],
     },
     // March
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0, 1, 2, 2],
     },
     // April
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0, 1],
     },
     // May
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0],
     },
     // June
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0],
     },
     // July
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0],
     },
     // August
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0],
     },
     // September
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0],
     },
     // October
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0],
     },
     // November
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0],
     },
     // December
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
-      [PaymentType.MONTHLY]: [0, 4, 5, 6, 7, 8, 9, 10, 11],
+      [PaymentType.MONTHLY]: [0],
     },
   ],
 };
 
-export const getDeadline = (index, paymentType, createdDate, schoolYear) => {
-  const date = new Date(createdDate);
+export const getDeadline = (index, paymentType, downpaymentDate, schoolYear, paymentStatus) => {
+  console.log(downpaymentDate)
+  console.log(index)
+  const date = new Date(downpaymentDate);
+  const [startYear] = schoolYear.split('-');
   const selectedYear =
-    Number(schoolYear) < date.getFullYear() ? 'laterYear' : 'currentYear';
+    Number(startYear) < date.getFullYear() ? 'laterYear' : 'currentYear';
 
-  const monthsToAdd =
-    deadlines[selectedYear][date.getMonth()][paymentType][index];
+  const monthsToAdd = 0;
+  if (paymentStatus !== 'S') {
+    monthsToAdd =
+      deadlines[selectedYear][date.getMonth()][paymentType][0];
+  }
+  else {
+    monthsToAdd =
+      deadlines[selectedYear][date.getMonth()][paymentType][index];
+
+  }
+
   const deadline = add(new Date(date.getFullYear(), date.getMonth(), 5), {
     months: monthsToAdd,
   });
