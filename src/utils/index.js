@@ -179,29 +179,31 @@ const deadlines = {
 };
 
 export const getDeadline = (index, paymentType, downpaymentDate, schoolYear, paymentStatus) => {
-  console.log(downpaymentDate)
-  console.log(index)
   const date = new Date(downpaymentDate);
-  const [startYear] = schoolYear.split('-');
   const selectedYear =
-    Number(startYear) < date.getFullYear() ? 'laterYear' : 'currentYear';
+    Number(schoolYear) < date.getFullYear() ? 'laterYear' : 'currentYear';
 
   const monthsToAdd = 0;
   if (paymentStatus !== 'S') {
     monthsToAdd =
       deadlines[selectedYear][date.getMonth()][paymentType][0];
   }
+  else if (paymentStatus === null) {
+    monthsToAdd =
+      deadlines[selectedYear][date.getMonth()][paymentType][index];
+  }
   else {
     monthsToAdd =
       deadlines[selectedYear][date.getMonth()][paymentType][index];
-
   }
 
   const deadline = add(new Date(date.getFullYear(), date.getMonth(), 5), {
     months: monthsToAdd,
   });
 
-  return monthsToAdd && format(deadline, 'MMMM dd, yyyy');
+  return monthsToAdd !== null && monthsToAdd !== undefined
+    ? format(deadline, 'MMMM dd, yyyy')
+    : null;
 };
 
 export const groupBy = (array, key) => {
