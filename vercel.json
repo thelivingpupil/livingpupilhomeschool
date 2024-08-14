@@ -1,0 +1,20 @@
+{
+    "crons": [
+        {
+            "path": "api/cron/payment-reminder-due",
+            "schedule": "0 0 5 * *"
+        },
+        {
+            "path": "api/cron/payment-reminder-in-7",
+            "schedule": "0 0 28-31 * *"
+        },
+        {
+            "path": "api/cron/payment-reminder-lapse-7",
+            "schedule": "0 0 12 * *"
+        },
+        {
+            "path": "api/cron/payment-reminder-lapse-14",
+            "schedule": "0 0 19 * *"
+        }
+    ]
+}

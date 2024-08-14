@@ -280,6 +280,7 @@ export const getStudentRecords = async () =>
             select: {
               order: true,
               paymentType: true,
+              deletedAt: true,
               transaction: {
                 select: {
                   transactionId: true,
@@ -290,8 +291,12 @@ export const getStudentRecords = async () =>
                   message: true,
                   referenceNumber: true,
                   url: true,
+                  updatedAt: true,
                 },
               },
+            },
+            where: {
+              deletedAt: null, // Filter out schoolFees where deletedAt is not null
             },
             orderBy: [{ order: 'asc' }],
           },

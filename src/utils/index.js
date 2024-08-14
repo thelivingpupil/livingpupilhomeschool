@@ -183,16 +183,14 @@ export const getDeadline = (index, paymentType, downpaymentDate, schoolYear, pay
   const selectedYear =
     Number(schoolYear) < date.getFullYear() ? 'laterYear' : 'currentYear';
 
-  const monthsToAdd = 0;
+  let monthsToAdd = 0; // Changed from const to let
   if (paymentStatus !== 'S') {
     monthsToAdd =
       deadlines[selectedYear][date.getMonth()][paymentType][0];
-  }
-  else if (paymentStatus === null) {
+  } else if (paymentStatus === null) {
     monthsToAdd =
       deadlines[selectedYear][date.getMonth()][paymentType][index];
-  }
-  else {
+  } else {
     monthsToAdd =
       deadlines[selectedYear][date.getMonth()][paymentType][index];
   }
