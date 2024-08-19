@@ -8,6 +8,7 @@ import {
   FaFacebookMessenger,
   FaGlobe,
   FaHome,
+  FaCommentDots
 } from 'react-icons/fa';
 import { HiOutlineUserGroup } from 'react-icons/hi';
 import Image from 'next/image';
@@ -36,6 +37,8 @@ const formGradeLevels = {
   },
 };
 
+
+
 const Community = () => {
   const { data } = useWorkspaces();
 
@@ -60,6 +63,13 @@ const Community = () => {
       }),
     [availableGrades]
   );
+
+  const showBookClubLink = useMemo(() => {
+    // Check if any grade between 7 and 10 is in the available grades
+    const grades7to10 = ['GRADE_7', 'GRADE_8', 'GRADE_9', 'GRADE_10'];
+    return availableGrades.some((grade) => grades7to10.includes(grade));
+  }, [availableGrades]);
+
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Living Pupil Homeschool Community" />
@@ -111,7 +121,7 @@ const Community = () => {
               </a>
             );
           })}
-          <a className="flex" href="#" target="_blank">
+          <a className="flex" href="/files/lp-support-team.pdf" target="_blank">
             <div className="flex flex-col xs:flex-row bg-primary-500 p-8 items-center rounded-xl mt-5 ml-5">
               <HiOutlineUserGroup size={100} color="#FFFFFF" />
               <span className="text-lg text-white font-semibold p-2 max-w-[200px] text-center">
@@ -119,18 +129,29 @@ const Community = () => {
               </span>
             </div>
           </a>
-          <a
-            className="flex"
-            href="https://forms.gle/Wpa4sAkm8GaEzQTA6"
-            target="_blank"
-          >
-            <div className="flex flex-col xs:flex-row bg-[#4e5ba5] p-8 items-center rounded-xl mt-5 ml-5">
-              <FaBookOpen size={100} color="#FFFFFF" />
+          <a className="flex" href="/files/lp-communication-guide.pdf" target="_blank">
+            <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
+              <FaCommentDots size={100} color="#FFFFFF" />
               <span className="text-lg text-white font-semibold p-2 max-w-[200px] text-center">
-                LP Bookclub (Exlusive for LP Parents)
+                Living Pupil Communication Guide
               </span>
             </div>
           </a>
+          {showBookClubLink && (
+            <a
+              className="flex"
+              href="https://forms.gle/U9v68obw1Q7N9BmH8"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div className="flex flex-col xs:flex-row bg-[#4e5ba5] p-8 items-center rounded-xl mt-5 ml-5">
+                <FaBookOpen size={100} color="#FFFFFF" />
+                <span className="text-lg text-white font-semibold p-2 max-w-[200px] text-center">
+                  Ourselves: Book Club
+                </span>
+              </div>
+            </a>
+          )}
           <a
             className="flex"
             href="https://www.facebook.com/groups/328866131938778/"
