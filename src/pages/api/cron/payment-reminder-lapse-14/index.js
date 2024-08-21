@@ -46,6 +46,7 @@ export default async function handler(req, res) {
                     const downpaymentDate = transaction.updatedAt;
                     const schoolYear = studentRecord.schoolYear;
                     const studentFirstName = studentRecord.firstName;
+                    const studentLastName = studentRecord.studentLastName;
 
                     if (!schoolYear || !downpaymentDate || !studentFirstName) {
                         console.warn(`Skipping student record ${studentRecord.id} due to missing data.`);
@@ -73,6 +74,7 @@ export default async function handler(req, res) {
                                 html: html({
                                     parentName,
                                     studentFirstName,
+                                    studentLastName,
                                 }),
                                 subject: `[Living Pupil Homeschool] Payment Reminder 14 Days Lapse`,
                                 text: text({

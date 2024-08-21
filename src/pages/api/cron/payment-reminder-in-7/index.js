@@ -13,9 +13,6 @@ export default async function handler(req, res) {
         let emailCounter = 0; // Initialize the email counter
 
         for (const studentRecord of studentRecords) {
-            console.log(`Student ID: ${studentRecord.id}`);
-            console.log(`Student Name: ${studentRecord.firstName}`);
-            console.log(`School Fees:`, studentRecord.student?.schoolFees);
 
             // Find the school fee with order 0
             const feeOrder0 = studentRecord.student?.schoolFees.find(fee => fee.order === 0);
@@ -50,6 +47,7 @@ export default async function handler(req, res) {
                     const downpaymentDate = transaction.updatedAt;
                     const schoolYear = studentRecord.schoolYear;
                     const studentFirstName = studentRecord.firstName;
+                    const studentLastName = studentRecord.studentLastName
 
                     if (!schoolYear || !downpaymentDate || !studentFirstName) {
                         console.warn(`Skipping student record ${studentRecord.id} due to missing data.`);
@@ -65,14 +63,9 @@ export default async function handler(req, res) {
                         order0PaymentStatus
                     );
 
-
-
-                    console.log(transaction.paymentStatus)
-
                     if (deadlineStr) {
                         const deadline = parse(deadlineStr, 'MMMM dd, yyyy', new Date());
                         const daysUntilDeadline = differenceInDays(deadline, today);
-                        console.log(daysUntilDeadline)
 
                         if (daysUntilDeadline === 7) {
                             const parentName = studentRecord.student?.creator?.guardianInformation?.primaryGuardianName?.split(' ')[0] || studentRecord.student?.creator?.email?.split(' ')[0];
@@ -82,6 +75,7 @@ export default async function handler(req, res) {
                                 html: html({
                                     parentName,
                                     studentFirstName,
+                                    studentLastName,
                                 }),
                                 subject: `[Living Pupil Homeschool] Payment Reminder Due in 7 Days`,
                                 text: text({
