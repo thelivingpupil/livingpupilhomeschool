@@ -15,7 +15,7 @@ const Login = () => {
   const [socialProviders, setSocialProviders] = useState([]);
   const validate = isEmail(email);
 
-  const disableLogin = true;
+  const disableLogin = false;
 
   const handleEmailChange = (event) => setEmail(event.target.value);
 
