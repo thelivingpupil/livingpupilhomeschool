@@ -24,7 +24,6 @@ const PurchaseHistory = () => {
   const [sortedOrderFees, setSortedOrderFees] = useState([]);
   const [table, setTable] = useState("NEW");
 
-  console.log(orderFeeData.data.orderFees.orderFee)
   useEffect(() => {
     // Run this effect when orderFeeDataIsLoading changes and is false
     if (!orderFeeDataIsLoading && orderFeeData?.data?.orderFees) {
