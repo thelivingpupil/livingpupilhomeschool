@@ -45,6 +45,11 @@ export const getPurchaseHistory = async (userId) =>
               },
             },
           },
+          orderFee: {
+            select: {
+              order: true
+            },
+          }
         },
       },
     },
@@ -54,6 +59,7 @@ export const getPurchaseHistory = async (userId) =>
         source: TransactionSource.STORE,
         deletedAt: null,
         userId,
+        orderFee: null,
       },
     },
   });
@@ -109,14 +115,23 @@ export const getStorePurchases = async () =>
               },
             },
           },
+          orderFee: {
+            select: {
+              order: true
+            },
+          }
         },
       },
     },
     where: {
       deletedAt: null,
+      shippingType: {
+        not: null,
+      },
       transaction: {
         source: TransactionSource.STORE,
         deletedAt: null,
+        orderFee: null,
       },
     },
   });
@@ -127,72 +142,100 @@ export const createPurchase = async ({
   deliveryAddress,
   contactNumber,
 }) => {
-  // Step 1: Fetch current inventory
-  const itemIds = items.map(item => item.id);
-  const currentInventory = await sanityClient.fetch(`*[_type == "shopItems" && _id in $itemIds]`, { itemIds });
-  console.log(currentInventory);
-
-  // Step 2: Update inventory quantities
-  const inventoryUpdates = items.map(purchasedItem => {
-    const inventoryItem = currentInventory.find(item => item._id === purchasedItem.id);
-    if (inventoryItem) {
-      const newQuantity = inventoryItem.inventory - purchasedItem.quantity;
-      return {
-        id: inventoryItem._id,
-        patch: {
-          set: { inventory: newQuantity >= 0 ? newQuantity : 0 },
-        },
-      };
-    }
-    return null;
-  }).filter(Boolean);
-
-  // Log the inventory updates to inspect
-  console.log('Inventory Updates:', JSON.stringify(inventoryUpdates, null, 2));
-
-  // Step 3: Batch update inventory
   try {
+    // Fetch current inventory
+    const itemIds = items.map(item => item.id);
+    const currentInventory = await sanityClient.fetch(`*[_type == "shopItems" && _id in $itemIds]`, { itemIds });
+
+    // Check and prepare inventory updates
+    const inventoryIssues = items.map(purchasedItem => {
+      const inventoryItem = currentInventory.find(item => item._id === purchasedItem.id);
+      if (inventoryItem) {
+        const newQuantity = inventoryItem.inventory - purchasedItem.quantity;
+        if (newQuantity < 0) {
+          return {
+            name: inventoryItem.name,
+            id: inventoryItem._id,
+            requestedQuantity: purchasedItem.quantity,
+            availableQuantity: inventoryItem.inventory
+          };
+        }
+      }
+      return null;
+    }).filter(Boolean);
+
+    console.log(inventoryIssues)
+
+    // Return errors if any inventory issues
+    if (inventoryIssues.length > 0) {
+      const errorMessage = inventoryIssues
+        .map(item => `Insufficient inventory for item "${item.name}". Requested: ${item.requestedQuantity}, Available: ${item.availableQuantity}`)
+        .join(', ');
+      return { errors: { error: { msg: errorMessage } } };
+    }
+
+    // Proceed with inventory updates if no issues
+    const inventoryUpdates = items.map(purchasedItem => {
+      const inventoryItem = currentInventory.find(item => item._id === purchasedItem.id);
+      if (inventoryItem) {
+        const newQuantity = inventoryItem.inventory - purchasedItem.quantity;
+        return {
+          id: inventoryItem._id,
+          patch: {
+            set: { inventory: newQuantity },
+          },
+        };
+      }
+      return null;
+    }).filter(Boolean);
+
+    // Batch update inventory
     const transaction = sanityClient.transaction();
-    inventoryUpdates.forEach(update => {
-      transaction.patch(update.id, update.patch);
-    });
+    inventoryUpdates.forEach(update => transaction.patch(update.id, update.patch));
 
     const result = await transaction.commit();
-    console.log('Batch mutation result:', result);
-  } catch (error) {
-    console.error('Batch mutation error:', error);
-  }
 
-  const orderItems = items.map(({ code, image, name, price, quantity }) => ({
-    code:
-      code ||
-      `CODE-${crypto
-        .createHash('md5')
-        .update(name)
-        .digest('hex')
-        .substring(0, 6)
-        .toUpperCase()}`,
-    name,
-    image,
-    basePrice: price,
-    totalPrice: Number(price * quantity).toFixed(2),
-    quantity,
-  }));
-  const total =
-    items.reduce((a, { price, quantity }) => a + price * quantity, 0) +
-    shippingFee?.fee;
-  return await prisma.purchaseHistory.create({
-    data: {
-      total,
-      shippingType: shippingFee?.key,
-      deliveryAddress,
-      contactNumber,
-      orderItems: { create: orderItems },
-    },
-    select: {
-      id: true,
-      transactionId: true,
-      total: true,
-    },
-  });
+    // Create purchase history
+    const orderItems = items.map(({ code, image, name, price, quantity }) => ({
+      code:
+        code ||
+        `CODE-${crypto
+          .createHash('md5')
+          .update(name)
+          .digest('hex')
+          .substring(0, 6)
+          .toUpperCase()}`,
+      name,
+      image,
+      basePrice: price,
+      totalPrice: Number(price * quantity).toFixed(2),
+      quantity,
+    }));
+
+    const total =
+      items.reduce((a, { price, quantity }) => a + price * quantity, 0) +
+      shippingFee?.fee;
+
+    const purchase = await prisma.purchaseHistory.create({
+      data: {
+        total,
+        shippingType: shippingFee?.key,
+        deliveryAddress,
+        contactNumber,
+        orderItems: { create: orderItems },
+      },
+      select: {
+        id: true,
+        transactionId: true,
+        total: true,
+      },
+    });
+
+    return purchase;
+
+  } catch (error) {
+    console.error('Error creating purchase:', error);
+    return { errors: { error: { msg: 'An error occurred while processing your purchase.' } } };
+  }
 };
+
