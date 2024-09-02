@@ -236,7 +236,7 @@ const PurchaseHistory = () => {
       )}
       {table === "NEW" && (
         <Content.Container>
-          {!orderFeeData.data.orderFees.orderFee || orderFeeDataIsLoading ? (
+          {!orderFeeData?.data?.orderFees?.orderFee || orderFeeDataIsLoading ? (
             <Card>
               <Card.Body />
             </Card>
