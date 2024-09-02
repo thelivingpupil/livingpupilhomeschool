@@ -214,3 +214,38 @@ export const groupBy = (array, key) => {
     return result;
   }, {});
 };
+
+
+export const getOrderFeeDeadline = (index, paymentType, dateOrdered) => {
+  const monthsIteration = {
+    FULL_PAYMENT: [0],
+    INSTALLMENT: [1, 2, 3, 4, 5],
+  };
+
+  // Check if the paymentType exists in monthsIteration
+  if (!monthsIteration[paymentType]) {
+    throw new Error("Invalid payment type");
+  }
+
+  // If paymentType is FULL_PAYMENT, set the deadline to the next day
+  if (paymentType === "FULL_PAYMENT") {
+    const deadline = new Date(dateOrdered);
+    deadline.setDate(deadline.getDate() + 1);
+    return deadline;
+  }
+
+  // Get the number of months to add based on the index
+  const monthsToAdd = monthsIteration[paymentType][index];
+
+  if (monthsToAdd === undefined) {
+    throw new Error("Invalid index for the given payment type");
+  }
+
+  // Create a new date object from dateOrdered and add the corresponding months
+  const deadline = new Date(dateOrdered);
+  deadline.setMonth(deadline.getMonth() + monthsToAdd);
+
+  return deadline;
+};
+
+

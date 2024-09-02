@@ -13,6 +13,7 @@ const cartInitialState = {
   shippingFee: {},
   deliveryAddress: '',
   contactNumber: '',
+  paymentType: '',
   addToCart: () => { },
   removeFromCart: () => { },
   setShippingFee: () => { },
@@ -22,6 +23,7 @@ const cartInitialState = {
   toggleCartVisibility: () => { },
   togglePaymentLinkVisibility: () => { },
   checkoutCart: () => { },
+  setPaymentType: () => { },
 };
 
 const LPH_CART_KEY = 'LPHCART';
@@ -93,6 +95,11 @@ export const SHOP_SHIPPING = {
   },
 };
 
+export const SHOP_PAYMENT_TYPE = {
+  FULL_PAYMENT: 'Full Payment',
+  INSTALLMENT: 'Installment'
+};
+
 export const useCartContext = () => useContext(CartContext);
 
 const CartProvider = ({ children }) => {
@@ -104,6 +111,7 @@ const CartProvider = ({ children }) => {
   const [shippingFee, setShippingFee] = useState({});
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [contactNumber, setContactNumber] = useState('');
+  const [paymentType, setPaymentType] = useState({});
 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem(LPH_CART_KEY));
@@ -138,7 +146,7 @@ const CartProvider = ({ children }) => {
     setSubmitting(true);
 
     api('/api/shop', {
-      body: { items: cart, shippingFee, deliveryAddress, contactNumber },
+      body: { items: cart, shippingFee, deliveryAddress, contactNumber, paymentType },
       method: 'POST',
     }).then((response) => {
       setSubmitting(false);
@@ -206,6 +214,11 @@ const CartProvider = ({ children }) => {
     setShippingFee({});
   };
 
+  // Update setPaymentType to ensure it's setting the value correctly
+  const handleSetPaymentType = (type) => {
+    setPaymentType(type);
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -218,6 +231,7 @@ const CartProvider = ({ children }) => {
         contactNumber,
         isSubmitting,
         paymentLink,
+        paymentType,
         addToCart,
         setShippingFee,
         setDeliveryAddress,
@@ -227,6 +241,7 @@ const CartProvider = ({ children }) => {
         toggleCartVisibility,
         togglePaymentLinkVisibility,
         checkoutCart,
+        setPaymentType: handleSetPaymentType, // Updated to use the new function
       }}
     >
       {children}

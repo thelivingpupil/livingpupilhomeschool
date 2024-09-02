@@ -69,6 +69,9 @@ module.exports = {
         display: ['Atma', 'cursive'],
         sans: ['Poppins', 'sans-serif'],
       },
+      fontSize: {
+        '2xs': '0.625rem', // 10px
+      },
     },
   },
   plugins: [require('@tailwindcss/aspect-ratio')],

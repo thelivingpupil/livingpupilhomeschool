@@ -3,8 +3,10 @@ import useDomains from './useDomains';
 import useInquiries from './useInquiries';
 import useInvitations from './useInvitations';
 import useMembers from './useMembers';
+import useOrderFees from './useOrderFees';
 import usePurchases from './usePurchases';
 import usePurchaseHistory from './usePurchaseHistory';
+import useStoreOrders from './useStoreOders';
 import useStudents from './useStudents';
 import useStudentsByGradeLevel from './useStudentsByGradeLevel';
 import useStudentsByProgram from './useStudentsByProgram';
@@ -21,8 +23,10 @@ export {
   useInquiries,
   useInvitations,
   useMembers,
+  useOrderFees,
   usePurchases,
   usePurchaseHistory,
+  useStoreOrders,
   useStudents,
   useStudentsByGradeLevel,
   useStudentsByProgram,

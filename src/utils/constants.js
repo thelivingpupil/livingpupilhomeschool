@@ -225,6 +225,7 @@ export const SHOP_SHIPPING_TYPE = {
   VISAYAS: 'Other Visayas Region',
   MINDANAO: 'Mindanao',
   ISLANDER: 'Islander',
+  PICK_UP: 'Pick up',
 };
 
 export const STUDENT_STATUS = {
