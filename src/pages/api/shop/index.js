@@ -3,6 +3,10 @@ import { validateSession } from '@/config/api-validation';
 import { createPurchase } from '@/prisma/services/purchase-history';
 import { createOrderFee } from '@/prisma/services/shop';
 import { createTransaction } from '@/prisma/services/transaction';
+import {
+  html as fullHtml,
+  text as fullText,
+} from '@/config/email-templates/shop/orderPlacedFull';
 import crypto from 'crypto';
 import prisma from '@/prisma/index';
 
@@ -15,12 +19,13 @@ const handler = async (req, res) => {
       const { items, shippingFee, deliveryAddress, contactNumber, paymentType } = req.body;
       const email = session.user.email;
       const userId = session.user.userId;
+      //const userName = session.user.name;
       let result;
 
       if (paymentType === 'INSTALLMENT') {
         const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
         const totalWithShipping = total + shippingFee.fee;
-        const interestRate = 0.02;
+        const interestRate = 0.1;
         const installmentAmount = (totalWithShipping * (1 + interestRate)) / 5;
         const payments = Array(5).fill(installmentAmount);
 
@@ -35,6 +40,7 @@ const handler = async (req, res) => {
           paymentType,
           payments,
         });
+
       } else {
         // Process FULL_PAYMENT
         result = await createPurchase({
@@ -82,6 +88,19 @@ const handler = async (req, res) => {
               isUnique = true;
             }
           }
+
+          // await sendMail({
+          //   from: process.env.EMAIL_FROM,
+          //   fullHtml: html({
+          //     userName,
+          //     uniqueOrderCode,
+          //   }),
+          //   subject: `[Living Pupil Homeschool] Order Placed - ${uniqueOrderCode}`,
+          //   fullText: text({
+          //     parentName
+          //   }),
+          //   to: email,
+          // });
 
           return uniqueOrderCode;
         }
