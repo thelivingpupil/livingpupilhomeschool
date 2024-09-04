@@ -245,7 +245,22 @@ export const getOrderFeeDeadline = (index, paymentType, dateOrdered) => {
   const deadline = new Date(dateOrdered);
   deadline.setMonth(deadline.getMonth() + monthsToAdd);
 
+  // Ensure the deadline is set to the 30th day of the month
+  // Handle February separately
+  const year = deadline.getFullYear();
+  const month = deadline.getMonth();
+  const lastDayOfMonth = new Date(year, month + 1, 0).getDate(); // Last day of the month
+
+  // If February has fewer than 30 days, set the deadline to the last day of February
+  if (month === 1 && lastDayOfMonth < 30) {
+    deadline.setDate(lastDayOfMonth);
+  } else {
+    // Otherwise, set to the 30th of the month or the last day if the month has fewer days
+    deadline.setDate(Math.min(30, lastDayOfMonth));
+  }
+
   return deadline;
 };
+
 
 
