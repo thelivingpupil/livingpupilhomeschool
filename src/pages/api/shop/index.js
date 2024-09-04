@@ -4,6 +4,7 @@ import { createPurchase } from '@/prisma/services/purchase-history';
 import { createOrderFee } from '@/prisma/services/shop';
 import { createTransaction } from '@/prisma/services/transaction';
 import crypto from 'crypto';
+import prisma from '@/prisma/index';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -19,11 +20,10 @@ const handler = async (req, res) => {
       if (paymentType === 'INSTALLMENT') {
         const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
         const totalWithShipping = total + shippingFee.fee;
-        const installmentAmount = totalWithShipping / 5;
         const interestRate = 0.02;
-        const payments = Array.from({ length: 5 }, (_, i) =>
-          installmentAmount * Math.pow(1 + interestRate, i + 1)
-        );
+        const installmentAmount = (totalWithShipping * (1 + interestRate)) / 5;
+        const payments = Array(5).fill(installmentAmount);
+
 
         result = await createOrderFee({
           userId,
