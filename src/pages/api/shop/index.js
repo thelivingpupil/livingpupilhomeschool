@@ -56,11 +56,12 @@ const handler = async (req, res) => {
         }
 
         const { id, transactionId, total } = result;
+        const totalAmountDue = Number(total) + 20;
         const transaction = await createTransaction(
           session.user.userId,
           session.user.email,
           transactionId,
-          total,
+          totalAmountDue,
           'STORE',
           id,
           TransactionSource.STORE,

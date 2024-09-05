@@ -258,7 +258,7 @@ export const createOrderFee = async ({
             userId,
             email,
             transactionIds[0].transactionId,
-            payments[0],
+            payments[0] + 20,
             'STORE',
             transactionIds[0].id,
             TransactionSource.STORE,
@@ -268,7 +268,7 @@ export const createOrderFee = async ({
             userId,
             email,
             transactionIds[1].transactionId,
-            payments[1],
+            payments[1] + 20,
             'STORE',
             transactionIds[1].id,
             TransactionSource.STORE,
@@ -278,7 +278,7 @@ export const createOrderFee = async ({
             userId,
             email,
             transactionIds[2].transactionId,
-            payments[2],
+            payments[2] + 20,
             'STORE',
             transactionIds[2].id,
             TransactionSource.STORE,
@@ -288,7 +288,7 @@ export const createOrderFee = async ({
             userId,
             email,
             transactionIds[3].transactionId,
-            payments[3],
+            payments[3] + 20,
             'STORE',
             transactionIds[3].id,
             TransactionSource.STORE,
@@ -298,7 +298,7 @@ export const createOrderFee = async ({
             userId,
             email,
             transactionIds[4].transactionId,
-            payments[4],
+            payments[4] + 20,
             'STORE',
             transactionIds[4].id,
             TransactionSource.STORE,
@@ -429,6 +429,7 @@ export const createOrderFee = async ({
 
     return {
         paymentLink: result?.url,
+        orderCode: uniqueOrderCode,
     };
 };
 
