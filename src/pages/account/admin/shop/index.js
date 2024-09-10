@@ -204,8 +204,8 @@ const Shop = () => {
                     <h5 className="font-medium">
                       Contact Information:{' '}
                       <span className="text-xs text-gray-400">
-                        {order[0].user.guardianInformation.mobileNumber
-                          ? `${order[0].user.guardianInformation.mobileNumber}`
+                        {orderDetails.transaction.purchaseHistory.contactNumber
+                          ? `${orderDetails.transaction.purchaseHistory.contactNumber}`
                           : 'Not provided by guardian'}
                       </span>
                     </h5>
