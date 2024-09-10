@@ -180,80 +180,82 @@ const Shop = () => {
           toggle={toggleModal2}
         >
           <div className="space-y-5">
-            <div className="flex flex-col">
-              {/* <h4 className="text-xl font-medium text-primary-500">
-                Ordered {order[0].transaction.orderItems.length} Item(s)
-              </h4> */}
-              <h5 className="font-medium">
-                Purchased by:{' '}
-                <span className="text-xs text-gray-400">
-                  {order[0].user.guardianInformation.name}
-                  - {order[0].user.email}
-                </span>
-              </h5>
-              <h5 className="font-medium">
-                Delivery Address:{' '}
-                <span className="text-xs text-gray-400">
-                  {order[0].user.guardianInformation.address1} {order[0].user.guardianInformation.address2}`
-                </span>
-              </h5>
-              <h5 className="font-medium">
-                Contact Information:{' '}
-                <span className="text-xs text-gray-400">
-                  {order[0].user.guardianInformation.mobileNumber
-                    ? `${order[0].user.guardianInformation.mobileNumber}`
-                    : 'Not provided by guardian'}
-                </span>
-              </h5>
-            </div>
             {order
               .filter(order => order.order === 0)
               .map((orderDetails, orderDeatilsIndex) => (
-                <div
-                  key={orderDeatilsIndex}
-                  className="flex flex-col space-y-3"
-                >
-                  <h4 className="text-xl font-medium text-primary-500">
-                    Ordered {orderDetails.transaction.purchaseHistory.orderItems.length} Item(s)
-                  </h4>
-                  {orderDetails.transaction.purchaseHistory.orderItems.map((item, itemIndex) => (
-                    <div
-                      key={itemIndex}
-                      className="flex items-center p-3 space-x-3 border rounded"
-                    >
-                      <div className="relative w-1/4 h-20">
-                        <Image
-                          alt={item.name}
-                          layout="fill"
-                          loading="lazy"
-                          objectFit="contain"
-                          src={
-                            item.image || '/images/livingpupil-homeschool-logo.png'
-                          }
-                        />
+                <>
+                  <div className="flex flex-col">
+                    {/* <h4 className="text-xl font-medium text-primary-500">
+                Ordered {order[0].transaction.orderItems.length} Item(s)
+              </h4> */}
+                    <h5 className="font-medium">
+                      Purchased by:{' '}
+                      <span className="text-xs text-gray-400">
+                        {order[0].user.guardianInformation.name}
+                        - {order[0].user.email}
+                      </span>
+                    </h5>
+                    <h5 className="font-medium">
+                      Delivery Address:{' '}
+                      <span className="text-xs text-gray-400">
+                        {orderDetails.transaction.purchaseHistory.deliveryAddress}
+                      </span>
+                    </h5>
+                    <h5 className="font-medium">
+                      Contact Information:{' '}
+                      <span className="text-xs text-gray-400">
+                        {order[0].user.guardianInformation.mobileNumber
+                          ? `${order[0].user.guardianInformation.mobileNumber}`
+                          : 'Not provided by guardian'}
+                      </span>
+                    </h5>
+                  </div>
+                  <div
+                    key={orderDeatilsIndex}
+                    className="flex flex-col space-y-3"
+                  >
+                    <h4 className="text-xl font-medium text-primary-500">
+                      Ordered {orderDetails.transaction.purchaseHistory.orderItems.length} Item(s)
+                    </h4>
+                    {orderDetails.transaction.purchaseHistory.orderItems.map((item, itemIndex) => (
+                      <div
+                        key={itemIndex}
+                        className="flex items-center p-3 space-x-3 border rounded"
+                      >
+                        <div className="relative w-1/4 h-20">
+                          <Image
+                            alt={item.name}
+                            layout="fill"
+                            loading="lazy"
+                            objectFit="contain"
+                            src={
+                              item.image || '/images/livingpupil-homeschool-logo.png'
+                            }
+                          />
+                        </div>
+                        <div>
+                          <h3 className="font-medium text-primary-500">
+                            {item.name} (x{item.quantity})
+                          </h3>
+                          <p className="text-xs">
+                            Price:{' '}
+                            {new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: 'PHP',
+                            }).format(item.basePrice)}
+                          </p>
+                          <p className="text-xs font-bold">
+                            Subtotal:{' '}
+                            {new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: 'PHP',
+                            }).format(item.totalPrice)}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-medium text-primary-500">
-                          {item.name} (x{item.quantity})
-                        </h3>
-                        <p className="text-xs">
-                          Price:{' '}
-                          {new Intl.NumberFormat('en-US', {
-                            style: 'currency',
-                            currency: 'PHP',
-                          }).format(item.basePrice)}
-                        </p>
-                        <p className="text-xs font-bold">
-                          Subtotal:{' '}
-                          {new Intl.NumberFormat('en-US', {
-                            style: 'currency',
-                            currency: 'PHP',
-                          }).format(item.totalPrice)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </>
               ))}
             <hr className="border-2 border-gray-600" />
             <div className="flex items-center justify-between">
