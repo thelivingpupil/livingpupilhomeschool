@@ -402,7 +402,7 @@ const Shop = ({ categories, items }) => {
               >
                 <div className="flex flex-col  items-center mt-5">
                   <p className="text-center text-xs mb-3">
-                    By signing, you are agreeing to the I agree to the <a
+                    By signing, you are agreeing to the <a
                       href="/files/lp-shop-cancellation-policy.pdf"
                       target="_blank"
                       rel="noopener noreferrer"
