@@ -54,6 +54,8 @@ const Shop = () => {
     }
   }, [orderDataIsLoading, orderData]);
 
+  console.log(sortedOrderFees)
+
 
   const toggleModal = () => setModalVisibility(!showModal);
   const toggleModal2 = () => setModalVisibility2(!showModal2);
@@ -191,7 +193,7 @@ const Shop = () => {
                     <h5 className="font-medium">
                       Purchased by:{' '}
                       <span className="text-xs text-gray-400">
-                        {order[0].user.guardianInformation.name}
+                        {order[0].user.guardianInformation.primaryGuardianName}
                         - {order[0].user.email}
                       </span>
                     </h5>
