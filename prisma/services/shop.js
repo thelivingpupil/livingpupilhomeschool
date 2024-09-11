@@ -122,7 +122,6 @@ export const getUserOrderFees = async (id) =>
                             },
                         },
                     },
-
                 },
                 where: {
                     deletedAt: null, // Filter out orderFees where deletedAt is not null
@@ -143,6 +142,7 @@ export const createOrderFee = async ({
     contactNumber,
     paymentType,
     payments,
+    signatureLink
 }) => {
     let result = null;
     // Step 1: Fetch current inventory
@@ -344,6 +344,7 @@ export const createOrderFee = async ({
                 order: 0,
                 paymentType,
                 orderCode: uniqueOrderCode,
+                signatureLink: signatureLink,
                 transaction: {
                     connect: {
                         transactionId: transactionIds[0].transactionId,
@@ -361,6 +362,7 @@ export const createOrderFee = async ({
                 order: 1,
                 paymentType,
                 orderCode: uniqueOrderCode,
+                signatureLink: signatureLink,
                 transaction: {
                     connect: {
                         transactionId: transactionIds[1].transactionId,
@@ -378,6 +380,7 @@ export const createOrderFee = async ({
                 order: 2,
                 paymentType,
                 orderCode: uniqueOrderCode,
+                signatureLink: signatureLink,
                 transaction: {
                     connect: {
                         transactionId: transactionIds[2].transactionId,
@@ -395,6 +398,7 @@ export const createOrderFee = async ({
                 order: 3,
                 paymentType,
                 orderCode: uniqueOrderCode,
+                signatureLink: signatureLink,
                 transaction: {
                     connect: {
                         transactionId: transactionIds[3].transactionId,
@@ -412,6 +416,7 @@ export const createOrderFee = async ({
                 order: 4,
                 paymentType,
                 orderCode: uniqueOrderCode,
+                signatureLink: signatureLink,
                 transaction: {
                     connect: {
                         transactionId: transactionIds[4].transactionId,
