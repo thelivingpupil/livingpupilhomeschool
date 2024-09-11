@@ -193,8 +193,7 @@ const Shop = () => {
                     <h5 className="font-medium">
                       Purchased by:{' '}
                       <span className="text-xs text-gray-400">
-                        {order[0]?.user?.guardianInformation?.primaryGuardianName}
-                        - {order[0]?.user?.email}
+                        {order[0]?.user?.guardianInformation?.primaryGuardianName} - {order[0]?.user?.email}
                       </span>
                     </h5>
                     <h5 className="font-medium">
