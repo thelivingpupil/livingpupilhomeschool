@@ -248,7 +248,7 @@ const CartProvider = ({ children }) => {
     setSubmitting(true);
 
     api('/api/shop', {
-      body: { items: cart, shippingFee, deliveryAddress, contactNumber, paymentType },
+      body: { items: cart, shippingFee, deliveryAddress, contactNumber, paymentType, signatureLink },
       method: 'POST',
     }).then((response) => {
       setSubmitting(false);
