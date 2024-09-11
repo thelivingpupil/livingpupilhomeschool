@@ -1,13 +1,12 @@
 const html = ({
-    parentName,
-    orderCode,
-    shipping,
-    paymentType,
-    total,
-    items,
-
+	parentName,
+	orderCode,
+	reciever,
+	deliveryAddress,
+	contactNumber
 }) => {
-    return `<!DOCTYPE html>
+	return `
+<!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 
 <head>
@@ -38,39 +37,16 @@ const html = ({
 			line-height: inherit
 		}
 
-        table.details-table {
+		table.details-table {
             width: 70%;
+			margin-bottom: 20px;
             }
-        
+
         table.details-table td {
             width: 50%;
             padding: 5px;
             text-align: left;
             }
-
-        .social-icons {
-            text-align: center;
-            margin-top: 4px
-        }
-        .social-icons a {
-            margin: 0 30px;
-            text-decoration: none;
-            display: inline-block;
-            background-color: #71797E;
-            border-radius: 50%;
-            padding: 5px;
-            border: 2px solid #71797E;
-        }
-        .social-icons img {
-            width: 25px;
-            height: 25px;
-            display: block;
-        }
-
-        hr {
-        border: none;
-        border-top: 1px solid #cccccc;
-        }
 
 		.desktop_hide,
 		.desktop_hide table {
@@ -111,23 +87,6 @@ const html = ({
 				display: table !important;
 				max-height: none !important;
 			}
-
-			.row-2 .column-1 .block-1.spacer_block,
-			.row-6 .column-1 .block-1.spacer_block {
-				height: 30px !important;
-			}
-
-			.row-4 .column-1 .block-1.paragraph_block td.pad>div {
-				font-size: 12px !important;
-			}
-
-			.row-7 .column-1 {
-				padding: 0 !important;
-			}
-
-            .details-table {
-            width: 70% !important;
-            }
 		}
 	</style>
 </head>
@@ -137,19 +96,19 @@ const html = ({
 		<tbody>
 			<tr>
 				<td>
-					<table class="row row-1" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffff;">
+					<table class="row row-1" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f0f0f0;">
 						<tbody>
 							<tr>
 								<td>
-									<table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff; color: #000000; width: 600px; margin: 0 auto;" width="600">
+									<table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
 										<tbody>
 											<tr>
-												<td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+												<td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-top: 15px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
 													<table class="image_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 														<tr>
 															<td class="pad" style="width:100%;">
 																<div class="alignment" align="center" style="line-height:10px">
-																	<div style="max-width: 600px;"><img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/ru4tyq42/3np/jxg/2qr/Email%20Header%202.png" style="display: block; height: auto; border: 0; width: 100%;" width="600" height="auto"></div>
+																	<div style="max-width: 600px;"><img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/232djymu/j2f/9gl/o0w/Email%20Header%202.png" style="display: block; height: auto; border: 0; width: 100%;" width="600" height="auto"></div>
 																</div>
 															</td>
 														</tr>
@@ -162,70 +121,72 @@ const html = ({
 							</tr>
 						</tbody>
 					</table>
-					<table class="row row-2" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffff;">
+					<table class="row row-2" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f0f0f0;">
 						<tbody>
 							<tr>
 								<td>
-									<table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
+									<table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; background-color: #fff; width: 600px; margin: 0 auto;" width="600">
 										<tbody>
 											<tr>
 												<td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
-													<div class="spacer_block block-1" style="height:60px;line-height:60px;font-size:1px;">&#8202;</div>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<table class="row row-4" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffff;">
-						<tbody>
-							<tr>
-								<td>
-									<table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffff; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
-										<tbody>
-											<tr>
-												<td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
-													<table class="paragraph_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+													<table class="paragraph_block block-2" width="100%" border="0" cellpadding="35" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
 														<tr>
 															<td class="pad">
-																<div style="color:#000;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:15px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
-                                                                    <p style="margin: 0; margin-bottom: 16px;">Hello <strong style="color: #2e3494;">${parentName}</strong>,</p>
-                                                                    <p style="margin: 0; margin-bottom: 16px;">&nbsp;</p>
-                                                                    <p style="margin: 0; margin-bottom: 16px;">Your order  <span style="color: #2e3494;">#2407095RB5D8WG</span> on 16/07/2024 has been placed.</strong></p>
-                                                                    <p style="margin: 0; margin-bottom: 16px;">&nbsp;</p>
-                                                                    <p style="margin: 0; margin-bottom: 15px;"><strong>ORDER DETAILS</strong></p>
-                                                                    <table class="details-table" style="border-collapse: collapse;">
+																<div style="color:#000000;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:14.399999999999999px;">
+																	<p style="margin: 0; margin-bottom: 3px;">Dear ${parentName},</p>
+																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
+																	<p style="margin: 0; margin-bottom: 3px;">
+																		I hope this message finds you well.
+																	</p>
+																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
+																	<p style="margin: 0; margin-bottom: 3px;">
+																		We are writing to confirm receipt of your order from the LP Shop. We will begin processing your shipment within the next 3-4 business days. To ensure a smooth delivery process, please review and confirm the details provided below:
+																	</p>
+																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
+																	<table class="details-table" style="border-collapse: collapse;">
                                                                         <tr>
-                                                                            <td style="padding: 5px; text-align: left;">Order ID:</td>
-                                                                            <td style="padding: 5px; text-align: left; color: #2e3494;">#2407095RB5D8WG</td>
+                                                                            <td style="padding: 5px; text-align: left;">Order Code:</td>
+                                                                            <td style="padding: 5px; text-align: left;">${orderCode}</td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <td style="padding: 5px; text-align: left;">Order Date:</td>
-                                                                            <td style="padding: 5px; text-align: left;">16/07/2024</td>
+                                                                            <td style="padding: 5px; text-align: left;">Reciever:</td>
+                                                                            <td style="padding: 5px; text-align: left;">${reciever}</td>
                                                                         </tr>
-                                                                    </table>
-                                                                    <hr style="margin: 0; margin-bottom: 16px;">
-                                                                    <table class="details-table" style="border-collapse: collapse;">
-                                                                        <tr>
-                                                                            <td style="padding: 5px; text-align: left;">Subtotal:</td>
-                                                                            <td style="padding: 5px; text-align: left;">₱500</td>
+																		<tr>
+                                                                            <td style="padding: 5px; text-align: left;">Delivery Address:</td>
+                                                                            <td style="padding: 5px; text-align: left;">${deliveryAddress}</td>
                                                                         </tr>
-                                                                        <tr>
-                                                                            <td style="padding: 5px; text-align: left;">Shipping Fee:</td>
-                                                                            <td style="padding: 5px; text-align: left;">₱300</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td style="padding: 5px; text-align: left;"><strong>Total:</strong></td>
-                                                                            <td style="padding: 5px; text-align: left;"><strong>₱800</strong></td>
+																		<tr>
+                                                                            <td style="padding: 5px; text-align: left;">Contact Number:</td>
+                                                                            <td style="padding: 5px; text-align: left;">${contactNumber}</td>
                                                                         </tr>
                                                                     </table>
-                                                                    <p style="margin-top: 20px; margin-bottom: 16px;">Note that the order will be canceled if payment is not made within 24 hours.</p>
-                                                                    <hr style="margin: 0; margin-bottom: 16px;">
-																	<p style="margin: 0; margin-bottom: 16px;">If you have concerns about your payment, please feel free to send a message to <a href="mailto:finance.livingpupil@gmail.com" style="text-decoration:none;color:#2e3494" target="_blank">finance.livingpupil@gmail.com</a>.</p>
+																	<p style="margin: 0; margin-bottom: 3px;">
+																		<strong>Delivery Partner:</strong> For orders outside Cebu City, our delivery partner is LBC. For deliveries within Cebu City, you may choose between Maxim, Lalamove, or our LP rider.
+																	</p>
+																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
+																	<p style="margin: 0;">
+																		<strong>Important Note for Cebu Orders:</strong> For addresses outside Cebu City or Mandaue City, any additional charges for Maxim or Lalamove will be your responsibility. We will notify you via text if there are any extra fees.
+																	</p>
+																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
+																	<p style="margin: 0;">
+																		<strong>Payment Policy: </strong>Please note that only paid orders will be processed. If payment is not completed within 24 hours, your order will be automatically canceled.
+																	</p>
+																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
+																	<p style="margin: 0;">
+																		<strong>Installment Payment Option:</strong> If you prefer to pay in installments, we offer a payment plan payable over 5 months with a 2% interest rate per month. Please send a message to <a href="mailto:finance.livingpupil@gmail.com" target="_blank">finance.livingpupil@gmail.com</a> to avail of the said offer.
+																	</p>
+																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
+																	<p style="margin: 0; color: red;">
+																		Please confirm the accuracy of the order details and indicate your preferred delivery partner by sending a message to 
+																		<a href="mailto:livingpupilshop@gmail.com" style="color: red; font-weight: bold;" target="_blank">livingpupilshop@gmail.com</a> 
+																		no later than 12:00 PM tomorrow. If you have any questions or need further assistance, you can also reach us at 09212375729.
+																	</p>
+																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
+																	<p style="margin: 0;">Thank you for your order and continued support. We appreciate your trust in us and look forward to serving you.</p>
 																	<p style="margin: 0; margin-bottom: 16px;">&nbsp;</p>
-																	<p style="margin: 0;">Thank you!</p>
+																	<p style="margin: 0;">Cheers!</p>
+                                                                    <p style="margin: 0;">Living Pupil Team</p>
 																</div>
 															</td>
 														</tr>
@@ -238,15 +199,23 @@ const html = ({
 							</tr>
 						</tbody>
 					</table>
-					<table class="row row-6" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffff;">
+					<table class="row row-3" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f0f0f0;">
 						<tbody>
 							<tr>
 								<td>
-									<table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
+									<table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
 										<tbody>
 											<tr>
-												<td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
-													<div class="spacer_block block-1" style="height:60px;line-height:60px;font-size:1px;">&#8202;</div>
+												<td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 15px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+													<table class="image_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+														<tr>
+															<td class="pad" style="width:100%;">
+																<div class="alignment" align="center" style="line-height:10px">
+																	<div style="max-width: 600px;"><img src="https://a0ac0ddc75.imgdist.com/pub/bfra/232djymu/htb/fwc/2a6/Untitled%20design.png" style="display: block; height: auto; border: 0; width: 100%;" width="600" height="auto"></div>
+																</div>
+															</td>
+														</tr>
+													</table>
 												</td>
 											</tr>
 										</tbody>
@@ -255,60 +224,27 @@ const html = ({
 							</tr>
 						</tbody>
 					</table>
-                    <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width: 600px; margin: 0 auto;">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <hr style="margin-bottom: 20px; margin-top: 20px;">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="social-icons">
-                                        <a href="https://www.facebook.com/livingpupilhomeschool">
-                                            <img src="https://livingpupilhomeschool.com/images/email-img/facebook-white.png" alt="Facebook">
-                                        </a>
-                                        <a href="https://livingpupilhomeschool.com/shop">
-                                            <img src="https://livingpupilhomeschool.com/images/email-img/shop-white.png" alt="LP Shop">
-                                        </a>
-                                        <a href="https://livingpupilhomeschool.com/">
-                                            <img src="https://livingpupilhomeschool.com/images/email-img/globe-white.png" alt="YouTube">
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <hr style="margin-bottom: 20px; margin-top: 20px;">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="footer" style="text-align: center; font-size: 12px; color: #666;">
-                                        <p>This is a post-only mailing. Please do not reply to this email.<br>
-                                        Add <a href="mailto:info@livingpupilhomeschool.com" style="text-decoration:none;color:#2e3494" target="_blank">info@livingpupilhomeschool.com</a> to your address book to ensure our e-mails enter your inbox.</p>
-                                        <p>San Agustin Village Rd, Tugas, Cebu City, 6000 Cebu, Philippines</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
 				</td>
 			</tr>
 		</tbody>
 	</table><!-- End -->
 </body>
 
-</html>`;
+</html>
+`;
 };
 
-const text = ({ email }) => {
-    return `
-Welcome! You are logging in with ${email}
+const text = ({ parentName, firstName }) => {
+	return `
+Hello ${parentName},
 
-If you did not request this email you can safely ignore it.
+We have received ${firstName}'s complete Enrollment Form.
 
-In case you need any assistance, just hit reply.
+Please give us some time to verify your information.
+
+We will contact you soon!
+
+Thank you!
 
 Cheers,
 ${process.env.EMAIL_FROM}
