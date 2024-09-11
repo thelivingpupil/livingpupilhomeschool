@@ -8,10 +8,13 @@ import Link from 'next/link';
 
 import Modal from '@/components/Modal';
 import Item from '@/components/Shop/item';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { storage } from '@/lib/client/firebase';
 
 import sanityClient from '@/lib/server/sanity';
 import { SHOP_SHIPPING, useCartContext, SHOP_PAYMENT_TYPE } from '@/providers/cart';
 import useUser from '@/hooks/data/useUser';
+import SignatureCanvas from 'react-signature-canvas';
 
 const builder = imageUrlBuilder(sanityClient);
 
@@ -30,6 +33,10 @@ const Shop = ({ categories, items }) => {
     deliveryAddress,
     contactNumber,
     paymentType,
+    signatureProgress,
+    signatureLink,
+    sigCanvas,
+    showSignCanvas,
     setShippingFee,
     setDeliveryAddress,
     setContactNumber,
@@ -44,6 +51,10 @@ const Shop = ({ categories, items }) => {
     paymentLink,
     checkoutCart,
     setPaymentType,
+    clearSignature,
+    toggleSignCanvasVisibility,
+    saveSignature,
+    handleEndDrawing
   } = useCartContext();
 
   useEffect(() => {
@@ -155,6 +166,14 @@ const Shop = ({ categories, items }) => {
 
   const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
+  const proceed = () => {
+    if (paymentType === 'INSTALLMENT') {
+      toggleSignCanvasVisibility()
+    }
+    else {
+      checkoutCart()
+    }
+  }
   return (
     <>
       {disableShop ? (
@@ -361,7 +380,7 @@ const Shop = ({ categories, items }) => {
                     !contactNumber ||
                     !isTermsAccepted
                   }
-                  onClick={checkoutCart}
+                  onClick={proceed}
                 >
                   {isSubmitting ? 'Processing...' : 'Checkout'}
                 </button>
@@ -375,6 +394,80 @@ const Shop = ({ categories, items }) => {
                     </a>
                   </Link>
                 )}
+              </Modal>
+              <Modal
+                show={showSignCanvas}
+                title=""
+                toggle={toggleSignCanvasVisibility}
+              >
+                <div className="flex flex-col  items-center mt-5">
+                  <p className="text-center text-xs mb-3">
+                    By signing, you are agreeing to the I agree to the <a
+                      href="/files/lp-shop-cancellation-policy.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline"
+                    >
+                      bookshop cancellation policy
+                    </a>.
+                  </p>
+                  <SignatureCanvas
+                    ref={sigCanvas}
+                    canvasProps={{
+                      className: `sigCanvas bg-gray-100 border ${signatureLink ? 'border-gray-400' : 'border-red-500'}`,
+                      width: 350, // Set a fixed width, adjust according to your design
+                      height: 200 // Set a fixed height
+
+                    }}
+                    onEnd={handleEndDrawing}
+                  />
+                  <div className="flex space-x-3 mt-3">
+                    <button onClick={clearSignature} className="bg-red-500 text-white px-3 py-1 rounded">
+                      Clear
+                    </button>
+                    <button onClick={saveSignature} className="bg-blue-500 text-white px-3 py-1 rounded">
+                      Save
+                    </button>
+                  </div>
+                  <div className="w-full mt-2 rounded-full shadow bg-grey-light">
+                    <div
+                      className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
+                      style={{ width: `${signatureProgress}%` }}
+                    >
+                      <span className="px-3">{signatureProgress}%</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center justify-center space-y-3">
+                    {signatureLink ? (
+                      <Link href={signatureLink}>
+                        <a
+                          className="text-sm text-blue-600 underline"
+                          target="_blank"
+                        >
+                          Preview Image
+                        </a>
+                      </Link>
+                    ) : (
+                      <p>No signature uploaded</p>
+                    )}
+                  </div>
+                </div>
+                <button
+                  className="w-full py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25 disabled:cursor-not-allowed"
+                  disabled={
+                    !data ||
+                    isSubmitting ||
+                    !cart.length ||
+                    shippingFee?.fee < 0 ||
+                    !deliveryAddress ||
+                    !contactNumber ||
+                    !isTermsAccepted ||
+                    !signatureLink
+                  }
+                  onClick={checkoutCart}
+                >
+                  {isSubmitting ? 'Processing...' : 'Proceed Checkout'}
+                </button>
               </Modal>
               <Modal
                 show={showPaymentLink}
@@ -711,7 +804,8 @@ const Shop = ({ categories, items }) => {
             </div>
           </section>
         </>
-      )}
+      )
+      }
     </>
 
   );

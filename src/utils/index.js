@@ -262,5 +262,11 @@ export const getOrderFeeDeadline = (index, paymentType, dateOrdered) => {
   return deadline;
 };
 
+export const getParentFirstName = (fullName) => {
+  if (!fullName) return ''; // Handle cases where the name is undefined or empty
+  const nameParts = fullName.split(' ');
+  return nameParts[0]; // Return the first part (first name)
+}
+
 
 

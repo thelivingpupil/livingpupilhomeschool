@@ -1,7 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState, useRef } from 'react';
 import api from '@/lib/common/api';
 import toast from 'react-hot-toast';
 import { ShippingType } from '@prisma/client';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { storage } from '@/lib/client/firebase';
+import crypto from 'crypto';
+import format from 'date-fns/format';
 
 const cartInitialState = {
   cart: [],
@@ -14,6 +18,10 @@ const cartInitialState = {
   deliveryAddress: '',
   contactNumber: '',
   paymentType: '',
+  signatureProgress: 0, //returned
+  signatureLink: '', //returned
+  sigCanvas: null, //returned
+  showSignCanvas: false, //returned
   addToCart: () => { },
   removeFromCart: () => { },
   setShippingFee: () => { },
@@ -24,6 +32,10 @@ const cartInitialState = {
   togglePaymentLinkVisibility: () => { },
   checkoutCart: () => { },
   setPaymentType: () => { },
+  clearSignature: () => { }, //returned
+  toggleSignCanvasVisibility: () => { }, //returned
+  saveSignature: () => { },
+  handleEndDrawing: () => { },
 };
 
 const LPH_CART_KEY = 'LPHCART';
@@ -112,6 +124,96 @@ const CartProvider = ({ children }) => {
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [contactNumber, setContactNumber] = useState('');
   const [paymentType, setPaymentType] = useState({});
+  const [signatureLink, setSignatureLink] = useState(null); //initiated
+  const [signatureProgress, setSignatureProgress] = useState(0); //initiated
+  const sigCanvas = useRef(null); //initiated
+  const [isEmptyCanvas, setIsEmptyCanvas] = useState(true); //initiated
+  const [showSignCanvas, setShowSignCanvas] = useState(false); //initiated
+
+  //initiated
+  const clearSignature = () => {
+    if (sigCanvas.current) {
+      sigCanvas.current.clear();
+      setIsEmptyCanvas(true); // Mark canvas as empty after clearing
+    }
+  };
+
+  //initiated
+  // Toggle modal visibility
+  const toggleSignCanvasVisibility = () => setShowSignCanvas((state) => !state);
+
+
+  const dataURLToBlob = (dataURL) => {
+    const arr = dataURL.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = Buffer.from(arr[1], 'base64');
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr[n];
+    }
+    return new Blob([u8arr], { type: mime });
+  };
+
+  const uploadSignature = (dataUrl) => {
+    console.log(dataUrl)
+    const blob = dataURLToBlob(dataUrl);
+    const extension = 'png';
+    const fileName = `signature-${crypto
+      .createHash('md5')
+      .update(dataUrl)
+      .digest('hex')
+      .substring(0, 12)}-${format(new Date(), 'yyyy.MM.dd.kk.mm.ss')}.${extension}`;
+
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, blob);
+
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {
+        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        setSignatureProgress(progress);
+      },
+      (error) => {
+        toast.error(error.message);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setSignatureLink(downloadURL);
+        });
+      }
+    );
+  };
+
+  //initiated
+  const saveSignature = () => {
+    if (sigCanvas.current && !isEmptyCanvas) {
+      const signatureData = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
+      uploadSignature(signatureData);
+    } else {
+      alert("Please sign before saving.");
+    }
+  };
+
+  useEffect(() => {
+    if (showSignCanvas && sigCanvas.current) {
+      sigCanvas.current.clear(); // Ensure the canvas is clear on show
+      setIsEmptyCanvas(true); // Reset the empty status when modal opens
+      console.log(isEmptyCanvas)
+    }
+  }, [showSignCanvas]);
+
+  //initiated
+  const handleEndDrawing = () => {
+    if (sigCanvas.current) {
+      // Check if the canvas is actually empty
+      if (sigCanvas.current.isEmpty()) {
+        setIsEmptyCanvas(true); // Mark canvas as empty if no drawing
+      } else {
+        setIsEmptyCanvas(false); // Mark canvas as not empty if there is drawing
+      }
+    }
+  };
 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem(LPH_CART_KEY));
@@ -232,6 +334,10 @@ const CartProvider = ({ children }) => {
         isSubmitting,
         paymentLink,
         paymentType,
+        signatureProgress,
+        signatureLink,
+        sigCanvas,
+        showSignCanvas,
         addToCart,
         setShippingFee,
         setDeliveryAddress,
@@ -242,6 +348,10 @@ const CartProvider = ({ children }) => {
         togglePaymentLinkVisibility,
         checkoutCart,
         setPaymentType: handleSetPaymentType, // Updated to use the new function
+        clearSignature,
+        toggleSignCanvasVisibility,
+        saveSignature,
+        handleEndDrawing
       }}
     >
       {children}
