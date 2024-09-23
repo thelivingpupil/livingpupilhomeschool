@@ -2067,12 +2067,12 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Account Email',
                   headerAlign: 'center',
                   align: 'center',
+                  width: 250, // Set your desired width here
                   valueGetter: (params) =>
-                    params.row.student.creator?.email ||
-                    '',
+                    params.row.student.creator?.email || '',
                   renderCell: (params) => (
                     <div>
-                      <span >{params.row.student.creator?.email}school</span>
+                      <span>{params.row.student.creator?.email}</span>
                     </div>
                   ),
                 },
