@@ -42,7 +42,7 @@ const handler = async (req, res) => {
       createSchoolFees(
         userId,
         email,
-        workspaceId,
+        studentId,
         payment,
         enrollmentType,
         incomingGradeLevel,
