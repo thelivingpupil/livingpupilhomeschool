@@ -33,7 +33,6 @@ export const createSchoolFees = async (
   scholarshipCode = '',
 ) => {
   console.log("Entering createSchoolFees function...");
-  console.log("workspaceId: " + workspaceId)
   let gradeLevel = incomingGradeLevel;
 
   if (program === Program.HOMESCHOOL_COTTAGE) {

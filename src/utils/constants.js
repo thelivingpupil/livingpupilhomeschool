@@ -26,7 +26,7 @@ export const ENROLLMENT_TYPE = {
 };
 
 export const FEES = {
-  ONLINE: 10,
+  ONLINE: 20,
   OTC: 15,
   PAYMENT_CENTERS: 20,
 };
@@ -47,6 +47,15 @@ export const GRADE_LEVEL = {
   GRADE_10: 'Grade 10',
   GRADE_11: 'Grade 11',
   GRADE_12: 'Grade 12',
+};
+
+export const GRADE_LEVEL_FORMS = {
+  PRESCHOOL: ['PRESCHOOL'],
+  KINDERGARTEN: ['K1', 'K2'],
+  FORM_1: ['GRADE_1', 'GRADE_2', 'GRADE_3'],
+  FORM_2: ['GRADE_4', 'GRADE_5', 'GRADE_6'],
+  FORM_3: ['GRADE_7', 'GRADE_8', 'GRADE_9', 'GRADE_10'],
+  SENIOR_HIGH: ['GRADE_11', 'GRADE_12']
 };
 
 export const GRADE_LEVEL_TYPES = {
