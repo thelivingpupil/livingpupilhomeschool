@@ -150,14 +150,19 @@ const Fees = () => {
                                   </div>
                                 </td>
                                 <td className="px-3 py-2 text-sm text-center">
-                                  {getDeadline(
-                                    index,
-                                    f.paymentType,
-                                    fees[level].schoolFees[0].transaction.updatedAt,
-                                    //workspace.studentRecord.createdAt,
-                                    workspace.studentRecord.schoolYear,
-                                    fees[level].schoolFees[0].transaction.paymentStatus
-                                  ) || '-'}
+                                  {index !== 0 &&
+                                    fees[level].schoolFees[0].transaction.paymentStatus !== 'S'
+                                    ? '-'
+                                    : index === 0
+                                      ? 'Initial Fee'
+                                      : getDeadline(
+                                        index,
+                                        f.paymentType,
+                                        fees[level].schoolFees[0].transaction.updatedAt,
+                                        //workspace.studentRecord.createdAt,
+                                        workspace.studentRecord.schoolYear,
+                                        fees[level].schoolFees[0].transaction.paymentStatus
+                                      ) || '-'}
                                 </td>
                                 <td className="px-3 py-2 space-x-3 text-center">
                                   {f.transaction.paymentStatus !== TransactionStatus.S ? (
