@@ -225,6 +225,7 @@ model StudentRecord {
   primaryTeacherEducation String?        
   primaryTeacherProfile  String ?
   studentStatus          String?        
+  policyAgreement      Boolean        @default(true)  // New field added here
   student              Workspace     @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("studentRecord")
