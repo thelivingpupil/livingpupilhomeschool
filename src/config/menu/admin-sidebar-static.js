@@ -9,6 +9,7 @@ import {
   ShoppingCartIcon,
   UserCircleIcon,
   UsersIcon,
+  InboxIcon
 } from '@heroicons/react/outline';
 import { QuestionMarkCircleIcon } from '@heroicons/react/solid';
 
@@ -28,12 +29,6 @@ const adminSidebarMenu = () => [
         path: `/account/admin/inquiries`,
         showDefault: true,
       },
-      // {
-      //   name: 'Accounts',
-      //   icon: UsersIcon,
-      //   path: `/account/admin/accounts`,
-      //   showDefault: true,
-      // },
     ],
   },
   {
@@ -61,6 +56,12 @@ const adminSidebarMenu = () => [
         name: 'Enrollment',
         icon: CreditCardIcon,
         path: `/account/admin/transactions`,
+        showDefault: true,
+      },
+      {
+        name: 'Broadcast',
+        icon: InboxIcon,
+        path: `/account/admin/broadcast`,
         showDefault: true,
       },
     ],
