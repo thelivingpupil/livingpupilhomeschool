@@ -20,6 +20,7 @@ import prisma from '@/prisma/index';
 import { sendMail } from '@/lib/server/mail';
 import { getGuardianInformation } from '@/prisma/services/user';
 import { getParentFirstName } from '@/utils/index';
+import { sendMailWithGmail } from '@/lib/server/gmail';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -187,20 +188,18 @@ const handler = async (req, res) => {
           to: email,
         });
 
-        await sendMail({
-          from: process.env.EMAIL_FROM,
+        await sendMailWithGmail({
+          sender: 'shop', // Dynamically select the account based on sender
+          to: email,
+          subject: `[Action Needed] Confirmation of ${uniqueOrderCode} from LP Shop`,
+          text: orderText({ parentFirstName }), // Generate text content from the template
           html: orderHtml({
             parentName: parentFirstName,
             orderCode: uniqueOrderCode,
             reciever: parentFullName,
             deliveryAddress: deliveryAddress,
             contactNumber: contactNumber
-          }),
-          subject: `[Action Needed] Confirmation of ${uniqueOrderCode} from LP Shop`,
-          text: orderText({
-            parentFirstName
-          }),
-          to: email,
+          }), // Generate HTML content from the template
         });
 
         res.status(200).json({ data: { paymentLink: transaction?.url } });

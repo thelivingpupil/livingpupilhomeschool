@@ -178,8 +178,7 @@ const html = ({
 																	</p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; color: red;">
-																		Please confirm the accuracy of the order details and indicate your preferred delivery partner by sending a message to 
-																		<a href="mailto:livingpupilshop@gmail.com" style="color: red; font-weight: bold;" target="_blank">livingpupilshop@gmail.com</a> 
+																		Please confirm the accuracy of the order details and indicate your preferred delivery partner by replying to this email
 																		no later than 12:00 PM tomorrow. If you have any questions or need further assistance, you can also reach us at 09212375729.
 																	</p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
