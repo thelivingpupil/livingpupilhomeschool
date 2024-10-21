@@ -292,6 +292,8 @@ export const getStudentRecords = async () =>
                   referenceNumber: true,
                   url: true,
                   updatedAt: true,
+                  description: true,
+                  source: true,
                 },
               },
             },
@@ -315,6 +317,83 @@ export const getStudentRecords = async () =>
       //     },
       //   },
       // },
+    },
+  });
+
+export const getEnrolledStudentRecords = async () =>
+  await prisma.studentRecord.findMany({
+    orderBy: [{ createdAt: 'desc' }],
+    select: {
+      id: true,
+      studentId: true,
+      firstName: true,
+      middleName: true,
+      lastName: true,
+      birthDate: true,
+      gender: true,
+      religion: true,
+      incomingGradeLevel: true,
+      enrollmentType: true,
+      program: true,
+      accreditation: true,
+      schoolYear: true,
+      reason: true,
+      formerSchoolName: true,
+      formerSchoolAddress: true,
+      image: true,
+      liveBirthCertificate: true,
+      reportCard: true,
+      discount: true,
+      studentStatus: true,
+      cottageType: true,
+      student: {
+        select: {
+          creator: {
+            select: {
+              email: true,
+              guardianInformation: true,
+            },
+          },
+          schoolFees: {
+            select: {
+              order: true,
+              paymentType: true,
+              deletedAt: true,
+              transaction: {
+                select: {
+                  transactionId: true,
+                  transactionStatus: true,
+                  amount: true,
+                  paymentReference: true,
+                  paymentStatus: true,
+                  message: true,
+                  referenceNumber: true,
+                  url: true,
+                  updatedAt: true,
+                },
+              },
+            },
+            where: {
+              deletedAt: null, // Filter out schoolFees where deletedAt is not null
+            },
+            orderBy: [{ order: 'asc' }],
+          },
+        },
+      },
+    },
+    where: {
+      deletedAt: null,
+      schoolYear: '2024-2025',
+      student: {
+        deletedAt: null,
+        schoolFees: {
+          some: {
+            transaction: {
+              paymentStatus: TransactionStatus.S,
+            },
+          },
+        },
+      },
     },
   });
 

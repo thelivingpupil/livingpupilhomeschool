@@ -3,6 +3,8 @@ import { sendMail } from '@/lib/server/mail';
 import { html, text } from '@/config/email-templates/payment-reminder-7-days-lapse';
 import { getDeadline } from "@/utils/index";
 import { differenceInDays, parse } from 'date-fns';
+import { renewTransaction } from "@/prisma/services/transaction";
+import crypto from 'crypto';
 
 export default async function handler(req, res) {
     try {
@@ -13,7 +15,6 @@ export default async function handler(req, res) {
         let emailCounter = 0; // Initialize the email counter
 
         for (const studentRecord of studentRecords) {
-
             // Find the school fee with order 0
             const feeOrder0 = studentRecord.student?.schoolFees.find(fee => fee.order === 0);
 
@@ -44,10 +45,11 @@ export default async function handler(req, res) {
                         continue;
                     }
 
-                    const downpaymentDate = transaction.updatedAt;
+                    const downpaymentDate = feeOrder0.transaction.updatedAt;
                     const schoolYear = studentRecord.schoolYear;
                     const studentFirstName = studentRecord.firstName;
                     const studentLastName = studentRecord.lastName;
+                    const amount = transaction.amount.toFixed(2);
 
                     if (!schoolYear || !downpaymentDate || !studentFirstName) {
                         console.warn(`Skipping student record ${studentRecord.id} due to missing data.`);
@@ -69,13 +71,27 @@ export default async function handler(req, res) {
 
                         if (daysLapsed === 7) {
                             const parentName = studentRecord.student?.creator?.guardianInformation?.primaryGuardianName?.split(' ')[0] || studentRecord.student?.creator?.email?.split(' ')[0];
+                            const newTransactionId = crypto.randomUUID();
+                            const newTransaction = await renewTransaction(
+                                studentRecord.student?.creator?.email,
+                                transaction.transactionId,
+                                newTransactionId,
+                                transaction.amount,
+                                transaction.description,
+                                transaction.source
+                            );
+
+                            console.log(studentRecord.student?.creator?.email, transaction.transactionId, newTransactionId, transaction.amount, transaction.description, transaction.source)
+                            const url = newTransaction?.url
 
                             await sendMail({
                                 from: process.env.EMAIL_FROM,
                                 html: html({
                                     parentName,
                                     studentFirstName,
-                                    studentLastName
+                                    studentLastName,
+                                    amount,
+                                    url
                                 }),
                                 subject: `[Living Pupil Homeschool] Payment Reminder 7 Days Lapse`,
                                 text: text({
