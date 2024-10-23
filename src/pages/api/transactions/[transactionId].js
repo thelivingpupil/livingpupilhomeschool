@@ -1,5 +1,5 @@
 const { validateSession } = require('@/config/api-validation');
-const { updateTransaction } = require('@/prisma/services/transaction');
+const { updateTransaction, changeTransactionAmount } = require('@/prisma/services/transaction');
 
 const handler = async (req, res) => {
   const { method, body, query } = req;
@@ -18,6 +18,14 @@ const handler = async (req, res) => {
       payment,
       amount
     );
+    res.status(200).json({ data: { transaction } });
+  } else if (method === 'PATCH') {
+    await validateSession(req, res);
+    const { transactionId } = query;
+    const { newAmount, payment } = body;
+    const balance = newAmount - payment;
+
+    const transaction = await changeTransactionAmount(transactionId, newAmount, balance);
     res.status(200).json({ data: { transaction } });
   } else {
     res

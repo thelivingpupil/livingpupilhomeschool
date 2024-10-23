@@ -204,6 +204,42 @@ export const getDeadline = (index, paymentType, downpaymentDate, schoolYear, pay
     : null;
 };
 
+async function fetchSchoolFees(studentId, order) {
+  const response = await fetch(`/api/transactions/fess?studentId=${studentId}&order=${order}`);
+
+  if (!response.ok) {
+    throw new Error(`Error: ${response.status} - ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+export const getDeadlineForAdmin = async (index, paymentType, schoolYear, paymentStatus, studentId) => {
+  try {
+    // Fetch school fees using the provided studentId and order
+    const response = await fetch(`/api/transactions/fees?studentId=${studentId}&order=0`);
+
+    // Parse the JSON response
+    const schoolFees = await response.json();
+
+    // Check if the response contains fees
+    if (schoolFees.length > 0) {
+      // Get the first school fee's transaction date
+      const schoolFee = schoolFees[0]; // Assuming we use the first transaction
+      const downpaymentDate = schoolFee.transaction.updatedAt;
+
+      // Now calculate the deadline based on the downpayment date
+      return getDeadline(index, paymentType, downpaymentDate, schoolYear, paymentStatus);
+    } else {
+      return '-'; // No fees found, return a fallback value
+    }
+  } catch (error) {
+    console.error('Error getting deadline for admin:', error);
+    throw new Error(`Failed to get deadline: ${error.message}`);
+  }
+};
+
 export const groupBy = (array, key) => {
   return array.reduce((result, item) => {
     const groupKey = item[key];
@@ -267,6 +303,3 @@ export const getParentFirstName = (fullName) => {
   const nameParts = fullName.split(' ');
   return nameParts[0]; // Return the first part (first name)
 }
-
-
-

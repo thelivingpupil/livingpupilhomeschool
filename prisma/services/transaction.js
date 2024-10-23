@@ -459,3 +459,36 @@ export const updateTransaction = async (
     createdAt: transaction?.createdAt?.toDateString(),
   };
 };
+
+export const changeTransactionAmount = async (transactionId, amount, balance) => {
+  const transaction = await prisma.transaction.update({
+    data: {
+      ...(typeof amount !== 'undefined' && { amount }), // Check for undefined
+      ...(typeof balance !== 'undefined' && { balance }), // Check for undefined
+    },
+    select: {
+      transactionId: true,
+      referenceNumber: true,
+      amount: true,
+      currency: true,
+      transactionStatus: true,
+      paymentStatus: true,
+      source: true,
+      paymentReference: true,
+      description: true,
+      message: true,
+      url: true,
+      createdAt: true,
+    },
+    where: { transactionId },
+  });
+  return {
+    ...transaction,
+    amount: transaction?.amount?.toNumber() || 0,
+    createdAt: transaction?.createdAt?.toDateString(),
+  };
+};
+
+export const findSchoolFeeID = async (id) => {
+
+}

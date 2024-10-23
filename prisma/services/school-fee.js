@@ -588,12 +588,14 @@ export const getSchoolFeeByStudentIdAndOrder = async (studentId, order) => {
             payment: true,
             balance: true,
             paymentStatus: true,
+            updatedAt: true,
           }
         },
       },
       where: {
         studentId: studentId,
         order: order,
+        deletedAt: null,
       },
     });
 
