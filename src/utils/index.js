@@ -204,17 +204,6 @@ export const getDeadline = (index, paymentType, downpaymentDate, schoolYear, pay
     : null;
 };
 
-async function fetchSchoolFees(studentId, order) {
-  const response = await fetch(`/api/transactions/fess?studentId=${studentId}&order=${order}`);
-
-  if (!response.ok) {
-    throw new Error(`Error: ${response.status} - ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data;
-}
-
 export const groupBy = (array, key) => {
   return array.reduce((result, item) => {
     const groupKey = item[key];
