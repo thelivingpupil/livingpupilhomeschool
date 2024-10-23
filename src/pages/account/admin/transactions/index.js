@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, useEffect } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import formatDistance from 'date-fns/formatDistance';
 import api from '@/lib/common/api';
 import { ChevronDownIcon } from '@heroicons/react/outline';
@@ -24,7 +24,7 @@ import {
 import Modal from '@/components/Modal';
 import CenteredModal from '@/components/Modal/centered-modal';
 import toast from 'react-hot-toast';
-import { getDeadline, getDeadlineForAdmin } from '@/utils/index';
+import { getDeadline } from '@/utils/index';
 
 const filterValueOptions = {
   paymentType: PAYMENT_TYPE,
@@ -72,7 +72,6 @@ const Transactions = () => {
   const [totalUpload, setTotalUpload] = useState(0);
   const [newAmount, setNewAmount] = useState(0.0);
   const [action, setAction] = useState("UPDATE");
-
 
   const filterTransactions = useMemo(() => {
     if (!filterBy || !filterValue) return data?.transactions;
@@ -129,25 +128,16 @@ const Transactions = () => {
 
   const toggleModal = () => setModalVisibility((state) => !state);
 
-  const openUpdateModal = async (transaction) => {
-
+  const openUpdateModal = (transaction) => () => {
     const balance = transaction.balance !== null ? transaction.balance : transaction.amount;
-
-    const deadline = await getDeadlineForAdmin(
-      transaction.schoolFee.order,
-      transaction.schoolFee.paymentType,
-      transaction.schoolFee.student.studentRecord?.schoolYear,
-      'S',
-      transaction.schoolFee?.student?.studentRecord?.studentId,
-    );
-
     setUpdateTransaction({
       ...updateTransaction,
       transactionId: transaction.transactionId,
       studentId: transaction.schoolFee.student.studentRecord.studentId,
       order: parseInt(transaction.schoolFee.order),
       name: transaction.schoolFee.student.studentRecord.firstName,
-      gradeLevel: transaction.schoolFee.student.studentRecord.incomingGradeLevel,
+      gradeLevel:
+        transaction.schoolFee.student.studentRecord.incomingGradeLevel,
       program: transaction.schoolFee.student.studentRecord.program,
       accreditation: transaction.schoolFee.student.studentRecord.accreditation,
       createdAt: transaction.createdAt,
@@ -157,21 +147,28 @@ const Transactions = () => {
         : transaction.user.email,
       email: transaction.user.email,
       paymentStatus: transaction.paymentStatus,
+      transactionId: transaction.transactionId,
       amount: Number(transaction.amount).toFixed(2),
       payment: Number(transaction.payment).toFixed(2),
       balance: Number(balance).toFixed(2),
       paymentType: transaction.schoolFee.paymentType,
       currency: transaction.currency,
-      deadline, // Assign the resolved deadline directly
-      paymentOrder: transaction.schoolFee.paymentType === PaymentType.ANNUAL
-        ? 'Total Fee'
-        : transaction.schoolFee.order === 0
-          ? 'Initial Fee'
-          : `Payment #${transaction.schoolFee.order}`,
+      deadline: getDeadline(
+        transaction.schoolFee.order,
+        transaction.schoolFee.paymentType,
+        transaction.createdAt,
+        transaction.schoolFee.student.studentRecord.schoolYear,
+        'S'
+      ),
+      paymentOrder:
+        transaction.schoolFee.paymentType === PaymentType.ANNUAL
+          ? 'Total Fee'
+          : transaction.schoolFee.order === 0
+            ? 'Initial Fee'
+            : `Payment #${transaction.schoolFee.order}`,
     });
-    toggleModal();
+    setModalVisibility(true);
   };
-
 
   const toggleCenteredModal = () => {
     setCenteredModalVisibility(!showCenteredModal);
@@ -217,7 +214,7 @@ const Transactions = () => {
 
   const checkDeadline = () => {
     const currentDate = new Date();
-    const deadline = new Date(updateTransaction.deadline); // change to
+    const deadline = new Date(updateTransaction.deadline); // change to 
 
     if (currentDate > deadline && updateTransaction.balance > 0) {
       fetchSchoolFees(updateTransaction.studentId, updateTransaction.order + 1)
@@ -579,11 +576,11 @@ const Transactions = () => {
         title="Confirm Changes"
       >
         <div>
-          <p className="py-1">You are about to update the school fee for <b>{updateTransaction.name}</b>.</p>
+          <p className="py-1">You are about to change the amount <b>{updateTransaction.name}'s</b> school fee.</p>
           <p><b>Transaction ID: {updateTransaction.transactionId}</b></p>
-          <p><b>Current Amount: ₱{updateTransaction.amount}</b></p>
-          <p><b>New Amount: ₱{newAmount}</b></p>
-          <p className="mt-5">Please make a note of the current amount in case you need to reverse these changes.</p>
+          <p><b>Amount: ₱{updateTransaction.amount}</b></p>
+          <p><b>New Amount:₱{newAmount} </b></p>
+          <p className="mt-5">Please note that the changes may not be undone.</p>
           <p className="mt-5">Do you wish to proceed?</p>
         </div>
         <div className="w-full flex justify-end">
@@ -741,11 +738,159 @@ const Transactions = () => {
                   {!isLoading ? (
                     data ? (
                       filterTransactions.map((transaction, index) => (
-                        <TransactionRow
+                        <tr
                           key={index}
-                          transaction={transaction}
-                          openUpdateModal={openUpdateModal} // Passing the correct function
-                        />
+                          className="text-sm border-t border-b hover:bg-gray-100 border-b-gray-300"
+                        >
+                          <td className="p-2 text-left">
+                            <div>
+                              <h4 className="flex items-center space-x-3 text-xl font-medium capitalize text-primary-500">
+                                <span>{`${transaction.schoolFee.student.studentRecord?.firstName}`}</span>
+                                <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${GRADE_LEVEL[
+                                  transaction.schoolFee.student.studentRecord
+                                    ?.incomingGradeLevel
+                                ]
+                                  }`}</span>
+                              </h4>
+                              <h5 className="font-bold">
+                                <span className="text-xs">{`${PROGRAM[
+                                  transaction.schoolFee.student.studentRecord
+                                    ?.program
+                                ]
+                                  } - ${ACCREDITATION[
+                                  transaction.schoolFee.student.studentRecord
+                                    ?.accreditation
+                                  ]
+                                  }`}</span>
+                              </h5>
+                              <p className="text-xs text-gray-400">
+                                Created{' '}
+                                {new Date(transaction.createdAt).toDateString()}{' '}
+                                by{' '}
+                                <strong>
+                                  {transaction.user.guardianInformation
+                                    ? transaction.user.guardianInformation
+                                      .primaryGuardianName
+                                    : transaction.user.email}
+                                </strong>
+                              </p>
+                              <p className="text-xs text-gray-400">
+                                Last Updated:{' '}
+                                {new Date(transaction.updatedAt).toDateString()}
+                              </p>
+                              {transaction.schoolFee.student.studentRecord
+                                ?.discount && (
+                                  <p className="text-xs font-semibold text-primary-500">
+                                    Applied discount:{' '}
+                                    {
+                                      transaction.schoolFee.student.studentRecord.discount
+                                    }
+                                  </p>
+                                )}
+                              <small>{transaction.user.email}</small>
+                            </div>
+                          </td>
+                          <td className="p-2 text-center">
+                            <div className="flex flex-col items-center">
+                              <div className="flex">
+                                {
+                                  PAYMENT_TYPE[
+                                  transaction.schoolFee.paymentType
+                                  ]
+                                }
+                              </div>
+                              <div className="flex text-sm text-gray-400 italic">
+                                {transaction.schoolFee.paymentType ===
+                                  PaymentType.ANNUAL
+                                  ? 'Total Fee'
+                                  : transaction.schoolFee.order === 0
+                                    ? 'Initial Fee'
+                                    : `Payment #${transaction.schoolFee.order}`}
+                              </div>
+                              <p className="text-xs font-semibold text-primary-500">
+                                {transaction.schoolFee.order === 0
+                                  ? ''
+                                  : getDeadline(
+                                    transaction.schoolFee.order,
+                                    transaction.schoolFee.paymentType,
+                                    transaction.createdAt,
+                                    transaction.schoolFee.student.studentRecord?.schoolYear,
+                                    'S'
+                                  ) || null}
+                              </p>
+                            </div>
+                          </td>
+                          <td className="p-2 text-left">
+                            <div>
+                              {transaction.paymentReference ? (
+                                <h4 className="flex space-x-3">
+                                  <span className="font-mono font-bold uppercase">
+                                    {transaction.paymentReference}
+                                  </span>
+                                  <span
+                                    className={`rounded-full py-0.5 text-xs px-2 ${STATUS_BG_COLOR[transaction.paymentStatus]
+                                      }`}
+                                  >
+                                    {STATUS_CODES[transaction.paymentStatus]}
+                                  </span>
+                                </h4>
+                              ) : (
+                                <h4 className="text-lg font-bold text-gray-300">
+                                  -
+                                </h4>
+                              )}
+                              <p className="font-mono text-xs text-gray-400 lowercase">
+                                {transaction.transactionId}
+                              </p>
+                            </div>
+                          </td>
+                          <td className="p-2 text-center">
+                            <div>
+                              {new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: transaction.currency,
+                              }).format(transaction.amount)}
+                            </div>
+                          </td>
+                          <td className="p-2 text-center">
+                            <div>
+                              {transaction.payment ? (new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: transaction.currency,
+                              }).format(transaction.payment)) : (
+                                <h4 className="text-lg font-bold text-gray-300">
+                                  -
+                                </h4>
+                              )}
+                              {transaction.balance ? (
+                                <p className="font-mono text-xs text-gray-400 lowercase">
+                                  bal: {transaction.balance}
+                                </p>
+                              ) : (
+                                <p className="font-mono text-xs text-gray-400 lowercase">
+
+                                </p>
+                              )}
+                            </div>
+                          </td>
+                          <td className="p-2 space-x-2 text-xs text-center">
+                            {transaction.paymentStatus !==
+                              TransactionStatus.S && (
+                                <button
+                                  className="px-3 py-1 text-white rounded bg-cyan-600"
+                                  onClick={openUpdateModal(transaction)}
+                                >
+                                  Update
+                                </button>
+                              )}
+                            {/* <button
+                            className="px-3 py-1 text-white rounded bg-cyan-600"
+                            onClick={renew}
+                          >
+                            View
+                          </button> */}
+                          </td>
+                        </tr>
                       ))
                     ) : (
                       <tr>
@@ -760,7 +905,6 @@ const Transactions = () => {
                     </tr>
                   )}
                 </tbody>
-
               </table>
             </div>
             {(remainingPayments && (
@@ -782,151 +926,5 @@ const Transactions = () => {
     </AdminLayout>
   );
 };
-
-const TransactionRow = ({ transaction, openUpdateModal }) => {
-  const [deadline, setDeadline] = useState(null);
-  useEffect(() => {
-    const fetchDeadline = async () => {
-      if (transaction.schoolFee.order !== 0) {
-        try {
-          const result = await getDeadlineForAdmin(
-            transaction.schoolFee.order,
-            transaction.schoolFee.paymentType,
-            transaction.schoolFee.student.studentRecord?.schoolYear,
-            'S',
-            transaction.schoolFee?.student?.studentRecord?.studentId,
-          );
-          setDeadline(result);
-        } catch (error) {
-          console.error(error);
-          setDeadline(null); // Handle error state appropriately
-        }
-      } else {
-        setDeadline(''); // Set to empty string if order is 0
-      }
-    };
-
-    fetchDeadline();
-  }, [transaction]);
-
-  return (
-    <tr className="text-sm border-t border-b hover:bg-gray-100 border-b-gray-300">
-      <td className="p-2 text-left">
-        <div>
-          <h4 className="flex items-center space-x-3 text-xl font-medium capitalize text-primary-500">
-            <span>{`${transaction.schoolFee.student.studentRecord?.firstName}`}</span>
-            <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${GRADE_LEVEL[
-              transaction.schoolFee.student.studentRecord
-                ?.incomingGradeLevel
-            ]}`}</span>
-          </h4>
-          <h5 className="font-bold">
-            <span className="text-xs">{`${PROGRAM[
-              transaction.schoolFee.student.studentRecord
-                ?.program
-            ]} - ${ACCREDITATION[
-            transaction.schoolFee.student.studentRecord?.accreditation
-            ]}`}</span>
-          </h5>
-          <p className="text-xs text-gray-400">
-            Created {new Date(transaction.createdAt).toDateString()} by{' '}
-            <strong>
-              {transaction.user.guardianInformation
-                ? transaction.user.guardianInformation.primaryGuardianName
-                : transaction.user.email}
-            </strong>
-          </p>
-          <p className="text-xs text-gray-400">
-            Last Updated: {new Date(transaction.updatedAt).toDateString()}
-          </p>
-          {transaction.schoolFee.student.studentRecord?.discount && (
-            <p className="text-xs font-semibold text-primary-500">
-              Applied discount: {transaction.schoolFee.student.studentRecord.discount}
-            </p>
-          )}
-          <small>{transaction.user.email}</small>
-        </div>
-      </td>
-      <td className="p-2 text-center">
-        <div className="flex flex-col items-center">
-          <div className="flex">
-            {PAYMENT_TYPE[transaction.schoolFee.paymentType]}
-          </div>
-          <div className="flex text-sm text-gray-400 italic">
-            {transaction.schoolFee.paymentType === PaymentType.ANNUAL
-              ? 'Total Fee'
-              : transaction.schoolFee.order === 0
-                ? 'Initial Fee'
-                : `Payment #${transaction.schoolFee.order}`}
-          </div>
-          <p className="text-xs font-semibold text-primary-500">
-            {transaction.schoolFee.order === 0
-              ? ''
-              : deadline || null}
-          </p>
-        </div>
-      </td>
-      <td className="p-2 text-left">
-        <div>
-          {transaction.paymentReference ? (
-            <h4 className="flex space-x-3">
-              <span className="font-mono font-bold uppercase">
-                {transaction.paymentReference}
-              </span>
-              <span
-                className={`rounded-full py-0.5 text-xs px-2 ${STATUS_BG_COLOR[transaction.paymentStatus]}`}
-              >
-                {STATUS_CODES[transaction.paymentStatus]}
-              </span>
-            </h4>
-          ) : (
-            <h4 className="text-lg font-bold text-gray-300">-</h4>
-          )}
-          <p className="font-mono text-xs text-gray-400 lowercase">
-            {transaction.transactionId}
-          </p>
-        </div>
-      </td>
-      <td className="p-2 text-center">
-        <div>
-          {new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: transaction.currency,
-          }).format(transaction.amount)}
-        </div>
-      </td>
-      <td className="p-2 text-center">
-        <div>
-          {transaction.payment ? (
-            new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: transaction.currency,
-            }).format(transaction.payment)
-          ) : (
-            <h4 className="text-lg font-bold text-gray-300">-</h4>
-          )}
-          {transaction.balance ? (
-            <p className="font-mono text-xs text-gray-400 lowercase">
-              bal: {transaction.balance}
-            </p>
-          ) : (
-            <p className="font-mono text-xs text-gray-400 lowercase"></p>
-          )}
-        </div>
-      </td>
-      <td className="p-2 space-x-2 text-xs text-center">
-        <button
-          className="px-3 py-1 text-white rounded bg-cyan-600"
-          onClick={() => {
-            openUpdateModal(transaction); // Open modal with transaction details
-          }}
-        >
-          Update
-        </button>
-      </td>
-    </tr>
-  );
-};
-
 
 export default Transactions;
