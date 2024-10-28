@@ -16,6 +16,7 @@ import useTransactionSales from './useTransactionSales';
 import useUsers from './useUsers';
 import useUsersCount from './useUsersCount';
 import useWorkspaces from './useWorkspaces';
+import useSchoolFees from './useSchoolFees';
 
 export {
   useDomain,
@@ -36,4 +37,5 @@ export {
   useUsers,
   useUsersCount,
   useWorkspaces,
+  useSchoolFees,
 };

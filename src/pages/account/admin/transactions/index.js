@@ -10,7 +10,7 @@ import SideModal from '@/components/Modal/side-modal';
 import { AdminLayout } from '@/layouts/index';
 import Content from '@/components/Content';
 import Card from '@/components/Card';
-import { useTransactions } from '@/hooks/data';
+import { useTransactions, useSchoolFees } from '@/hooks/data';
 import { STATUS_CODES } from '@/lib/server/dragonpay';
 import { PaymentType, TransactionStatus } from '@prisma/client';
 import {
@@ -20,6 +20,7 @@ import {
   PROGRAM,
   STATUS_BG_COLOR,
   STATUS,
+  COTTAGE_TYPE
 } from '@/utils/constants';
 import Modal from '@/components/Modal';
 import CenteredModal from '@/components/Modal/centered-modal';
@@ -39,6 +40,7 @@ const filterByOptions = {
 
 const Transactions = () => {
   const { data, isLoading } = useTransactions();
+  const { data: schoolFeesData, isLoading: isSchoolFeesDataLoading } = useSchoolFees(); //the schoolFeesData is an alias so it won't conflict with data
   const [showModal, setModalVisibility] = useState(false);
   const [showCenteredModal, setCenteredModalVisibility] = useState(false);
   const [showConfirmChange, setShowConfirmChange] = useState(false);
@@ -128,16 +130,30 @@ const Transactions = () => {
 
   const toggleModal = () => setModalVisibility((state) => !state);
 
+  console.log(data.transactions)
+
   const openUpdateModal = (transaction) => () => {
     const balance = transaction.balance !== null ? transaction.balance : transaction.amount;
+    const initialPayment = getStudentInitialFee(transaction.schoolFee.student.studentRecord.studentId);
+
+    const deadline =
+      initialPayment?.transaction?.paymentStatus === 'S'
+        ? getDeadline(
+          transaction.schoolFee.order,
+          transaction.schoolFee.paymentType,
+          initialPayment.transaction.updatedAt,
+          transaction.schoolFee.student.studentRecord.schoolYear,
+          'S'
+        )
+        : "-";
+    console.log(deadline)
     setUpdateTransaction({
       ...updateTransaction,
       transactionId: transaction.transactionId,
       studentId: transaction.schoolFee.student.studentRecord.studentId,
       order: parseInt(transaction.schoolFee.order),
       name: transaction.schoolFee.student.studentRecord.firstName,
-      gradeLevel:
-        transaction.schoolFee.student.studentRecord.incomingGradeLevel,
+      gradeLevel: transaction.schoolFee.student.studentRecord.incomingGradeLevel,
       program: transaction.schoolFee.student.studentRecord.program,
       accreditation: transaction.schoolFee.student.studentRecord.accreditation,
       createdAt: transaction.createdAt,
@@ -147,19 +163,12 @@ const Transactions = () => {
         : transaction.user.email,
       email: transaction.user.email,
       paymentStatus: transaction.paymentStatus,
-      transactionId: transaction.transactionId,
       amount: Number(transaction.amount).toFixed(2),
       payment: Number(transaction.payment).toFixed(2),
       balance: Number(balance).toFixed(2),
       paymentType: transaction.schoolFee.paymentType,
       currency: transaction.currency,
-      deadline: getDeadline(
-        transaction.schoolFee.order,
-        transaction.schoolFee.paymentType,
-        transaction.createdAt,
-        transaction.schoolFee.student.studentRecord.schoolYear,
-        'S'
-      ),
+      deadline,
       paymentOrder:
         transaction.schoolFee.paymentType === PaymentType.ANNUAL
           ? 'Total Fee'
@@ -167,7 +176,35 @@ const Transactions = () => {
             ? 'Initial Fee'
             : `Payment #${transaction.schoolFee.order}`,
     });
+
     setModalVisibility(true);
+  };
+
+
+  const getStudentInitialFee = (studentId) => {
+    if (!schoolFeesData) return null; // Ensure data is loaded before accessing
+    // Find the school fee with order 0 for the specified studentId
+    return schoolFeesData.schoolFees.find(
+      (fee) => fee.studentId === studentId && fee.order === 0
+    );
+  };
+
+  const getDeadlineForAdmin = (studentId, order, paymentType, schoolYear) => {
+    const initialPayment = getStudentInitialFee(studentId);
+
+    if (!initialPayment || initialPayment.transaction.paymentStatus !== 'S') {
+
+      console.log(studentId + "order: " + order + paymentType + schoolYear)
+      return "Unpaid Initial Fee";
+    }
+
+    return getDeadline(
+      order,
+      paymentType,
+      initialPayment.transaction.updatedAt,
+      schoolYear,
+      initialPayment.transaction.paymentStatus,
+    );
   };
 
   const toggleCenteredModal = () => {
@@ -735,7 +772,7 @@ const Transactions = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {!isLoading ? (
+                  {!isLoading || !isSchoolFeesDataLoading ? (
                     data ? (
                       filterTransactions.map((transaction, index) => (
                         <tr
@@ -753,15 +790,15 @@ const Transactions = () => {
                                   }`}</span>
                               </h4>
                               <h5 className="font-bold">
-                                <span className="text-xs">{`${PROGRAM[
-                                  transaction.schoolFee.student.studentRecord
-                                    ?.program
-                                ]
-                                  } - ${ACCREDITATION[
-                                  transaction.schoolFee.student.studentRecord
-                                    ?.accreditation
-                                  ]
-                                  }`}</span>
+                                <span className="text-xs">
+                                  {`${PROGRAM[transaction.schoolFee.student.studentRecord?.program]}
+                                  ${transaction.schoolFee.student.studentRecord?.program === "HOMESCHOOL_COTTAGE"
+                                      ? ` (${COTTAGE_TYPE[transaction.schoolFee.student.studentRecord?.cottageType]})`
+                                      : ""
+                                    } - 
+                                  ${ACCREDITATION[transaction.schoolFee.student.studentRecord?.accreditation]}
+                                  `}
+                                </span>
                               </h5>
                               <p className="text-xs text-gray-400">
                                 Created{' '}
@@ -810,12 +847,12 @@ const Transactions = () => {
                               <p className="text-xs font-semibold text-primary-500">
                                 {transaction.schoolFee.order === 0
                                   ? ''
-                                  : getDeadline(
+                                  : getDeadlineForAdmin(
+                                    transaction.schoolFee?.student?.studentRecord?.studentId,
                                     transaction.schoolFee.order,
                                     transaction.schoolFee.paymentType,
-                                    transaction.createdAt,
+                                    //transaction.createdAt,
                                     transaction.schoolFee.student.studentRecord?.schoolYear,
-                                    'S'
                                   ) || null}
                               </p>
                             </div>

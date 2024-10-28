@@ -1,4 +1,5 @@
 import {
+  CottageType,
   Currency,
   Fees,
   TransactionSource,
@@ -250,7 +251,6 @@ export const createTransaction = async (
   source,
   fee
 ) => {
-  console.log(transactionId)
   const response = await api(
     `${process.env.PAYMENTS_BASE_URL}/${transactionId}/post`,
     {
@@ -349,6 +349,7 @@ export const getTransactions = async () =>
                   enrollmentType: true,
                   program: true,
                   accreditation: true,
+                  cottageType: true,
                   schoolYear: true,
                   discount: true,
                 },
@@ -488,7 +489,3 @@ export const changeTransactionAmount = async (transactionId, amount, balance) =>
     createdAt: transaction?.createdAt?.toDateString(),
   };
 };
-
-export const findSchoolFeeID = async (id) => {
-
-}

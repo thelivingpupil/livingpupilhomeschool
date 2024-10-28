@@ -604,3 +604,33 @@ export const getSchoolFeeByStudentIdAndOrder = async (studentId, order) => {
     throw new Error(`Error fetching school fees: ${error.message}`);
   }
 };
+
+//This is used in the Enrollment Transactions to get the Deadlines
+export const getSchoolFees = async () => {
+  try {
+    const schoolFees = await prisma.schoolFee.findMany({
+      select: {
+        studentId: true,
+        order: true,
+        paymentType: true,
+        transaction: {
+          select: {
+            transactionId: true,
+            amount: true,
+            payment: true,
+            balance: true,
+            paymentStatus: true,
+            updatedAt: true,
+          }
+        },
+      },
+      where: {
+        deletedAt: null,
+      },
+    });
+
+    return schoolFees;
+  } catch (error) {
+    throw new Error(`Error fetching school fees: ${error.message}`);
+  }
+}
