@@ -130,8 +130,6 @@ const Transactions = () => {
 
   const toggleModal = () => setModalVisibility((state) => !state);
 
-  console.log(data.transactions)
-
   const openUpdateModal = (transaction) => () => {
     const balance = transaction.balance !== null ? transaction.balance : transaction.amount;
     const initialPayment = getStudentInitialFee(transaction.schoolFee.student.studentRecord.studentId);
@@ -146,7 +144,6 @@ const Transactions = () => {
           'S'
         )
         : "-";
-    console.log(deadline)
     setUpdateTransaction({
       ...updateTransaction,
       transactionId: transaction.transactionId,
@@ -193,8 +190,6 @@ const Transactions = () => {
     const initialPayment = getStudentInitialFee(studentId);
 
     if (!initialPayment || initialPayment.transaction.paymentStatus !== 'S') {
-
-      console.log(studentId + "order: " + order + paymentType + schoolYear)
       return "Unpaid Initial Fee";
     }
 
