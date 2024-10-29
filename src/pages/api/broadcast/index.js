@@ -14,27 +14,38 @@ export default async function handler(req, res) {
             return emailRegex.test(email);
         };
 
-        const { senderRole, senderFullName } = getSenderDetails(sender)
+        const { senderRole, senderFullName } = getSenderDetails(sender);
 
-        // Send email to each guardian, but skip if email is invalid
-        const promises = guardianEmails.map(async (guardianEmail) => {
+        // Function to send email with retry logic
+        const sendEmailWithRetry = async (guardianEmail, attempts = 3) => {
             if (!isValidEmail(guardianEmail.email)) {
                 console.log(`Skipping invalid email: ${guardianEmail.email}`);
-                return; // Skip this email
+                return;
             }
 
             const parentName = getParentFirstName(guardianEmail.primaryGuardianName);
-            return sendMailWithGmail({
-                sender, // Dynamically select the account based on sender
+            const emailOptions = {
+                sender,
                 to: guardianEmail.email,
                 subject,
-                text: announcementText({ parentName }), // Generate text content from the template
-                html: announcementHtml({ parentName, emailContent, senderRole, senderFullName }), // Generate HTML content from the template
-            });
-        });
+                text: announcementText({ parentName }),
+                html: announcementHtml({ parentName, emailContent, senderRole, senderFullName }),
+            };
+
+            for (let attempt = 1; attempt <= attempts; attempt++) {
+                try {
+                    await sendMailWithGmail(emailOptions);
+                    return;
+                } catch (error) {
+                    console.error(`Attempt ${attempt} failed for ${guardianEmail.email}:`, error);
+                    if (attempt === attempts) throw error;
+                    await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds before retrying
+                }
+            }
+        };
 
         try {
-            await Promise.all(promises);
+            await Promise.all(guardianEmails.map(guardianEmail => sendEmailWithRetry(guardianEmail)));
             return res.status(200).json({ message: 'Emails sent successfully.' });
         } catch (error) {
             console.error('Failed to send emails:', error);
