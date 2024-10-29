@@ -69,6 +69,7 @@ const Broadcast = () => {
         }
     };
 
+
     // Handle checkbox change for Accreditation
     const handleCheckboxChangeForAccreditation = (e) => {
         const { value, checked } = e.target;
@@ -201,35 +202,64 @@ const Broadcast = () => {
     const handleSendClick = async () => {
         setIsSending(true); // Disable button while sending emails
         try {
-            const response = await fetch('/api/broadcast', { // Adjust the API endpoint accordingly
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    emailContent,
-                    sender: emailSender,
-                    subject: emailSubject,
-                    guardianEmails: emailSendType === 'single' ? [{ email: singularEmail, primaryGuardianName: singularParent }] : guardianEmails, // Handle singular email
-                }),
-            });
+            const guardianEmailsToSend = emailSendType === 'single'
+                ? [{ email: singularEmail, primaryGuardianName: singularParent }]
+                : guardianEmails; // Handle singular email
 
-            if (response.ok) {
-                alert('Emails sent successfully!');
-                // Optionally reset state after sending
-                setSingularParent('');
-                setSingularEmail('');
-                setGuardianEmails([]);
-                setEmailContent('');
-                setEmailSubject('');
-                setEmailSender('');
-                setFilterValues([]); // Reset filterValues
-                setProgram([]); // Reset program checkboxes
-                setAccreditation([]); // Reset accreditation checkboxes
-            } else {
-                const errorData = await response.json();
-                alert(`Failed to send emails: ${errorData.errors.error.msg}`);
+            // Function to split an array into chunks of a specific size
+            const chunkArray = (array, size) => {
+                const chunks = [];
+                for (let i = 0; i < array.length; i += size) {
+                    chunks.push(array.slice(i, i + size));
+                }
+                return chunks;
+            };
+
+            // Function to delay execution for a specified number of milliseconds
+            const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+            // Chunk the guardian emails into batches of 10
+            const batches = chunkArray(guardianEmailsToSend, 10);
+
+            for (let i = 0; i < batches.length; i++) {
+                const batch = batches[i];
+                const response = await fetch('/api/broadcast', { // Adjust the API endpoint accordingly
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        emailContent,
+                        sender: emailSender,
+                        subject: emailSubject,
+                        guardianEmails: batch, // Send the current batch
+                    }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    alert(`Failed to send emails: ${errorData.errors.error.msg}`);
+                    return; // Stop if any batch fails
+                }
+
+                // Wait for 5 seconds after the first batch
+                if (i === 0) {
+                    await delay(5000);
+                }
             }
+
+            alert('Emails sent successfully!');
+            // Optionally reset state after sending
+            setSingularParent('');
+            setSingularEmail('');
+            setGuardianEmails([]);
+            setEmailContent('');
+            setEmailSubject('');
+            setEmailSender('');
+            setFilterValues([]); // Reset filterValues
+            setProgram([]); // Reset program checkboxes
+            setAccreditation([]); // Reset accreditation checkboxes
+
         } catch (error) {
             console.error('Error sending emails:', error);
             alert('An error occurred while sending emails. Please try again.');
@@ -258,12 +288,6 @@ const Broadcast = () => {
         setFilterValues([]); // Reset filterValues when the filter option changes
         setGuardianEmails([]);
     };
-
-
-    console.log(guardianEmails)
-    // console.log(program)
-    // console.log(accreditation)
-
 
     return (
         <AdminLayout>
