@@ -242,7 +242,7 @@ const Broadcast = () => {
                 }
 
                 // Wait for 1 minute (60000 ms) before processing the next batch
-                await delay(180000);
+                await delay(300000);
             }
 
             alert('Emails sent successfully!');
