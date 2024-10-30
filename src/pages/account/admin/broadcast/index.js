@@ -215,14 +215,13 @@ const Broadcast = () => {
                 return chunks;
             };
 
-            // Function to delay execution for a specified number of milliseconds
+            // Function to delay execution for a specified number of milliseconds (1 minute = 60000 ms)
             const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-            // Chunk the guardian emails into batches of 10
+            // Chunk the guardian emails into batches of 50
             const batches = chunkArray(guardianEmailsToSend, 10);
 
-            for (let i = 0; i < batches.length; i++) {
-                const batch = batches[i];
+            for (const batch of batches) {
                 const response = await fetch('/api/broadcast', { // Adjust the API endpoint accordingly
                     method: 'POST',
                     headers: {
@@ -242,13 +241,12 @@ const Broadcast = () => {
                     return; // Stop if any batch fails
                 }
 
-                // Wait for 5 seconds after the first batch
-                if (i === 0) {
-                    await delay(5000);
-                }
+                // Wait for 1 minute (60000 ms) before processing the next batch
+                await delay(180000);
             }
 
             alert('Emails sent successfully!');
+
             // Optionally reset state after sending
             setSingularParent('');
             setSingularEmail('');
@@ -267,6 +265,7 @@ const Broadcast = () => {
             setIsSending(false); // Re-enable button after sending
         }
     };
+
 
     const handleContentChange = (content) => {
         setEmailContent(content); // Use Quill content (HTML format)
