@@ -1,85 +1,8 @@
 import nodemailer from 'nodemailer';
-
-// Function to get email credentials for each sender
-export const getSenderCredentials = (sender) => {
-    let senderName, email, appPassword;
-
-    switch (sender) {
-        case 'admin':
-            senderName = "LP Admin";
-            email = process.env.ADMIN_EMAIL;
-            appPassword = process.env.ADMIN_APP_PASSWORD;
-            break;
-        case 'finance':
-            senderName = "LP Finance";
-            email = process.env.FINANCE_EMAIL;
-            appPassword = process.env.FINANCE_APP_PASSWORD;
-            break;
-        case 'shop':
-            senderName = "LP Shop";
-            email = process.env.SHOP_EMAIL;
-            appPassword = process.env.SHOP_APP_PASSWORD;
-            break;
-        case 'coo':
-            senderName = "LP COO";
-            email = process.env.COO_EMAIL;
-            appPassword = process.env.COO_APP_PASSWORD;
-            break;
-        case 'directress':
-            senderName = "LP Directress";
-            email = process.env.DIRECTRESS_EMAIL;
-            appPassword = process.env.DIRECTRESS_APP_PASSWORD;
-            break;
-        case 'cottage':
-            senderName = "LP Cottage Coordinator";
-            email = process.env.COTTAGE_EMAIL;
-            appPassword = process.env.COTTAGE_APP_PASSWORD;
-            break;
-        default:
-            throw new Error(`Unknown sender: ${sender}`);
-    }
-
-    return { senderName, email, appPassword };
-};
-
-// Function to get sender details
-export const getSenderDetails = (sender) => {
-    let senderRole, senderFullName;
-
-    switch (sender) {
-        case 'admin':
-            senderRole = "Admin Officer"
-            senderFullName = "Ameline Baran"
-            break;
-        case 'finance':
-            senderRole = "Finance Officer"
-            senderFullName = "Karen Yap"
-            break;
-        case 'shop':
-            senderRole = "Admin Assistant"
-            senderFullName = "Mynelyn Namacpacan"
-            break;
-        case 'coo':
-            senderRole = "Chief Operations Officer"
-            senderFullName = "Arjeli Ricarte"
-            break;
-        case 'directress':
-            senderRole = "Directress"
-            senderFullName = "Azenith Jacalan"
-            break;
-        case 'cottage':
-            senderRole = "Homeschool Cottage Coordinator"
-            senderFullName = "Joshua Jacalan"
-            break;
-        default:
-            throw new Error(`Unknown sender: ${sender}`);
-    }
-
-    return { senderRole, senderFullName };
-};
+import { getSenderCredentials } from '@/utils/index';
 
 // Function to send email using Gmail with an App Password
-export const sendMailWithGmail = async ({ sender, to, subject, text, html }) => {
+export const sendMailWithGmail = async ({ sender, to, subject, replyTo, text, html }) => {
     try {
         // Get sender email and app password
         const { senderName, email, appPassword } = getSenderCredentials(sender);
@@ -97,6 +20,7 @@ export const sendMailWithGmail = async ({ sender, to, subject, text, html }) => 
         const mailOptions = {
             from: `${senderName} <${email}>`, // Set the sender's name and email
             to,
+            replyTo,
             subject,
             text,
             html,

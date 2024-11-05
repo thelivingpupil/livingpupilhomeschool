@@ -494,8 +494,8 @@ const guardianEmailsTest = [
         "primaryGuardianName": "GuardianTest"
     },
     {
-        "email": "user116@example.com",
-        "primaryGuardianName": "GuardianTest"
+        "email": "marjulmugs@gmail.com",
+        "primaryGuardianName": "GuardianTest123"
     },
     {
         "email": "user117@example.com",
@@ -1360,11 +1360,11 @@ const Broadcast = () => {
         } else if (Array.isArray(filteredStudents) && filteredStudents.length > 0) {
             const emailsAndGuardians = filteredStudents
                 .map((student) => {
-                    const guardianInfo = student.student?.creator?.guardianInformation;
+                    const guardianInfo = student.student?.creator;
                     if (guardianInfo) {
                         return {
-                            email: guardianInfo.anotherEmail,
-                            primaryGuardianName: guardianInfo.primaryGuardianName,
+                            email: guardianInfo?.email,
+                            primaryGuardianName: guardianInfo?.guardianInformation.primaryGuardianName,
                         };
                     }
                     return null;
@@ -1407,7 +1407,7 @@ const Broadcast = () => {
         try {
             const guardianEmailsToSend = emailSendType === 'single'
                 ? [{ email: singularEmail, primaryGuardianName: singularParent }]
-                : guardianEmailsTest; // Handle singular email
+                : guardianEmails; // Handle singular email
 
             // Function to split an array into chunks of a specific size
             const chunkArray = (array, size) => {
@@ -1422,7 +1422,7 @@ const Broadcast = () => {
             const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
             // Chunk the guardian emails into batches of 50
-            const batches = chunkArray(guardianEmailsToSend, 10);
+            const batches = chunkArray(guardianEmailsToSend, 50);
 
             for (const batch of batches) {
                 const response = await fetch('/api/broadcast', { // Adjust the API endpoint accordingly
@@ -1444,8 +1444,7 @@ const Broadcast = () => {
                     return; // Stop if any batch fails
                 }
 
-                // Wait for 1 minute (60000 ms) before processing the next batch
-                await delay(300000);
+                await delay(2000);
             }
 
             alert('Emails sent successfully!');

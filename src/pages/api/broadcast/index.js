@@ -1,6 +1,8 @@
-import { sendMailWithGmail, getSenderDetails } from '@/lib/server/gmail';
+import { sendMailWithGmail } from '@/lib/server/gmail';
+import { getSenderDetails, getSenderCredentials } from '@/utils/index';
 import { html as announcementHtml, text as announcementText } from '@/config/email-templates/broadcast/announcement';
 import { getParentFirstName } from '@/utils/index';
+import { sendMail } from '@/lib/server/mail';
 
 export default async function handler(req, res) {
     const { method } = req;
@@ -15,9 +17,10 @@ export default async function handler(req, res) {
         };
 
         const { senderRole, senderFullName } = getSenderDetails(sender);
+        const { senderName, email: replyEmail } = getSenderCredentials(sender);
 
-        // Function to delay execution for a specified number of milliseconds
-        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        // Initialize email sent counter
+        let emailCount = 0;
 
         // Send email to each guardian, but skip if email is invalid
         const promises = guardianEmails.map(async (guardianEmail) => {
@@ -28,16 +31,19 @@ export default async function handler(req, res) {
 
             const parentName = getParentFirstName(guardianEmail.primaryGuardianName);
             try {
-                await sendMailWithGmail({
-                    sender, // Dynamically select the account based on sender
-                    to: guardianEmail.email,
+                await sendMail({
+                    from: `${senderName} <info@livingpupilhomeschool.com>`,
+                    html: announcementHtml({ parentName, emailContent, senderRole, senderFullName }),
                     subject,
-                    text: announcementText({ parentName }), // Generate text content from the template
-                    html: announcementHtml({ parentName, emailContent, senderRole, senderFullName }), // Generate HTML content from the template
+                    text: announcementText({ parentName }),
+                    to: guardianEmail.email,
+                    attachments: [],
+                    replyTo: replyEmail,
                 });
 
-                // Wait for 5 seconds before sending the next email
-                await delay(2000);
+                // Increment the counter for each successful email sent
+                emailCount++;
+                console.log(`Sent email to: ${guardianEmail.email}`);
             } catch (error) {
                 console.error(`Failed to send email to ${guardianEmail.email}:`, error);
             }
@@ -45,7 +51,8 @@ export default async function handler(req, res) {
 
         try {
             await Promise.all(promises);
-            return res.status(200).json({ message: 'Emails sent successfully.' });
+            console.log(`Total emails sent: ${emailCount}`); // Log total after all emails are processed
+            return res.status(200).json({ message: `Emails sent successfully. Total emails sent: ${emailCount}` });
         } catch (error) {
             console.error('Failed to send emails:', error);
             return res.status(500).json({ error: { msg: 'Failed to send emails.' } });
