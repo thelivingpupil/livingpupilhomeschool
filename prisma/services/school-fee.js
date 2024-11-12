@@ -559,6 +559,61 @@ export const createSchoolFees = async (
   return result;
 };
 
+export const createPayAllFees = async (
+  userId,
+  email,
+  workspaceId,
+  payment,
+  incomingGradeLevel,
+  paymentMethod,
+  amount
+) => {
+  console.log("Entering createSchoolFees function...");
+  let result = null;
+
+  if (payment === PaymentType.PAY_ALL) {
+
+    const transaction = await prisma.purchaseHistory.create({
+      data: { total: amount },
+      select: { id: true, transactionId: true },
+    });
+    const [response] = await Promise.all([
+      createTransaction(
+        userId,
+        email,
+        transaction.transactionId,
+        amount,
+        `Pay all fees`,
+        transaction.id,
+        TransactionSource.ENROLLMENT,
+        paymentMethod
+      ),
+    ]);
+    await Promise.all([
+      prisma.schoolFee.create({
+        data: {
+          gradeLevel: incomingGradeLevel,
+          order: 10,
+          paymentType: payment,
+          transaction: {
+            connect: {
+              transactionId: transaction.transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: workspaceId,
+            },
+          },
+        },
+      }),
+    ]);
+    result = response;
+  }
+  console.log("Exiting createSchoolFees function...")
+  return result;
+}
+
 export const deleteStudentSchoolFees = async (studentId) => {
   try {
     if (studentId === null) {

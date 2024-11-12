@@ -11,6 +11,7 @@ import api from '@/lib/common/api';
 import { getBasicAuthorization } from '@/lib/server/dragonpay';
 import prisma from '@/prisma/index';
 import { getDeadline, groupBy } from '@/utils/index';
+import { v4 as uuidv4 } from 'uuid';
 
 const modes = { [Fees.ONLINE]: 1, [Fees.OTC]: 2, [Fees.PAYMENT_CENTERS]: 4 };
 
@@ -416,6 +417,59 @@ export const renewTransaction = async (
     },
     where: { transactionId },
   });
+  return { url, referenceNumber };
+};
+
+export const renewOldTransaction = async (
+  email,
+  originalTransactionId,
+  amount,
+  description,
+  source
+) => {
+  // Generate a new unique transaction ID for the renewal
+  const newTransactionId = uuidv4();
+
+  // Step 1: Generate a new payment link for the new transaction ID
+  const response = await api(
+    `${process.env.PAYMENTS_BASE_URL}/${newTransactionId}/post`,
+    {
+      body: {
+        Amount: amount,
+        Currency: Currency.PHP,
+        Description: description,
+        Email: email,
+      },
+      headers: {
+        Authorization: `${getBasicAuthorization()}`,
+      },
+      method: 'POST',
+    }
+  );
+
+  // Step 2: Extract response details
+  const {
+    RefNo: referenceNumber,
+    Status: transactionStatus,
+    Message: message,
+    Url: url,
+  } = response;
+
+  // Step 3: Update the database with the new transaction ID
+  await prisma.transaction.update({
+    data: {
+      transactionId: newTransactionId,
+      amount,
+      transactionStatus,
+      source: source || description,
+      description,
+      message,
+      url,
+    },
+    where: { transactionId: originalTransactionId },
+  });
+
+  // Return the new URL and reference number
   return { url, referenceNumber };
 };
 

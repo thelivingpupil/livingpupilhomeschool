@@ -837,10 +837,12 @@ const Transactions = () => {
                                   ? 'Total Fee'
                                   : transaction.schoolFee.order === 0
                                     ? 'Initial Fee'
-                                    : `Payment #${transaction.schoolFee.order}`}
+                                    : transaction.schoolFee.order === 10
+                                      ? ''
+                                      : `Payment #${transaction.schoolFee.order}`}
                               </div>
                               <p className="text-xs font-semibold text-primary-500">
-                                {transaction.schoolFee.order === 0
+                                {transaction.schoolFee.order === 0 || transaction.schoolFee.order === 10
                                   ? ''
                                   : getDeadlineForAdmin(
                                     transaction.schoolFee?.student?.studentRecord?.studentId,

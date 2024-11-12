@@ -163,6 +163,7 @@ export const PAYMENT_TYPE = {
   SEMI_ANNUAL: 'Three (3) Term Payment',
   QUARTERLY: 'Four (4) Term Payment',
   MONTHLY: 'Nine (9) Term Payment',
+  PAY_ALL: 'Pay All Fees'
 };
 
 export const PAYMENT_METHOD = {
