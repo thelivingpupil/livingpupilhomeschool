@@ -334,15 +334,17 @@ const Fees = () => {
                         </tbody>
                       </table>
                       {/* Pay All Button */}
-                      <div className="flex justify-center mt-4">
-                        <button
-                          className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-400 disabled:opacity-50"
-                          onClick={togglePayAllModal}
-                          disabled={isSubmitting}
-                        >
-                          Pay All
-                        </button>
-                      </div>
+                      {workspace.schoolFees[0].paymentType !== "ANNUAL" && (
+                        <div className="flex justify-center mt-4">
+                          <button
+                            className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-400 disabled:opacity-50"
+                            onClick={togglePayAllModal}
+                            disabled={isSubmitting}
+                          >
+                            Pay All
+                          </button>
+                        </div>
+                      )}
                     </Card.Body>
                   </Card>
                 );
