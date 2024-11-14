@@ -223,7 +223,7 @@ export const STATUS_BG_COLOR = {
 export const ENROLLMENT_STATUS_BG_COLOR = {
   ENROLLED: 'bg-green-600 text-white',
   INITIALLY_ENROLLED: 'bg-blue-600 text-white',
-  DROPEED: 'bg-red-600 text-white',
+  DROPPED: 'bg-red-600 text-white',
   PENDING: 'bg-yellow-600 text-white',
 };
 
