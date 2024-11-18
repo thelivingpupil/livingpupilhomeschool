@@ -29,6 +29,7 @@ const emailSenderOptions = [
     { value: 'coo', label: 'COO' },
     { value: 'directress', label: 'Directress' },
     { value: 'cottage', label: 'Cottage Coordinator' },
+    { value: 'international', label: 'International Coordinator' },
 ];
 
 // Constant for singular email
@@ -172,7 +173,7 @@ const Broadcast = () => {
                     if (guardianInfo) {
                         return {
                             email: guardianInfo?.email,
-                            primaryGuardianName: guardianInfo?.guardianInformation.primaryGuardianName,
+                            primaryGuardianName: guardianInfo?.guardianInformation?.primaryGuardianName,
                         };
                     }
                     return null;

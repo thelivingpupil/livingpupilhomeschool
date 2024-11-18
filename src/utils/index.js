@@ -303,6 +303,11 @@ export const getSenderCredentials = (sender) => {
       email = process.env.COTTAGE_EMAIL;
       appPassword = process.env.COTTAGE_APP_PASSWORD;
       break;
+    case 'international':
+      senderName = "LP International Coordinator";
+      email = "livingpupilinternational@gmail.com"
+      appPassword = null;
+      break;
     default:
       throw new Error(`Unknown sender: ${sender}`);
   }
@@ -324,8 +329,8 @@ export const getSenderDetails = (sender) => {
       senderFullName = "Karen Yap"
       break;
     case 'shop':
-      senderRole = "Admin Assistant"
-      senderFullName = "Mynelyn Namacpacan"
+      senderRole = ""
+      senderFullName = "Living Pupil Homeschool Team"
       break;
     case 'coo':
       senderRole = "Chief Operations Officer"
@@ -338,6 +343,10 @@ export const getSenderDetails = (sender) => {
     case 'cottage':
       senderRole = "Homeschool Cottage Coordinator"
       senderFullName = "Joshua Jacalan"
+      break;
+    case 'international':
+      senderRole = "International Coordinator"
+      senderFullName = "Annie Simacas"
       break;
     default:
       throw new Error(`Unknown sender: ${sender}`);
