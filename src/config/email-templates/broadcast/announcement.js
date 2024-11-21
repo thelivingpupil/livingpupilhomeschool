@@ -263,8 +263,8 @@ const html = ({
                                                 <div class="footer" style="text-align: center; color: #666; margin-bottom: 40px;">
                                                     <p style="font-size: 16px;"><a href="https://livingpupilhomeschool.com" style="text-decoration:none;color:#2e3494" target="_blank">www.livingpupilhomeschool.com</a></p>
                                                     <p style="font-size: 12px;">
-                                                        San Agustin Village, Tugas, Inayawan, Cebu, Philippines<br>
-                                                        (032) 415 2119 • +63 917 119 9351 • <a href="mailto:info@livingpupilhomeschool.com">info@livingpupilhomeschool.com</a>
+                                                        Living Pupil Homeschool, Lot 49, Sector 6, Greenview Subdivision Pagsabungan, Mandaue City, Cebu 6014 <br>
+                                                        (032) 252 7568 • (+63) 917 1199 351 • <a href="mailto:info@livingpupilhomeschool.com">info@livingpupilhomeschool.com</a>
 
                                                     </p>
                                                 </div>

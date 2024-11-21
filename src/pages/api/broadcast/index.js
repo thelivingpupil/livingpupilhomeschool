@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     const { method } = req;
 
     if (method === 'POST') {
-        const { emailContent, sender, subject, guardianEmails, attachmentUrls } = req.body;
+        const { emailContent, sender, subject, guardianEmails, ccEmails, attachmentUrls } = req.body;
 
         // Define a function to validate email addresses
         const isValidEmail = (email) => {
@@ -22,11 +22,17 @@ export default async function handler(req, res) {
         // Initialize email sent counter
         let emailCount = 0;
 
-        // Create attachment objects from URLs
-        const attachments = attachmentUrls.map((url) => ({
-            filename: url.split('/').pop(), // Use the file name from the URL
-            path: url,                      // URL as the path to the file
-        }));
+        // Create attachment objects from URLs only if attachmentUrls is not empty
+        const attachments = attachmentUrls?.length > 0
+            ? attachmentUrls.map((url) => ({
+                filename: url.split('/').pop(), // Use the file name from the URL
+                path: url,                      // URL as the path to the file
+            }))
+            : [];
+
+
+        // Validate CC Emails
+        const validCcEmails = (ccEmails || []).filter(isValidEmail);
 
         // Send email to each guardian, but skip if email is invalid
         const promises = guardianEmails.map(async (guardianEmail) => {
@@ -45,6 +51,7 @@ export default async function handler(req, res) {
                     to: guardianEmail.email,
                     attachments, // Attach the Firebase Storage file URLs
                     replyTo: replyEmail,
+                    cc: validCcEmails, // Include CC emails here
                 });
 
                 // Increment the counter for each successful email sent

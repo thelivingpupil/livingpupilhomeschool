@@ -53,13 +53,13 @@ const Broadcast = () => {
     const [isSending, setIsSending] = useState(false);
     const [isFormValid, setIsFormValid] = useState(false); // Track form validity
     const [attachments, setAttachments] = useState([]);
+    const [ccEmails, setCcEmails] = useState([]); // State for CC emails
+    const [ccInput, setCcInput] = useState(''); // State for input field
 
     const handleFileChange = (event) => {
         const files = Array.from(event.target.files);
         setAttachments(files); // Store selected files in the state
     };
-
-    console.log(emailSender)
 
     // Handle checkbox changes for multiple selections
     const handleCheckboxChange = (e, setStateFunc) => {
@@ -262,6 +262,7 @@ const Broadcast = () => {
                         sender: emailSender,
                         subject: emailSubject,
                         guardianEmails: batch, // Send the current batch
+                        ccEmails, // Add ccEmails to the request payload
                         attachmentUrls, // Include attachment URLs in the JSON payload
                     }),
                 });
@@ -287,7 +288,7 @@ const Broadcast = () => {
             setFilterValues([]);
             setProgram([]);
             setAccreditation([]);
-
+            setCcEmails([]);
         } catch (error) {
             console.error('Error sending emails:', error);
             alert('An error occurred while sending emails. Please try again.');
@@ -482,6 +483,47 @@ const Broadcast = () => {
                         </>
                     )}
 
+                    <div className="mt-4 flex flex-col">
+                        <label className="text-lg font-bold">CC Emails:</label>
+                        <div className="flex space-x-2">
+                            <input
+                                type="email"
+                                value={ccInput}
+                                onChange={(e) => setCcInput(e.target.value)}
+                                className="p-2 border rounded w-full md:w-1/2"
+                                placeholder="Enter CC email"
+                            />
+                            <button
+                                onClick={() => {
+                                    if (ccInput) {
+                                        setCcEmails((prev) => [...prev, ccInput]);
+                                        setCcInput(''); // Clear input after adding
+                                    }
+                                }}
+                                className="bg-primary-500 text-white px-4 py-2 rounded"
+                            >
+                                Add CC
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Display the added CC emails */}
+                    <div className="mt-4">
+                        <h3 className="font-bold">CC Emails:</h3>
+                        {ccEmails.map((email, index) => (
+                            <div key={index} className="flex justify-between mt-2 mb-2">
+                                <span>{email}</span>
+                                <button
+                                    onClick={() => {
+                                        setCcEmails(ccEmails.filter((_, i) => i !== index));
+                                    }}
+                                    className="text-red-500"
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        ))}
+                    </div>
 
                     {/* Email Sender Dropdown */}
                     <div className="flex flex-col w-full md:w-1/2 space-y-2 mt-5">

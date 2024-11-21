@@ -10,7 +10,7 @@ export const emailConfig = {
 
 const transporter = nodemailer.createTransport(emailConfig);
 
-export const sendMail = async ({ from, html, subject, text, to, attachments = [], replyTo }) => {
+export const sendMail = async ({ from, html, subject, text, to, cc = [], attachments = [], replyTo }) => {
   const data = {
     from: from ?? process.env.EMAIL_FROM,
     to,
@@ -19,6 +19,7 @@ export const sendMail = async ({ from, html, subject, text, to, attachments = []
     html,
     attachments: attachments.length > 0 ? attachments : undefined, // Include attachments only if there are any
     replyTo: replyTo ?? process.env.EMAIL_REPLY_TO, // Set replyTo if provided or fallback to a default environment variable
+    cc: cc.length > 0 ? cc : undefined, // Include CC only if there are any addresses
   };
 
   process.env.NODE_ENV === 'production'
