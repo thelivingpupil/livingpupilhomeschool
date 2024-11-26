@@ -1,5 +1,5 @@
-const { validateSession } = require('@/config/api-validation');
-const { updateTransaction, changeTransactionAmount } = require('@/prisma/services/transaction');
+import { validateSession } from '@/config/api-validation'
+import { updateTransaction, changeTransactionAmount } from '@/prisma/services/transaction';
 
 const handler = async (req, res) => {
   const { method, body, query } = req;
