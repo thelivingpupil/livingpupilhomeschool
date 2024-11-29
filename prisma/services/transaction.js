@@ -82,6 +82,12 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
     },
     where: {
       deletedAt: null,
+      studentRecord: { isNot: null },
+      NOT: {
+        schoolFees: {
+          none: {}, // Ensures workspaces have at least one related schoolFee
+        },
+      },
     },
   });
 
@@ -141,6 +147,7 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
 
   return data;
 };
+
 
 export const getTotalStoreRevenuesByStatus = async (startDate, endDate) => {
   const filterDate =
