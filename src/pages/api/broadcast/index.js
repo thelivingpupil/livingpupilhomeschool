@@ -30,7 +30,6 @@ export default async function handler(req, res) {
             }))
             : [];
 
-
         // Validate CC Emails
         const validCcEmails = (ccEmails || []).filter(isValidEmail);
 
