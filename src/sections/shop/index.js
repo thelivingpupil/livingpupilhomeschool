@@ -18,6 +18,18 @@ import SignatureCanvas from 'react-signature-canvas';
 
 const builder = imageUrlBuilder(sanityClient);
 
+const CebuLocations = {
+  'Liloan': 130,
+  'Mandaue City': 130,
+  'Consolation': 140,
+  'Lapu-Lapu City': 150,
+  'Cebu City': 160,
+  'Talisay City': 170,
+  'Minglanilia': 180,
+  'Naga City': 200,
+  'Compostela': 200,
+};
+
 const Shop = ({ categories, items }) => {
   const { data } = useUser();
   const [sortBy, setSortBy] = useState('alphaAsc');
@@ -56,6 +68,40 @@ const Shop = ({ categories, items }) => {
     saveSignature,
     handleEndDrawing
   } = useCartContext();
+
+  console.log(shippingFee)
+
+  const [cebuLocation, setCebuLocation] = useState('');
+
+  const handleShippingChange = (e) => {
+    const selectedShipping = SHOP_SHIPPING[e.target.value];
+
+    if (e.target.value === 'withInCebu') {
+      setCebuLocation('');
+    }
+
+    setShippingFee(selectedShipping);
+  };
+
+  const handleCebuLocationChange = (e) => {
+    const location = e.target.value;
+    setCebuLocation(location);
+
+    if (location) {
+      const fee = CebuLocations[location] || 160; // Default to Cebu City rate if location not found
+      setShippingFee((prev) => ({ ...prev, fee }));
+    }
+  };
+
+
+  const isReviewDisabled =
+    !(
+      shippingFee?.value &&
+      (shippingFee?.value !== 'withInCebu' || cebuLocation) &&
+      SHOP_PAYMENT_TYPE[paymentType] &&
+      deliveryAddress &&
+      contactNumber
+    );
 
   useEffect(() => {
     if (!deliveryAddress || !contactNumber) {
@@ -487,38 +533,67 @@ const Shop = ({ categories, items }) => {
               <div className="flex flex-col px-5 py-3 border-4 space-y-5 rounded-lg border-primary-500 md:hidden">
                 <div className="flex flex-col text-sm">
                   <div>Please select a shipping area:</div>
-                  <div className="flex flex-row">
+                  <div className="flex flex-row mb-5 text-sm">
                     <div className="relative inline-block w-full rounded border">
                       <select
                         className="w-full px-3 py-2 capitalize rounded appearance-none"
-                        onChange={(e) =>
-                          setShippingFee(SHOP_SHIPPING[e.target.value])
-                        }
+                        onChange={(e) => setShippingFee(SHOP_SHIPPING[e.target.value])}
                         value={shippingFee?.value || ''}
                       >
                         <option value="">-</option>
-                        {Object.entries(SHOP_SHIPPING).map(
-                          ([value, { title, fee }]) => (
-                            <option key={value} value={value}>
-                              {title}{" "}
-                              {typeof fee === 'function'
-                                ? `${new Intl.NumberFormat('en-US', {
+                        {Object.entries(SHOP_SHIPPING).map(([value, { title, fee }]) => (
+                          <option key={value} value={value}>
+                            {title}
+                            {value !== 'withInCebu' &&
+                              ` ${typeof fee === 'function'
+                                ? new Intl.NumberFormat('en-US', {
                                   style: 'currency',
                                   currency: 'PHP',
-                                }).format(fee(itemCount))}`
-                                : `${new Intl.NumberFormat('en-US', {
+                                }).format(fee(itemCount))
+                                : new Intl.NumberFormat('en-US', {
                                   style: 'currency',
                                   currency: 'PHP',
-                                }).format(fee)}`}
-                            </option>
-                          )
-                        )}
+                                }).format(fee)
+                              }`}
+                          </option>
+                        ))}
                       </select>
                       <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                         <ChevronDownIcon className="w-5 h-5" />
                       </div>
                     </div>
                   </div>
+
+
+                  {/* Secondary Cebu Location Selection */}
+                  {shippingFee?.value === 'withInCebu' && (
+                    <div className="flex flex-col text-sm">
+                      <div>Please select a location within Cebu:</div>
+                      <div className="flex flex-row">
+                        <div className="relative inline-block w-full rounded border">
+                          <select
+                            className="w-full px-3 py-2 capitalize rounded appearance-none"
+                            onChange={handleCebuLocationChange}
+                            value={cebuLocation}
+                          >
+                            <option value="">Select a location</option>
+                            {Object.keys(CebuLocations).map((location) => (
+                              <option key={location} value={location}>
+                                {location} -{" "}
+                                {new Intl.NumberFormat("en-US", {
+                                  style: "currency",
+                                  currency: "PHP",
+                                }).format(CebuLocations[location])}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                            <ChevronDownIcon className="w-5 h-5" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col text-sm">
                   <div>Please select payment type:</div>
@@ -546,15 +621,7 @@ const Shop = ({ categories, items }) => {
                   <p className="text-sm">{cart.length} item(s) in cart</p>
                   <button
                     className="px-5 py-2 text-white text-sm rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25 disabled:cursor-not-allowed"
-                    disabled={
-                      !(
-                        cart.length &&
-                        (shippingFee?.fee !== undefined && shippingFee?.fee !== null) &&
-                        SHOP_PAYMENT_TYPE[paymentType] &&
-                        deliveryAddress &&
-                        contactNumber
-                      )
-                    }
+                    disabled={isReviewDisabled}
                     onClick={toggleCartVisibility}
                   >
                     Review Cart
@@ -702,38 +769,67 @@ const Shop = ({ categories, items }) => {
                   <hr className="border-2 border-dashed" />
                   <div className="flex flex-col text-lg">
                     <div>Please select a shipping area:</div>
-                    <div className="flex flex-row">
+                    <div className="flex flex-row mb-5">
                       <div className="relative inline-block w-full rounded border">
                         <select
                           className="w-full px-3 py-2 capitalize rounded appearance-none"
-                          onChange={(e) =>
-                            setShippingFee(SHOP_SHIPPING[e.target.value])
-                          }
+                          onChange={(e) => setShippingFee(SHOP_SHIPPING[e.target.value])}
                           value={shippingFee?.value || ''}
                         >
                           <option value="">-</option>
-                          {Object.entries(SHOP_SHIPPING).map(
-                            ([value, { title, fee }]) => (
-                              <option key={value} value={value}>
-                                {title}{" "}
-                                {typeof fee === 'function'
-                                  ? `${new Intl.NumberFormat('en-US', {
+                          {Object.entries(SHOP_SHIPPING).map(([value, { title, fee }]) => (
+                            <option key={value} value={value}>
+                              {title}
+                              {value !== 'withInCebu' &&
+                                ` ${typeof fee === 'function'
+                                  ? new Intl.NumberFormat('en-US', {
                                     style: 'currency',
                                     currency: 'PHP',
-                                  }).format(fee(itemCount))}`
-                                  : `${new Intl.NumberFormat('en-US', {
+                                  }).format(fee(itemCount))
+                                  : new Intl.NumberFormat('en-US', {
                                     style: 'currency',
                                     currency: 'PHP',
-                                  }).format(fee)}`}
-                              </option>
-                            )
-                          )}
+                                  }).format(fee)
+                                }`}
+                            </option>
+                          ))}
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                           <ChevronDownIcon className="w-5 h-5" />
                         </div>
                       </div>
                     </div>
+
+                    {/* Secondary Cebu Location Selection */}
+                    {shippingFee?.value === 'withInCebu' && (
+                      <div className="flex flex-col">
+                        <div>Please select a location within Cebu:</div>
+                        <div className="flex flex-row">
+                          <div className="relative inline-block w-full rounded border">
+                            <select
+                              className="w-full px-3 py-2 capitalize rounded appearance-none"
+                              onChange={handleCebuLocationChange}
+                              value={cebuLocation}
+                            >
+                              <option value="">Select a location</option>
+                              {Object.keys(CebuLocations).map((location) => (
+                                <option key={location} value={location}>
+                                  {location} -{" "}
+                                  {new Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "PHP",
+                                  }).format(CebuLocations[location])}
+
+                                </option>
+                              ))}
+                            </select>
+                            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                              <ChevronDownIcon className="w-5 h-5" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="flex flex-col text-lg">
                     <div>Please select payment type:</div>
@@ -778,15 +874,7 @@ const Shop = ({ categories, items }) => {
                   ) : (
                     <button
                       className="py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-                      disabled={
-                        !(
-                          cart.length &&
-                          (shippingFee?.fee !== undefined && shippingFee?.fee !== null) &&
-                          SHOP_PAYMENT_TYPE[paymentType] &&
-                          deliveryAddress &&
-                          contactNumber
-                        )
-                      }
+                      disabled={isReviewDisabled}
                       onClick={toggleCartVisibility}
                     >
                       Review Shopping Cart
