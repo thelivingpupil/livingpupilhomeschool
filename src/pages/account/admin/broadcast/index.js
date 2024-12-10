@@ -56,6 +56,8 @@ const Broadcast = () => {
     const [ccEmails, setCcEmails] = useState([]); // State for CC emails
     const [ccInput, setCcInput] = useState(''); // State for input field
 
+    console.log(guardianEmails)
+
     const handleFileChange = (event) => {
         const files = Array.from(event.target.files);
         setAttachments(files); // Store selected files in the state
@@ -173,6 +175,7 @@ const Broadcast = () => {
                     if (guardianInfo) {
                         return {
                             email: guardianInfo?.email,
+                            secondaryEmail: student.student?.creator?.guardianInformation?.anotherEmail,
                             primaryGuardianName: guardianInfo?.guardianInformation?.primaryGuardianName,
                         };
                     }

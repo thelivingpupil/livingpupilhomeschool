@@ -56,6 +56,28 @@ export default async function handler(req, res) {
                 // Increment the counter for each successful email sent
                 emailCount++;
                 console.log(`Sent email to: ${guardianEmail.email}`);
+
+                if (guardianEmail.secondaryEmail) {
+                    if (!isValidEmail(guardianEmail.secondaryEmail)) {
+                        console.log(`Skipping invalid email: ${guardianEmail.secondaryEmail}`);
+                        return; // Skip this email
+                    }
+
+                    await sendMail({
+                        from: `${senderName} <info@livingpupilhomeschool.com>`,
+                        html: announcementHtml({ parentName, emailContent, senderRole, senderFullName }),
+                        subject,
+                        text: announcementText({ parentName }),
+                        to: guardianEmail.secondaryEmail,
+                        attachments, // Attach the Firebase Storage file URLs
+                        replyTo: replyEmail,
+                        cc: validCcEmails, // Include CC emails here
+                    });
+
+                    // Increment the counter for each successful email sent
+                    emailCount++;
+                    console.log(`Sent email to: ${guardianEmail.secondaryEmail}`);
+                }
             } catch (error) {
                 console.error(`Failed to send email to ${guardianEmail.email}:`, error);
             }
