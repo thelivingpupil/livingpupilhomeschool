@@ -116,7 +116,7 @@ const Broadcast = () => {
 
             // Common status filter for all cases
             const statusFilter = (student) =>
-                student.studentStatus === 'INITIALLY_ENROLLED' || student.studentStatus === 'ENROLLED' || student.studentStatus === 'PENDING';
+                student.studentStatus === 'INITIALLY_ENROLLED' || student.studentStatus === 'ENROLLED' || student.studentStatus === 'PENDING' || student.schoolYear === '2024-2025';
 
             if (filterBy === 'gradeLevels') {
                 // Filter by Grade Levels
