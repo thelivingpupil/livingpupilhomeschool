@@ -56,8 +56,6 @@ const Broadcast = () => {
     const [ccEmails, setCcEmails] = useState([]); // State for CC emails
     const [ccInput, setCcInput] = useState(''); // State for input field
 
-    console.log(guardianEmails)
-
     const handleFileChange = (event) => {
         const files = Array.from(event.target.files);
         setAttachments(files); // Store selected files in the state
@@ -219,6 +217,25 @@ const Broadcast = () => {
 
         try {
             const guardianEmailsToSend = guardianEmails;
+
+            // Calculate total attachment size
+            const totalAttachmentSize = attachments.reduce((total, file) => total + file.size, 0);
+
+            // Check if total attachment size exceeds 15MB
+            if (totalAttachmentSize > 15 * 1024 * 1024) {
+                toast.error('Total attachment size exceeds 15 MB. Please reduce the size or number of attachments.');
+                setIsSending(false);
+                return; // Stop the function
+            }
+
+            // Validate individual file sizes
+            for (const file of attachments) {
+                if (file.size > 10 * 1024 * 1024) { // Check if any file exceeds 10MB
+                    toast.error('File too large. Size should not exceed 10 MB.');
+                    setIsSending(false);
+                    return; // Stop the function if a file exceeds the size limit
+                }
+            }
 
             // Upload attachments to Firebase Storage and get download URLs
             const uploadPromises = attachments.map((file) => {
