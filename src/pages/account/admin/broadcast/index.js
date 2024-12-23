@@ -61,6 +61,15 @@ const Broadcast = () => {
         setAttachments(files); // Store selected files in the state
     };
 
+
+
+    const filterEnrolledStudents = (studentsData) => {
+        return studentsData.students.filter(student =>
+            student.schoolYear === "2024-2025" &&
+            student.student.schoolFees[0]?.transaction.paymentStatus === "S"
+        );
+    };
+
     // Handle checkbox changes for multiple selections
     const handleCheckboxChange = (e, setStateFunc) => {
         const { value, checked } = e.target;
@@ -107,7 +116,7 @@ const Broadcast = () => {
     // Filter students based on selected filters
     useEffect(() => {
         if (studentsData && (filterValues.length > 0 || program.length > 0 || accreditation.length > 0)) {
-            let filtered = studentsData.students;
+            let filtered = filterEnrolledStudents(studentsData);
 
             // Log the initial list of students
             //console.log('Initial students list:', filtered);
