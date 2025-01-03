@@ -6,6 +6,7 @@ import { InboxInIcon } from "@heroicons/react/outline";
 import { useState, useEffect, createRef } from "react";
 import { GRADE_LEVEL, DOCUMENT_DETAILS, STATUS_BG_COLOR, DOC_STATUS_BG_COLOR, DOC_STATUS } from '@/utils/constants';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { storage } from '@/lib/client/firebase';
 import api from '@/lib/common/api';
 import toast from 'react-hot-toast';
 import { TransactionStatus } from '@prisma/client';
