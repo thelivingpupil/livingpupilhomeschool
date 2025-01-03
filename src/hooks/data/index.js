@@ -17,8 +17,10 @@ import useUsers from './useUsers';
 import useUsersCount from './useUsersCount';
 import useWorkspaces from './useWorkspaces';
 import useSchoolFees from './useSchoolFees';
+import useDocuments from './useDocuments';
 
 export {
+  useDocuments,
   useDomain,
   useDomains,
   useInquiries,

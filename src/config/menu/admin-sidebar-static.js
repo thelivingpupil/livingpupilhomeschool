@@ -9,7 +9,8 @@ import {
   ShoppingCartIcon,
   UserCircleIcon,
   UsersIcon,
-  InboxIcon
+  InboxIcon,
+  DocumentIcon
 } from '@heroicons/react/outline';
 import { QuestionMarkCircleIcon } from '@heroicons/react/solid';
 
@@ -62,6 +63,12 @@ const adminSidebarMenu = () => [
         name: 'Broadcast',
         icon: InboxIcon,
         path: `/account/admin/broadcast`,
+        showDefault: true,
+      },
+      {
+        name: 'Document Request',
+        icon: DocumentIcon,
+        path: `/account/admin/document-request`,
         showDefault: true,
       },
     ],

@@ -132,33 +132,33 @@ model Order {
 }
 
 model OrderFee {
-  id                String           @id @default(cuid())
-  userId            String
-  transactionId     String           @unique         
-  createdAt         DateTime?        @default(now())
-  deletedAt         DateTime?
-  updatedAt         DateTime?        @updatedAt
-  order             Int
-  paymentType       String?
-  orderCode         String?
-  user              User @relation(fields: [userId], references: [id])
-  transaction       Transaction @relation(fields: [transactionId], references: [transactionId])
-  signatureLink     String?
+  id            String      @id @default(cuid())
+  userId        String
+  transactionId String      @unique
+  createdAt     DateTime?   @default(now())
+  deletedAt     DateTime?
+  updatedAt     DateTime?   @updatedAt
+  order         Int
+  paymentType   String?
+  orderCode     String?
+  user          User        @relation(fields: [userId], references: [id])
+  transaction   Transaction @relation(fields: [transactionId], references: [transactionId])
+  signatureLink String?
 
   @@unique([userId, transactionId])
   @@map("orderFee")
 }
 
 model PurchaseHistory {
-  id              String       @id @default(cuid())
-  createdAt       DateTime?    @default(now())
+  id              String        @id @default(cuid())
+  createdAt       DateTime?     @default(now())
   deletedAt       DateTime?
-  updatedAt       DateTime?    @updatedAt
+  updatedAt       DateTime?     @updatedAt
   deliveryAddress String?
   contactNumber   String?
   shippingType    ShippingType?
-  total           Decimal      @default(0)
-  transactionId   String       @unique @default(cuid())
+  total           Decimal       @default(0)
+  transactionId   String        @unique @default(cuid())
   orderItems      Order[]
   transaction     Transaction?
 
@@ -193,40 +193,40 @@ model Session {
 }
 
 model StudentRecord {
-  id                   String        @id @default(cuid())
-  studentId            String        @unique @default(cuid())
-  firstName            String
-  middleName           String
-  lastName             String
-  birthDate            DateTime
-  gender               Gender
-  religion             Religion
-  incomingGradeLevel   GradeLevel
-  enrollmentType       Enrollment    @default(NEW)
-  program              Program       @default(HOMESCHOOL_PROGRAM)
-  cottageType          CottageType?
-  accreditation        Accreditation @default(LOCAL)
-  schoolYear           String?
-  reason               String?
-  formerSchoolName     String
-  formerSchoolAddress  String
-  createdAt            DateTime?     @default(now())
-  deletedAt            DateTime?
-  updatedAt            DateTime?     @updatedAt
-  image                String?
-  liveBirthCertificate String?
-  reportCard           String?
-  signature            String?
-  discount             String?
-  scholarship          String?
-  primaryTeacherName   String?             
-  primaryTeacherAge    String?            
-  primaryTeacherRelationship String?      
-  primaryTeacherEducation String?        
-  primaryTeacherProfile  String ?
-  studentStatus          String?        
-  policyAgreement      Boolean        @default(true)  // New field added here
-  student              Workspace     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  id                         String        @id @default(cuid())
+  studentId                  String        @unique @default(cuid())
+  firstName                  String
+  middleName                 String
+  lastName                   String
+  birthDate                  DateTime
+  gender                     Gender
+  religion                   Religion
+  incomingGradeLevel         GradeLevel
+  enrollmentType             Enrollment    @default(NEW)
+  program                    Program       @default(HOMESCHOOL_PROGRAM)
+  cottageType                CottageType?
+  accreditation              Accreditation @default(LOCAL)
+  schoolYear                 String?
+  reason                     String?
+  formerSchoolName           String
+  formerSchoolAddress        String
+  createdAt                  DateTime?     @default(now())
+  deletedAt                  DateTime?
+  updatedAt                  DateTime?     @updatedAt
+  image                      String?
+  liveBirthCertificate       String?
+  reportCard                 String?
+  signature                  String?
+  discount                   String?
+  scholarship                String?
+  primaryTeacherName         String?
+  primaryTeacherAge          String?
+  primaryTeacherRelationship String?
+  primaryTeacherEducation    String?
+  primaryTeacherProfile      String?
+  studentStatus              String?
+  policyAgreement            Boolean       @default(true) // New field added here
+  student                    Workspace     @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("studentRecord")
 }
@@ -235,7 +235,7 @@ model Transaction {
   id                String            @id @default(cuid())
   transactionId     String            @unique
   referenceNumber   String            @unique
-  userId            String
+  userId            String?
   amount            Decimal           @default(0)
   currency          Currency          @default(PHP)
   transactionStatus TransactionStatus @default(U)
@@ -251,11 +251,12 @@ model Transaction {
   paymentReference  String?
   fee               Fees              @default(ONLINE)
   purchaseHistory   PurchaseHistory?  @relation(fields: [purchaseHistoryId], references: [id])
-  user              User              @relation(fields: [userId], references: [id])
+  user              User?             @relation(fields: [userId], references: [id])
   schoolFee         SchoolFee?
   payment           Decimal?
-  balance           Decimal?    
-  orderFee          OrderFee?       
+  balance           Decimal?
+  orderFee          OrderFee?
+  documentRequest   DocumentRequest?
 
   @@unique([transactionId, referenceNumber])
   @@map("transactions")
@@ -315,6 +316,73 @@ model Workspace {
 
   @@unique([workspaceCode, inviteCode])
   @@map("workspaces")
+}
+
+model DocumentRequest {
+  id                   String               @id @default(cuid())
+  requestCode          String               @unique
+  purpose              String
+  status               String
+  requestorInformation RequestorInformation @relation(fields: [requestCode], references: [requestCode], onDelete: Cascade, map: "documentRequest_requestorInformation_fk")
+  studentInformation   StudentInformation   @relation(fields: [requestCode], references: [requestCode], onDelete: Cascade, map: "documentRequest_studentInformation_fk")
+  documents            Documents[] // One-to-many relationship
+  transactionId        String?              @unique // Optional foreign key
+  transaction          Transaction?         @relation(fields: [transactionId], references: [transactionId], onDelete: Cascade, map: "documentRequest_transaction_fk")
+  deliveryAddress      String
+  createdAt            DateTime?            @default(now())
+  deletedAt            DateTime?
+  updatedAt            DateTime?            @updatedAt
+  tracking             String?
+  documentCollection   String?
+
+  @@map("documentRequest")
+}
+
+model RequestorInformation {
+  id                    String           @id @default(cuid())
+  requestCode           String           @unique
+  requestorFullName     String
+  requestorEmail        String
+  relationshipToStudent String
+  occupation            String
+  requestorAddress      String
+  requestorMobileNumber String
+  createdAt             DateTime?        @default(now())
+  deletedAt             DateTime?
+  updatedAt             DateTime?        @updatedAt
+  DocumentRequest       DocumentRequest?
+
+  @@map("requestorInformation")
+}
+
+model StudentInformation {
+  id                   String           @id @default(cuid())
+  requestCode          String           @unique
+  studentFullName      String
+  lrn                  String
+  currentGradeLevel    String
+  currentSchool        String
+  gradeLevelsWithLp    String
+  lastSchoolYearWithLp String
+  createdAt            DateTime?        @default(now())
+  deletedAt            DateTime?
+  updatedAt            DateTime?        @updatedAt
+  DocumentRequest      DocumentRequest?
+
+  @@map("studentInformation")
+}
+
+model Documents {
+  id              String           @id @default(cuid())
+  requestCode     String
+  docName         String
+  createdAt       DateTime?        @default(now())
+  deletedAt       DateTime?
+  updatedAt       DateTime?        @updatedAt
+  url             String
+  DocumentRequest DocumentRequest? @relation(fields: [requestCode], references: [requestCode], onDelete: Cascade, map: "documents_documentRequest_fk")
+
+  @@map("documents")
 }
 
 enum Accreditation {
@@ -431,6 +499,7 @@ enum TeamRole {
 enum TransactionSource {
   ENROLLMENT
   STORE
+  DOCUMENT
 }
 
 enum TransactionStatus {
@@ -449,7 +518,7 @@ enum UserType {
   USER
 }
 
-enum studentStatus{
+enum studentStatus {
   ENROLLED
   PENDING
   DROPPED

@@ -220,6 +220,29 @@ export const STATUS_BG_COLOR = {
   A: 'bg-secondary-500',
 };
 
+export const DOC_STATUS_BG_COLOR = {
+  Received: 'bg-orange-600 text-white',
+  In_Progress: 'bg-primary-600 text-white',
+  Completed: 'bg-green-600 text-white',
+  Cancelled: 'bg-red-600 text-white',
+  Pending: 'bg-yellow-600 text-white',
+  For_Delivery: 'bg-primary-600 text-white',
+  For_Pickup: 'bg-primary-600 text-white',
+  For_Document_Receipt: 'bg-primary-600 text-white',
+};
+
+export const DOC_STATUS = {
+  Received: 'Recieved',
+  In_Progress: 'In Progress',
+  Completed: 'Completed',
+  Cancelled: 'Cancelled',
+  Pending: 'Pending',
+  For_Delivery: 'For Delivery',
+  For_Pickup: 'For Pickup',
+  For_Document_Receipt: 'For Document Receipt',
+  For_Document_Received: 'For Document Received'
+}
+
 export const ENROLLMENT_STATUS_BG_COLOR = {
   ENROLLED: 'bg-green-600 text-white',
   INITIALLY_ENROLLED: 'bg-blue-600 text-white',
@@ -292,3 +315,65 @@ export const calculateMonthlyPayment = (monthIndex, programFeeByAccreditation) =
   return result
 };
 
+//Document details for registrar portal
+export const DOCUMENT_DETAILS = {
+  good_moral: {
+    value: "good_moral",
+    label: "Good Moral Certificate",
+    fee: 150,
+    requirement: "N/A",
+    processing_time: "3-5 business days"
+  },
+  form_138: {
+    value: "form_138",
+    label: "Report Card / Form 138",
+    fee: 0,
+    requirement: "N/A",
+    processing_time: "5-7 business days"
+  },
+  re_form_138: {
+    value: "re_form_138",
+    label: "Reissuance of Report Card / Form 138",
+    fee: 150,
+    requirement: "Affidavit of Loss",
+    processing_time: "5-7 business days"
+  },
+  form_137: {
+    value: "form_137",
+    label: "Permanent Record / Form 137 / SF10",
+    fee: 0,
+    requirement: "Official Request Letter",
+    processing_time: "7-14 business days"
+  },
+  certificate_of_no_financial_obligation: {
+    value: "certificate_of_no_financial_obligation",
+    label: "Certificate of No Financial Obligation",
+    fee: 0,
+    requirement: "N/A",
+    processing_time: "3-5 business days"
+  },
+  certificate_of_enrollment: {
+    value: "certificate_of_enrollment",
+    label: "Certificate of Enrollment",
+    fee: 0,
+    requirement: "N/A",
+    processing_time: "3-5 business days"
+  },
+  eccd: {
+    value: "eccd",
+    label: "ECCD",
+    fee: 0,
+    requirement: {
+      letter: "Request Letter",
+      form: "Filled out form"
+    },
+    processing_time: "5-7 business days"
+  },
+}
+
+export const PURPOSE_OPTIONS = [
+  { value: "", label: "Select Purpose" },
+  { value: "visa", label: "VISA" },
+  { value: "school-request", label: "School Request" },
+  { value: "unit-district-meet", label: "Unit/District Meet" },
+];
