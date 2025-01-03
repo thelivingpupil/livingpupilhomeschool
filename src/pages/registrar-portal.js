@@ -624,7 +624,7 @@ const RegistrarPortal = ({ page }) => {
                     <div className="w-full flex-shrink-0">
                         <div className="relative max-w-xl mx-auto p-10 mt-10 mb-10 shadow-lg rounded-lg overflow-hidden">
                             <img
-                                src="http://localhost:3000/images/livingpupil-homeschool-logo.png"
+                                src="https://livingpupilhomeschool.com/images/livingpupil-homeschool-logo.png"
                                 alt="University Logo"
                                 className="w-48 mx-auto mb-10"
                             />
@@ -1080,7 +1080,7 @@ const RegistrarPortal = ({ page }) => {
                                             </div>
 
                                             {/* Form Input */}
-                                            <div className={`mt-2 p-1 flex flex-col ${!eccdForm ? 'border-red-500 border-2' : 'border'}`}>
+                                            <div className={`mt-2 p-1 flex flex-col mb-4 ${!eccdForm ? 'border-red-500 border-2' : 'border'}`}>
                                                 <label className="text-sm font-medium text-gray-700">
                                                     {DOCUMENT_DETAILS.eccd.requirement.form}
                                                 </label>
@@ -1098,6 +1098,15 @@ const RegistrarPortal = ({ page }) => {
                                                         <span className="px-3">{eccdFormProgress}%</span>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div>
+                                                <a
+                                                    className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25 mb-4"
+                                                    href="https://livingpupilhomeschool.com/files/eccd-form.pdf"
+                                                    target="_blank"
+                                                >
+                                                    Download ECCD Checklist
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
