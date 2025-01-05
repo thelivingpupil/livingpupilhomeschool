@@ -453,7 +453,7 @@ const RegistrarPortal = ({ page }) => {
                 {/* Navigation Arrows */}
                 {step > 0 && !review && (
                     <button
-                        className="absolute left-0 top-1/2 transform -translate-y-1/2 px-4 py-2 bg-gray-200 rounded-full shadow-md hover:bg-gray-300 ml-20"
+                        className="absolute md:left-0 md:top-1/2 md:transform md:-translate-y-1/2 bottom-4 left-4 flex items-center justify-center w-20 h-10 bg-gray-200 rounded-full shadow-md hover:bg-gray-300 md:ml-5"
                         style={{ zIndex: 1000 }}
                         onClick={() => goToStep(step - 1)}
                     >
@@ -461,13 +461,12 @@ const RegistrarPortal = ({ page }) => {
                     </button>
                 )}
 
-
                 {step < 6 && step > 0 && (
                     <button
-                        className={`absolute mr-20 right-0 top-1/2 transform -translate-y-1/2 px-4 py-2 rounded-full shadow-md ${validateNext
+                        className={`absolute md:right-0 md:top-1/2 md:transform md:-translate-y-1/2 bottom-4 right-4 flex items-center justify-center w-20 h-10 rounded-full shadow-md ${validateNext
                             ? "bg-gray-200 hover:bg-gray-300"
                             : "bg-gray-400 cursor-not-allowed hover:bg-gray-400"
-                            }`}
+                            } md:mr-5`}
                         style={{ zIndex: 1000 }}
                         onClick={() => goToStep(step + 1)} //validateNext && 
                         disabled={!validateNext}
@@ -475,6 +474,7 @@ const RegistrarPortal = ({ page }) => {
                         NEXT
                     </button>
                 )}
+
 
 
 
