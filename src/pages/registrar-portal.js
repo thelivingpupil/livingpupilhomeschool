@@ -13,6 +13,7 @@ import { TransactionStatus } from '@prisma/client';
 import { STATUS_CODES } from '@/lib/server/dragonpay';
 import ReCAPTCHA from 'react-google-recaptcha';
 import crypto from 'crypto';
+import format from 'date-fns/format';
 
 
 const PURPOSE_OPTIONS = [
@@ -134,7 +135,7 @@ const RegistrarPortal = ({ page }) => {
         return () => clearInterval(interval); // Clean up the interval on component unmount
     }, []);
 
-    console.log(selectedDocuments)
+
     const validateNext =
         (step === 1 &&
             selectedDocuments.length > 0 &&
@@ -408,8 +409,6 @@ const RegistrarPortal = ({ page }) => {
             .then((response) => {
                 setSubmittingState(false);
 
-                console.log(response)
-
                 // Check the status code
                 if (response.status === 200) {
                     setDocumentRequest(response.data.documentRequest);
@@ -431,7 +430,6 @@ const RegistrarPortal = ({ page }) => {
         toggleReview();
         handleGetDocumentRequest();
     }
-    console.log(captcha);
 
     const onReCAPTCHAChange = (captchaCode) => {
         if (captchaCode) {
