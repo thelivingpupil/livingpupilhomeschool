@@ -133,7 +133,7 @@ const RegistrarPortal = ({ page }) => {
         return () => clearInterval(interval); // Clean up the interval on component unmount
     }, []);
 
-
+    console.log(selectedDocuments)
     const validateNext =
         (step === 1 &&
             selectedDocuments.length > 0 &&
@@ -143,7 +143,10 @@ const RegistrarPortal = ({ page }) => {
         (step === 3 &&
             Object.values(formData2).every((value) => value.trim() !== "")) ||
         (step === 4 &&
-            Object.values(formData2).every((value) => value.trim() !== "")) ||
+            (selectedDocuments.includes("form137") ? letterRequest137.trim() !== "" : true) &&
+            (selectedDocuments.includes("re_form_138") ? affidavit.trim() !== "" : true) &&
+            (selectedDocuments.includes("eccd") ?
+                letterRequestEccd.trim() !== "" && eccdForm.trim() !== "" : true)) ||
         (step === 5 &&
             (deliveryOption === "pickup" ||
                 (deliveryOption === "delivery" &&
@@ -173,7 +176,7 @@ const RegistrarPortal = ({ page }) => {
                 const extension = file.name.split('.').pop();
                 const storageRef = ref(
                     storage,
-                    `files/${workspace.slug}/birth-${crypto
+                    `files/affidavit-${crypto
                         .createHash('md5')
                         .update(file.name)
                         .digest('hex')
@@ -220,7 +223,7 @@ const RegistrarPortal = ({ page }) => {
                 const extension = file.name.split('.').pop();
                 const storageRef = ref(
                     storage,
-                    `files/${workspace.slug}/birth-${crypto
+                    `files/eccdLetter-${crypto
                         .createHash('md5')
                         .update(file.name)
                         .digest('hex')
@@ -266,7 +269,7 @@ const RegistrarPortal = ({ page }) => {
                 const extension = file.name.split('.').pop();
                 const storageRef = ref(
                     storage,
-                    `files/${workspace.slug}/birth-${crypto
+                    `files/eccdForm-${crypto
                         .createHash('md5')
                         .update(file.name)
                         .digest('hex')
@@ -358,7 +361,7 @@ const RegistrarPortal = ({ page }) => {
                 const extension = file.name.split('.').pop();
                 const storageRef = ref(
                     storage,
-                    `files/${workspace.slug}/birth-${crypto
+                    `files/137Letter-${crypto
                         .createHash('md5')
                         .update(file.name)
                         .digest('hex')
