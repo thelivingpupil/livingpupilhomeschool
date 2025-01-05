@@ -152,6 +152,8 @@ const Students = ({ schoolFees, programs }) => {
   const [schoolFeeUrl, setSchoolFeeUrl] = useState('');
   const age = differenceInYears(new Date(), birthDate) || 0;
 
+  console.log(data)
+
 
   const filterStudents = useMemo(() => {
     if (!filterBy || !filterValue) return data?.students;
@@ -2069,10 +2071,10 @@ const Students = ({ schoolFees, programs }) => {
                   align: 'center',
                   width: 250, // Set your desired width here
                   valueGetter: (params) =>
-                    params.row.student.creator?.email || '',
+                    params?.row?.student.creator?.email || '',
                   renderCell: (params) => (
                     <div>
-                      <span>{params.row.student.creator?.email}</span>
+                      <span>{params?.row?.student?.creator?.email}</span>
                     </div>
                   ),
                 },
@@ -2124,7 +2126,7 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   valueGetter: (params) =>
-                    params.row.studentStatus ||
+                    params?.row?.studentStatus ||
                     '',
                   renderCell: (params) => (
                     <div>
@@ -2133,7 +2135,7 @@ const Students = ({ schoolFees, programs }) => {
                           className={`rounded-full py-0.5 text-xs px-2 ${ENROLLMENT_STATUS_BG_COLOR[params.row.studentStatus]
                             }`}
                         >
-                          {STUDENT_STATUS[params.row.studentStatus]}
+                          {STUDENT_STATUS[params.row?.studentStatus]}
                         </span>
                       </h4>
                     </div>
@@ -2145,12 +2147,11 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   valueGetter: (params) =>
-                    params.row.student.schoolFees?.[0]?.transaction?.paymentStatus || '',
-
+                    params?.row?.studentStatus || '',
                   renderCell: (params) => {
-                    const paymentStatus = params.row.student.schoolFees?.[0]?.transaction?.paymentStatus;
+                    const paymentStatus = params?.row?.student?.schoolFees?.[0]?.transaction?.paymentStatus;
                     const statusClass = paymentStatus ? STATUS_BG_COLOR[paymentStatus] : '';
-                    const statusText = paymentStatus ? STATUS[paymentStatus] : '';
+                    const statusText = paymentStatus ? STATUS[paymentStatus] : 'N/A';
 
                     return (
                       <div>
@@ -2162,7 +2163,6 @@ const Students = ({ schoolFees, programs }) => {
                       </div>
                     );
                   }
-
                 },
                 {
                   field: 'actions',
