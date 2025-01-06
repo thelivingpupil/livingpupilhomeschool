@@ -81,7 +81,7 @@ const deadlines = {
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 6],
-      [PaymentType.QUARTERLY]: [0, 2, 5, 7],
+      [PaymentType.QUARTERLY]: [0, 2, 4, 7],
       [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],
     },
