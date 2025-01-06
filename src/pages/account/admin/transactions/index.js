@@ -777,7 +777,7 @@ const Transactions = () => {
                           <td className="p-2 text-left">
                             <div>
                               <h4 className="flex items-center space-x-3 text-xl font-medium capitalize text-primary-500">
-                                <span>{`${transaction.schoolFee.student.studentRecord?.firstName}`}</span>
+                                <span>{`${transaction?.schoolFee?.student?.studentRecord?.firstName}`}</span>
                                 <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${GRADE_LEVEL[
                                   transaction.schoolFee.student.studentRecord
                                     ?.incomingGradeLevel
