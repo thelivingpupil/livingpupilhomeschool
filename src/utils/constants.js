@@ -362,7 +362,7 @@ export const DOCUMENT_DETAILS = {
   eccd: {
     value: "eccd",
     label: "ECCD",
-    fee: 0,
+    fee: 150,
     requirement: {
       letter: "Request Letter",
       form: "Filled out form"
