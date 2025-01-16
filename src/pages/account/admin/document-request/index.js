@@ -183,7 +183,7 @@ const DocumentRequest = () => {
                                 <h4 className="text-sm font-bold text-gray-400">
                                     Payment Reference:{' '}
                                     <span className="font-mono font-bold uppercase">
-                                        {purchase.transaction.paymentReference}
+                                        {document?.transaction?.paymentReference}
                                     </span>
                                 </h4>
                             ) : (
