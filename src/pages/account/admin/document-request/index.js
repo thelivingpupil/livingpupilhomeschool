@@ -23,6 +23,7 @@ import { STATUS_CODES } from '@/lib/server/dragonpay';
 import { TransactionStatus } from '@prisma/client';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import api from '@/lib/common/api';
+import { format } from 'date-fns';
 
 const DocumentRequest = () => {
     const { data, isLoading } = useDocuments();
@@ -34,8 +35,6 @@ const DocumentRequest = () => {
     const [document, setDocument] = useState(null);
     const [trackingCode, setTrackingCode] = useState("")
     const [region, setRegion] = useState("")
-
-    console.log(document?.documentCollection)
 
 
     function CustomToolbar() {
@@ -113,7 +112,13 @@ const DocumentRequest = () => {
                     show={showModal}
                     toggle={toggleModal}
                 >
-                    <div className="mt-6">
+                    <div className="mt-1">
+                        <p>
+                            <strong>Request Date:</strong>{" "}
+                            {format(new Date(document.createdAt), 'MMMM d, yyyy')}
+                        </p>
+                    </div>
+                    <div className="mt-1">
                         <p>
                             <strong>Purpose:</strong>{" "}
                             {PURPOSE_OPTIONS.find((option) => option.value === document.purpose)?.label || "Not Selected"}
@@ -335,6 +340,26 @@ const DocumentRequest = () => {
                                 loading={isLoading}
                                 rows={data ? data.requests : []}
                                 columns={[
+                                    {
+                                        field: 'createdAt',
+                                        headerName: 'Request Date',
+                                        headerAlign: 'center',
+                                        align: 'left',
+                                        flex: 1,
+                                        renderCell: (params) => (
+                                            <div className="text-primary-500"
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    width: '100%',
+                                                    height: '100%',
+                                                }}
+                                            >
+                                                {format(new Date(params.row.createdAt), 'MMMM d, yyyy')}
+                                            </div>
+                                        ),
+                                    },
                                     {
                                         field: 'requestCode',
                                         headerName: 'Tracking Code',
