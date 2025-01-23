@@ -132,14 +132,19 @@ const DocumentRequest = () => {
                                 <li key={doc.id}>
                                     {DOCUMENT_DETAILS[doc.docName]?.label}
                                     <div className="ml-5">
-                                        <a
-                                            href={doc.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-500 underline"
-                                        >
-                                            {doc.url !== 'N/A' ? 'View Document' : 'N/A'}
-                                        </a>
+                                        {doc.url
+                                            .split(", ")
+                                            .map((url, index) => (
+                                                <a
+                                                    key={index}
+                                                    href={url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-blue-500 underline block"
+                                                >
+                                                    View Document {index + 1}
+                                                </a>
+                                            ))}
                                     </div>
                                 </li>
                             ))}
