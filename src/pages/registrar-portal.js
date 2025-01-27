@@ -145,7 +145,7 @@ const RegistrarPortal = ({ page }) => {
         (step === 3 &&
             Object.values(formData2).every((value) => value.trim() !== "")) ||
         (step === 4 &&
-            (selectedDocuments.includes("form137") ? letterRequest137.trim() !== "" : true) &&
+            (selectedDocuments.includes("form_137") ? letterRequest137.trim() !== "" : true) &&
             (selectedDocuments.includes("re_form_138") ? affidavit.trim() !== "" : true) &&
             (selectedDocuments.includes("eccd") ?
                 letterRequestEccd.trim() !== "" && eccdForm.trim() !== "" : true)) ||
