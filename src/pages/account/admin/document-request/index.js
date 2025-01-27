@@ -170,8 +170,8 @@ const DocumentRequest = () => {
                             <p><strong>Relationship:</strong> {document?.requestorInformation.relationshipToStudent}</p>
                             <p><strong>Email:</strong> {document?.requestorInformation.requestorEmail}</p>
                             <p><strong>Occupation:</strong> {document?.requestorInformation.occupation}</p>
-                            <p><strong>Guardian Address:</strong> {document?.requestorInformation.guardianAddress}</p>
-                            <p><strong>Guardian Mobile:</strong> {document?.requestorInformation.guardianMobile}</p>
+                            <p><strong>Guardian Address:</strong> {document?.requestorInformation.requestorAddress}</p>
+                            <p><strong>Guardian Mobile:</strong> {document?.requestorInformation.requestorMobileNumber}</p>
                         </div>
                     </div>
 
