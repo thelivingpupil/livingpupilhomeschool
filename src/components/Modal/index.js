@@ -6,10 +6,10 @@ const Modal = ({ children, show, title, toggle }) => {
   return (
     <Transition appear as={Fragment} show={show}>
       <Dialog
-        className="fixed inset-0 z-50 overflow-y-auto text-gray-800"
+        className="fixed inset-0 z-50 text-gray-800"
         onClose={toggle}
       >
-        <div className="flex items-center justify-center h-screen p-5">
+        <div className="flex items-center justify-center overflow-y-auto max-h-screen p-5">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -37,7 +37,9 @@ const Modal = ({ children, show, title, toggle }) => {
               <Dialog.Title as="h2" className="text-2xl font-bold leading-5">
                 {title}
               </Dialog.Title>
-              {children}
+              <div className="max-h-[80vh] overflow-y-auto">
+                {children}
+              </div>
               <button
                 className="absolute top-0 outline-none right-5"
                 onClick={toggle}

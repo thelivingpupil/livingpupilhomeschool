@@ -63,7 +63,12 @@ const handler = async (req, res) => {
       primaryTeacherEducation,
       primaryTeacherProfile,
       monthIndex,
-      signatureLink
+      signatureLink,
+      specialRadio,
+      specialNeeds,
+      formerRegistrar,
+      formerRegistrarEmail,
+      formerRegistrarNumber
     } = req.body;
     const guardianInformation = {
       primaryGuardianName,
@@ -77,8 +82,6 @@ const handler = async (req, res) => {
       mobileNumber,
       telephoneNumber,
       anotherEmail,
-      address1,
-      address2,
     };
 
     const getParentName = (str) => {
@@ -126,7 +129,12 @@ const handler = async (req, res) => {
         primaryTeacherEducation,
         primaryTeacherProfile,
         STUDENT_STATUS.PENDING,
-        signatureLink
+        signatureLink,
+        specialRadio,
+        specialNeeds,
+        formerRegistrar,
+        formerRegistrarEmail,
+        formerRegistrarNumber
       ),
       createSchoolFees(
         session.user.userId,

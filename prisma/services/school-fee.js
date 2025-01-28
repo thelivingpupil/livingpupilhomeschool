@@ -34,6 +34,7 @@ export const createSchoolFees = async (
 ) => {
   console.log("Entering createSchoolFees function...");
   let gradeLevel = incomingGradeLevel;
+  const miscellaneousFee = 500;
 
   if (program === Program.HOMESCHOOL_COTTAGE) {
     if (
@@ -134,9 +135,9 @@ export const createSchoolFees = async (
     if (scholarshipCode === 'Full-scholar') {
       total = 0;
     } else {
-      total = payments + FEES[paymentMethod] - scholarshipValue;
+      total = payments + FEES[paymentMethod] + miscellaneousFee - scholarshipValue;
     }
-
+    console.log("Fee: " + total)
     if (typeof total !== 'number' || isNaN(total)) {
       throw new Error('Invalid total value');
     }
@@ -149,7 +150,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transaction.transactionId,
-        payments + FEES[paymentMethod] - scholarshipValue,
+        payments + FEES[paymentMethod] + miscellaneousFee - scholarshipValue,
         description,
         transaction.id,
         TransactionSource.ENROLLMENT,
@@ -184,7 +185,8 @@ export const createSchoolFees = async (
         (scholarship.value / 100) * fee.fullPayment
       : 0;
 
-    const calculatedScholarship = scholarshipValue / 2
+    const calculatedScholarship = scholarshipValue / 2;
+    const calculatedMisc = miscellaneousFee / 2;
 
     const payments = isPastorsFee
       ? [
@@ -232,7 +234,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[1].transactionId,
-        payments[1] + FEES[paymentMethod] - calculatedScholarship,
+        payments[1] + FEES[paymentMethod] + calculatedMisc - calculatedScholarship,
         description,
         transactionIds[1].id,
         TransactionSource.ENROLLMENT,
@@ -242,7 +244,7 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[2].transactionId,
-        payments[2] + FEES[paymentMethod] - calculatedScholarship,
+        payments[2] + FEES[paymentMethod] + calculatedMisc - calculatedScholarship,
         description,
         transactionIds[2].id,
         TransactionSource.ENROLLMENT,
@@ -311,7 +313,8 @@ export const createSchoolFees = async (
         (scholarship.value / 100) * fee.fullPayment
       : 0;
 
-    const calculatedScholarship = scholarshipValue / 3
+    const calculatedScholarship = scholarshipValue / 3;
+    const calculatedMisc = miscellaneousFee / 3;
 
     const payments = isPastorsFee
       ? [
@@ -343,15 +346,15 @@ export const createSchoolFees = async (
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[1] + FEES[paymentMethod] - calculatedScholarship },
+        data: { total: payments[1] + FEES[paymentMethod] + calculatedMisc - calculatedScholarship },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[2] + FEES[paymentMethod] - calculatedScholarship },
+        data: { total: payments[2] + FEES[paymentMethod] + calculatedMisc - calculatedScholarship },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[3] + FEES[paymentMethod] - calculatedScholarship },
+        data: { total: payments[3] + FEES[paymentMethod] + calculatedMisc - calculatedScholarship },
         select: { id: true, transactionId: true },
       }),
     ]);
@@ -476,7 +479,8 @@ export const createSchoolFees = async (
         (scholarship.value / 100) * fee.fullPayment
       : 0;
 
-    const calculatedScholarship = scholarshipValue / monthIndex
+    const calculatedScholarship = scholarshipValue / monthIndex;
+    const calculatedMisc = miscellaneousFee / monthIndex;
 
     let payments;
     if (isPastorsFee) {
@@ -517,7 +521,7 @@ export const createSchoolFees = async (
 
     const transactionIds = await Promise.all(purchaseHistoryPromises);
     const transactionPromises = transactionIds.map((transaction, index) => {
-      const total = payments[index] + FEES[paymentMethod] - (index > 0 ? calculatedScholarship : 0); // Apply scholarship only from the second payment onwards
+      const total = payments[index] + calculatedMisc + FEES[paymentMethod] - (index > 0 ? calculatedScholarship : 0); // Apply scholarship only from the second payment onwards
       return createTransaction(
         userId,
         email,
