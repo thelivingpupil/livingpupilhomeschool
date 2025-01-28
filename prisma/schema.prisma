@@ -193,40 +193,48 @@ model Session {
 }
 
 model StudentRecord {
-  id                         String        @id @default(cuid())
-  studentId                  String        @unique @default(cuid())
-  firstName                  String
-  middleName                 String
-  lastName                   String
-  birthDate                  DateTime
-  gender                     Gender
-  religion                   Religion
-  incomingGradeLevel         GradeLevel
-  enrollmentType             Enrollment    @default(NEW)
-  program                    Program       @default(HOMESCHOOL_PROGRAM)
-  cottageType                CottageType?
-  accreditation              Accreditation @default(LOCAL)
-  schoolYear                 String?
-  reason                     String?
-  formerSchoolName           String
-  formerSchoolAddress        String
-  createdAt                  DateTime?     @default(now())
-  deletedAt                  DateTime?
-  updatedAt                  DateTime?     @updatedAt
-  image                      String?
-  liveBirthCertificate       String?
-  reportCard                 String?
-  signature                  String?
-  discount                   String?
-  scholarship                String?
-  primaryTeacherName         String?
-  primaryTeacherAge          String?
-  primaryTeacherRelationship String?
-  primaryTeacherEducation    String?
-  primaryTeacherProfile      String?
-  studentStatus              String?
-  policyAgreement            Boolean       @default(true) // New field added here
-  student                    Workspace     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  id                          String        @id @default(cuid())
+  studentId                   String        @unique @default(cuid())
+  firstName                   String
+  middleName                  String
+  lastName                    String
+  birthDate                   DateTime
+  gender                      Gender
+  religion                    Religion
+  incomingGradeLevel          GradeLevel
+  enrollmentType              Enrollment    @default(NEW)
+  program                     Program       @default(HOMESCHOOL_PROGRAM)
+  cottageType                 CottageType?
+  accreditation               Accreditation @default(LOCAL)
+  schoolYear                  String?
+  reason                      String?
+  formerSchoolName            String
+  formerSchoolAddress         String
+  createdAt                   DateTime?     @default(now())
+  deletedAt                   DateTime?
+  updatedAt                   DateTime?     @updatedAt
+  image                       String?
+  liveBirthCertificate        String?
+  reportCard                  String?
+  signature                   String?
+  discount                    String?
+  scholarship                 String?
+  primaryTeacherName          String?
+  primaryTeacherAge           String?
+  primaryTeacherRelationship  String?
+  primaryTeacherEducation     String?
+  primaryTeacherProfile       String?
+  studentStatus               String?
+  studentAddress1             String?
+  studentAddress2             String?
+  studentInternationalAddress String?
+  formerRegistrar             String?
+  formerRegistrarEmail        String?
+  formerRegistrarNumber       String?
+  specialNeeds                String?
+  specialNeedSpecific         String?
+  policyAgreement             Boolean       @default(true) // New field added here
+  student                     Workspace     @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("studentRecord")
 }
