@@ -3349,6 +3349,20 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                       </tr>
                     )
                   )}
+                  <tr>
+                    <td className="px-3 py-1 border">
+                      Miscellaneous:{' '}
+
+                    </td>
+                    <td className="px-3 py-1 text-right text-primary-600 border">
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        500
+                      )}
+                    </td>
+                  </tr>
                   {discount && (
                     <tr>
                       <td className="px-3 py-1 border">
@@ -3436,7 +3450,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                           fee?.seventhPayment +
                           fee?.eighthPayment +
                           fee?.ninthPayment
-                  ) -
+                  ) + 500 -
                   (discount
                     ? discount?.type === 'VALUE'
                       ? discount?.code?.toLowerCase().includes('pastor')
