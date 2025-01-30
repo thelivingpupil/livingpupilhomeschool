@@ -1115,7 +1115,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </div>
           <div className="flex flex-col">
             <label className="text-lg font-bold" htmlFor="txtMother">
-              International Address <span className="ml-1 text-gray-600">(optional)</span>
+              International Address <span className="ml-1 text-gray-600"><i>(if the student is residing abroad)</i></span>
             </label>
             <div className="flex flex-row space-x-5">
               <input

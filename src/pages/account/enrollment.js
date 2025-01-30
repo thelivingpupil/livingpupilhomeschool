@@ -1202,7 +1202,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           </div>
           <div className="flex flex-col">
             <label className="text-lg font-bold" htmlFor="txtMother">
-              International Address <span className="ml-1 text-gray-600">(optional)</span>
+              International Address <span className="ml-1 text-gray-600"><i>(if the student is residing abroad)</i></span>
             </label>
             <div className="flex flex-row space-x-5">
               <input
@@ -1764,32 +1764,6 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               placeholder="another@email.com"
               onChange={handleAnotherEmail}
               value={anotherEmail}
-            />
-          </div>
-        </div>
-        <hr className="border border-dashed" />
-        <div className="flex flex-col">
-          <label className="text-lg font-bold" htmlFor="txtMother">
-            Complete Address <span className="ml-1 text-red-600">*</span>
-          </label>
-          <div className="flex flex-row space-x-5">
-            <input
-              className={`px-3 py-2 rounded md:w-3/4 ${!address1 ? 'border-red-500 border-2' : 'border'
-                }`}
-              placeholder="House No. St. Name, Village/Subdivision, Brgy."
-              onChange={handleAddress1}
-              value={address1}
-            />
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <div className="flex flex-row space-x-5">
-            <input
-              className={`px-3 py-2 rounded md:w-3/4 ${!address2 ? 'border-red-500 border-2' : 'border'
-                }`}
-              placeholder="City, Country, ZIP Code"
-              onChange={handleAddress2}
-              value={address2}
             />
           </div>
         </div>
