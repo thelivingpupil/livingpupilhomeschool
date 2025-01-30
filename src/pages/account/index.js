@@ -93,7 +93,7 @@ const Welcome = () => {
   const handleNameChange = (event) => setName(event.target.value);
 
   const navigate = (workspace) => {
-    if (workspace?.studentRecord?.schoolYear === '2024-2025' || workspace?.studentRecord === null) {
+    if (workspace?.studentRecord?.schoolYear === '2024-2025' || workspace?.studentRecord?.schoolYear === '2025-2026' || workspace?.studentRecord === null) {
       setWorkspace(workspace);
       router.replace(`/account/${workspace.slug}`);
     } else {
