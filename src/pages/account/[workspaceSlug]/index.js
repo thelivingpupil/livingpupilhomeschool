@@ -359,7 +359,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       (enrollmentType === "NEW" ? formerRegistrar.length > 0 : true) &&
       (enrollmentType === "NEW" ? formerRegistrarEmail.length > 0 : true) &&
       (enrollmentType === "NEW" ? formerRegistrarNumber.length > 0 : true) &&
-      birthCertificateLink &&
+      //birthCertificateLink &&
       birthCertificateLink?.length > 0
     ) ||
     (step === 1 && accreditation !== null) ||

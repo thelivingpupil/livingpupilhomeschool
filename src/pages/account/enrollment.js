@@ -381,7 +381,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       (enrollmentType === "NEW" ? formerRegistrar.length > 0 : true) &&
       (enrollmentType === "NEW" ? formerRegistrarEmail.length > 0 : true) &&
       (enrollmentType === "NEW" ? formerRegistrarNumber.length > 0 : true) &&
-      birthCertificateLink > 0 &&
+      //birthCertificateLink > 0 &&
       birthCertificateLink?.length > 0
     ) ||
     (step === 1 && accreditation !== null) ||
