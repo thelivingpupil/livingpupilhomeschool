@@ -341,7 +341,7 @@ export const DOCUMENT_DETAILS = {
   form_137: {
     value: "form_137",
     label: "Permanent Record / Form 137 / SF10",
-    fee: 0,
+    fee: 300,
     requirement: "Official Request Letter",
     processing_time: "7-14 business days"
   },
