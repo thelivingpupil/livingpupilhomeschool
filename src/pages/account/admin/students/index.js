@@ -152,9 +152,6 @@ const Students = ({ schoolFees, programs }) => {
   const [schoolFeeUrl, setSchoolFeeUrl] = useState('');
   const age = differenceInYears(new Date(), birthDate) || 0;
 
-  console.log(data)
-
-
   const filterStudents = useMemo(() => {
     if (!filterBy || !filterValue) return data?.students;
 
@@ -212,6 +209,8 @@ const Students = ({ schoolFees, programs }) => {
 
     return evaluate;
   });
+
+  console.log(schoolYear)
 
   const applyDiscount = () => {
     setSubmittingCodeState(true);
@@ -342,6 +341,7 @@ const Students = ({ schoolFees, programs }) => {
     setEmail(student.student.creator.email)
     setPrimaryGuardianName(student.student.creator.guardianInformation.primaryGuardianName)
     setCottageType(student.cottageType)
+    setSchoolYear(student.schoolYear)
   };
 
   const editStudentRecord = (studentId) => {
@@ -442,6 +442,7 @@ const Students = ({ schoolFees, programs }) => {
         studentStatus,
         primaryGuardianName,
         cottageType,
+        schoolYear
       },
       method: 'PUT',
     })
@@ -476,8 +477,6 @@ const Students = ({ schoolFees, programs }) => {
         (tuition) => tuition.type === accreditation
       );
       setMonthlyPayment(calculateMonthlyPayment(monthIndex, programFeeByAccreditation));
-    } else {
-      console.log("Accreditation Empty");
     }
   }, [accreditation, programFee, monthIndex, calculateMonthlyPayment]);
 
@@ -489,109 +488,6 @@ const Students = ({ schoolFees, programs }) => {
       setAccreditation(null);
     }
   };
-
-  console.log("Month Index: " + monthIndex + "\nMonthly Payment: " + monthlyPayment + "\nAccreditation: " + accreditation);
-
-  // const editStudentRecord = async (studentId) => {
-  //   setSubmittingState(true);
-  //   try {
-  //     const response = await fetch('/api/students', {
-  //       method: 'PUT',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         studentId,
-  //         firstName,
-  //         middleName,
-  //         lastName,
-  //         gender,
-  //         religion,
-  //         schoolYear,
-  //         birthDate,
-  //         pictureLink,
-  //         birthCertificateLink,
-  //         reportCardLink,
-  //         enrollmentType,
-  //         incomingGradeLevel,
-  //         discountCode,
-  //         scholarshipCode,
-  //         accreditation,
-  //       }),
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error('Failed to update record');
-  //     }
-  //     else {
-  //       setSubmittingState(false);
-  //       toast.success('Student record has been updated');
-  //       toast('Generating new school fee(s)', {
-  //         icon: '⚠️', // Optional: you can customize the icon
-  //       });
-  //       generateNewSchoolFees(studentId);
-  //     }
-
-  //   } catch (error) {
-  //     setSubmittingState(false);
-  //     toast.error(`Error updating student record: ${error.message}`);
-  //   }
-  // }
-
-  // const generateNewSchoolFees = async (studentId) => {
-  //   console.log(
-  //     JSON.stringify({
-  //       userId,
-  //       email,
-  //       workspaceId,
-  //       payment,
-  //       enrollmentType,
-  //       incomingGradeLevel,
-  //       program,
-  //       cottageType,
-  //       accreditation,
-  //       paymentMethod,
-  //       discountCode,
-  //       scholarshipCode,
-  //       studentId
-  //     }),
-  //   );
-  //   try {
-  //     setSubmittingState(true);
-
-  //     const response = await fetch('/api/transactions', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         userId,
-  //         email,
-  //         workspaceId,
-  //         payment,
-  //         enrollmentType,
-  //         incomingGradeLevel,
-  //         program,
-  //         cottageType,
-  //         accreditation,
-  //         paymentMethod,
-  //         discountCode,
-  //         scholarshipCode,
-  //         studentId
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error('Failed to generate school fee(s)');
-  //     }
-  //     setSubmittingState(false);
-  //     toast.success('Generate school fees success');
-  //     toggleModal2();
-  //     toggleModal();
-  //   } catch (error) {
-  //     setSubmittingState(false);
-  //     toast.error(`Error error generating school fees: ${error.message}`);
-  //   }
-  // }
 
   const deleteStudentRecord = async (studentId, inviteCode) => {
 
@@ -646,7 +542,6 @@ const Students = ({ schoolFees, programs }) => {
 
   });
 
-  // const renderFileUpload = () => {
   //   return (
   //     <div className="flex flex-col space-y-5 overflow-auto">
   //       <label className="text-lg font-bold" htmlFor="txtMother">
@@ -1730,7 +1625,7 @@ const Students = ({ schoolFees, programs }) => {
           <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
             <div className="flex flex-col w-full">
               <h4 className="font-bold text-gray-600">Current Status: {STUDENT_STATUS[student.studentStatus]}</h4>
-              <label className="text-lg font-bold" htmlFor="txtMother">
+              <label className="text-lg font-bold  mt-2" htmlFor="txtMother">
                 Student Status <span className="ml-1 text-red-600">*</span>
               </label>
               <div className="relative inline-block w-full border rounded">
@@ -1750,6 +1645,20 @@ const Students = ({ schoolFees, programs }) => {
                   <ChevronDownIcon className="w-5 h-5" />
                 </div>
               </div>
+              {studentStatus === "INITIALLY_ENROLLED" && (
+                <div className="flex flex-col mt-2">
+                  <label className="text-lg font-bold" htmlFor="txtMother">
+                    School Year <span className="ml-1 text-red-600">*</span>
+                  </label>
+                  <div className="flex flex-row space-x-5">
+                    <input
+                      className="px-3 py-2 rounded w-full border"
+                      value={student.schoolYear}
+                      disabled
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

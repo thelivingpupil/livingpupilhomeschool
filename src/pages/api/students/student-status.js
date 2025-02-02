@@ -7,6 +7,11 @@ import {
     html as acceptanceHtml,
     text as acceptanceText,
 } from '@/config/email-templates/letter-of-acceptance';
+import {
+    html as initialAcceptance2025Html,
+    text as initialAcceptance2025Text,
+} from '@/config/email-templates/initial-acceptance2025';
+import { getParentFirstName } from '@/utils/index';
 
 const handler = async (req, res) => {
     const { method } = req;
@@ -30,6 +35,7 @@ const handler = async (req, res) => {
                 studentStatus,
                 primaryGuardianName,
                 cottageType,
+                schoolYear,
             } = req.body;
             if (!studentId) {
                 return res.status(400).json({ error: 'Student ID is required' });
@@ -38,24 +44,43 @@ const handler = async (req, res) => {
             const newStudentStatus = await Promise.all([
                 updateStudentStatus(studentId, studentStatus),
             ]);
-            console.log(studentStatus)
+
+            const parentFirstName = getParentFirstName(primaryGuardianName);
+            console.log(primaryGuardianName)
+            console.log(schoolYear)
             if (studentStatus === 'INITIALLY_ENROLLED') {
-                await sendMail({
-                    html: html({
-                        primaryGuardianName,
-                        firstName,
-                        middleName,
-                        lastName,
-                        enrollmentType,
-                        incomingGradeLevel
-                    }),
-                    subject: `[Living Pupil Homeschool] Initial Acceptance of ${firstName}`,
-                    text: text({
-                        primaryGuardianName,
-                        firstName,
-                    }),
-                    to: [email],
-                });
+                if (schoolYear === "2025-2026") {
+                    await sendMail({
+                        html: initialAcceptance2025Html({
+                            parentFirstName,
+                        }),
+                        subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
+                        text: initialAcceptance2025Text({
+                            parentFirstName,
+                            firstName,
+                        }),
+                        to: [email],
+                    });
+                } else if (schoolYear === "2024-2025") {
+                    await sendMail({
+                        html: html({
+                            primaryGuardianName,
+                            firstName,
+                            middleName,
+                            lastName,
+                            enrollmentType,
+                            incomingGradeLevel
+                        }),
+                        subject: `[Living Pupil Homeschool] Initial Acceptance of ${firstName}`,
+                        text: text({
+                            primaryGuardianName,
+                            firstName,
+                        }),
+                        to: [email],
+                    });
+                } else {
+                    res.status(500).json({ error: 'School Year invalid' });
+                }
             }
             else if (studentStatus === 'ENROLLED') {
                 await sendMail({
