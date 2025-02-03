@@ -270,7 +270,7 @@ export const STUDENT_STATUS = {
 
 //this is used for the monthly iteration in createSchoolFees()
 export const MONTHLY_INDEX = {
-  FEBRAURY_2024: 8,
+  FEBRUARY_2024: 8,
   MARCH_2024: 8,
   APRIL_2024: 8,
   MAY_2024: 8,
@@ -281,8 +281,8 @@ export const MONTHLY_INDEX = {
   OCTOBER_2024: 7,
   NOVEMBER_2024: 6,
   DECEMBER_2024: 5,
-  JANRUARY_2025: 4,
-  FEBRAURY_2025: 3,
+  JANUARY_2025: 4,
+  FEBRUARY_2025: 3,
   MARCH_2025: 3,
   APRIL_2025: 1,
 }

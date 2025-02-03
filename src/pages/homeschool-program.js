@@ -58,10 +58,9 @@ const HomeschoolProgram = ({ page, programs }) => {
       program.gradeLevel === incomingGradeLevel
   );
 
-  const [monthIndex, setMonthIndex] = useState(null);
-  useEffect(() => {
-    setMonthIndex(getMonthIndex(new Date()));
-  }, []);
+  const dateToday = new Date();
+
+  const monthIndex = getMonthIndex(dateToday)
 
   return (
     <LandingLayout>
@@ -278,6 +277,14 @@ const HomeschoolProgram = ({ page, programs }) => {
             </div>
           </div>
         ))}
+        <div className="flex flex-col rounded-lg w-full md:w-3/4">
+          <div className="text-xl font-semibold">
+            <p>Other Fees:</p>
+            <ul className="list-disc pl-5 ml-5">
+              <li>Miscellaneous Fee: ₱500</li>
+            </ul>
+          </div>
+        </div>
         <div className="flex flex-col px-5 py-5 mt-5 bg-primary-500 rounded-lg w-full md:w-3/4">
           <div className="font-bold text-2xl text-secondary-500 text-center">
             Inclusions
