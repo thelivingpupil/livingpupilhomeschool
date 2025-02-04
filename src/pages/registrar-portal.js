@@ -572,14 +572,14 @@ const RegistrarPortal = ({ page }) => {
                                             <h4 className="text-sm font-bold text-gray-400">
                                                 Payment Reference:{' '}
                                                 <span className="font-mono font-bold uppercase">
-                                                    {purchase.transaction.paymentReference}
+                                                    {documentRequest?.transaction?.paymentReference}
                                                 </span>
                                             </h4>
                                         ) : (
                                             <h4 className="text-sm font-bold text-gray-400">
                                                 Payment Reference:{' '}
                                                 <span className="font-mono font-bold uppercase">
-                                                    {documentRequest?.transaction.paymentReference}
+                                                    {documentRequest?.transaction?.paymentReference}
                                                 </span>
                                             </h4>
                                         )}
