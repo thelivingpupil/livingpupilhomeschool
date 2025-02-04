@@ -201,8 +201,8 @@ const html = ({
                                                                                 style="margin: 0; margin-bottom: 4px; color:#ffffff;">
                                                                                 <b>Submit your child’s school ID entry
                                                                                 </b>using this link: <a
-                                                                                    href="https://forms.gle/SngPGpevT7cPNtrP6"
-                                                                                    style="text-decoration: underline; color: #ffffff;">https://forms.gle/SngPGpevT7cPNtrP6</a>
+                                                                                    href="bit.ly/LPSchoolIDSY25-26"
+                                                                                    style="text-decoration: underline; color: #ffffff;">bit.ly/LPSchoolIDSY25-26</a>
                                                                             </p>
                                                                         </li>
 
