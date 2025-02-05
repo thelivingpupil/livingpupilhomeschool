@@ -365,7 +365,7 @@ export const DOCUMENT_DETAILS = {
     fee: 150,
     requirement: {
       letter: "Request Letter",
-      form: "Filled out form"
+      form: "Filled out ECCD form"
     },
     processing_time: "5-7 business days"
   },

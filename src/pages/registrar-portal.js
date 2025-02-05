@@ -1111,6 +1111,23 @@ const RegistrarPortal = ({ page }) => {
                                                     Download ECCD Checklist
                                                 </a>
                                             </div>
+                                            <div className='text-sm'>
+                                                <label className="font-medium text-gray-700 mt-2">
+                                                    Please refer to the digital ECCD form and follow the instructions below to proceed with the request:
+                                                </label>
+                                                <ol className="list-decimal pl-5 mt-2">
+                                                    <li className='mt-1'>
+                                                        In the "Pre" column, place a checkmark if the student has already completed the described task in each domain: Gross Motor, Fine Motor, Self-help, Receptive Language, Expressive, Cognitive, and Social-Emotional.
+                                                    </li>
+                                                    <li className='mt-1'>
+                                                        If the student has not yet completed the task, guide her through it, then place a checkmark in the "Post" column.
+                                                    </li>
+                                                    <li className='mt-1'>
+                                                        Kindly leave the front page of the form blank.
+                                                    </li>
+                                                </ol>
+                                            </div>
+
                                         </div>
                                     </div>
                                 )}
