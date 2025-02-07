@@ -204,6 +204,14 @@ const DocumentRequest = () => {
                                     </span>
                                 </h4>
                             )}
+                            <div className='flex items-center space-x-5'>
+                                <h6>
+                                    {new Intl.NumberFormat('en-PH', {
+                                        style: 'currency',
+                                        currency: 'PHP',
+                                    }).format(document?.transaction?.amount || 0)}
+                                </h6>
+                            </div>
                             {document && document?.transaction && (
                                 <span
                                     className={`rounded-full py-0.5 text-sm px-2 ${STATUS_BG_COLOR[document?.transaction.paymentStatus]
@@ -213,17 +221,6 @@ const DocumentRequest = () => {
                                 </span>
                             )}
                         </div>
-                        {document?.transaction.paymentStatus !== TransactionStatus.S && (
-                            <div className='flex items-center space-x-5'>
-                                <h6>
-                                    {new Intl.NumberFormat('en-PH', {
-                                        style: 'currency',
-                                        currency: 'PHP',
-                                    }).format(document?.transaction?.amount || 0)}
-                                </h6>
-                            </div>
-
-                        )}
                     </div>
 
                     <div className="flex flex-col p-3 space-y-2">
