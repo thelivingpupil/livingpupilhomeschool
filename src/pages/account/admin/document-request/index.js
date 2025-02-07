@@ -35,6 +35,7 @@ const DocumentRequest = () => {
     const [document, setDocument] = useState(null);
     const [trackingCode, setTrackingCode] = useState("")
     const [region, setRegion] = useState("")
+    const [courier, setCourier] = useState("")
 
 
     function CustomToolbar() {
@@ -61,6 +62,10 @@ const DocumentRequest = () => {
         setRegion(event.target.value);
     };
 
+    const handleCourierChange = (event) => {
+        setCourier(event.target.value)
+    }
+
     const toggleModal = () => setModalVisibility(!showModal);
     const toggleUpdateRequestStatusModal = () => setUpdateRequestStatusModalVisibility(!showUpdateRequestStatusModal)
 
@@ -81,7 +86,8 @@ const DocumentRequest = () => {
                 document: document.documents,
                 documentCollection: document.documentCollection,
                 trackingCode: trackingCode,
-                region: region
+                region: region,
+                courier: courier
             },
             method: 'PATCH',
         })
@@ -290,21 +296,44 @@ const DocumentRequest = () => {
                                 </div>
                             </div>
                             {region === 'outside-cebu' && (
-                                <div className="mt-4 mb-4">
-                                    <label
-                                        htmlFor="deliveryAddress"
-                                        className={`block text-sm font-medium`}
-                                    >
-                                        LBC Tracking Code
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="trackingCodeLBC"
-                                        value={trackingCode}
-                                        onChange={handleTrackingCodeChange}
-                                        className={`mt-2 w-full p-2 border border-gray-300 rounded-md ${trackingCode === "" ? 'border-red-500 border-2' : 'border'}`}
-                                    />
-                                </div>
+                                <>
+                                    <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
+                                        <div className={`flex flex-col w-full`}>
+                                            <label className="text-sm font-medium mb-2" htmlFor="txtMother">
+                                                Courier <span className="ml-1 text-red-600">*</span>
+                                            </label>
+                                            <div className={`relative inline-block w-full rounded ${courier === "" ? 'border-red-500 border-2' : 'border'}`}>
+                                                <select
+                                                    className="w-full px-3 py-2 capitalize rounded appearance-none"
+                                                    value={courier}
+                                                    onChange={handleCourierChange}
+                                                >
+                                                    <option value="">--Select Courier--</option>
+                                                    <option value="spx">SPX</option>
+                                                    <option value="lc">LBC</option>
+                                                </select>
+                                                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                                    <ChevronDownIcon className="w-5 h-5" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 mb-4">
+                                        <label
+                                            htmlFor="deliveryAddress"
+                                            className={`block text-sm font-medium`}
+                                        >
+                                            Tracking Code/Link
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="trackingCodeLBC"
+                                            value={trackingCode}
+                                            onChange={handleTrackingCodeChange}
+                                            className={`mt-2 w-full p-2 border border-gray-300 rounded-md ${trackingCode === "" ? 'border-red-500 border-2' : 'border'}`}
+                                        />
+                                    </div>
+                                </>
                             )}
                         </>
 

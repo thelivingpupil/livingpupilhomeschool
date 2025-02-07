@@ -174,7 +174,8 @@ const handler = async (req, res) => {
                 document,
                 documentCollection,
                 trackingCode,
-                region
+                region,
+                courier
             } = req.body;
 
             if (!requestCode) {
@@ -234,8 +235,9 @@ const handler = async (req, res) => {
                                 studentFullName,
                                 document,
                                 trackingCode,
+                                courier
                             }),
-                            subject: `Documents Shipped via LBC for ${studentFullName}`,
+                            subject: `Documents Shipped for ${studentFullName}`,
                             text: outsideCebuText({ email }),
                             to: [email],
                             replyTo: process.env.ADMIN_EMAIL,

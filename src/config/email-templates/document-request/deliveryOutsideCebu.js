@@ -5,6 +5,7 @@ const html = ({
     studentFullName,
     document,
     trackingCode,
+    courier
 }) => {
     return `<!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -200,8 +201,12 @@ const html = ({
     }).join('')}
     </ul>
                                                                     <p style="margin-top: 20px; margin-bottom: 16px;">Here are the shipping details for your reference:</p>
-                                                                    <p style="margin-top: 20px; margin-bottom: 16px;">LBC Tracking Number: <strong>${trackingCode}</strong></p>
-                                                                    <p style="margin-top: 20px; margin-bottom: 16px;">You may track the shipment's status using the tracking number on the https://www.lbcexpress.com/bn/track</p>
+                                                                    ${courier === "lbc"
+            ? `<p>LBC Tracking Number: <strong>${trackingCode}</strong></p>
+           <p>You may track the shipment's status using the tracking number on the <a href="https://www.lbcexpress.com/bn/track" target="_blank">LBC Tracking Page</a>.</p>`
+            : `<p>Tracking Link: <strong><a href="${trackingCode}" target="_blank">${trackingCode}</a></strong></p>
+           <p>You may track the shipment by clicking the Tracking Link.</p>`
+        }
                                                                     <p style="margin: 0; margin-bottom: 16px;">Thank you for your trust in Living Pupil Homeschool. Should you have further inquiries, please feel free to contact us.</p>
                                                                     <p style="margin: 0; margin-bottom: 16px;">&nbsp;</p>
                                                                     <p style="margin: 0;">Best regards, </p>
