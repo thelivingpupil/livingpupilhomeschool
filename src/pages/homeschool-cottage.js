@@ -231,7 +231,7 @@ const HomeschoolCottage = ({ page, programs }) => {
             style={{ color: '#7189BE' }}
           >
             Tuition Fees and Payment Plan for{' '}
-            {ENROLLMENT_TYPE[program?.enrollmentType]} for SY 2024-2025
+            {ENROLLMENT_TYPE[program?.enrollmentType]} for SY 2025-2026
           </div>
         </div>
         {program?.tuitionFees?.map((tuitionFee) => (
