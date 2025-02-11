@@ -12,6 +12,32 @@ import {
     text as initialAcceptance2025Text,
 } from '@/config/email-templates/initial-acceptance2025';
 import { getParentFirstName } from '@/utils/index';
+import { GRADE_TO_FORM_MAP } from '@/utils/constants';
+import {
+    html as initialPreschool2025Html,
+    text as initialpreschool2025Text,
+} from '@/config/email-templates/initial-acceptance-2025-2026/preschool';
+import {
+    html as initialKindergarten2025Html,
+    text as initialKindergarten2025Text,
+} from '@/config/email-templates/initial-acceptance-2025-2026/kindergarten';
+import {
+    html as initialGradeschool2025Html,
+    text as initialGradeschool2025Text,
+} from '@/config/email-templates/initial-acceptance-2025-2026/gradeschool';
+import {
+    html as initialHighschool2025Html,
+    text as initialHighschool2025Text,
+} from '@/config/email-templates/initial-acceptance-2025-2026/highschool';
+import {
+    html as initialSenior2025Html,
+    text as initialSenior2025Text,
+} from '@/config/email-templates/initial-acceptance-2025-2026/senior-high';
+import {
+    html as initialCottage2025Html,
+    text as initialCottage2025Text,
+} from '@/config/email-templates/initial-acceptance-2025-2026/cottage-all';
+
 
 const handler = async (req, res) => {
     const { method } = req;
@@ -46,21 +72,100 @@ const handler = async (req, res) => {
             ]);
 
             const parentFirstName = getParentFirstName(primaryGuardianName);
-            console.log(primaryGuardianName)
-            console.log(schoolYear)
+
             if (studentStatus === 'INITIALLY_ENROLLED') {
                 if (schoolYear === "2025-2026") {
-                    await sendMail({
-                        html: initialAcceptance2025Html({
-                            parentFirstName,
-                        }),
-                        subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
-                        text: initialAcceptance2025Text({
-                            parentFirstName,
-                            firstName,
-                        }),
-                        to: [email],
-                    });
+                    if (program === "HOMESCHOOL_PROGRAM") {
+                        if (incomingGradeLevel === "PRESCHOOL") {
+                            await sendMail({
+                                html: initialPreschool2025Html({
+                                    parentFirstName,
+                                }),
+                                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
+                                text: initialpreschool2025Text({
+                                    parentFirstName,
+                                    firstName,
+                                }),
+                                to: [email],
+                            });
+                        } else if (incomingGradeLevel === "K1" || incomingGradeLevel === "K2") {
+                            await sendMail({
+                                html: initialKindergarten2025Html({
+                                    parentFirstName,
+                                }),
+                                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
+                                text: initialKindergarten2025Text({
+                                    parentFirstName,
+                                    firstName,
+                                }),
+                                to: [email],
+                            });
+                        } else if (incomingGradeLevel === "GRADE_1" ||
+                            incomingGradeLevel === "GRADE_2" ||
+                            incomingGradeLevel === "GRADE_3" ||
+                            incomingGradeLevel === "GRADE_4" ||
+                            incomingGradeLevel === "GRADE_5" ||
+                            incomingGradeLevel === "GRADE_6"
+                        ) {
+                            await sendMail({
+                                html: initialGradeschool2025Html({
+                                    parentFirstName,
+                                }),
+                                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
+                                text: initialGradeschool2025Text({
+                                    parentFirstName,
+                                    firstName,
+                                }),
+                                to: [email],
+                            });
+                        } else if (incomingGradeLevel === "GRADE_7" ||
+                            incomingGradeLevel === "GRADE_8" ||
+                            incomingGradeLevel === "GRADE_9" ||
+                            incomingGradeLevel === "GRADE_10"
+                        ) {
+                            await sendMail({
+                                html: initialHighschool2025Html({
+                                    parentFirstName,
+                                }),
+                                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
+                                text: initialHighschool2025Text({
+                                    parentFirstName,
+                                    firstName,
+                                }),
+                                to: [email],
+                            });
+                        } else if (incomingGradeLevel === "GRADE_11" || incomingGradeLevel === "GRADE_12") {
+                            await sendMail({
+                                html: initialSenior2025Html({
+                                    parentFirstName,
+                                }),
+                                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
+                                text: initialSenior2025Text({
+                                    parentFirstName,
+                                    firstName,
+                                }),
+                                to: [email],
+                            });
+                        } else {
+                            res.status(500).json({ error: 'Invallid Grade Level' });
+                        }
+
+                    } else if (program === "HOMESCHOOL_COTTAGE") {
+                        await sendMail({
+                            html: initialCottage2025Html({
+                                parentFirstName,
+                            }),
+                            subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
+                            text: initialCottage2025Text({
+                                parentFirstName,
+                                firstName,
+                            }),
+                            to: [email],
+                        });
+                    } else {
+                        res.status(500).json({ error: 'Invallid Program' });
+                    }
+
                 } else if (schoolYear === "2024-2025") {
                     await sendMail({
                         html: html({
@@ -104,7 +209,7 @@ const handler = async (req, res) => {
                 });
             }
             else {
-                res.status(500).json({ error: 'Status invalid' });
+                res.status(500).json({ error: 'maroerns' });
             }
 
             res.status(200).json({ message: 'Student status updated successfully' });
