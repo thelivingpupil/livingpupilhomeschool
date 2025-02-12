@@ -17,6 +17,7 @@ const html = ({
         body {
             margin: 0;
             padding: 0;
+            color: #fff;
         }
 
 
@@ -84,6 +85,10 @@ const html = ({
             .desktop_hide table {
                 display: table !important;
                 max-height: none !important;
+            }
+
+            .im {
+                color: #fff !important;
             }
         }
     </style>
@@ -228,7 +233,7 @@ const html = ({
                                                                             </p>
 
                                                                             <table border="1" cellspacing="0"
-                                                                                cellpadding="5">
+                                                                                cellpadding="5" style="color:#ffffff;" >
                                                                                 <thead>
                                                                                     <tr>
                                                                                         <td>Facebook group</td>
@@ -299,7 +304,7 @@ const html = ({
                                                                             </p>
 
                                                                             <table border="1" cellspacing="0"
-                                                                                cellpadding="5">
+                                                                                cellpadding="5" style="color:#ffffff;">
                                                                                 <tr>
                                                                                     <td rowspan="8"><b>District Group
                                                                                             Chats</b></td>
