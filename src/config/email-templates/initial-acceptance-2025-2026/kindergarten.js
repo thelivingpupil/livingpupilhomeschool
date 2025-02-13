@@ -220,7 +220,7 @@ const html = ({
                                                                                 or by purchasing the Talino Kindergarten Curriculum at 
                                                                                 <a href="https://charlottemasonphilippines.com/product/talino-charlotte-mason-curriculum-kinder/" style="text-decoration: underline; color: #ffffff;">
                                                                                     https://charlottemasonphilippines.com/product/talino-charlotte-mason-curriculum-kinder/
-                                                                                </a>.
+                                                                                </a>. Use the discount code <b>LPHS2025KINDER20</b> to avail of a 20% discount, exclusive to Living Pupil Homeschool families.
                                                                             </p>
                                                                         </li>
                                                                         <li style="margin: 0 0 10px 0;">
