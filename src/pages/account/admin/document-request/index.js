@@ -363,7 +363,14 @@ const DocumentRequest = () => {
                 subtitle="View and manage all user details and related data"
             />
             <Card>
-                <Card.Body title="List of Document Requests" b>
+                <Card.Body title="List of Document Requests" >
+                    <div>
+                        <Link href="/account/admin/document-request/requests-export">
+                            <a className="items-center px-3 py-2 space-x-2 text-sm text-white rounded bg-primary-500 hover:bg-primary-600">
+                                Generate Document Requests Master List
+                            </a>
+                        </Link>
+                    </div>
                     <div style={{ width: '100%' }}>
                         <div style={{ height: 680, width: '100%' }}>
                             <DataGrid
