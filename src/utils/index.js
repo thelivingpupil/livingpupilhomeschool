@@ -16,8 +16,8 @@ const deadlines = {
     // February
     {
       [PaymentType.ANNUAL]: [0],
-      [PaymentType.SEMI_ANNUAL]: [0, 4, 7],
-      [PaymentType.QUARTERLY]: [0, 4, 7, 10],
+      [PaymentType.SEMI_ANNUAL]: [0, 4, 8],
+      [PaymentType.QUARTERLY]: [0, 4, 8, 10],
       [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],
     },
