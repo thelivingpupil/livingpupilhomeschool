@@ -15,7 +15,7 @@ import {
   GRADE_LEVEL_GROUPS,
   GRADE_LEVEL_HEADER,
   calculateMonthlyPayment,
-  getMonthIndex,
+  getMonthIndexCurrent
 } from '@/utils/constants';
 import { PortableText } from '@portabletext/react';
 
@@ -41,7 +41,7 @@ const HomeschoolProgram = ({ page, programs }) => {
 
   const [monthIndex, setMonthIndex] = useState(null);
   useEffect(() => {
-    setMonthIndex(getMonthIndex(new Date()));
+    setMonthIndex(getMonthIndexCurrent(new Date()));
   }, []);
 
 

@@ -12,7 +12,7 @@ import {
   ENROLLMENT_TYPE,
   GRADE_LEVEL_HEADER,
   GRADE_LEVEL_TYPES,
-  getMonthIndex
+  getMonthIndexCurrent
 } from '@/utils/constants';
 import { PortableText } from '@portabletext/react';
 
@@ -66,7 +66,7 @@ const HomeschoolCottage = ({ page, programs }) => {
 
   const [monthIndex, setMonthIndex] = useState(null);
   useEffect(() => {
-    setMonthIndex(getMonthIndex(new Date()));
+    setMonthIndex(getMonthIndexCurrent(new Date()));
   }, []);
 
   return (

@@ -299,6 +299,38 @@ export const getMonthIndex = (date) => {
   return MONTHLY_INDEX[formattedMonthYear];
 };
 
+//this is used for the monthly iteration in createSchoolFees()
+export const MONTHLY_INDEX_CURRENT = {
+  JANUARY_2025: 8,
+  FEBRUARY_2025: 8,
+  MARCH_2025: 8,
+  APRIL_2025: 8,
+  MAY_2025: 8,
+  JUNE_2025: 8,
+  JULY_2025: 8,
+  AUGUST_2025: 8,
+  SEPTEMBER_2025: 8,
+  OCTOBER_2025: 7,
+  NOVEMBER_2025: 6,
+  DECEMBER_2025: 5,
+  JANUARY_2026: 4,
+  FEBRUARY_2026: 3,
+  MARCH_2026: 3,
+  APRIL_2026: 1,
+}
+
+//function to get the current month and year with format with the format of MONTHLY_INDEX
+export const getMonthIndexCurrent = (date) => {
+  const monthNames = [
+    "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
+    "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
+  ];
+
+  const formattedMonthYear = monthNames[date.getMonth()] + '_' + date.getFullYear();
+
+  return MONTHLY_INDEX_CURRENT[formattedMonthYear];
+};
+
 //function to get monthly payment
 export const calculateMonthlyPayment = (monthIndex, programFeeByAccreditation) => {
   const payments = programFeeByAccreditation?.paymentTerms[3] || {};

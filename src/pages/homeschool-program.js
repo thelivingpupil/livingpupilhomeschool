@@ -15,7 +15,7 @@ import {
   GRADE_LEVEL,
   GRADE_LEVEL_GROUPS,
   GRADE_LEVEL_HEADER,
-  getMonthIndex
+  getMonthIndexCurrent
 } from '@/utils/constants';
 import { PortableText } from '@portabletext/react';
 
@@ -60,7 +60,7 @@ const HomeschoolProgram = ({ page, programs }) => {
 
   const dateToday = new Date();
 
-  const monthIndex = getMonthIndex(dateToday)
+  const monthIndex = getMonthIndexCurrent(dateToday)
 
   return (
     <LandingLayout>
