@@ -52,6 +52,7 @@ import {
   RELIGION,
   SCHOOL_YEAR,
   getMonthIndex,
+  getMonthIndexCurrent,
   calculateMonthlyPayment,
   GRADE_TO_FORM_MAP
 } from '@/utils/constants';
@@ -214,7 +215,6 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     }
   };
   const validNumber = (value, countryData) => {
-    console.log(value + countryData.countryCode)
     if (countryData && countryData.countryCode === "ph" && value.length === 12) {
       return true
     } else if (countryData.countryCode !== "ph") {
@@ -846,8 +846,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const [monthIndex, setMonthIndex] = useState(null);
   const [monthlyPayment, setMonthlyPayment] = useState(0)
   useEffect(() => {
-    setMonthIndex(getMonthIndex(new Date()));
-  }, []);
+    if (schoolYear === '2024-2025') { setMonthIndex(getMonthIndex(new Date())); }
+    else { setMonthIndex(getMonthIndexCurrent(new Date())); }
+  }, [schoolYear]);
 
   useEffect(() => {
     if (accreditation !== null) {

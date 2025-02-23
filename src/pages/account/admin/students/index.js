@@ -26,6 +26,7 @@ import {
   STATUS_BG_COLOR,
   STATUS,
   getMonthIndex,
+  getMonthIndexCurrent,
   calculateMonthlyPayment,
 } from '@/utils/constants';
 import {
@@ -209,8 +210,6 @@ const Students = ({ schoolFees, programs }) => {
 
     return evaluate;
   });
-
-  console.log(schoolYear)
 
   const applyDiscount = () => {
     setSubmittingCodeState(true);
@@ -468,8 +467,11 @@ const Students = ({ schoolFees, programs }) => {
   const [monthIndex, setMonthIndex] = useState(null);
   const [monthlyPayment, setMonthlyPayment] = useState(0)
   useEffect(() => {
-    setMonthIndex(getMonthIndex(new Date()));
-  }, []);
+    if (schoolYear === '2024-2025') { setMonthIndex(getMonthIndex(new Date())); }
+    else { setMonthIndex(getMonthIndexCurrent(new Date())); }
+  }, [schoolYear]);
+
+  console.log("Month Index: " + monthIndex)
 
   useEffect(() => {
     if (accreditation !== null) {
@@ -747,8 +749,8 @@ const Students = ({ schoolFees, programs }) => {
               value={schoolYear}
             >
               <option value="">Please select School year...</option>
-              <option value={SCHOOL_YEAR.SY_2023_2024}>
-                {SCHOOL_YEAR.SY_2023_2024}
+              <option value={SCHOOL_YEAR.SY_2025_2026}>
+                {SCHOOL_YEAR.SY_2025_2026}
               </option>
               <option value={SCHOOL_YEAR.SY_2024_2025}>
                 {SCHOOL_YEAR.SY_2024_2025}

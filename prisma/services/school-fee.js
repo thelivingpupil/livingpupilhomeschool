@@ -200,7 +200,7 @@ export const createSchoolFees = async (
           fee.secondPayment -
           (discount.type === 'VALUE'
             ? discount.value
-            : (discount.value / 100) * fee.secondPayment),
+            : (discount.value / 100) * (fee.secondPayment + fee.thirdPayment)),
           fee.thirdPayment,
         ]
         : [fee.downPayment, fee.secondPayment, fee.thirdPayment];
@@ -329,7 +329,7 @@ export const createSchoolFees = async (
           fee.secondPayment -
           (discount.type === 'VALUE'
             ? discount.value
-            : (discount.value / 100) * fee.secondPayment),
+            : (discount.value / 100) * (fee.secondPayment + fee.thirdPayment + fee.thirdPayment + fee.fourthPayment)),
           fee.thirdPayment,
           fee.fourthPayment,
         ]
@@ -506,7 +506,7 @@ export const createSchoolFees = async (
       if (discount) {
         const discountValue = discount.type === 'VALUE'
           ? discount.value
-          : (discount.value / 100) * fee.secondPayment;
+          : (discount.value / 100) * totalPayment;
         payments[1] -= discountValue;
       }
     }

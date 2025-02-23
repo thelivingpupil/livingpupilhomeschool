@@ -55,6 +55,7 @@ import {
   RELIGION,
   SCHOOL_YEAR,
   getMonthIndex,
+  getMonthIndexCurrent,
   calculateMonthlyPayment,
   GRADE_TO_FORM_MAP
 } from '@/utils/constants';
@@ -251,7 +252,6 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
     }
   };
   const validNumber = (value, countryData) => {
-    console.log(value + countryData.countryCode)
     if (countryData && countryData.countryCode === "ph" && value.length === 12) {
       return true
     } else if (countryData.countryCode !== "ph") {
@@ -875,8 +875,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const [monthIndex, setMonthIndex] = useState(null);
   const [monthlyPayment, setMonthlyPayment] = useState(0)
   useEffect(() => {
-    setMonthIndex(getMonthIndex(new Date()));
-  }, []);
+    if (schoolYear === '2024-2025') { setMonthIndex(getMonthIndex(new Date())); }
+    else { setMonthIndex(getMonthIndexCurrent(new Date())); }
+  }, [schoolYear]);
 
   useEffect(() => {
     if (accreditation !== null) {
@@ -898,8 +899,6 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       setAccreditation(null);
     }
   };
-
-  console.log("Month Index: " + monthIndex + "\nMonthly Payment: " + monthlyPayment + "\nAccreditation: " + accreditation);
 
   // const calculateMonthlyPayment = () => {
   //   const programFeeByAccreditation = programFee?.tuitionFees.find(
@@ -2555,7 +2554,6 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                 onClick={() => {
                   setPayment(PaymentType.MONTHLY);
                   setFee(programFeeByAccreditation?.paymentTerms[3]);
-                  console.log(programs);
                 }}
               >
                 {payment === PaymentType.MONTHLY && (
