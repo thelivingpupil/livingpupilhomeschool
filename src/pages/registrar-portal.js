@@ -716,6 +716,21 @@ const RegistrarPortal = ({ page }) => {
                                         ))}
                                     </select>
                                 </div>
+
+                                <div className='text-sm mt-2'>
+                                    <label className="font-medium text-gray-700 mt-2">
+                                        <strong>Important Note:</strong>
+                                    </label>
+                                    <ul className="list-disc pl-5 mt-2">
+                                        <li className='mt-1'>
+                                            For Kindergarten 2 (K2) document requests, only the ECCD Checklist and Report Card (Form 138) are required by DepEd. Form 137 (Permanent Record) is not necessary.
+                                        </li>
+                                        <li className='mt-1'>
+                                            Please request only the required documents to streamline processing.
+                                        </li>
+
+                                    </ul>
+                                </div>
                             </div >
                         </div >
                     </div >
@@ -770,7 +785,7 @@ const RegistrarPortal = ({ page }) => {
                                             Select grade level
                                         </option>
                                         {Object.entries(GRADE_LEVEL).map(([key, value]) => (
-                                            <option key={key} value={value}>
+                                            <option key={key} value={value} disabled={selectedDocuments.includes("form_137") && (key === "GRADE_1" || key === "K2" || key === "K1" || key === "PRESCHOOL")}>
                                                 {value}
                                             </option>
                                         ))}
