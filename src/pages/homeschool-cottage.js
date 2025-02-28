@@ -497,7 +497,7 @@ const HomeschoolCottage = ({ page, programs }) => {
                       style: 'currency',
                       currency: 'PHP',
                     }).format(
-                      tuitionFee?.paymentTerms[3]?.downPayment +
+
                       tuitionFee?.paymentTerms[3]?.secondPayment +
                       tuitionFee?.paymentTerms[3]?.thirdPayment +
                       tuitionFee?.paymentTerms[3]?.fourthPayment +
