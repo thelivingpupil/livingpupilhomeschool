@@ -2,8 +2,6 @@ import { PaymentType } from '@prisma/client';
 import add from 'date-fns/add';
 import format from 'date-fns/format';
 import { addMonths, setDate } from 'date-fns';
-import { PARENT_TRAINING_PER_GRADE_LEVEL } from './constants';
-import { createParentTraining } from '@/prisma/services/parent-training';
 
 const deadlines = {
   currentYear: [
