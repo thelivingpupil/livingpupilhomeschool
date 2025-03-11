@@ -2,6 +2,8 @@ import { PaymentType } from '@prisma/client';
 import add from 'date-fns/add';
 import format from 'date-fns/format';
 import { addMonths, setDate } from 'date-fns';
+import { PARENT_TRAINING_PER_GRADE_LEVEL } from './constants';
+import { createParentTraining } from '@/prisma/services/parent-training';
 
 const deadlines = {
   currentYear: [
@@ -58,7 +60,7 @@ const deadlines = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 6],
       [PaymentType.QUARTERLY]: [0, 3, 6, 7],
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],
     },
     // August
@@ -66,7 +68,7 @@ const deadlines = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 6],
       [PaymentType.QUARTERLY]: [0, 2, 4, 6],
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],
     },
     // September
@@ -74,7 +76,7 @@ const deadlines = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 1, 5],
       [PaymentType.QUARTERLY]: [0, 2, 4, 5],
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],
     },
     // October
@@ -82,7 +84,7 @@ const deadlines = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 1, 4],
       [PaymentType.QUARTERLY]: [0, 2, 3, 4],
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],
     },
     // November
@@ -90,7 +92,7 @@ const deadlines = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 3],
       [PaymentType.QUARTERLY]: [0, 2, 3, 0],
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],
     },
     // December
@@ -98,7 +100,7 @@ const deadlines = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 1, 2],
       [PaymentType.QUARTERLY]: [0, 1, 2],
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],
     },
   ],
@@ -108,7 +110,7 @@ const deadlines = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 1],
       [PaymentType.QUARTERLY]: [0, 1],
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],
     },
     // February
@@ -116,7 +118,7 @@ const deadlines = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 1, 3],
       [PaymentType.QUARTERLY]: [0, 1, 2, 3],
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],
     },
     // March
@@ -124,7 +126,7 @@ const deadlines = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 0, 0],
       [PaymentType.QUARTERLY]: [0, 0, 0, 0],
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],
     },
     // April
@@ -345,8 +347,8 @@ export const getSenderDetails = (sender) => {
 
   switch (sender) {
     case 'admin':
-      senderRole = "Admin Officer"
-      senderFullName = "Ameline Baran"
+      senderRole = "Admin Assistant"
+      senderFullName = "Mynelyn C. Namacpacan"
       break;
     case 'finance':
       senderRole = "Finance Officer"
