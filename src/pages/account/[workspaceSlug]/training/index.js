@@ -24,10 +24,10 @@ const Training = ({ courses }) => {
           <Content.Container>
             <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
               {courses.map((course, index) =>
-                course.gradeLevel.includes(
-                  workspace.studentRecord.incomingGradeLevel
+                course.gradeLevel?.includes(
+                  workspace.studentRecord?.incomingGradeLevel
                 ) &&
-                course.curriculum?.includes(workspace.studentRecord.program) ? (
+                  course.curriculum?.includes(workspace.studentRecord.program) ? (
                   <Card key={index}>
                     <Card.Body
                       title={course.title}
