@@ -13,13 +13,13 @@ import { PARENT_TRAINING_CODES } from '@/utils/constants';
 
 const Course = ({ course }) => {
   const { workspace } = useWorkspace();
-  const parentCourses = workspace?.creator?.guardianInformation.parentTraining.map(training => training.courseCode);
+  const parentCourses = workspace?.creator?.guardianInformation.parentTraining?.map(training => training.courseCode);
   const courseCode = course.code;
   const guardianId = workspace?.creator.guardianInformation.id
   const schoolYear = workspace?.studentRecord.schoolYear
   const [isSubmitting, setSubmittingState] = useState(false);
 
-  const filteredTraining = workspace?.creator.guardianInformation.parentTraining.find(
+  const filteredTraining = workspace?.creator.guardianInformation.parentTraining?.find(
     (training) =>
       training.courseCode === courseCode &&
       training.schoolYear === schoolYear
