@@ -71,6 +71,12 @@ const adminSidebarMenu = () => [
         path: `/account/admin/document-request`,
         showDefault: true,
       },
+      {
+        name: 'Parent Training',
+        icon: UsersIcon,
+        path: `/account/admin/parent-training`,
+        showDefault: true,
+      },
     ],
   },
   {

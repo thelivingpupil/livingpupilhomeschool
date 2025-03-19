@@ -409,3 +409,201 @@ export const PURPOSE_OPTIONS = [
   { value: "school-request", label: "School Request" },
   { value: "unit-district-meet", label: "Unit/District Meet" },
 ];
+
+export const PARENT_TRAINING_STATUS_BG_COLOR = {
+  FINISHED: 'bg-green-600 text-white',
+  UNFINISHED: 'bg-secondary-500 text-white',
+};
+
+export const PARENT_TRAINING_CODES = {
+  'PT12025': {
+    name: "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    code: "250720838017454"
+  },
+  'PT22025': {
+    name: "The Feast (K, Form 1,2,3)",
+    code: "250720838017454"
+  },
+  'PT32025': {
+    name: "Know and Tell: The Power of Narration",
+    code: "250721715259457"
+  },
+  'PT42025': {
+    name: "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    code: "250721126530445"
+  },
+  'PT52025': {
+    name: "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
+    code: "250721217308449"
+  },
+  'PT62025': {
+    name: "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    code: "250721467672460",
+  },
+  'PT72025': {
+    name: "Living Journals: Essential Notebooks for a Charlotte Mason Education",
+    code: "250721677794468",
+  },
+  'PT82025': {
+    name: "The Blueprint",
+    code: "250721366816458",
+  },
+  'PT92025': {
+    name: "The Timetable",
+    code: "250722334457455"
+  },
+  'PT102025': {
+    name: "Developing a Rhytmn: Education is Life",
+    code: "250721545672457"
+  }
+}
+
+
+export const PARENT_TRAINING_PER_GRADE_LEVEL = {
+  PRESCHOOL: {
+    'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    'PT22025': "2. The Feast (K, Form 1,2,3)",
+    'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    'PT82025': "The Blueprint",
+    'PT92025': "The Timetable",
+    'PT102025': "Developing a Rhytmn: Education is Life"
+  },
+  K1: {
+    'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    'PT22025': "2. The Feast (K, Form 1,2,3)",
+    'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    'PT82025': "The Blueprint",
+    'PT92025': "The Timetable",
+    'PT102025': "Developing a Rhytmn: Education is Life"
+  },
+  K2: {
+    'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    'PT22025': "2. The Feast (K, Form 1,2,3)",
+    'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    'PT82025': "The Blueprint",
+    'PT92025': "The Timetable",
+    'PT102025': "Developing a Rhytmn: Education is Life"
+  },
+  'GRADE_1': {
+    'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT32025': "Know and Tell: The Power of Narration",
+    'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    'PT52025': "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
+    'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    'PT72025': "Living Journals: Essential Notebooks for a Charlotte Mason Education",
+    'PT82025': "The Blueprint",
+    'PT92025': "The Timetable",
+    'PT102025': "Developing a Rhytmn: Education is Life"
+  },
+  GRADE_2: {
+    'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT32025': "Know and Tell: The Power of Narration",
+    'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    'PT52025': "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
+    'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    'PT72025': "Living Journals: Essential Notebooks for a Charlotte Mason Education",
+    'PT82025': "The Blueprint",
+    'PT102025': "Developing a Rhytmn: Education is Life"
+  },
+  GRADE_3: {
+    'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT32025': "Know and Tell: The Power of Narration",
+    'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    'PT52025': "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
+    'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    'PT72025': "Living Journals: Essential Notebooks for a Charlotte Mason Education",
+    'PT82025': "The Blueprint",
+    'PT92025': "The Timetable",
+    'PT102025': "Developing a Rhytmn: Education is Life"
+  },
+  GRADE_4: {
+    'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT32025': "Know and Tell: The Power of Narration",
+    'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    'PT52025': "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
+    'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    'PT72025': "Living Journals: Essential Notebooks for a Charlotte Mason Education",
+    'PT82025': "The Blueprint",
+    'PT92025': "The Timetable",
+    'PT102025': "Developing a Rhytmn: Education is Life"
+  },
+  GRADE_5: {
+    'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    'PT22025': "2. The Feast (K, Form 1,2,3)",
+    'PT32025': "Know and Tell: The Power of Narration",
+    'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    'PT52025': "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
+    'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    'PT72025': "Living Journals: Essential Notebooks for a Charlotte Mason Education",
+    'PT82025': "The Blueprint",
+    'PT92025': "The Timetable",
+    'PT102025': "Developing a Rhytmn: Education is Life"
+  },
+  GRADE_6: {
+    'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT32025': "Know and Tell: The Power of Narration",
+    'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    'PT52025': "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
+    'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    'PT72025': "Living Journals: Essential Notebooks for a Charlotte Mason Education",
+    'PT82025': "The Blueprint",
+    'PT92025': "The Timetable",
+    'PT102025': "Developing a Rhytmn: Education is Life"
+  },
+  GRADE_7: {
+    'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT32025': "Know and Tell: The Power of Narration",
+    'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    'PT72025': "Living Journals: Essential Notebooks for a Charlotte Mason Education",
+    'PT82025': "The Blueprint",
+    'PT92025': "The Timetable",
+    'PT102025': "Developing a Rhytmn: Education is Life"
+  },
+  GRADE_8: {
+    'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT32025': "Know and Tell: The Power of Narration",
+    'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    'PT72025': "Living Journals: Essential Notebooks for a Charlotte Mason Education",
+    'PT82025': "The Blueprint",
+    'PT92025': "The Timetable",
+    'PT102025': "Developing a Rhytmn: Education is Life"
+  },
+  GRADE_9: {
+    'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT32025': "Know and Tell: The Power of Narration",
+    'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    'PT72025': "Living Journals: Essential Notebooks for a Charlotte Mason Education",
+    'PT82025': "The Blueprint",
+    'PT92025': "The Timetable",
+    'PT102025': "Developing a Rhytmn: Education is Life"
+  },
+  GRADE_10: {
+    'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
+    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT32025': "Know and Tell: The Power of Narration",
+    'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
+    'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
+    'PT72025': "Living Journals: Essential Notebooks for a Charlotte Mason Education",
+    'PT82025': "The Blueprint",
+    'PT92025': "The Timetable",
+    'PT102025': "Developing a Rhytmn: Education is Life"
+  },
+  GRADE_11: {
+  },
+  GRADE_12: {
+  },
+}

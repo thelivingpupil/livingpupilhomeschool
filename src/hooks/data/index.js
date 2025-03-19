@@ -18,6 +18,7 @@ import useUsersCount from './useUsersCount';
 import useWorkspaces from './useWorkspaces';
 import useSchoolFees from './useSchoolFees';
 import useDocuments from './useDocuments';
+import useParentTrainings from './useParentTraining'
 
 export {
   useDocuments,
@@ -40,4 +41,5 @@ export {
   useUsersCount,
   useWorkspaces,
   useSchoolFees,
+  useParentTrainings,
 };

@@ -1,14 +1,58 @@
 import { PortableText } from '@portabletext/react';
-
+import { useState } from 'react';
 import Card from '@/components/Card';
 import Content from '@/components/Content';
 import Meta from '@/components/Meta';
 import AccountLayout from '@/layouts/AccountLayout';
 import sanityClient from '@/lib/server/sanity';
 import { useWorkspace } from '@/providers/workspace';
+import toast from 'react-hot-toast';
+import api from '@/lib/common/api';
+import JotFormEmbed from 'react-jotform-embed';
+import { PARENT_TRAINING_CODES } from '@/utils/constants';
 
 const Course = ({ course }) => {
   const { workspace } = useWorkspace();
+  const parentCourses = workspace?.creator?.guardianInformation.parentTraining.map(training => training.courseCode);
+  const courseCode = course.code;
+  const guardianId = workspace?.creator.guardianInformation.id
+  const schoolYear = workspace?.studentRecord.schoolYear
+  const [isSubmitting, setSubmittingState] = useState(false);
+
+  const filteredTraining = workspace?.creator.guardianInformation.parentTraining.find(
+    (training) =>
+      training.courseCode === courseCode &&
+      training.schoolYear === schoolYear
+  );
+
+  console.log(filteredTraining)
+
+  const courseComplete = () => {
+    setSubmittingState(true);
+    api('/api/parent-training', {
+      body: {
+        courseCode,
+        guardianId,
+        schoolYear,
+        trainingStatus: 'FINISHED'
+      },
+      method: 'PATCH',
+    })
+      .then(response => {
+        setSubmittingState(false);
+        if (response.errors) {
+          Object.keys(response.errors).forEach((error) =>
+            toast.error(response.errors[error].msg)
+          );
+        } else {
+          toast.success('Update training status success');
+        }
+      })
+      .catch(error => {
+        setSubmittingState(false);
+        toast.error(`Error updating training status: ${error.message}`);
+      });
+  };
 
   return (
     workspace && (
@@ -51,6 +95,36 @@ const Course = ({ course }) => {
                 ))}
               </Card.Body>
             </Card>
+
+            {parentCourses.includes(course.code) ? (
+              filteredTraining?.status !== 'FINISHED' ? (
+                <Card>
+                  <Card.Body title="Course Assessment">
+                    <JotFormEmbed
+                      src={`https://form.jotform.com/${PARENT_TRAINING_CODES[course.code].code}`}
+                      scrolling={true}
+                      style={{ height: '100%' }}
+                    />
+                    <div className="flex justify-center space-x-3 mt-3">
+                      <button
+                        onClick={courseComplete}
+                        className="bg-blue-500 text-white px-3 py-1 rounded h-12"
+                        disabled={isSubmitting}
+                      >
+                        Mark Course as Complete
+                      </button>
+                    </div>
+                  </Card.Body>
+                </Card>
+              ) : (
+                <div className="flex justify-center mt-3">
+                  <span className="bg-green-500 text-white px-3 py-1 rounded-full">
+                    COURSE {filteredTraining?.status}
+                  </span>
+                </div>
+              )
+            ) : null}
+
           </Content.Container>
         ) : (
           <div className="px-3 py-3 text-sm text-red-500 border-2 border-red-600 rounded bg-red-50">

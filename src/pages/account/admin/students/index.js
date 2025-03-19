@@ -471,8 +471,6 @@ const Students = ({ schoolFees, programs }) => {
     else { setMonthIndex(getMonthIndexCurrent(new Date())); }
   }, [schoolYear]);
 
-  console.log("Month Index: " + monthIndex)
-
   useEffect(() => {
     if (accreditation !== null) {
       const programFeeByAccreditation = programFee?.tuitionFees.find(
@@ -1424,7 +1422,6 @@ const Students = ({ schoolFees, programs }) => {
                 className="px-3 py-1 my-1 text-white rounded bg-red-600 hover:bg-red-400"
                 onClick={() => {
                   deleteStudentRecord(studentId, inviteCode);
-                  //console.log('invite:' + inviteCode + ' ID:' + studentId)
                 }}
               >
                 delete

@@ -58,27 +58,42 @@ model Domain {
 }
 
 model GuardianInformation {
-  id                          String        @id @default(cuid())
-  userId                      String        @unique
+  id                          String           @id @default(cuid())
+  userId                      String           @unique
   primaryGuardianName         String?
   primaryGuardianOccupation   String?
-  primaryGuardianType         GuardianType? @default(LEGAL_GUARDIAN)
+  primaryGuardianType         GuardianType?    @default(LEGAL_GUARDIAN)
   primaryGuardianProfile      String?
   secondaryGuardianName       String?
   secondaryGuardianOccupation String?
-  secondaryGuardianType       GuardianType? @default(LEGAL_GUARDIAN)
+  secondaryGuardianType       GuardianType?    @default(LEGAL_GUARDIAN)
   secondaryGuardianProfile    String?
   mobileNumber                String?
   telephoneNumber             String?
   anotherEmail                String?
   address1                    String?
   address2                    String?
-  createdAt                   DateTime?     @default(now())
+  createdAt                   DateTime?        @default(now())
   deletedAt                   DateTime?
-  updatedAt                   DateTime?     @updatedAt
-  user                        User          @relation(fields: [userId], references: [id])
+  updatedAt                   DateTime?        @updatedAt
+  user                        User             @relation(fields: [userId], references: [id])
+  parentTraining              ParentTraining[]
 
   @@map("guardianInformation")
+}
+
+model ParentTraining {
+  id         String              @id @default(cuid())
+  guardianId String
+  courseCode String
+  status     String
+  schoolYear String
+  guardian   GuardianInformation @relation(fields: [guardianId], references: [id])
+  createdAt  DateTime?           @default(now())
+  deletedAt  DateTime?
+  updatedAt  DateTime?           @updatedAt
+
+  @@map("parentTraining")
 }
 
 model Inquiry {
