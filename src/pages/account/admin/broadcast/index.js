@@ -55,17 +55,20 @@ const Broadcast = () => {
     const [attachments, setAttachments] = useState([]);
     const [ccEmails, setCcEmails] = useState([]); // State for CC emails
     const [ccInput, setCcInput] = useState(''); // State for input field
+    const [schoolYear, setSchoolYear] = useState('');
 
     const handleFileChange = (event) => {
         const files = Array.from(event.target.files);
         setAttachments(files); // Store selected files in the state
     };
 
+    const handleSchoolYearChange = (e) => {
+        setSchoolYear(e.target.value);
+    }
 
-
-    const filterEnrolledStudents = (studentsData) => {
+    const filterEnrolledStudents = (studentsData, schoolYear) => {
         return studentsData.students.filter(student =>
-            student.schoolYear === "2024-2025" &&
+            student.schoolYear === schoolYear &&
             student.student.schoolFees[0]?.transaction.paymentStatus === "S"
         );
     };
@@ -116,8 +119,7 @@ const Broadcast = () => {
     // Filter students based on selected filters
     useEffect(() => {
         if (studentsData && (filterValues.length > 0 || program.length > 0 || accreditation.length > 0)) {
-            let filtered = filterEnrolledStudents(studentsData);
-
+            let filtered = filterEnrolledStudents(studentsData, schoolYear);
             // Log the initial list of students
             //console.log('Initial students list:', filtered);
 
@@ -168,7 +170,7 @@ const Broadcast = () => {
             setFilteredStudents(studentsData?.students || []);
             //console.log('No filters applied, showing all students.');
         }
-    }, [filterValues, filterBy, program, accreditation, studentsData]);
+    }, [filterValues, filterBy, program, accreditation, studentsData, schoolYear]);
 
 
     // Extract guardian emails after filtering students
@@ -382,6 +384,26 @@ const Broadcast = () => {
                     {/* Show either filters or single email input based on the selection */}
                     {emailSendType === 'auto' && (
                         <div>
+                            <div className="mb-4 lg:w-1/4">
+                                <label className="text-lg font-bold mr-5">School Year</label>
+                                <div
+                                    className={`relative inline-block w-full ${schoolYear.length <= 0 ? 'border-red-500 border-2 rounded' : 'border-none'}`}
+                                >
+                                    <select
+                                        className="w-full px-3 py-2 appearance-none rounded border"
+                                        onChange={handleSchoolYearChange}
+                                        value={schoolYear}
+                                    >
+                                        <option value="">Select School Year</option>
+                                        <option value="2024-2025">2024-2025</option>
+                                        <option value="2025-2026">2025-2026</option>
+
+                                    </select>
+                                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                        <ChevronDownIcon className="w-5 h-5" />
+                                    </div>
+                                </div>
+                            </div>
                             {/* Filter and Sender Section */}
                             <div className="flex flex-col">
                                 <div className="flex flex-col w-full md:w-1/2 space-y-2">
