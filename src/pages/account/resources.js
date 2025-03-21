@@ -27,6 +27,16 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
       ?.map((workspace) => workspace?.studentRecord?.incomingGradeLevel);
   }, [data]);
 
+  const availableSchoolYear = useMemo(() => {
+    if (!data) {
+      return [];
+    }
+
+    return data?.workspaces
+      ?.filter((workspace) => workspace?.studentRecord)
+      ?.map((workspace) => workspace?.studentRecord?.schoolYear);
+  }, [data]);
+
   const availablePrograms = useMemo(() => {
     if (!data) {
       return [];
@@ -76,7 +86,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
         )
         ?.filter((lessonPlan) => {
           const isProgramLevelValid = lessonPlan?.program
-            ? availablePrograms.includes(lessonPlan?.program)
+            ? availablePrograms.includes(lessonPlan?.program) && availableSchoolYear.includes(lessonPlan?.schoolYear)
             : true;
 
           return (
@@ -95,7 +105,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
         )
         ?.filter((blueprints) => {
           const isProgramLevelValid = blueprints?.program
-            ? availablePrograms.includes(blueprints?.program)
+            ? availablePrograms.includes(blueprints?.program) && availableSchoolYear.includes(blueprints?.schoolYear)
             : true;
 
           return (
@@ -134,7 +144,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
         )
         ?.filter((booklist) => {
           const isProgramLevelValid = booklist?.program
-            ? availablePrograms.includes(booklist?.program)
+            ? availablePrograms.includes(booklist?.program) && availableSchoolYear.includes(booklist?.schoolYear)
             : true;
 
           return (
@@ -153,7 +163,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
         )
         ?.filter((recitation) => {
           const isProgramLevelValid = recitation?.program
-            ? availablePrograms.includes(recitation?.program)
+            ? availablePrograms.includes(recitation?.program) && availableSchoolYear.includes(recitation?.schoolYear)
             : true;
 
           return (
@@ -172,7 +182,7 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
         )
         ?.filter((commonSubjects) => {
           const isProgramLevelValid = commonSubjects?.program
-            ? availablePrograms.includes(commonSubjects?.program)
+            ? availablePrograms.includes(commonSubjects?.program) && availableSchoolYear.includes(commonSubjects?.schoolYear)
             : true;
 
           return (
@@ -385,30 +395,35 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
 
 export const getServerSideProps = async () => {
   const lessonPlans = await sanityClient.fetch(`*[_type == 'lessonPlans']{
+    'schoolYear': schoolYear,
     'grade': gradeLevel,
     'program': programType,
     'fileUrl': lessonPlanFile.asset->url
   }`);
 
   const blueprints = await sanityClient.fetch(`*[_type == 'blueprints']{
+    'schoolYear': schoolYear,
     'grade': gradeLevel,
     'program': programType,
     'fileUrl': blueprintFile.asset->url
   }`);
 
   const booklist = await sanityClient.fetch(`*[_type == 'booklist']{
+    'schoolYear': schoolYear,
     'grade': gradeLevel,
     'program': programType,
     'fileUrl': booklistFile.asset->url
   }`);
 
   const recitation = await sanityClient.fetch(`*[_type == 'recitation']{
+    'schoolYear': schoolYear,
     'grade': gradeLevel,
     'program': programType,
     'fileUrl': recitaionFile.asset->url
   }`);
 
   const commonSubjects = await sanityClient.fetch(`*[_type == 'commonSubjects']{
+    'schoolYear': schoolYear,
     'grade': gradeLevel,
     'program': programType,
     'fileUrl': commonSubjectsFile.asset->url
