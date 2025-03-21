@@ -26,7 +26,8 @@ const Training = ({ courses }) => {
               {courses.map((course, index) =>
                 course.gradeLevel?.includes(
                   workspace.studentRecord?.incomingGradeLevel
-                ) &&
+                ) && course.schoolYear?.includes(workspace.studentRecord?.schoolYear)
+                  &&
                   course.curriculum?.includes(workspace.studentRecord.program) ? (
                   <Card key={index}>
                     <Card.Body
