@@ -29,6 +29,8 @@ const Course = ({ course }) => {
     )
     : null;
 
+  console.log(course)
+
   const courseComplete = () => {
     setSubmittingState(true);
     api('/api/parent-training', {
@@ -69,16 +71,28 @@ const Course = ({ course }) => {
             <Card>
               <Card.Body title="Watch This Training Video">
                 <div className="mb-5 space-y-5">
-                  {course.video.split(',').map((videoUrl, index) => (
-                    <div key={index} className="aspect-w-16 aspect-h-9 rounded-xl overflow-clip">
-                      <iframe
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        frameBorder="0"
-                        src={videoUrl.trim()}
-                      ></iframe>
-                    </div>
-                  ))}
+                  {course.video && course.video.includes(',')
+                    ? course.video.split(',').map((videoUrl, index) => (
+                      <div key={index} className="aspect-w-16 aspect-h-9 rounded-xl overflow-clip">
+                        <iframe
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          frameBorder="0"
+                          src={videoUrl.trim()}
+                        ></iframe>
+                      </div>
+                    ))
+                    : course.video ? (
+                      <div className="aspect-w-16 aspect-h-9 rounded-xl overflow-clip">
+                        <iframe
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          frameBorder="0"
+                          src={course.video.trim()}
+                        ></iframe>
+                      </div>
+                    ) : null
+                  }
                 </div>
               </Card.Body>
             </Card>
