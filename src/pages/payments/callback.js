@@ -16,20 +16,19 @@ const Callback = ({ success, transaction }) => {
               <span className="block">Transaction Details</span>
             </h1>
             <h2
-              className={`text-4xl font-bold text-center ${
-                transaction?.paymentStatus === TransactionStatus.S
-                  ? 'text-emerald-600'
-                  : transaction?.paymentStatus === TransactionStatus.P
+              className={`text-4xl font-bold text-center ${transaction?.paymentStatus === TransactionStatus.S
+                ? 'text-emerald-600'
+                : transaction?.paymentStatus === TransactionStatus.P
                   ? 'text-amber-600'
                   : 'text-red-600'
-              }`}
+                }`}
             >
               Payment{' '}
               {transaction?.paymentStatus === TransactionStatus.S
                 ? 'Successful'
                 : transaction?.paymentStatus === TransactionStatus.P
-                ? 'Pending'
-                : 'Failed'}
+                  ? 'Pending'
+                  : 'Failed'}
             </h2>
           </div>
           {success ? (
@@ -60,7 +59,7 @@ const Callback = ({ success, transaction }) => {
                     <tr>
                       <td className="py-2 text-gray-400">Payment Date</td>
                       <td className="py-2 font-medium text-right">
-                        {transaction.createdAt}
+                        {transaction.updatedAt}
                       </td>
                     </tr>
                   </tbody>
