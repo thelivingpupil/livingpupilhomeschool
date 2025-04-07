@@ -521,7 +521,7 @@ export const createSchoolFees = async (
 
     const transactionIds = await Promise.all(purchaseHistoryPromises);
     const transactionPromises = transactionIds.map((transaction, index) => {
-      const total = payments[index] + calculatedMisc + FEES[paymentMethod] - (index > 0 ? calculatedScholarship : 0); // Apply scholarship only from the second payment onwards
+      const total = payments[index] + (index > 0 ? calculatedMisc : 0) + FEES[paymentMethod] - (index > 0 ? calculatedScholarship : 0); // Apply scholarship only from the second payment onwards
       return createTransaction(
         userId,
         email,
