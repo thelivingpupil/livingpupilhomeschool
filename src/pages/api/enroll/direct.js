@@ -15,6 +15,7 @@ import { updateGuardianInformation } from '@/prisma/services/user';
 import { createWorkspaceWithSlug } from '@/prisma/services/workspace';
 import { SCHOOL_YEAR } from '@/utils/constants';
 import { STUDENT_STATUS } from '@/utils/constants';
+import { getGuardianInformationID, createParentTrainingsForGrade } from '@/prisma/services/parent-training';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -94,7 +95,7 @@ const handler = async (req, res) => {
     };
 
     const parentName = getParentName(primaryGuardianName);
-
+    const guardianInfoId = await getGuardianInformationID(session.user.userId);
     const workspace = await createWorkspaceWithSlug(
       session.user.userId,
       session.user.email,
@@ -151,6 +152,7 @@ const handler = async (req, res) => {
         monthIndex,
       ),
       updateGuardianInformation(session.user.userId, guardianInformation),
+      createParentTrainingsForGrade(incomingGradeLevel, guardianInfoId, schoolYear, 'UNFINISHED')
     ]);
     const url = schoolFee.url;
     await sendMail({
