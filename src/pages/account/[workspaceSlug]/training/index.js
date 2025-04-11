@@ -8,6 +8,7 @@ import Link from 'next/link';
 
 const Training = ({ courses }) => {
   const { workspace } = useWorkspace();
+  const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
 
   return (
     workspace && (
@@ -23,27 +24,27 @@ const Training = ({ courses }) => {
         {workspace.studentRecord ? (
           <Content.Container>
             <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-              {courses.map((course, index) =>
-                course.gradeLevel?.includes(
-                  workspace.studentRecord?.incomingGradeLevel
-                ) && course.schoolYear?.includes(workspace.studentRecord?.schoolYear)
-                  &&
-                  course.curriculum?.includes(workspace.studentRecord.program) ? (
+              {courses
+                .filter(
+                  (course) =>
+                    course.gradeLevel?.includes(workspace.studentRecord?.incomingGradeLevel) &&
+                    course.schoolYear?.includes(workspace.studentRecord?.schoolYear) &&
+                    course.curriculum?.includes(workspace.studentRecord.program)
+                )
+                .sort((a, b) => collator.compare(a.code, b.code))
+                .map((course, index) => (
                   <Card key={index}>
                     <Card.Body
                       title={course.title}
                       subtitle={course.description}
                     />
                     <Card.Footer>
-                      <Link
-                        href={`/account/${workspace.slug}/training/${course.code}`}
-                      >
+                      <Link href={`/account/${workspace.slug}/training/${course.code}`}>
                         <a className="text-primary-600">Open Course</a>
                       </Link>
                     </Card.Footer>
                   </Card>
-                ) : null
-              )}
+                ))}
             </div>
           </Content.Container>
         ) : (
