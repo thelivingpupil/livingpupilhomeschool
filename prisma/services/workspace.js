@@ -265,7 +265,12 @@ export const getWorkspace = async (id, email, slug) =>
       inviteCode: true,
       slug: true,
       workspaceCode: true,
-      creator: { select: { email: true } },
+      creator: {
+        select: {
+          email: true,
+          guardianInformation: true,
+        },
+      },
       members: {
         select: {
           email: true,
@@ -361,6 +366,12 @@ export const getWorkspaces = async (id, email) => {
         select: {
           email: true,
           name: true,
+          guardianInformation: {
+            select: {
+              id: true,
+              parentTraining: true,
+            }
+          }
         },
       },
       inviteCode: true,
