@@ -418,43 +418,53 @@ export const PARENT_TRAINING_STATUS_BG_COLOR = {
 export const PARENT_TRAINING_CODES = {
   'PT12025': {
     name: "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
-    code: "250720838017454"
+    code: "250720838017454",
+    sequence: "Parent Training 1"
   },
   'PT22025': {
     name: "The Feast (K, Form 1,2,3)",
-    code: "250720838017454"
+    code: "250720838017454",
+    sequence: "Parent Training 2"
   },
   'PT32025': {
     name: "Know and Tell: The Power of Narration",
-    code: "250721715259457"
+    code: "250721715259457",
+    sequence: "Parent Training 3"
   },
   'PT42025': {
     name: "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
-    code: "250721126530445"
+    code: "250721126530445",
+    sequence: "Parent Training 4"
   },
   'PT52025': {
     name: "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
-    code: "250721217308449"
+    code: "250721217308449",
+    sequence: "Parent Training 5"
   },
   'PT62025': {
     name: "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
     code: "250721467672460",
+    sequence: "Parent Training 6"
   },
   'PT72025': {
     name: "Living Journals: Essential Notebooks for a Charlotte Mason Education",
     code: "250721677794468",
+    sequence: "Parent Training 7"
   },
   'PT82025': {
     name: "The Blueprint",
     code: "250721366816458",
+    sequence: "Parent Training 8"
   },
   'PT92025': {
     name: "The Timetable",
-    code: "250722334457455"
+    code: "250722334457455",
+    sequence: "Parent Training 9"
   },
   'PT102025': {
     name: "Developing a Rhytmn: Education is Life",
-    code: "250721545672457"
+    code: "250721545672457",
+    sequence: "Parent Training 10"
   }
 }
 

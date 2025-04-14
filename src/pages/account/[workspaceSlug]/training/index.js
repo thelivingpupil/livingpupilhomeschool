@@ -5,6 +5,7 @@ import AccountLayout from '@/layouts/AccountLayout';
 import sanityClient from '@/lib/server/sanity';
 import { useWorkspace } from '@/providers/workspace';
 import Link from 'next/link';
+import { PARENT_TRAINING_CODES } from '@/utils/constants';
 
 const Training = ({ courses }) => {
   const { workspace } = useWorkspace();
@@ -34,6 +35,9 @@ const Training = ({ courses }) => {
                 .sort((a, b) => collator.compare(a.code, b.code))
                 .map((course, index) => (
                   <Card key={index}>
+                    <h1 className="text-lg font-bold text-center">
+                      {PARENT_TRAINING_CODES[course.code].sequence}
+                    </h1>
                     <Card.Body
                       title={course.title}
                       subtitle={course.description}
