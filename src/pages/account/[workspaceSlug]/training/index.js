@@ -36,7 +36,7 @@ const Training = ({ courses }) => {
                 .map((course, index) => (
                   <Card key={index}>
                     <h1 className="text-lg font-bold text-center">
-                      {PARENT_TRAINING_CODES[course.code].sequence}
+                      {PARENT_TRAINING_CODES[course.code]?.sequence}
                     </h1>
                     <Card.Body
                       title={course.title}
