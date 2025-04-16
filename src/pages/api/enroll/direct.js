@@ -95,7 +95,7 @@ const handler = async (req, res) => {
     };
 
     const parentName = getParentName(primaryGuardianName);
-    const guardianInfoId = await getGuardianInformationID(session.user.userId);
+
     const workspace = await createWorkspaceWithSlug(
       session.user.userId,
       session.user.email,
@@ -152,8 +152,10 @@ const handler = async (req, res) => {
         monthIndex,
       ),
       updateGuardianInformation(session.user.userId, guardianInformation),
-      createParentTrainingsForGrade(incomingGradeLevel, guardianInfoId, schoolYear, 'UNFINISHED')
     ]);
+
+    const guardianInfoId = await getGuardianInformationID(session.user.userId); //get guardian ID
+    await createParentTrainingsForGrade(incomingGradeLevel, guardianInfoId, schoolYear, 'UNFINISHED') //create parent training
     const url = schoolFee.url;
     await sendMail({
       html: html({
