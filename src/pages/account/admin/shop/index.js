@@ -160,17 +160,6 @@ const Shop = () => {
                 }).format(purchase.total)}
               </h5>
             </div>
-            {/*
-            <div className="flex items-center justify-end">
-              <a
-                className="inline-block px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400"
-                href={`mailto:${inquiry.email}?subject=${encodeURI(
-                  `Re:${inquiry.subject}`
-                )}`}
-              >
-                Reply
-              </a>
-            </div> */}
           </div>
         </SideModal>
       )}
@@ -268,9 +257,117 @@ const Shop = () => {
                 {SHOP_PAYMENT_TYPE[order[0].paymentType]}
               </h5>
             </div>
+            {SHOP_PAYMENT_TYPE[order[0].paymentType] === "Installment" ? (
+              <>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium text-left">Books/Merch</h4>
+                  <h5 className="font-bold text-right text-green-600">
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      order
+                        .filter(order => order.order === 0)
+                        .flatMap(orderDetails => orderDetails.transaction.purchaseHistory.orderItems)
+                        .reduce((sum, item) => sum + Number(item.totalPrice), 0)
+                    )}
+                  </h5>
+                </div>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium text-left">Interest</h4>
+                  <h5 className="font-bold text-right text-green-600">
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      ((order.reduce((total, feeWrapper) => {
+                        return total + (Number(feeWrapper.transaction.amount));
+                      }, 0) - 100)) - (order.reduce((total, feeWrapper) => {
+                        return total + (Number(feeWrapper.transaction.amount));
+                      }, 0) - 100) / 1.10
+                    )}
+                  </h5>
+                </div>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium text-left">Delivery Fee</h4>
+                  <h5 className="font-bold text-right text-green-600">
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      ((order.reduce((total, feeWrapper) => {
+                        return total + (Number(feeWrapper.transaction.amount));
+                      }, 0) - 100)) // Total - Gateway fee of 100
+                      -
+                      (((order.reduce((total, feeWrapper) => {
+                        return total + (Number(feeWrapper.transaction.amount));
+                      }, 0) - 100)) - (order.reduce((total, feeWrapper) => {
+                        return total + (Number(feeWrapper.transaction.amount));
+                      }, 0) - 100) / 1.10 + order
+                        .filter(order => order.order === 0)
+                        .flatMap(orderDetails => orderDetails.transaction.purchaseHistory.orderItems)
+                        .reduce((sum, item) => sum + Number(item.totalPrice), 0))
+                    )}
+                  </h5>
+                </div>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium text-left">Gateway Fee</h4>
+                  <h5 className="font-bold text-right text-green-600">
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(100)}
+                  </h5>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium text-left">Books/Merch</h4>
+                  <h5 className="font-bold text-right text-green-600">
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      order
+                        .filter(order => order.order === 0)
+                        .flatMap(orderDetails => orderDetails.transaction.purchaseHistory.orderItems)
+                        .reduce((sum, item) => sum + Number(item.totalPrice), 0)
+                    )}
+                  </h5>
+                </div>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium text-left">Delivery Fee</h4>
+                  <h5 className="font-bold text-right text-green-600">
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      ((order.reduce((total, feeWrapper) => {
+                        return total + (Number(feeWrapper.transaction.amount));
+                      }, 0) - 20)) // Total - Gateway fee of 100
+                      - (order
+                        .filter(order => order.order === 0)
+                        .flatMap(orderDetails => orderDetails.transaction.purchaseHistory.orderItems)
+                        .reduce((sum, item) => sum + Number(item.totalPrice), 0))
+                    )}
+                  </h5>
+                </div>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium text-left">Gateway Fee</h4>
+                  <h5 className="font-bold text-right text-green-600">
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(20)}
+                  </h5>
+                </div>
+              </>
+            )}
+
             <div className="flex items-center justify-between">
               <h4 className="font-medium text-left">Total</h4>
-              <h5 className="font-bold text-right text-green-600">
+              <h5 className="font-bold text-right text-red-600">
                 {new Intl.NumberFormat('en-US', {
                   style: 'currency',
                   currency: 'PHP',
@@ -361,18 +458,7 @@ const Shop = () => {
                   </>
 
                 ))}
-
             </div>
-            {/*
-            <div className="flex items-center justify-between">
-              <h4 className="font-medium text-left">Total</h4>
-              <h5 className="font-bold text-right text-green-600">
-                {new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(purchase.total)}
-              </h5>
-            </div> */}
           </div>
         </SideModal>
       )}
