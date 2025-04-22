@@ -41,7 +41,7 @@ const handler = async (req, res) => {
 
       if (paymentType === 'INSTALLMENT') {
         const interestRate = 0.1;
-        const installmentAmount = (totalWithShipping * (1 + interestRate)) / 5;
+        const installmentAmount = ((total * (1 + interestRate)) + shippingFee.fee) / 5;
         const payments = Array(5).fill(installmentAmount);
         const totalPayment = installmentAmount * 5;
 
