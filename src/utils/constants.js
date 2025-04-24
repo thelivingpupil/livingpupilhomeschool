@@ -421,9 +421,24 @@ export const PARENT_TRAINING_CODES = {
     code: "250720838017454",
     sequence: "Parent Training 1"
   },
-  'PT22025': {
-    name: "The Feast (K, Form 1,2,3)",
-    code: "250720838017454",
+  'PT22025A': {
+    name: "The Feast (Kindergarten)",
+    code: "250721502901445",
+    sequence: "Parent Training 2"
+  },
+  'PT22025B': {
+    name: "The Feast (Form 1)",
+    code: "250721502901445",
+    sequence: "Parent Training 2"
+  },
+  'PT22025C': {
+    name: "The Feast (Form 2)",
+    code: "250721502901445",
+    sequence: "Parent Training 2"
+  },
+  'PT22025D': {
+    name: "The Feast (Form 3)",
+    code: "250721502901445",
     sequence: "Parent Training 2"
   },
   'PT32025': {
@@ -481,7 +496,7 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   },
   K1: {
     'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
-    'PT22025': "2. The Feast (K, Form 1,2,3)",
+    'PT22025A': "The Feast (Kindergarten)",
     'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
     'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
     'PT82025': "The Blueprint",
@@ -490,16 +505,16 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   },
   K2: {
     'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
-    'PT22025': "2. The Feast (K, Form 1,2,3)",
+    'PT22025A': "2. The Feast (Kindergarten)",
     'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
     'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
     'PT82025': "The Blueprint",
     'PT92025': "The Timetable",
     'PT102025': "Developing a Rhytmn: Education is Life"
   },
-  'GRADE_1': {
+  GRADE_1: {
     'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
-    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT22025B': "The Feast (Form 1)",
     'PT32025': "Know and Tell: The Power of Narration",
     'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
     'PT52025': "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
@@ -511,7 +526,7 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   },
   GRADE_2: {
     'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
-    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT22025B': "The Feast (Form 1)",
     'PT32025': "Know and Tell: The Power of Narration",
     'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
     'PT52025': "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
@@ -522,7 +537,7 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   },
   GRADE_3: {
     'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
-    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT22025B': "The Feast (Form 1)",
     'PT32025': "Know and Tell: The Power of Narration",
     'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
     'PT52025': "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
@@ -534,7 +549,7 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   },
   GRADE_4: {
     'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
-    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT22025C': "The Feast (Form 2)",
     'PT32025': "Know and Tell: The Power of Narration",
     'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
     'PT52025': "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
@@ -546,7 +561,7 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   },
   GRADE_5: {
     'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
-    'PT22025': "2. The Feast (K, Form 1,2,3)",
+    'PT22025C': "The Feast (Form 2)",
     'PT32025': "Know and Tell: The Power of Narration",
     'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
     'PT52025': "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
@@ -558,7 +573,7 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   },
   GRADE_6: {
     'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
-    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT22025C': "The Feast (Form 2)",
     'PT32025': "Know and Tell: The Power of Narration",
     'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
     'PT52025': "Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar",
@@ -570,7 +585,7 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   },
   GRADE_7: {
     'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
-    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT22025D': "The Feast (Form 3)",
     'PT32025': "Know and Tell: The Power of Narration",
     'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
     'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
@@ -581,7 +596,7 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   },
   GRADE_8: {
     'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
-    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT22025D': "The Feast (Form 3)",
     'PT32025': "Know and Tell: The Power of Narration",
     'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
     'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
@@ -592,7 +607,7 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   },
   GRADE_9: {
     'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
-    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT22025D': "The Feast (Form 3)",
     'PT32025': "Know and Tell: The Power of Narration",
     'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
     'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
@@ -603,7 +618,7 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   },
   GRADE_10: {
     'PT12025': "The Heart of Learning: Cultivating Atmosphere, Discipline, and Life",
-    'PT22025': "The Feast (K, Form 1,2,3)",
+    'PT22025D': "The Feast (Form 3)",
     'PT32025': "Know and Tell: The Power of Narration",
     'PT42025': "Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education",
     'PT62025': "The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study",
