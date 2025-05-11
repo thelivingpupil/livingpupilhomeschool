@@ -6,6 +6,7 @@ import { useWorkspaces } from '@/hooks/data';
 import sanityClient from '@/lib/server/sanity';
 import { useMemo } from 'react';
 import { PROGRAM } from '@/utils/constants';
+import { useState } from 'react';
 
 const formGradeLevels = {
   KINDER: ['K1', 'K2'],
@@ -16,6 +17,7 @@ const formGradeLevels = {
 
 const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjects }) => {
   const { data } = useWorkspaces();
+  const [isOpen, setIsOpen] = useState(true);
 
   const availableGrades = useMemo(() => {
     if (!data) {
@@ -201,6 +203,39 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
       />
       <Content.Divider />
       <Content.Container>
+        <div className="text-center px-6 md:px-20">
+          <div
+            className="flex justify-center items-center gap-4 mb-4 cursor-pointer select-none"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <h1 className="text-xl font-bold text-red-600">
+              For all K1 and K2 students
+            </h1>
+            <span className="text-sm text-red-600">
+              [{isOpen ? 'Hide' : 'Show'}]
+            </span>
+          </div>
+
+          {isOpen && (
+            <div>
+              <p className="text-base leading-relaxed mb-4">
+                The LP Kindergarten lesson plan, booklist and blueprint available on the Parent Portal are intended only for continuing families who have already completed the Talino Curriculum. These materials are designed as a follow-up and may not provide the foundational learning necessary for new homeschoolers at the kindergarten level.
+              </p>
+              <p className="text-base leading-relaxed mb-4">
+                We highly encourage you to begin with the Talino Curriculum to ensure your child’s learning journey starts with the right structure and support. Use the discount code: <strong>LPHS2025KINDER20</strong> to get 20% off at{' '}
+                <a
+                  href="https://charlottemasonphilippines.com/product/talino-charlotte-mason-curriculum-kinder/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline hover:text-blue-800"
+                >
+                  https://charlottemasonphilippines.com/product/talino-charlotte-mason-curriculum-kinder/
+                </a>.
+              </p>
+            </div>
+          )}
+        </div>
+
         <Card>
           <Card.Body title="Available Lesson Plans">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
