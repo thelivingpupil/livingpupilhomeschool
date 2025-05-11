@@ -117,26 +117,6 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
     [availableGrades, blueprints]
   );
 
-  // const availableBlueprints = useMemo(
-  //   () =>
-  //     blueprints
-  //       ?.sort(
-  //         (a, b) => `${a?.program}-${a?.grade}` - `${b?.program}-${b?.form}`
-  //       )
-  //       .filter(({ grade, program }) => {
-  //         const formGradeLevel = formGradeLevels[grade];
-
-  //         const isProgramLevelValid = program
-  //           ? availablePrograms.includes(program)
-  //           : true;
-
-  //         return (
-  //           availableGrades.includes(blueprints?.grade) && isProgramLevelValid
-  //         );
-  //       }),
-  //   [availableGrades, blueprints]
-  // );
-
   const availableBooklist = useMemo(
     () =>
       booklist
