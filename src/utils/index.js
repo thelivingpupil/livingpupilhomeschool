@@ -231,7 +231,7 @@ const deadlines2025 = {
     // April
     {
       [PaymentType.ANNUAL]: [0],
-      [PaymentType.SEMI_ANNUAL]: [0, 3, 5],
+      [PaymentType.SEMI_ANNUAL]: [0, 3, 7],
       [PaymentType.QUARTERLY]: [0, 3, 6, 9],
       [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],
@@ -239,7 +239,7 @@ const deadlines2025 = {
     // May
     {
       [PaymentType.ANNUAL]: [0],
-      [PaymentType.SEMI_ANNUAL]: [0, 1, 5],
+      [PaymentType.SEMI_ANNUAL]: [0, 3, 6],
       [PaymentType.QUARTERLY]: [0, 3, 6, 9],
       [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],

@@ -140,7 +140,7 @@ const html = ({
 																	</p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 3px;">
-																		We are writing to confirm receipt of your order from the LP Shop. We will begin processing your shipment within the next 3-4 business days. To ensure a smooth delivery process, please review and confirm the details provided below:
+																		We are writing to confirm receipt of your order from the LP Shop. We will begin processing your shipment within the next 5-7 business days. To ensure a smooth delivery process, please review and confirm the details provided below:
 																	</p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<table class="details-table" style="border-collapse: collapse;">
