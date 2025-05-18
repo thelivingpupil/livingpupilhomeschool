@@ -17,7 +17,6 @@ const handler = async (req, res) => {
                 schoolYear,
                 trainingStatus
             } = req.body;
-            console.log(courseCode + guardianId + schoolYear)
             await Promise.all([updateParentTrainingStatus(courseCode, guardianId, schoolYear, trainingStatus)]);
 
             res.status(200).json({ message: 'Student status updated successfully' });

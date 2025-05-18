@@ -178,7 +178,9 @@ const handler = async (req, res) => {
                 courier
             } = req.body;
 
-            if (!requestCode) {
+            console.log(requestCode)
+
+            if (requestCode === null) {
                 return res.status(400).json({ error: 'Request code required' });
             }
 
@@ -316,6 +318,11 @@ const handler = async (req, res) => {
                     break;
 
                 case 'Completed': // Case for 'For Document Receipt'
+                    // Update the document request status
+                    await updateDocumentRequestStatus(requestCode, status);
+                    break;
+
+                case 'Cancelled': // Case for 'For Document Receipt'
                     // Update the document request status
                     await updateDocumentRequestStatus(requestCode, status);
                     break;
