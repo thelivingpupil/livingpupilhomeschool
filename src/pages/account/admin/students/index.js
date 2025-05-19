@@ -55,6 +55,7 @@ import {
 } from '@mui/x-data-grid';
 import toast from 'react-hot-toast';
 import api from '@/lib/common/api';
+import CenteredModal from '@/components/Modal/centered-modal';
 
 const filterValueOptions = {
   accreditation: ACCREDITATION_NEW,
@@ -152,6 +153,8 @@ const Students = ({ schoolFees, programs }) => {
   const [workspaceId, setWorkspaceId] = useState('');
   const [schoolFeeUrl, setSchoolFeeUrl] = useState('');
   const age = differenceInYears(new Date(), birthDate) || 0;
+  const [showConfirmChange, setShowConfirmChange] = useState(false);
+  const [isUpdatingRecord, setUpdatingRecord] = useState(false);
 
   const filterStudents = useMemo(() => {
     if (!filterBy || !filterValue) return data?.students;
@@ -165,6 +168,10 @@ const Students = ({ schoolFees, programs }) => {
   const toggleModal2 = () => setModalVisibility2(!showModal2);
   const toggleModal3 = () => setModalVisibility3(!showModal3);
   const toggleUpdateStudentStatusModal = () => setUpdateStudentStatusModalVisibility(!showUpdateStudentStatusModal)
+  const toggleConfirmChangeModal = () => {
+    console.log("empty")
+    setShowConfirmChange(!showConfirmChange);
+  };
 
   const programFee = programs.find((programFee) => {
     let gradeLevel = incomingGradeLevel;
@@ -492,7 +499,7 @@ const Students = ({ schoolFees, programs }) => {
   const deleteStudentRecord = async (studentId, inviteCode) => {
 
     try {
-      setSubmittingState(true);
+      setUpdatingRecord(true);
 
       const response = await fetch('/api/students', {
         method: 'DELETE',
@@ -506,11 +513,13 @@ const Students = ({ schoolFees, programs }) => {
         throw new Error('Failed to delete record');
       }
 
-      setSubmittingState(false);
+      setUpdatingRecord(false);
       toast.success('Student record has been deleted');
       toggleModal();
+      toggleConfirmChangeModal();
     } catch (error) {
-      setSubmittingState(false);
+      setUpdatingRecord(false);
+      toggleConfirmChangeModal();
       toast.error(`Error deleting student record: ${error.message}`);
     }
   }
@@ -1421,7 +1430,8 @@ const Students = ({ schoolFees, programs }) => {
               <button
                 className="px-3 py-1 my-1 text-white rounded bg-red-600 hover:bg-red-400"
                 onClick={() => {
-                  deleteStudentRecord(studentId, inviteCode);
+                  //deleteStudentRecord(studentId, inviteCode);
+                  toggleConfirmChangeModal()
                 }}
               >
                 delete
@@ -1454,6 +1464,39 @@ const Students = ({ schoolFees, programs }) => {
           </div>
         </SideModal>
       )}
+      {student && showConfirmChange === true && (
+        <CenteredModal
+          show={showConfirmChange}
+          toggle={toggleConfirmChangeModal}
+          title="Confirm Delete"
+        >
+          <div>
+            <p className="py-1">You are about to delete <b>{student.firstName}'s</b> school fee.</p>
+            <p className="mt-5">Student Records, Workspace and school fees will be deleted.</p>
+            <p className="mt-5">Please note that the changes may not be undone.</p>
+            <p className="mt-5">Do you wish to proceed?</p>
+          </div>
+          <div className="w-full flex justify-end">
+            <button
+              className="px-3 py-1 text-white text-base text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+              disabled={isUpdatingRecord}
+              onClick={() => deleteStudentRecord(studentId, inviteCode)}
+              style={{ marginRight: '0.5rem' }}
+            >
+              Yes
+            </button>
+            <button
+              className="px-3 py-1 text-white text-base text-center rounded bg-gray-500 hover:bg-gray-400 disabled:opacity-25"
+              disabled={isUpdatingRecord}
+              onClick={toggleConfirmChangeModal}
+            >
+              No
+            </button>
+          </div>
+        </CenteredModal>
+      )}
+
+
       {/* Edit Student Details Modal */}
       {student && (
         <SideModal
