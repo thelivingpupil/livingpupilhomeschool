@@ -16,6 +16,12 @@ const html = ({
 	enrollmentType,
 	cottageType
 }) => {
+	const date = new Date();
+	const formattedDate = new Intl.DateTimeFormat('en-US', {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	}).format(date);
 	const baseUrl = "livingpupilhomeschool.com";
 	const grade = GRADE_TO_FORM_MAP[incomingGradeLevel]
 	const url = program === 'HOMESCHOOL_COTTAGE'
@@ -184,7 +190,7 @@ const html = ({
 														<tr>
 															<td class="pad">
 																<div style="color:#2e3494;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:700;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0;">June 19, 2024</p>
+																	<p style="margin: 0;">${formattedDate}</p>
 																</div>
 															</td>
 														</tr>
@@ -196,7 +202,7 @@ const html = ({
 																<div style="color:#2e3494;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
 																	<p style="margin: 0; margin-bottom: 16px;">Dear ${primaryGuardianName},</p>
 																	<p style="margin: 0; margin-bottom: 16px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 16px;">On behalf of Living Pupil Homeschool, I am pleased to congratulate you on the acceptance of your student, <strong><em>${firstName} ${middleName} ${lastName}</em></strong>, into our homeschool program for SY 2024-2025.</p>
+																	<p style="margin: 0; margin-bottom: 16px;">On behalf of Living Pupil Homeschool, I am pleased to congratulate you on the acceptance of your student, <strong><em>${firstName} ${middleName} ${lastName}</em></strong>, into our homeschool program for SY 2025-2026.</p>
 																	<p style="margin: 0; margin-bottom: 16px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 16px;">Through your submitted documents, we have confirmed that your child is an ideal candidate as incoming <strong><em>${GRADE_LEVEL[incomingGradeLevel]}</em></strong> student.</p>
 																	<p style="margin: 0; margin-bottom: 16px;">&nbsp;</p>

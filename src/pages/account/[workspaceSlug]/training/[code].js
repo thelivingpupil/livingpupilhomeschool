@@ -29,7 +29,6 @@ const Course = ({ course }) => {
     )
     : null;
 
-  console.log(course)
   console.log(parentCourses)
 
   const courseComplete = () => {
