@@ -65,9 +65,12 @@ const ParentTraining = () => {
                             headerName: "Parent Training",
                             headerAlign: 'center',
                             width: 180,
-                            renderCell: (params) => (
-                                <span>{PARENT_TRAINING_CODES[params.row?.courseCode].name} { }</span>
-                            )
+                            renderCell: (params) => {
+                                const course = PARENT_TRAINING_CODES[params.row?.courseCode];
+                                return (
+                                    <span>{course?.name ?? 'Unknown Course'}</span>
+                                );
+                            }
                         },
                         {
                             field: "schoolYear", headerName: "School Year", headerAlign: 'center',
