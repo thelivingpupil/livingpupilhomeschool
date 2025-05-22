@@ -1112,7 +1112,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               )}
               <div>
                 <Button onClick={handleIsBarangay} className="w-1/4 rounded-r text-white bg-gray-500 hover:bg-gray-400">
-                  {isBarangay ? "Input Barangay Manually" : "Select Barangay"}
+                  {isBarangay ? "Select Barangay" : "Input Barangay Manually"}
                 </Button>
               </div>
             </div>
