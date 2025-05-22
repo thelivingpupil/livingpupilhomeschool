@@ -135,7 +135,9 @@ const handler = async (req, res) => {
         specialNeeds,
         formerRegistrar,
         formerRegistrarEmail,
-        formerRegistrarNumber
+        formerRegistrarNumber,
+        address1,
+        address2
       ),
       createSchoolFees(
         session.user.userId,

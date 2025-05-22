@@ -131,6 +131,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const [selectedProvince, setSelectedProvince] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedBarangay, setSelectedBarangay] = useState('');
+  const [isBarangay, setIsBarangay] = useState(false);
   const [cities, setCities] = useState([]);
   const [barangays, setBarangays] = useState([]);
   const [zipCode, setZipCode] = useState('');
@@ -236,6 +237,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const handleFormerRegistrarNumber = (event) => setFormerRegistrarNumber(event.target.value)
   const handleFormerRegistrarEmail = (event) => setFormerRegistrarEmail(event.target.value)
   const handleFormerRegistrar = (event) => setFormerRegistrar(event.target.value)
+  const handleIsBarangay = () => {
+    setIsBarangay(prev => !prev);
+  };
+  const handleBarangayChangeInput = (event) => setSelectedBarangay(event.target.value);
 
   const handleCaptchaChange = (value) => setCaptchaValue(value);
 
@@ -1081,20 +1086,35 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   </option>
                 ))}
               </select>
-              <select
-                className={`px-3 py-2 rounded md:w-3/4 ${!selectedBarangay ? 'border-red-500 border-2' : 'border'
-                  }`}
-                value={selectedBarangay}
-                onChange={handleBarangayChange}
-                disabled={!selectedCity}
-              >
-                <option value="">Select Barangay</option>
-                {barangays.map((barangay, index) => (
-                  <option key={index} value={barangay.name}>
-                    {barangay.name}
-                  </option>
-                ))}
-              </select>
+              {!isBarangay ? (
+                <select
+                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedBarangay ? 'border-red-500 border-2' : 'border'
+                    }`}
+                  value={selectedBarangay}
+                  onChange={handleBarangayChange}
+                  disabled={!selectedCity}
+                >
+                  <option value="">Select Barangay</option>
+                  {barangays.map((barangay, index) => (
+                    <option key={index} value={barangay.name}>
+                      {barangay.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedBarangay ? 'border-red-500 border-2' : 'border'
+                    }`}
+                  placeholder="Barangay"
+                  onChange={handleBarangayChangeInput}
+                  value={selectedBarangay}
+                />
+              )}
+              <div>
+                <Button onClick={handleIsBarangay} className="w-1/4 rounded-r text-white bg-gray-500 hover:bg-gray-400">
+                  {isBarangay ? "Input Barangay Manually" : "Select Barangay"}
+                </Button>
+              </div>
             </div>
           </div>
           <div className="flex flex-col">

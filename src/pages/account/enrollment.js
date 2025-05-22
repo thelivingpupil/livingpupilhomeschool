@@ -60,6 +60,7 @@ import {
   GRADE_TO_FORM_MAP
 } from '@/utils/constants';
 import { PortableText } from '@portabletext/react';
+import { event } from 'react-ga';
 
 const steps = [
   'Student Information',
@@ -198,6 +199,12 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const [formerRegistrarEmail, setFormerRegistrarEmail] = useState('')
   const [formerRegistrarNumber, setFormerRegistrarNumber] = useState('')
   const [filteredProgram, setFilteredProgram] = useState(null);
+  const [isBarangay, setIsBarangay] = useState(false);
+
+  const handleIsBarangay = () => {
+    setIsBarangay(prev => !prev);
+  };
+  const handleBarangayChangeInput = (event) => setSelectedBarangay(event.target.value);
 
   const handlePrimaryGuardianName = (event) =>
     setPrimaryGuardianName(event.target.value);
@@ -1166,20 +1173,35 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                   </option>
                 ))}
               </select>
-              <select
-                className={`px-3 py-2 rounded md:w-3/4 ${!selectedBarangay ? 'border-red-500 border-2' : 'border'
-                  }`}
-                value={selectedBarangay}
-                onChange={handleBarangayChange}
-                disabled={!selectedCity}
-              >
-                <option value="">Select Barangay</option>
-                {barangays.map((barangay, index) => (
-                  <option key={index} value={barangay.name}>
-                    {barangay.name}
-                  </option>
-                ))}
-              </select>
+              {!isBarangay ? (
+                <select
+                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedBarangay ? 'border-red-500 border-2' : 'border'
+                    }`}
+                  value={selectedBarangay}
+                  onChange={handleBarangayChange}
+                  disabled={!selectedCity}
+                >
+                  <option value="">Select Barangay</option>
+                  {barangays.map((barangay, index) => (
+                    <option key={index} value={barangay.name}>
+                      {barangay.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedBarangay ? 'border-red-500 border-2' : 'border'
+                    }`}
+                  placeholder="Barangay"
+                  onChange={handleBarangayChangeInput}
+                  value={selectedBarangay}
+                />
+              )}
+              <div>
+                <Button onClick={handleIsBarangay} className="w-1/4 rounded-r text-white bg-gray-500 hover:bg-gray-400">
+                  {isBarangay ? "Input Barangay Manually" : "Select Barangay"}
+                </Button>
+              </div>
             </div>
           </div>
           <div className="flex flex-col">
