@@ -94,23 +94,20 @@ const Affiliate = ({ invitedUsers, inviteLink }) => {
         <ol className="px-5 list-decimal space-y-2">
           <li className="space-y-1">
             <p>
-              <b>Commission</b>
+              <b>Understanding Your Commission</b>
             </p>
             <p>
-              Commission rate: Available commissions are set forth in the parent
-              portal tool under the Affiliate link menu.
+              Your commission is based on each successful student enrollment, with rates varying depending on the program selected and the parent's chosen payment plan.
             </p>
             <p>
-              Commissions are based on every successful enrollment and
-              calculated based on the program of choice and the payment plan
-              selected by the parent.
+              Where to Find Rates: Current commission rates are always available in the parent portal tool, under the "Affiliate link" menu.
             </p>
-            <p>5% commission for full payment (two months processing time)</p>
-            <p>3% for partial payment (two months processing time)</p>
+            <ul class="list-disc pl-2">
+              <li>Full Payment Commission: You'll receive a 5% commission for enrollments paid in full. This commission will be disbursed two months after the full payment has been processed.</li>
+              <li>Partial Payment Commission: For enrollments made with a partial payment plan, you'll earn a 3% commission. This commission will be disbursed two months after the final partial payment for that enrollment is received.</li>
+            </ul>
             <p>
-              Note: For every successful enrollment, our finance team will
-              contact you for your preferred disbursement account and the
-              commission release schedule.
+              Following each successful enrollment, our finance team will reach out to you to confirm your preferred disbursement account and provide a specific commission release schedule.
             </p>
           </li>
           <li className="space-y-1">
