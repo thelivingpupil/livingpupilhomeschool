@@ -421,6 +421,11 @@ export const PARENT_TRAINING_CODES = {
     code: "250720838017454",
     sequence: "Parent Training 1"
   },
+  'PT22025': {
+    name: "Course Removed",
+    code: "250721502901445",
+    sequence: "Parent Training 2"
+  },
   'PT22025A': {
     name: "The Feast (Kindergarten)",
     code: "250721502901445",
