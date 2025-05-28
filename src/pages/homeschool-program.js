@@ -143,140 +143,149 @@ const HomeschoolProgram = ({ page, programs }) => {
             {ENROLLMENT_TYPE[program?.enrollmentType]} for SY 2025-2026
           </div>
         </div>
-        {program?.tuitionFees?.map((tuitionFee) => (
-          <div className="flex flex-col pb-5 w-full md:w-3/4">
-            <div className="text-xl my-5 text-center font-semibold">
-              {ACCREDITATION[tuitionFee?.type]}
+        {program?.tuitionFees
+          ?.filter((tuitionFee) =>
+            program?.gradeLevel === 'K1' ? tuitionFee?.type === 'LOCAL' : true
+          )
+          .map((tuitionFee) => (
+            <div className="flex flex-col pb-5 w-full md:w-3/4" key={tuitionFee?.type}>
+              <div className="text-xl my-5 text-center font-semibold">
+                {(program?.gradeLevel !== 'PRESCHOOL' && program?.gradeLevel !== 'K1') && (
+                  <div className="text-xl my-5 text-center font-semibold">
+                    {ACCREDITATION[tuitionFee?.type]}
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col md:flex-wrap md:flex-row gap-4">
+                {/* Full Payment */}
+                <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
+                  <div className="text-xl font-medium mb-5">Full Payment</div>
+                  <div className="text-secondary-500 text-xl font-bold font-display">
+                    {`Total: ${new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(tuitionFee?.paymentTerms[0]?.fullPayment || 0)}`}
+                  </div>
+                </div>
+
+                {/* Three (3) Term Payment */}
+                <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
+                  <div className="text-xl font-medium mb-5">Three (3) Term Payment</div>
+                  <div className="text-primary-500 text-xl font-bold font-display">
+                    {`Down payment: ${new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(tuitionFee?.paymentTerms[1]?.downPayment || 0)}`}
+                  </div>
+                  <div className="text-primary-500 text-xl font-bold font-display">
+                    {`2nd payment: ${new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(tuitionFee?.paymentTerms[1]?.secondPayment || 0)}`}
+                  </div>
+                  <div className="text-primary-500 text-xl font-bold font-display">
+                    {`3rd payment: ${new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(tuitionFee?.paymentTerms[1]?.thirdPayment || 0)}`}
+                  </div>
+                  <div className="text-secondary-500 text-xl font-bold font-display">
+                    {`Total: ${new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      (tuitionFee?.paymentTerms[1]?.downPayment || 0) +
+                      (tuitionFee?.paymentTerms[1]?.secondPayment || 0) +
+                      (tuitionFee?.paymentTerms[1]?.thirdPayment || 0)
+                    )}`}
+                  </div>
+                </div>
+
+                {/* Four (4) Term Payment */}
+                <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
+                  <div className="text-xl font-medium mb-5">Four (4) Term Payment</div>
+                  <div className="text-primary-500 text-xl font-bold font-display">
+                    {`Down payment: ${new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(tuitionFee?.paymentTerms[2]?.downPayment || 0)}`}
+                  </div>
+                  <div className="text-primary-500 text-xl font-bold font-display">
+                    {`2nd payment: ${new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(tuitionFee?.paymentTerms[2]?.secondPayment || 0)}`}
+                  </div>
+                  <div className="text-primary-500 text-xl font-bold font-display">
+                    {`3rd payment: ${new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(tuitionFee?.paymentTerms[2]?.thirdPayment || 0)}`}
+                  </div>
+                  <div className="text-primary-500 text-xl font-bold font-display">
+                    {`4th payment: ${new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(tuitionFee?.paymentTerms[2]?.fourthPayment || 0)}`}
+                  </div>
+                  <div className="text-secondary-500 text-xl font-bold font-display">
+                    {`Total: ${new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      (tuitionFee?.paymentTerms[2]?.downPayment || 0) +
+                      (tuitionFee?.paymentTerms[2]?.secondPayment || 0) +
+                      (tuitionFee?.paymentTerms[2]?.thirdPayment || 0) +
+                      (tuitionFee?.paymentTerms[2]?.fourthPayment || 0)
+                    )}`}
+                  </div>
+                </div>
+
+                {/* Monthly Term Payment */}
+                <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
+                  <div className="text-xl font-medium mb-5">Monthly Term Payment</div>
+                  <div className="text-primary-500 text-xl font-bold font-display">
+                    {`Down payment: ${new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(tuitionFee?.paymentTerms[3]?.downPayment || 0)}`}
+                  </div>
+                  <div className="text-primary-500 text-xl font-bold font-display">
+                    {`${monthIndex} monthly payments: ${new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      ((tuitionFee?.paymentTerms[3]?.secondPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.thirdPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.fourthPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.fifthPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.sixthPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.seventhPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.eighthPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.ninthPayment || 0)) / monthIndex
+                    )}`}
+                  </div>
+                  <div className="text-secondary-500 text-xl font-bold font-display">
+                    {`Total: ${new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      (tuitionFee?.paymentTerms[3]?.downPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.secondPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.thirdPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.fourthPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.fifthPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.sixthPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.seventhPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.eighthPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.ninthPayment || 0)
+                    )}`}
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col md:flex-wrap md:flex-row gap-4">
-              <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
-                <div className="text-xl font-medium mb-5">Full Payment</div>
-                <div className="text-secondary-500 text-xl font-bold font-display">
-                  {`Total: ${new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(tuitionFee?.paymentTerms[0]?.fullPayment || 0)}`}
-                </div>
-              </div>
-              <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
-                <div className="text-xl font-medium mb-5">
-                  Three (3) Term Payment
-                </div>
-                <div className="text-primary-500 text-xl font-bold font-display">
-                  {`Down payment: ${new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(tuitionFee?.paymentTerms[1]?.downPayment || 0)}`}
-                </div>
-                <div className="text-primary-500 text-xl font-bold font-display">
-                  {`2nd payment: ${new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(tuitionFee?.paymentTerms[1]?.secondPayment || 0)}`}
-                </div>
-                <div className="text-primary-500 text-xl font-bold font-display">
-                  {`3rd payment: ${new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(tuitionFee?.paymentTerms[1]?.thirdPayment || 0)}`}
-                </div>
-                <div className="text-secondary-500 text-xl font-bold font-display">
-                  {`Total: ${new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(
-                    tuitionFee?.paymentTerms[1]?.downPayment +
-                    tuitionFee?.paymentTerms[1]?.secondPayment +
-                    tuitionFee?.paymentTerms[1]?.thirdPayment || 0
-                  )}`}
-                </div>
-              </div>
-              <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
-                <div className="text-xl font-medium mb-5">
-                  Four (4) Term Payment
-                </div>
-                <div className="text-primary-500 text-xl font-bold font-display">
-                  {`Down payment: ${new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(tuitionFee?.paymentTerms[2]?.downPayment || 0)}`}
-                </div>
-                <div className="text-primary-500 text-xl font-bold font-display">
-                  {`2nd payment: ${new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(tuitionFee?.paymentTerms[2]?.secondPayment || 0)}`}
-                </div>
-                <div className="text-primary-500 text-xl font-bold font-display">
-                  {`3rd payment: ${new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(tuitionFee?.paymentTerms[2]?.thirdPayment || 0)}`}
-                </div>
-                <div className="text-primary-500 text-xl font-bold font-display">
-                  {`4th payment: ${new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(tuitionFee?.paymentTerms[2]?.fourthPayment || 0)}`}
-                </div>
-                <div className="text-secondary-500 text-xl font-bold font-display">
-                  {`Total: ${new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(
-                    tuitionFee?.paymentTerms[2]?.downPayment +
-                    tuitionFee?.paymentTerms[2]?.secondPayment +
-                    tuitionFee?.paymentTerms[2]?.thirdPayment +
-                    tuitionFee?.paymentTerms[2]?.fourthPayment || 0
-                  )}`}
-                </div>
-              </div>
-              <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
-                <div className="text-xl font-medium mb-5">
-                  Monthly Term Payment
-                </div>
-                <div className="text-primary-500 text-xl font-bold font-display">
-                  {`Down payment: ${new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(tuitionFee?.paymentTerms[3]?.downPayment || 0)}`}
-                </div>
-                <div className="text-primary-500 text-xl font-bold font-display">
-                  {`${monthIndex} monthly payments: ${new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(
-                    (
-                      tuitionFee?.paymentTerms[3]?.secondPayment +
-                      tuitionFee?.paymentTerms[3]?.thirdPayment +
-                      tuitionFee?.paymentTerms[3]?.fourthPayment +
-                      tuitionFee?.paymentTerms[3]?.fifthPayment +
-                      tuitionFee?.paymentTerms[3]?.sixthPayment +
-                      tuitionFee?.paymentTerms[3]?.seventhPayment +
-                      tuitionFee?.paymentTerms[3]?.eighthPayment +
-                      tuitionFee?.paymentTerms[3]?.ninthPayment || 0) / monthIndex
-                  )}`}
-                </div>
-                <div className="text-secondary-500 text-xl font-bold font-display">
-                  {`Total: ${new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(
-                    tuitionFee?.paymentTerms[3]?.downPayment +
-                    tuitionFee?.paymentTerms[3]?.secondPayment +
-                    tuitionFee?.paymentTerms[3]?.thirdPayment +
-                    tuitionFee?.paymentTerms[3]?.fourthPayment +
-                    tuitionFee?.paymentTerms[3]?.fifthPayment +
-                    tuitionFee?.paymentTerms[3]?.sixthPayment +
-                    tuitionFee?.paymentTerms[3]?.seventhPayment +
-                    tuitionFee?.paymentTerms[3]?.eighthPayment +
-                    tuitionFee?.paymentTerms[3]?.ninthPayment || 0
-                  )}`}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
+          ))}
+
         <div className="flex flex-col rounded-lg w-full md:w-3/4">
           <div className="text-xl font-semibold">
             <p>Other Fees:</p>
