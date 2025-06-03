@@ -69,13 +69,13 @@ export const SHOP_SHIPPING = {
       const rates = {
         Liloan: 130,
         'Mandaue City': 130,
-        Consolation: 140,
+        'Consolation': 140,
         'Lapu-Lapu City': 150,
         'Cebu City': 160,
         'Talisay City': 170,
-        Minglanilia: 180,
+        'Minglanilia': 180,
         'Naga City': 200,
-        Compostela: 200,
+        'Compostela': 200,
       };
       return rates[location]; // Default to Cebu City rate if location is not found
     },

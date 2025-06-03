@@ -14,6 +14,7 @@ import Image from 'next/image';
 import { getOrderFeeDeadline } from '@/utils/index';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import { SHOP_PAYMENT_TYPE } from '@/providers/cart'
+import { calculateShippingFeeFromAddress } from '@/utils/index';
 
 const Shop = () => {
   const { data, isLoading } = usePurchases();
@@ -24,6 +25,40 @@ const Shop = () => {
   const [order, setOrder] = useState(null);
   const [sortedOrderFees, setSortedOrderFees] = useState([]);
   const [table, setTable] = useState("OLD");
+  const [shippingData, setShippingData] = useState(null);
+
+  const getItemCountFromOrder = (order) => {
+    const items = order.transaction?.purchaseHistory?.orderItems || [];
+    return items.reduce((total, item) => total + (item.quantity || 0), 0);
+  };
+
+  const processOrders = (orders) => {
+    // Filter for orders where `order === 0`
+    const filteredOrders = orders?.filter((o) => o.order === 0);
+
+    // Map results with item count and shipping fee
+    return filteredOrders?.map((order) => {
+      const address = order.transaction?.purchaseHistory?.deliveryAddress ?? '';
+      const itemCount = getItemCountFromOrder(order);
+      const shippingFee = calculateShippingFeeFromAddress(address, itemCount);
+
+      return {
+        orderCode: order.orderCode,
+        itemCount,
+        shippingFee,
+        deliveryAddress: address,
+      };
+    });
+  };
+
+  useEffect(() => {
+    if (order) {
+      const result = processOrders(order); // assuming this returns data
+      setShippingData(result);
+    }
+  }, [order]);
+
+  console.log(shippingData)
 
   useEffect(() => {
     if (!orderDataIsLoading && orderData?.data?.orders) {
@@ -195,6 +230,12 @@ const Shop = () => {
                       </span>
                     </h5>
                     <h5 className="font-medium">
+                      Shipping Type:{' '}
+                      <span className="text-xs text-gray-400">
+                        {SHOP_SHIPPING_TYPE[orderDetails?.transaction.purchaseHistory.shippingType]}
+                      </span>
+                    </h5>
+                    <h5 className="font-medium">
                       Contact Information:{' '}
                       <span className="text-xs text-gray-400">
                         {orderDetails.transaction.purchaseHistory.contactNumber
@@ -280,11 +321,10 @@ const Shop = () => {
                       style: 'currency',
                       currency: 'PHP',
                     }).format(
-                      ((order.reduce((total, feeWrapper) => {
-                        return total + (Number(feeWrapper.transaction.amount));
-                      }, 0) - 100)) - (order.reduce((total, feeWrapper) => {
-                        return total + (Number(feeWrapper.transaction.amount));
-                      }, 0) - 100) / 1.10
+                      order
+                        .filter(order => order.order === 0)
+                        .flatMap(orderDetails => orderDetails.transaction.purchaseHistory.orderItems)
+                        .reduce((sum, item) => sum + Number(item.totalPrice), 0) * 0.10 // Just the 10% interest
                     )}
                   </h5>
                 </div>
@@ -294,20 +334,7 @@ const Shop = () => {
                     {new Intl.NumberFormat('en-US', {
                       style: 'currency',
                       currency: 'PHP',
-                    }).format(
-                      ((order.reduce((total, feeWrapper) => {
-                        return total + (Number(feeWrapper.transaction.amount));
-                      }, 0) - 100)) // Total - Gateway fee of 100
-                      -
-                      (((order.reduce((total, feeWrapper) => {
-                        return total + (Number(feeWrapper.transaction.amount));
-                      }, 0) - 100)) - (order.reduce((total, feeWrapper) => {
-                        return total + (Number(feeWrapper.transaction.amount));
-                      }, 0) - 100) / 1.10 + order
-                        .filter(order => order.order === 0)
-                        .flatMap(orderDetails => orderDetails.transaction.purchaseHistory.orderItems)
-                        .reduce((sum, item) => sum + Number(item.totalPrice), 0))
-                    )}
+                    }).format(shippingData[0]?.shippingFee)}
                   </h5>
                 </div>
                 <div className="flex items-center justify-between">

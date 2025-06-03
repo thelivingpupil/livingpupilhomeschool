@@ -2,6 +2,7 @@ import { PaymentType } from '@prisma/client';
 import add from 'date-fns/add';
 import format from 'date-fns/format';
 import { addMonths, setDate } from 'date-fns';
+import { ShippingType } from '@prisma/client';
 
 const deadlines = {
   currentYear: [
@@ -589,4 +590,129 @@ export const getSenderDetails = (sender) => {
   }
 
   return { senderRole, senderFullName };
+};
+
+export const getShippingTypeFromAddress = (address) => {
+  const lowerAddress = address.toLowerCase();
+
+  const withinCebuCities = [
+    'mandaue city',
+    'consolacion',
+    'lapu-lapu city',
+    'cebu city',
+    'talisay city',
+    'minglanilia',
+    'naga city',
+    'compostela',
+  ];
+
+  for (const city of withinCebuCities) {
+    if (lowerAddress.includes(city)) {
+      return ShippingType.WITHIN_CEBU;
+    }
+  }
+
+  if (
+    lowerAddress.includes('iloilo') ||
+    lowerAddress.includes('negros') ||
+    lowerAddress.includes('leyte') ||
+    lowerAddress.includes('samar') ||
+    lowerAddress.includes('bohol')
+  ) {
+    return ShippingType.VISAYAS;
+  }
+
+  if (
+    lowerAddress.includes('manila') ||
+    lowerAddress.includes('quezon city') ||
+    lowerAddress.includes('pasig') ||
+    lowerAddress.includes('makati') ||
+    lowerAddress.includes('taguig') ||
+    lowerAddress.includes('mandaluyong') ||
+    lowerAddress.includes('ncr')
+  ) {
+    return ShippingType.NCR;
+  }
+
+  if (
+    lowerAddress.includes('ilocos') ||
+    lowerAddress.includes('la union') ||
+    lowerAddress.includes('benguet') ||
+    lowerAddress.includes('baguio') ||
+    lowerAddress.includes('pangasinan') ||
+    lowerAddress.includes('cagayan') ||
+    lowerAddress.includes('isabela') ||
+    lowerAddress.includes('tarlac') ||
+    lowerAddress.includes('zambales') ||
+    lowerAddress.includes('aurora')
+  ) {
+    return ShippingType.NORTH_LUZON;
+  }
+
+  if (
+    lowerAddress.includes('laguna') ||
+    lowerAddress.includes('batangas') ||
+    lowerAddress.includes('cavite') ||
+    lowerAddress.includes('rizal') ||
+    lowerAddress.includes('quezon province') ||
+    lowerAddress.includes('lucena') ||
+    lowerAddress.includes('albay') ||
+    lowerAddress.includes('sorsogon')
+  ) {
+    return ShippingType.SOUTH_LUZON;
+  }
+
+  if (
+    lowerAddress.includes('davao') ||
+    lowerAddress.includes('zamboanga') ||
+    lowerAddress.includes('bukidnon') ||
+    lowerAddress.includes('misamis') ||
+    lowerAddress.includes('cotabato') ||
+    lowerAddress.includes('sarangani')
+  ) {
+    return ShippingType.MINDANAO;
+  }
+
+  if (
+    lowerAddress.includes('palawan') ||
+    lowerAddress.includes('batanes') ||
+    lowerAddress.includes('siargao') ||
+    lowerAddress.includes('camiguin') ||
+    lowerAddress.includes('basilan')
+  ) {
+    return ShippingType.ISLANDER;
+  }
+
+  // Default fallback
+  return ShippingType.VISAYAS;
+};
+
+export const calculateShippingFeeFromAddress = (address, itemCount) => {
+  const shippingType = getShippingTypeFromAddress(address);
+  const lowerAddress = address.toLowerCase();
+
+  if (shippingType === ShippingType.WITHIN_CEBU) {
+    const cebuRates = {
+      'mandaue city': 130,
+      'consolacion': 140,
+      'lapu-lapu city': 150,
+      'cebu city': 160,
+      'talisay city': 170,
+      'minglanilia': 180,
+      'naga city': 200,
+      'compostela': 200,
+    };
+
+    for (const city in cebuRates) {
+      if (lowerAddress.includes(city)) {
+        return cebuRates[city];
+      }
+    }
+
+    return 160; // fallback
+  }
+
+  if (itemCount >= 25) return 500;
+  if (itemCount >= 10) return 400;
+  return 300;
 };
