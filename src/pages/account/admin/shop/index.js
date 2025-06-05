@@ -334,7 +334,7 @@ const Shop = () => {
                     {new Intl.NumberFormat('en-US', {
                       style: 'currency',
                       currency: 'PHP',
-                    }).format(shippingData[0]?.shippingFee)}
+                    }).format(shippingData?.[0]?.shippingFee)}
                   </h5>
                 </div>
                 <div className="flex items-center justify-between">
