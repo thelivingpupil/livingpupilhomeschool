@@ -21,8 +21,8 @@ export const ACCREDITATION_NEW = {
 };
 
 export const ENROLLMENT_TYPE = {
-  CONTINUING: 'Continuing Family',
-  NEW: 'New Family',
+  CONTINUING: 'Continuing Student',
+  NEW: 'New Student',
 };
 
 export const FEES = {
