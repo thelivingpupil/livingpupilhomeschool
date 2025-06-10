@@ -118,6 +118,13 @@ const StudentsExport = ({ data }) => {
       key: 'primaryTeacherRelationship',
       label: 'Relationship with the student',
     },
+    { key: 'formerRegistrar', label: 'Former Registrar' },
+    { key: 'formerRegistrarEmail', label: 'Former Registrar Email' },
+    { key: 'formerRegistrarNumber', label: 'Former Registrar No.' },
+    { key: 'specialNeedSpecific', label: 'Special Needs' },
+    { key: 'studentAddress1', label: 'Student Address 1' },
+    { key: 'studentAddress2', label: 'Student Address 2' },
+    { key: 'studentInternationalAddress', label: 'Student International Address' },
   ];
 
   return (
@@ -175,6 +182,14 @@ export const getServerSideProps = async () => {
       primaryTeacherEducation: true,
       primaryTeacherProfile: true,
       primaryTeacherRelationship: true,
+      formerRegistrar: true,
+      formerRegistrarEmail: true,
+      formerRegistrarNumber: true,
+      specialNeeds: true,
+      specialNeedSpecific: true,
+      studentAddress1: true,
+      studentAddress2: true,
+      studentInternationalAddress: true,
       student: {
         select: {
           name: true,
@@ -209,13 +224,13 @@ export const getServerSideProps = async () => {
       deletedAt: null,
       student: {
         deletedAt: null,
-         schoolFees: {
-           some: {
-             transaction: {
-               paymentStatus: TransactionStatus.S,
-             },
-           },
-         },
+        schoolFees: {
+          some: {
+            transaction: {
+              paymentStatus: TransactionStatus.S,
+            },
+          },
+        },
       },
     },
   });
@@ -227,7 +242,7 @@ export const getServerSideProps = async () => {
       'student.creator.emailVerified': format(new Date(student.student.creator.emailVerified), 'yyyy-MM-dd'),
     };
   });
-  return { props: { data: JSON.parse(JSON.stringify(formattedData)) }};
+  return { props: { data: JSON.parse(JSON.stringify(formattedData)) } };
 };
 
 export default StudentsExport;
