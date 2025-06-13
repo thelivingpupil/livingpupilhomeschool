@@ -208,7 +208,7 @@ const Shop = ({ categories, items }) => {
     [items, categories]
   );
 
-  const disableShop = false;
+  const disableShop = true;
 
   const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -232,13 +232,13 @@ const Shop = ({ categories, items }) => {
           />
           <h1 className="text-4xl font-bold text-center text-primary-500">Shop Announcement</h1>
           <p className="text-center">
-            Our shop will be closed today for preparations as we get ready for the exciting Cebu Pagbukas event! 🌟 We will be back in business tomorrow, July 30, 2024.
+            Our shop is closed today in preparation for Pagbukas Cebu tomorrow!
           </p>
           <p className="text-center">
-            If you’re in Cebu and looking to order books or shirts, we invite you to visit us at the Cebu Pagbukas tomorrow. We’ll be thrilled to assist you with your purchases and any other needs you may have.
+            We’ll resume regular operations next week. Thank you for your understanding and support—see you at Pagbukas!
           </p>
           <p className="text-center">
-            Thank you for your understanding and support. See you soon!
+            — The Living Pupil Homeschool Team
           </p>
         </div>
       ) : (
