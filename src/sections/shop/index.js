@@ -208,7 +208,7 @@ const Shop = ({ categories, items }) => {
     [items, categories]
   );
 
-  const disableShop = true;
+  const disableShop = false;
 
   const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
