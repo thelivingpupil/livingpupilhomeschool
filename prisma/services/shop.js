@@ -7,7 +7,7 @@ import { createTransaction } from './transaction';
 //get all order fees from shop
 export const getStoreOrders = async () =>
     await prisma.orderFee.findMany({
-        orderBy: [{ createdAt: 'desc' }],
+        orderBy: [{ updatedAt: 'desc' }],
         select: {
             id: true,
             userId: true,
@@ -17,6 +17,7 @@ export const getStoreOrders = async () =>
             orderCode: true,
             createdAt: true,
             deletedAt: true,
+            orderStatus: true,
             user: {
                 select: {
                     name: true,
@@ -437,4 +438,18 @@ export const createOrderFee = async ({
         orderCode: uniqueOrderCode,
     };
 };
+
+export const cancelOrder = async (orderCode) => {
+    try {
+        const updatedOrder = await prisma.orderFee.updateMany({
+            where: { orderCode },
+            data: { orderStatus: 'Cancelled' },
+        });
+        return { success: true, data: updatedOrder };
+    } catch (error) {
+        console.error('Error cancelling order:', error);
+        return { success: false, error: 'Failed to update order status.' };
+    }
+};
+
 

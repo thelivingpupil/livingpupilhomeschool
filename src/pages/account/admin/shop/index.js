@@ -9,12 +9,14 @@ import { usePurchases, useStoreOrders } from '@/hooks/data';
 import Card from '@/components/Card';
 import formatDistance from 'date-fns/formatDistance';
 import { STATUS_CODES } from '@/lib/server/dragonpay';
-import { SHOP_SHIPPING_TYPE, STATUS_BG_COLOR } from '@/utils/constants';
+import { SHOP_SHIPPING_TYPE, STATUS_BG_COLOR, ORDER_STATUS, ORDER_STATUS_BG_COLOR } from '@/utils/constants';
 import Image from 'next/image';
 import { getOrderFeeDeadline } from '@/utils/index';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import { SHOP_PAYMENT_TYPE } from '@/providers/cart'
 import { calculateShippingFeeFromAddress } from '@/utils/index';
+import CenteredModal from '@/components/Modal/centered-modal';
+import toast from 'react-hot-toast';
 
 const Shop = () => {
   const { data, isLoading } = usePurchases();
@@ -26,10 +28,16 @@ const Shop = () => {
   const [sortedOrderFees, setSortedOrderFees] = useState([]);
   const [table, setTable] = useState("OLD");
   const [shippingData, setShippingData] = useState(null);
+  const [showConfirmChange, setShowConfirmChange] = useState(false);
+  const [isUpdatingOrder, setIsUpdatingOrder] = useState(false);
 
   const getItemCountFromOrder = (order) => {
     const items = order.transaction?.purchaseHistory?.orderItems || [];
     return items.reduce((total, item) => total + (item.quantity || 0), 0);
+  };
+
+  const toggleConfirmChangeModal = () => {
+    setShowConfirmChange(!showConfirmChange);
   };
 
   const processOrders = (orders) => {
@@ -57,8 +65,6 @@ const Shop = () => {
       setShippingData(result);
     }
   }, [order]);
-
-  console.log(shippingData)
 
   useEffect(() => {
     if (!orderDataIsLoading && orderData?.data?.orders) {
@@ -102,6 +108,39 @@ const Shop = () => {
     toggleModal2();
     setOrder(order);
   };
+
+  const cancelOrder = async () => {
+    try {
+      setIsUpdatingOrder(true);
+      const res = await fetch('/api/shop', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          patch: 'cancel',
+          order, // your full order array/object with order.order === 0 inside
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setIsUpdatingOrder(false)
+        toast.success('Order Cancelled');
+        toggleConfirmChangeModal()
+        toggleModal2()
+      } else {
+        toast.error(`Error cancelling order: ${data.errors?.error?.msg}`);
+        console.error('Error cancelling order:', data.errors?.error?.msg || data);
+        setIsUpdatingOrder(false)
+      }
+    } catch (err) {
+      toast.error(`Error cancelling order: ${err}`);
+      setIsUpdatingOrder(false)
+    }
+  };
+
 
   return (
     <AdminLayout>
@@ -482,12 +521,55 @@ const Shop = () => {
                       </div>
                     </div>
                     <hr className="border-1 border-dashed border-gray-600" />
+
                   </>
 
                 ))}
+              <div className="flex flex-col p-3 space-y-2">
+                <button
+                  className="px-3 py-1 my-1 text-white rounded bg-red-600 hover:bg-red-400"
+                  onClick={() => {
+                    //deleteStudentRecord(studentId, inviteCode);
+                    toggleConfirmChangeModal()
+                  }}
+                >
+                  Cancel Order
+                </button>
+              </div>
             </div>
           </div>
         </SideModal>
+      )}
+      {order && showConfirmChange === true && (
+        <CenteredModal
+          show={showConfirmChange}
+          toggle={toggleConfirmChangeModal}
+          title="Confirm Cancel"
+        >
+          <div>
+            <p className="py-1">You are about to Cencel <b>{order[0].orderCode}</b>.</p>
+            <p className="mt-5">This order's transaction(s) and the inventory will be updated.</p>
+            <p className="mt-5">Please note that the changes may not be undone.</p>
+            <p className="mt-5">Do you wish to proceed?</p>
+          </div>
+          <div className="w-full flex justify-end">
+            <button
+              className="px-3 py-1 text-white text-base text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+              disabled={isUpdatingOrder}
+              onClick={() => cancelOrder()}
+              style={{ marginRight: '0.5rem' }}
+            >
+              Yes
+            </button>
+            <button
+              className="px-3 py-1 text-white text-base text-center rounded bg-gray-500 hover:bg-gray-400 disabled:opacity-25"
+              disabled={isUpdatingOrder}
+              onClick={toggleConfirmChangeModal}
+            >
+              No
+            </button>
+          </div>
+        </CenteredModal>
       )}
       <Content.Title
         title="Shop Purchases"
@@ -668,6 +750,7 @@ const Shop = () => {
                       <th className="p-2 font-medium text-center">Items</th>
                       <th className="p-2 font-medium text-center">Payment Type</th>
                       <th className="p-2 font-medium text-right">Amount</th>
+                      <th className="p-2 font-medium text-right">Status</th>
                       <th className="p-2 font-medium text-center">Actions</th>
                     </tr>
                   </thead>
@@ -760,6 +843,18 @@ const Shop = () => {
                                   return total + (Number(feeWrapper.transaction.amount));
                                 }, 0)
                               )}
+                            </td>
+                            <td className="p-2 text-right">
+                              {order[0].orderStatus === null ? ' '
+                                :
+                                <>
+                                  <h4 className="flex space-x-3">
+                                    <span className={`rounded-full py-0.5 text-xs px-2 ${ORDER_STATUS_BG_COLOR[order[0].orderStatus]}`}>
+                                      {ORDER_STATUS[order[0].orderStatus]}
+                                    </span>
+                                  </h4>
+                                </>
+                              }
                             </td>
 
                             <td className="p-2 space-x-2 text-xs text-center">

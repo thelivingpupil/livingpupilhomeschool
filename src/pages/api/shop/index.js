@@ -21,6 +21,8 @@ import { sendMail } from '@/lib/server/mail';
 import { getGuardianInformation } from '@/prisma/services/user';
 import { getParentFirstName } from '@/utils/index';
 import { sendMailWithGmail } from '@/lib/server/gmail';
+import sanityClient from '@/lib/server/sanity';
+import { cancelOrder } from '@/prisma/services/shop';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -219,7 +221,68 @@ const handler = async (req, res) => {
       console.error('API Handler Error:', error.message);
       res.status(500).json({ errors: { error: { msg: error.message } } });
     }
-  } else {
+  } else if (method === 'PATCH') {
+    const {
+      patch,
+      order
+    } = req.body;
+
+    if (patch === 'cancel') {
+      try {
+        // Step 1: Find the order with `order: 0`
+        const orderIndex = order.filter(o => o.order === 0);
+        const orderItems = orderIndex[0]?.transaction.purchaseHistory?.orderItems || [];
+
+        // Step 2: Extract item names
+        const itemNames = orderItems.map(item => item.name);
+
+        // Step 3: Fetch current inventory from Sanity
+        const currentInventory = await sanityClient.fetch(
+          `*[_type == "shopItems" && name in $itemNames]`,
+          { itemNames }
+        );
+
+        // Step 4: Prepare inventory restock patches
+        const inventoryUpdates = orderItems.map(purchasedItem => {
+          const inventoryItem = currentInventory.find(item => item.name === purchasedItem.name);
+          if (inventoryItem) {
+            const newQuantity = inventoryItem.inventory + purchasedItem.quantity;
+            return {
+              id: inventoryItem._id,
+              patch: {
+                set: { inventory: newQuantity },
+              },
+            };
+          }
+          return null;
+        }).filter(Boolean);
+
+        // Step 5: Commit inventory changes
+        const transaction = sanityClient.transaction();
+        inventoryUpdates.forEach(update => {
+          transaction.patch(update.id, update.patch);
+        });
+
+        const result = await transaction.commit();
+
+        // Step 6: Update order status in your DB
+        const orderCode = orderIndex[0]?.orderCode;
+        if (orderCode) {
+          await cancelOrder(orderCode);
+        }
+
+        // Step 7: Respond with success
+        res.status(200).json({ success: true, updated: result });
+      } catch (error) {
+        console.error('Cancel order error:', error);
+        res.status(500).json({ errors: { error: { msg: 'Patch unkown' } } });
+      }
+
+    } else {
+      res.status(500).json({ errors: { error: { msg: 'Unknown Patch' } } });
+    }
+  }
+  else {
     res
       .status(405)
       .json({ errors: { error: { msg: `${method} method unsupported` } } });

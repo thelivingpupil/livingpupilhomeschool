@@ -243,6 +243,25 @@ export const DOC_STATUS = {
   For_Document_Received: 'For Document Received'
 }
 
+export const ORDER_STATUS = {
+  Completed: 'Completed',
+  In_Transit: 'In Transit',
+  Completed: 'Completed',
+  Cancelled: 'Cancelled',
+  Order_Placed: 'Pending',
+  For_Delivery: 'For Delivery',
+  For_Pickup: 'For Pickup',
+}
+
+export const ORDER_STATUS_BG_COLOR = {
+  In_Transit: 'bg-yellow-600 text-white',
+  Completed: 'bg-green-600 text-white',
+  Cancelled: 'bg-red-600 text-white',
+  Order_Placed: 'bg-gray-600 text-white',
+  For_Delivery: 'bg-orange-600 text-white',
+  For_Pickup: 'bg-orange-600 text-white',
+}
+
 export const ENROLLMENT_STATUS_BG_COLOR = {
   ENROLLED: 'bg-green-600 text-white',
   INITIALLY_ENROLLED: 'bg-blue-600 text-white',
