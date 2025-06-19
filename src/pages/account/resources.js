@@ -15,7 +15,7 @@ const formGradeLevels = {
   FORM_3: ['GRADE_7', 'GRADE_8', 'GRADE_9', 'GRADE_10'],
 };
 
-const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjects }) => {
+const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjects, scienceExperiment }) => {
   const { data } = useWorkspaces();
   const [isOpen, setIsOpen] = useState(true);
 
@@ -174,6 +174,25 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
     [availableGrades, commonSubjects]
   );
 
+
+  const availableScienceExperiment = useMemo(
+    () =>
+      scienceExperiment
+        ?.sort(
+          (a, b) =>
+            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1])
+        )
+        ?.filter((scienceExperiment) => {
+          const isProgramLevelValid = scienceExperiment?.program
+            ? availablePrograms.includes(scienceExperiment?.program) && availableSchoolYear.includes(scienceExperiment?.schoolYear)
+            : true;
+
+          return (
+            availableGrades.includes(scienceExperiment?.grade) && isProgramLevelValid
+          );
+        }),
+    [availableGrades, scienceExperiment]
+  );
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Guides and Resources" />
@@ -323,6 +342,27 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
           </Card.Body>
         </Card>
         <Card>
+          <Card.Body title="Science Experiment">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
+              {availableScienceExperiment?.length > 0 &&
+                availableScienceExperiment?.map((experiment, idx) => {
+                  const bgColor = idx % 2 === 0 ? 'bg-primary' : 'bg-secondary';
+                  return (
+                    <div key={idx} className="flex justify-center">
+                      <a
+                        className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
+                        href={`${experiment?.fileUrl
+                          }?dl=${experiment?.grade?.toLowerCase()}-experiment.pdf`}
+                      >
+                        {experiment?.grade?.replace('_', ' ')} - {experiment?.program?.replace('_', ' ')}
+                      </a>
+                    </div>
+                  );
+                })}
+            </div>
+          </Card.Body>
+        </Card>
+        <Card>
           <Card.Body title="Common Subjects">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
               {availableCommonSubjects?.length > 0 &&
@@ -444,6 +484,13 @@ export const getServerSideProps = async () => {
     'fileUrl': commonSubjectsFile.asset->url
   }`);
 
+  const scienceExperiment = await sanityClient.fetch(`*[_type == 'experiment']{
+    'schoolYear': schoolYear,
+    'grade': gradeLevel,
+    'program': programType,
+    'fileUrl': experimentFile.asset->url
+  }`);
+
   return {
     props: {
       lessonPlans,
@@ -451,6 +498,7 @@ export const getServerSideProps = async () => {
       booklist,
       recitation,
       commonSubjects,
+      scienceExperiment
     },
   };
 };
