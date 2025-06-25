@@ -162,7 +162,7 @@ const html = ({
                                                                         </tr>
                                                                     </table>
 																	<p style="margin: 0; margin-bottom: 3px;">
-																		<strong>Delivery Partner:</strong> For orders outside Cebu City, our delivery partner is LBC. For deliveries within Cebu City, you may choose between Maxim, Lalamove, or our LP rider.
+																		<strong>Delivery Partner:</strong> For orders outside Cebu City, our delivery partner is SPX. For deliveries within Cebu City, you may choose between Maxim, Lalamove, or our LP rider.
 																	</p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0;">

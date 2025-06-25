@@ -558,8 +558,8 @@ export const getSenderDetails = (sender) => {
 
   switch (sender) {
     case 'admin':
-      senderRole = "Admin Assistant"
-      senderFullName = "Mynelyn C. Namacpacan"
+      senderRole = "Admin"
+      senderFullName = "Ameline Baran"
       break;
     case 'finance':
       senderRole = "Finance Officer"
