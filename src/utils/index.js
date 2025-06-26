@@ -233,7 +233,7 @@ const deadlines2025 = {
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 7],
-      [PaymentType.QUARTERLY]: [0, 3, 7, 9],
+      [PaymentType.QUARTERLY]: [0, 3, 6, 9],
       [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       [PaymentType.PAY_ALL]: [0],
     },
