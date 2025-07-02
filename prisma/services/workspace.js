@@ -467,7 +467,7 @@ export const getWorkspaces = async (id, email) => {
         deletedAt: null,
         createdAt: {
           gte: new Date(`01/01/2023`),
-          lte: new Date(`06/30/2025`),
+          lte: new Date(`06/30/2026`),
         },
       },
     },
