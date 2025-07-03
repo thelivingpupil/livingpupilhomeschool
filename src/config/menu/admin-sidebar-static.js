@@ -10,7 +10,8 @@ import {
   UserCircleIcon,
   UsersIcon,
   InboxIcon,
-  DocumentIcon
+  DocumentIcon,
+  UserGroupIcon
 } from '@heroicons/react/outline';
 import { QuestionMarkCircleIcon } from '@heroicons/react/solid';
 
@@ -57,6 +58,12 @@ const adminSidebarMenu = () => [
         name: 'Enrollment',
         icon: CreditCardIcon,
         path: `/account/admin/transactions`,
+        showDefault: true,
+      },
+      {
+        name: 'Affiliates',
+        icon: UserGroupIcon,
+        path: `/account/admin/affiliates`,
         showDefault: true,
       },
       {

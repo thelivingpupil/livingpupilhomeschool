@@ -1,3 +1,4 @@
+import useAffiliates from './useAffiliates';
 import useDomain from './useDomain';
 import useDomains from './useDomains';
 import useInquiries from './useInquiries';
@@ -21,6 +22,7 @@ import useDocuments from './useDocuments';
 import useParentTrainings from './useParentTraining'
 
 export {
+  useAffiliates,
   useDocuments,
   useDomain,
   useDomains,
