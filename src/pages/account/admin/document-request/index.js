@@ -37,6 +37,63 @@ const DocumentRequest = () => {
     const [region, setRegion] = useState("")
     const [courier, setCourier] = useState("")
 
+    // Function to flatten the document request data
+    const flattenDocumentRequests = (requests) => {
+        if (!requests || !Array.isArray(requests)) return [];
+
+        return requests.map(request => ({
+            // Main document request fields
+            id: request.id,
+            requestCode: request.requestCode,
+            purpose: request.purpose,
+            status: request.status,
+            deliveryAddress: request.deliveryAddress,
+            documentCollection: request.documentCollection,
+            tracking: request.tracking,
+            region: request.region,
+            courier: request.courier,
+            createdAt: request.createdAt,
+            updatedAt: request.updatedAt,
+
+            // Flattened student information
+            studentFullName: request.studentInformation?.studentFullName || 'N/A',
+            studentLrn: request.studentInformation?.lrn || 'N/A',
+            studentCurrentGradeLevel: request.studentInformation?.currentGradeLevel || 'N/A',
+            studentCurrentSchool: request.studentInformation?.currentSchool || 'N/A',
+            studentGradeLevelsWithLp: request.studentInformation?.gradeLevelsWithLp || 'N/A',
+            studentLastSchoolYearWithLp: request.studentInformation?.lastSchoolYearWithLp || 'N/A',
+
+            // Flattened requestor information
+            requestorFullName: request.requestorInformation?.requestorFullName || 'N/A',
+            requestorEmail: request.requestorInformation?.requestorEmail || 'N/A',
+            requestorRelationship: request.requestorInformation?.relationshipToStudent || 'N/A',
+            requestorOccupation: request.requestorInformation?.occupation || 'N/A',
+            requestorAddress: request.requestorInformation?.requestorAddress || 'N/A',
+            requestorMobileNumber: request.requestorInformation?.requestorMobileNumber || 'N/A',
+
+            // Flattened transaction information
+            transactionPaymentReference: request.transaction?.paymentReference || 'N/A',
+            transactionAmount: request.transaction?.amount || 'N/A',
+            transactionStatus: request.transaction?.status || 'N/A',
+
+            // Keep original nested objects for modal display
+            originalData: request
+        }));
+    };
+
+    // Get flattened data for the table
+    const flattenedData = flattenDocumentRequests(data?.requests || []);
+
+    // Validate and clean the data
+    const validatedData = flattenedData.map(item => ({
+        ...item,
+        studentFullName: item.studentFullName || 'N/A',
+        requestCode: item.requestCode || 'N/A',
+        status: item.status || 'N/A',
+        id: item.id || Math.random().toString(36).substr(2, 9)
+    }));
+
+
 
     function CustomToolbar() {
         return (
@@ -48,10 +105,9 @@ const DocumentRequest = () => {
     }
 
 
-    const view = (student) => {
+    const view = (documentData) => {
         toggleModal();
-        setDocument(student);
-
+        setDocument(documentData);
     };
 
     const handleTrackingCodeChange = (e) => {
@@ -69,9 +125,9 @@ const DocumentRequest = () => {
     const toggleModal = () => setModalVisibility(!showModal);
     const toggleUpdateRequestStatusModal = () => setUpdateRequestStatusModalVisibility(!showUpdateRequestStatusModal)
 
-    const viewUpdateDocumentRequestStatus = (document) => {
+    const viewUpdateDocumentRequestStatus = (documentData) => {
         toggleUpdateRequestStatusModal();
-        setDocument(document);
+        setDocument(documentData);
     }
 
     const updateDocumentRequestStatus = () => {
@@ -376,7 +432,11 @@ const DocumentRequest = () => {
                             <DataGrid
                                 apiRef={apiRef}
                                 loading={isLoading}
-                                rows={data ? data.requests : []}
+                                rows={validatedData}
+                                getRowId={(row) => row.id}
+                                filterMode="client"
+                                disableColumnFilter={false}
+                                disableColumnMenu={false}
                                 columns={[
                                     {
                                         field: 'createdAt',
@@ -404,6 +464,8 @@ const DocumentRequest = () => {
                                         headerAlign: 'center',
                                         align: 'center',
                                         flex: 1,
+                                        filterable: true,
+                                        type: 'string',
                                         renderCell: (params) => (
                                             <div
                                                 style={{
@@ -426,6 +488,8 @@ const DocumentRequest = () => {
                                         headerAlign: 'center',
                                         align: 'center',
                                         flex: 1,
+                                        filterable: true,
+                                        type: 'string',
                                         renderCell: (params) => (
                                             <div
                                                 style={{
@@ -436,10 +500,11 @@ const DocumentRequest = () => {
                                                     height: '100%',
                                                 }}
                                             >
-                                                {params.row.studentInformation?.studentFullName || 'N/A'}
+                                                {params.row.studentFullName}
                                             </div>
                                         ),
                                     },
+
                                     {
                                         field: 'documents',
                                         headerName: 'Documents',
@@ -447,7 +512,7 @@ const DocumentRequest = () => {
                                         align: 'left',
                                         flex: 1,
                                         renderCell: (params) => {
-                                            const documents = params.row.documents || [];
+                                            const documents = params.row.originalData.documents || [];
                                             return (
                                                 <div
                                                     style={{
@@ -487,6 +552,8 @@ const DocumentRequest = () => {
                                         headerAlign: 'center',
                                         align: 'center',
                                         flex: .8,
+                                        filterable: true,
+                                        type: 'string',
                                         renderCell: (params) => (
                                             <div
                                                 style={{
@@ -524,7 +591,7 @@ const DocumentRequest = () => {
                                                 <button
                                                     className="px-3 py-1 text-white rounded bg-primary-500 hover:bg-primary-400"
                                                     onClick={() => {
-                                                        view(params.row);
+                                                        view(params.row.originalData);
                                                     }}
                                                 >
                                                     View More
