@@ -326,16 +326,13 @@ export const MONTHLY_INDEX_CURRENT = {
   APRIL_2025: 8,
   MAY_2025: 8,
   JUNE_2025: 8,
-  JULY_2025: 8,
-  AUGUST_2025: 8,
-  SEPTEMBER_2025: 8,
-  OCTOBER_2025: 7,
-  NOVEMBER_2025: 6,
-  DECEMBER_2025: 5,
-  JANUARY_2026: 4,
-  FEBRUARY_2026: 3,
-  MARCH_2026: 3,
-  APRIL_2026: 1,
+  JULY_2025: 7,
+  AUGUST_2025: 6,
+  SEPTEMBER_2025: 5,
+  OCTOBER_2025: 4,
+  NOVEMBER_2025: 3,
+  DECEMBER_2025: 2,
+  JANUARY_2026: 1,
 }
 
 //function to get the current month and year with format with the format of MONTHLY_INDEX
