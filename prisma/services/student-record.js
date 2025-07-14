@@ -246,6 +246,10 @@ export const updateFile = async (studentId, type, url) => {
       data.reportCard = url;
       break;
     }
+    case 'idPicture': {
+      data.idPicture = url;
+      break;
+    }
     default:
       return;
   }
@@ -279,6 +283,7 @@ export const getStudentRecords = async () =>
       image: true,
       liveBirthCertificate: true,
       reportCard: true,
+      idPicture: true,
       discount: true,
       studentStatus: true,
       cottageType: true,
@@ -357,6 +362,7 @@ export const getEnrolledStudentRecords = async () =>
       image: true,
       liveBirthCertificate: true,
       reportCard: true,
+      idPicture: true,
       discount: true,
       studentStatus: true,
       cottageType: true,
@@ -433,6 +439,7 @@ export const getStudentRecord = async (id) =>
       image: true,
       liveBirthCertificate: true,
       reportCard: true,
+      idPicture: true,
       discount: true,
       scholarship: true,
 

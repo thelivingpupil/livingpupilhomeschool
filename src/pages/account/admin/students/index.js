@@ -45,6 +45,9 @@ import { useStudents, useWorkspaces } from '@/hooks/data';
 import { UserIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import format from 'date-fns/format';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { storage } from '@/lib/client/firebase';
+import crypto from 'crypto';
 import differenceInYears from 'date-fns/differenceInYears';
 import {
   DataGrid,
@@ -139,9 +142,11 @@ const Students = ({ schoolFees, programs }) => {
   const [pictureProgress, setPictureProgress] = useState(0);
   const [birthCertificateProgress, setBirthCertificateProgress] = useState(0);
   const [reportCardProgress, setReportCardProgress] = useState(0);
+  const [idPictureProgress, setIdPictureProgress] = useState(0);
   const [pictureLink, setPictureLink] = useState(null);
   const [birthCertificateLink, setBirthCertificateLink] = useState(null);
   const [reportCardLink, setReportCardLink] = useState(null);
+  const [idPictureLink, setIdPictureLink] = useState(null);
   const [discountCode, setDiscountCode] = useState('');
   const [scholarship, setScholarship] = useState(null);
   const [scholarshipCode, setScholarshipCode] = useState('');
@@ -268,7 +273,8 @@ const Students = ({ schoolFees, programs }) => {
   const view = (student) => {
     toggleModal();
     setStudent(student);
-    setStudentId(student.studentId)
+    setStudentId(student.studentId);
+    setIdPictureLink(student.idPicture);
     //setInviteCode(student.studentId)
     if (isWorkspaceDataFetched) {
       const workspaceContainingStudent = workspaceData.workspaces.find(workspace => {
@@ -494,6 +500,77 @@ const Students = ({ schoolFees, programs }) => {
     } else {
       setAccreditation(null);
     }
+  };
+
+  const handleIdPictureUpload = (e, auto, studentId) => {
+    const file = e.target?.files[0];
+
+    if (file) {
+      if (file.size < 5242880) { // 5MB limit
+        const extension = file.name.split('.').pop();
+        const storageRef = ref(
+          storage,
+          `files/admin/idPicture-${crypto
+            .createHash('md5')
+            .update(file.name)
+            .digest('hex')
+            .substring(0, 12)}-${format(
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            setIdPictureProgress(progress);
+          },
+          (error) => {
+            toast.error(error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              if (!auto) {
+                setIdPictureLink(downloadURL);
+              } else {
+                updateFile(studentId, 'idPicture', downloadURL);
+              }
+            });
+          }
+        );
+      }
+    } else {
+      toast.error('File too large. Size should not exceed 5 MB.');
+    }
+  };
+
+  const updateFile = (studentId, type, url) => {
+    api('/api/students/files', {
+      body: {
+        studentId,
+        type,
+        url,
+      },
+      method: 'PUT',
+    }).then((response) => {
+      if (response.errors) {
+        Object.keys(response.errors).forEach((error) =>
+          toast.error(response.errors[error].msg)
+        );
+      } else {
+        switch (type) {
+          case 'idPicture': {
+            setIdPictureLink(url);
+            break;
+          }
+        }
+        toast.success('ID Picture uploaded successfully!');
+      }
+    });
   };
 
   const deleteStudentRecord = async (studentId, inviteCode) => {
@@ -1388,6 +1465,50 @@ const Students = ({ schoolFees, programs }) => {
             ) : (
               <p className="text-sm">- No Report Card Uploaded</p>
             )}
+            {student.idPicture ? (
+              <div className="flex flex-col p-3 space-y-2 border rounded">
+                <h3 className="text-2xl font-medium">ID Picture</h3>
+                <div className="flex items-center space-x-3">
+                  <Link href={student.idPicture}>
+                    <a className="underline text-primary-500" target="_blank">
+                      View ID Picture
+                    </a>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm">- No ID Picture Uploaded</p>
+            )}
+
+            {/* Upload New ID Picture Section */}
+            <div className="flex flex-col p-3 space-y-2 border rounded">
+              <h3 className="text-xl font-medium">Upload New ID Picture</h3>
+              <div className="flex flex-col space-y-3">
+                <input
+                  className="text-xs cursor-pointer"
+                  accept=".jpeg,.jpg,.png"
+                  onChange={(e) => handleIdPictureUpload(e, true, student.studentId)}
+                  type="file"
+                />
+                <div className="w-full rounded-full shadow bg-grey-light">
+                  <div
+                    className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
+                    style={{ width: `${idPictureProgress}%` }}
+                  >
+                    <span className="px-3">{idPictureProgress}%</span>
+                  </div>
+                </div>
+                {idPictureLink && (
+                  <div className="flex flex-col items-center justify-center space-y-3">
+                    <Link href={idPictureLink}>
+                      <a className="text-sm text-blue-600 underline" target="_blank">
+                        Preview New ID Picture
+                      </a>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
             <hr className="border-2 border-gray-600" />
             <h2 className="font-medium">Student Details:</h2>
             <div className="flex flex-col p-3 space-y-2 border rounded">
