@@ -3181,7 +3181,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                               </Link>
                               <span>&bull;</span>
                               <label
-                                className="px-3 py-1 text-sm text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
                                 htmlFor="fileBirthCertificateReplace"
                               >
                                 Replace
@@ -3204,7 +3204,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                           ) : (
                             <>
                               <label
-                                className="px-3 py-1 text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
                                 htmlFor="fileBirthCertificate"
                               >
                                 Upload Document Now
@@ -3277,7 +3277,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                               </Link>
                               <span>&bull;</span>
                               <label
-                                className="px-3 py-1 text-sm text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
                                 htmlFor="fileReportCardReplace"
                               >
                                 Replace
@@ -3300,7 +3300,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                           ) : (
                             <>
                               <label
-                                className="px-3 py-1 text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
                                 htmlFor="fileReportCard"
                               >
                                 Upload Document Now
@@ -3371,51 +3371,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                   Open
                                 </a>
                               </Link>
-                              <span>&bull;</span>
-                              <label
-                                className="px-3 py-1 text-sm text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
-                                htmlFor="fileIdPictureReplace"
-                              >
-                                Replace
-                              </label>
-                              <input
-                                id="fileIdPictureReplace"
-                                className="hidden text-xs"
-                                accept=".jpeg,.jpg,.png"
-                                name="fileIdPictureReplace"
-                                onChange={(e) =>
-                                  handleIdPictureUpload(
-                                    e,
-                                    true,
-                                    workspace.studentRecord.studentId
-                                  )
-                                }
-                                type="file"
-                              />
                             </>
                           ) : (
-                            <>
-                              <label
-                                className="px-3 py-1 text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
-                                htmlFor="fileIdPicture"
-                              >
-                                Upload Document Now
-                              </label>
-                              <input
-                                id="fileIdPicture"
-                                className="hidden text-xs"
-                                accept=".jpeg,.jpg,.png"
-                                name="fileIdPicture"
-                                onChange={(e) =>
-                                  handleIdPictureUpload(
-                                    e,
-                                    true,
-                                    workspace.studentRecord.studentId
-                                  )
-                                }
-                                type="file"
-                              />
-                            </>
+                            <span className="text-sm text-gray-500">
+                              Admin upload only
+                            </span>
                           )}
                         </div>
                       </div>
