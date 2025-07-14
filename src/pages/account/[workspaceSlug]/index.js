@@ -120,10 +120,12 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const [pictureProgress, setPictureProgress] = useState(0);
   const [birthCertificateProgress, setBirthCertificateProgress] = useState(0);
   const [reportCardProgress, setReportCardProgress] = useState(0);
+  const [idPictureProgress, setIdPictureProgress] = useState(0);
   const [signatureProgress, setSignatureProgress] = useState(0);
   const [pictureLink, setPictureLink] = useState(null);
   const [birthCertificateLink, setBirthCertificateLink] = useState(null);
   const [reportCardLink, setReportCardLink] = useState(null);
+  const [idPictureLink, setIdPictureLink] = useState(null);
   const [signatureLink, setSignatureLink] = useState(null);
   const [discountCode, setDiscountCode] = useState('');
   const [discount, setDiscount] = useState(null);
@@ -363,16 +365,16 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       address2.length > 0 &&
       (enrollmentType === "NEW" ? formerRegistrar.length > 0 : true) &&
       (enrollmentType === "NEW" ? formerRegistrarEmail.length > 0 : true) &&
-      (enrollmentType === "NEW" ? formerRegistrarNumber.length > 0 : true) &&
+      (enrollmentType === "NEW" ? formerRegistrarNumber.length > 0 : true)
       //birthCertificateLink &&
-      birthCertificateLink?.length > 0
+      //birthCertificateLink?.length > 0
     ) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
       payment !== null &&
       paymentMethod &&
       agree &&
-      signatureLink?.length > 0 &&
+      //signatureLink?.length > 0 &&
       !isSubmittingCode
     );
 
@@ -677,6 +679,53 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     }
   };
 
+  const handleIdPictureUpload = (e, auto, studentId) => {
+    const file = e.target?.files[0];
+
+    if (file) {
+      // 10 MB
+      if (file.size < 10485760) {
+        const extension = file.name.split('.').pop();
+        const storageRef = ref(
+          storage,
+          `files/${workspace.slug}/id-picture-${crypto
+            .createHash('md5')
+            .update(file.name)
+            .digest('hex')
+            .substring(0, 12)}-${format(
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            setIdPictureProgress(progress);
+          },
+          (error) => {
+            toast.error(error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              if (!auto) {
+                setIdPictureLink(downloadURL);
+              } else {
+                updateFile(studentId, 'idPicture', downloadURL);
+              }
+            });
+          }
+        );
+      }
+    } else {
+      toast.error('File too large. Size should not exceed 10 MB.');
+    }
+  };
+
   const saveSignature = () => {
     const dataUrl = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
     uploadSignature(dataUrl);
@@ -838,6 +887,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           }
           case 'card': {
             setReportCardLink(url);
+            break;
+          }
+          case 'idPicture': {
+            setIdPictureLink(url);
             break;
           }
         }
@@ -1211,14 +1264,23 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               <td className="w-1/4 px-3 py-2 border">
                 <div className="flex flex-col items-center justify-center space-y-3">
                   {pictureLink ? (
-                    <Link href={pictureLink}>
+                    <div className="flex flex-col space-y-2">
+                      <Link href={pictureLink}>
+                        <a
+                          className="text-sm text-blue-600 underline"
+                          target="_blank"
+                        >
+                          Preview Image
+                        </a>
+                      </Link>
                       <a
-                        className="text-sm text-blue-600 underline"
-                        target="_blank"
+                        className="text-sm text-green-600 underline"
+                        download
+                        href={pictureLink}
                       >
-                        Preview Image
+                        Download Image
                       </a>
-                    </Link>
+                    </div>
                   ) : (
                     <p>No file selected</p>
                   )}
@@ -3070,7 +3132,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </Content.Container>
         ) : (
           <Content.Container>
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-3 gap-5">
               <div
                 className={`flex flex-col justify-between rounded ${birthCertificateLink ||
                   workspace.studentRecord.liveBirthCertificate
@@ -3265,6 +3327,102 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   </div>
                 </div>
               </div>
+              <div
+                className={`flex flex-col justify-between rounded ${idPictureLink || workspace.studentRecord.idPicture
+                  ? 'border'
+                  : 'border-2 border-red-400 border-dashed'
+                  }`}
+              >
+                <div className="flex flex-col p-5 space-y-3 overflow-auto">
+                  <div className="flex flex-col space-y-5">
+                    <div className="flex space-x-5">
+                      <div
+                        className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${idPictureLink || workspace.studentRecord.idPicture
+                          ? 'bg-primary-400'
+                          : 'bg-red-200'
+                          }`}
+                      >
+                        <DocumentIcon className="w-12 h-12" />
+                      </div>
+                      <div className="flex flex-col space-y-2">
+                        <h2 className="text-2xl font-medium">
+                          ID Picture{' '}
+                          {!idPictureLink &&
+                            !workspace.studentRecord.idPicture && (
+                              <span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">
+                                Missing
+                              </span>
+                            )}
+                        </h2>
+                        <div className="flex items-center space-x-3">
+                          {idPictureLink ||
+                            workspace.studentRecord.idPicture ? (
+                            <>
+                              <Link
+                                href={
+                                  idPictureLink ||
+                                  workspace.studentRecord.idPicture
+                                }
+                              >
+                                <a
+                                  className="underline text-primary-500"
+                                  target="_blank"
+                                >
+                                  Open
+                                </a>
+                              </Link>
+                              <span>&bull;</span>
+                              <label
+                                className="px-3 py-1 text-sm text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                htmlFor="fileIdPictureReplace"
+                              >
+                                Replace
+                              </label>
+                              <input
+                                id="fileIdPictureReplace"
+                                className="hidden text-xs"
+                                accept=".jpeg,.jpg,.png"
+                                name="fileIdPictureReplace"
+                                onChange={(e) =>
+                                  handleIdPictureUpload(
+                                    e,
+                                    true,
+                                    workspace.studentRecord.studentId
+                                  )
+                                }
+                                type="file"
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <label
+                                className="px-3 py-1 text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                htmlFor="fileIdPicture"
+                              >
+                                Upload Document Now
+                              </label>
+                              <input
+                                id="fileIdPicture"
+                                className="hidden text-xs"
+                                accept=".jpeg,.jpg,.png"
+                                name="fileIdPicture"
+                                onChange={(e) =>
+                                  handleIdPictureUpload(
+                                    e,
+                                    true,
+                                    workspace.studentRecord.studentId
+                                  )
+                                }
+                                type="file"
+                              />
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <Card>
               <Card.Body
@@ -3385,6 +3543,46 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                     </div>
                   </div>
                 </div>
+
+                {/* ID Picture Download Section */}
+                {workspace.studentRecord.idPicture && (
+                  <div className="mt-6 p-4 border rounded-lg bg-gray-50">
+                    <h4 className="font-bold text-gray-600 mb-3">ID Picture</h4>
+                    <div className="flex items-center space-x-4">
+                      <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
+                        <Image
+                          alt="ID Picture"
+                          className="object-cover"
+                          layout="fill"
+                          loading="lazy"
+                          src={workspace.studentRecord.idPicture}
+                        />
+                      </div>
+                      <div className="flex flex-col space-y-2">
+                        <p className="text-sm text-gray-600">
+                          Official ID picture uploaded by admin
+                        </p>
+                        <div className="flex space-x-2">
+                          <Link href={workspace.studentRecord.idPicture}>
+                            <a
+                              className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
+                              target="_blank"
+                            >
+                              View
+                            </a>
+                          </Link>
+                          <a
+                            className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
+                            download
+                            href={workspace.studentRecord.idPicture}
+                          >
+                            Download
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </Card.Body>
             </Card>
           </Content.Container>

@@ -88,7 +88,7 @@ const HomeschoolCottage = ({ page, programs }) => {
                 }`}
               onClick={() => handleEnrollmentTypeChange(Enrollment.NEW)}
             >
-              New Family
+              New Student
             </button>
             <button
               className={`px-10 py-3 font-medium rounded-lg hover:text-white hover:bg-primary-500 border-2 border-primary-500 ${enrollmentType === Enrollment.CONTINUING &&
@@ -96,7 +96,7 @@ const HomeschoolCottage = ({ page, programs }) => {
                 }`}
               onClick={() => handleEnrollmentTypeChange(Enrollment.CONTINUING)}
             >
-              Continuing Family
+              Continuing Student
             </button>
           </div>
         </div>

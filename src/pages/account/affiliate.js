@@ -167,14 +167,21 @@ export const getServerSideProps = async (context) => {
   let invitedUsers = [];
   let inviteLink = null;
 
+  const fixDates = (data) => {
+    return JSON.parse(JSON.stringify(data));
+  };
+
   if (session) {
-    const users = await getInvitedUsers(session.user?.userCode);
-    inviteLink = `${process.env.APP_URL}/join?code=${encodeURI(
+    const usersRaw = await getInvitedUsers(session.user?.userCode);
+    const users = fixDates(usersRaw);
+
+    inviteLink = `${process.env.APP_URL}/join?code=${encodeURIComponent(
       session.user?.userCode
     )}`;
+
     invitedUsers = users.map((user) => ({
       ...user,
-      createdAt: user.createdAt ? user.createdAt.toDateString() : null,
+      createdAt: user.createdAt ? new Date(user.createdAt).toISOString() : null,
     }));
   }
 

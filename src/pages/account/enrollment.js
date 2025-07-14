@@ -387,16 +387,16 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       address2.length > 0 &&
       (enrollmentType === "NEW" ? formerRegistrar.length > 0 : true) &&
       (enrollmentType === "NEW" ? formerRegistrarEmail.length > 0 : true) &&
-      (enrollmentType === "NEW" ? formerRegistrarNumber.length > 0 : true) &&
+      (enrollmentType === "NEW" ? formerRegistrarNumber.length > 0 : true)
       //birthCertificateLink > 0 &&
-      birthCertificateLink?.length > 0
+      // birthCertificateLink?.length > 0
     ) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
       payment !== null &&
       paymentMethod &&
       agree &&
-      signatureLink?.length > 0 &&
+      //signatureLink?.length > 0 &&
       !isSubmittingCode);
 
   const programFee = programs.find((programFee) => {
