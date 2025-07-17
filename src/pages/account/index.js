@@ -213,17 +213,8 @@ const Welcome = () => {
                       &rarr;
                     </button>
                   </Card.Footer>
-                  {workspace.studentRecord != null && workspace.studentRecord.schoolYear === '2023' && (
-                    <Card.Footer>
-                      <button
-                        className="text-primary-600"
-                        onClick={() => navigateEnroll(workspace.studentRecord.studentId)}
-                      >
-                        Enroll for SY 2024-2025 &rarr;
-                      </button>
-                    </Card.Footer>
-                  )}
-                  {workspace.studentRecord != null && workspace.studentRecord.schoolYear === '2024-2025' && (
+
+                  {workspace.studentRecord != null && workspace.studentRecord.schoolYear !== '2025-2026' && (
                     <Card.Footer>
                       <button
                         className="text-primary-600"
