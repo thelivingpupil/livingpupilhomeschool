@@ -34,6 +34,8 @@ const handler = async (req, res) => {
         accreditation,
         scholarshipCode,
         email,
+        idPictureFront,
+        idPictureBack,
       } = req.body;
       if (!studentId) {
         return res.status(400).json({ error: 'Student ID is required' });
@@ -54,6 +56,8 @@ const handler = async (req, res) => {
         discountCode,
         accreditation,
         scholarshipCode,
+        idPictureFront,
+        idPictureBack,
       };
       console.log(studentNewData)
       // update student records

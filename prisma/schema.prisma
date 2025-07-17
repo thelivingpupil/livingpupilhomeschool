@@ -233,7 +233,8 @@ model StudentRecord {
   image                       String?
   liveBirthCertificate        String?
   reportCard                  String?
-  idPicture                   String?
+  idPictureFront              String?
+  idPictureBack               String?
   signature                   String?
   discount                    String?
   scholarship                 String?

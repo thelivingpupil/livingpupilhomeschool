@@ -142,11 +142,13 @@ const Students = ({ schoolFees, programs }) => {
   const [pictureProgress, setPictureProgress] = useState(0);
   const [birthCertificateProgress, setBirthCertificateProgress] = useState(0);
   const [reportCardProgress, setReportCardProgress] = useState(0);
-  const [idPictureProgress, setIdPictureProgress] = useState(0);
+  const [idPictureFrontProgress, setIdPictureFrontProgress] = useState(0);
+  const [idPictureBackProgress, setIdPictureBackProgress] = useState(0);
   const [pictureLink, setPictureLink] = useState(null);
   const [birthCertificateLink, setBirthCertificateLink] = useState(null);
   const [reportCardLink, setReportCardLink] = useState(null);
-  const [idPictureLink, setIdPictureLink] = useState(null);
+  const [idPictureFrontLink, setIdPictureFrontLink] = useState(null);
+  const [idPictureBackLink, setIdPictureBackLink] = useState(null);
   const [discountCode, setDiscountCode] = useState('');
   const [scholarship, setScholarship] = useState(null);
   const [scholarshipCode, setScholarshipCode] = useState('');
@@ -274,7 +276,8 @@ const Students = ({ schoolFees, programs }) => {
     toggleModal();
     setStudent(student);
     setStudentId(student.studentId);
-    setIdPictureLink(student.idPicture);
+    setIdPictureFrontLink(student.idPictureFront);
+    setIdPictureBackLink(student.idPictureBack);
     //setInviteCode(student.studentId)
     if (isWorkspaceDataFetched) {
       const workspaceContainingStudent = workspaceData.workspaces.find(workspace => {
@@ -502,7 +505,7 @@ const Students = ({ schoolFees, programs }) => {
     }
   };
 
-  const handleIdPictureUpload = (e, auto, studentId) => {
+  const handleIdPictureFrontUpload = (e, auto, studentId) => {
     const file = e.target?.files[0];
 
     if (file) {
@@ -510,7 +513,7 @@ const Students = ({ schoolFees, programs }) => {
         const extension = file.name.split('.').pop();
         const storageRef = ref(
           storage,
-          `files/admin/idPicture-${crypto
+          `files/admin/idPictureFront-${crypto
             .createHash('md5')
             .update(file.name)
             .digest('hex')
@@ -527,7 +530,7 @@ const Students = ({ schoolFees, programs }) => {
             const progress = Math.round(
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100
             );
-            setIdPictureProgress(progress);
+            setIdPictureFrontProgress(progress);
           },
           (error) => {
             toast.error(error);
@@ -535,9 +538,55 @@ const Students = ({ schoolFees, programs }) => {
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               if (!auto) {
-                setIdPictureLink(downloadURL);
+                setIdPictureFrontLink(downloadURL);
               } else {
-                updateFile(studentId, 'idPicture', downloadURL);
+                updateFile(studentId, 'idPictureFront', downloadURL);
+              }
+            });
+          }
+        );
+      }
+    } else {
+      toast.error('File too large. Size should not exceed 5 MB.');
+    }
+  };
+
+  const handleIdPictureBackUpload = (e, auto, studentId) => {
+    const file = e.target?.files[0];
+
+    if (file) {
+      if (file.size < 5242880) { // 5MB limit
+        const extension = file.name.split('.').pop();
+        const storageRef = ref(
+          storage,
+          `files/admin/idPictureBack-${crypto
+            .createHash('md5')
+            .update(file.name)
+            .digest('hex')
+            .substring(0, 12)}-${format(
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            setIdPictureBackProgress(progress);
+          },
+          (error) => {
+            toast.error(error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              if (!auto) {
+                setIdPictureBackLink(downloadURL);
+              } else {
+                updateFile(studentId, 'idPictureBack', downloadURL);
               }
             });
           }
@@ -563,8 +612,12 @@ const Students = ({ schoolFees, programs }) => {
         );
       } else {
         switch (type) {
-          case 'idPicture': {
-            setIdPictureLink(url);
+          case 'idPictureFront': {
+            setIdPictureFrontLink(url);
+            break;
+          }
+          case 'idPictureBack': {
+            setIdPictureBackLink(url);
             break;
           }
         }
@@ -1465,44 +1518,91 @@ const Students = ({ schoolFees, programs }) => {
             ) : (
               <p className="text-sm">- No Report Card Uploaded</p>
             )}
-            {student.idPicture ? (
+            {/* ID Picture Front */}
+            {student.idPictureFront ? (
               <div className="flex flex-col p-3 space-y-2 border rounded">
-                <h3 className="text-2xl font-medium">ID Picture</h3>
+                <h3 className="text-2xl font-medium">ID Picture (Front)</h3>
                 <div className="flex items-center space-x-3">
-                  <Link href={student.idPicture}>
+                  <Link href={student.idPictureFront}>
                     <a className="underline text-primary-500" target="_blank">
-                      View ID Picture
+                      View ID Picture Front
                     </a>
                   </Link>
                 </div>
               </div>
             ) : (
-              <p className="text-sm">- No ID Picture Uploaded</p>
+              <p className="text-sm">- No ID Picture Front Uploaded</p>
             )}
 
-            {/* Upload New ID Picture Section */}
+            {/* ID Picture Back */}
+            {student.idPictureBack ? (
+              <div className="flex flex-col p-3 space-y-2 border rounded">
+                <h3 className="text-2xl font-medium">ID Picture (Back)</h3>
+                <div className="flex items-center space-x-3">
+                  <Link href={student.idPictureBack}>
+                    <a className="underline text-primary-500" target="_blank">
+                      View ID Picture Back
+                    </a>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm">- No ID Picture Back Uploaded</p>
+            )}
+
+            {/* Upload New ID Picture Front Section */}
             <div className="flex flex-col p-3 space-y-2 border rounded">
-              <h3 className="text-xl font-medium">Upload New ID Picture</h3>
+              <h3 className="text-xl font-medium">Upload New ID Picture (Front)</h3>
               <div className="flex flex-col space-y-3">
                 <input
                   className="text-xs cursor-pointer"
                   accept=".jpeg,.jpg,.png"
-                  onChange={(e) => handleIdPictureUpload(e, true, student.studentId)}
+                  onChange={(e) => handleIdPictureFrontUpload(e, true, student.studentId)}
                   type="file"
                 />
                 <div className="w-full rounded-full shadow bg-grey-light">
                   <div
                     className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
-                    style={{ width: `${idPictureProgress}%` }}
+                    style={{ width: `${idPictureFrontProgress}%` }}
                   >
-                    <span className="px-3">{idPictureProgress}%</span>
+                    <span className="px-3">{idPictureFrontProgress}%</span>
                   </div>
                 </div>
-                {idPictureLink && (
+                {idPictureFrontLink && (
                   <div className="flex flex-col items-center justify-center space-y-3">
-                    <Link href={idPictureLink}>
+                    <Link href={idPictureFrontLink}>
                       <a className="text-sm text-blue-600 underline" target="_blank">
-                        Preview New ID Picture
+                        Preview New ID Picture Front
+                      </a>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Upload New ID Picture Back Section */}
+            <div className="flex flex-col p-3 space-y-2 border rounded">
+              <h3 className="text-xl font-medium">Upload New ID Picture (Back)</h3>
+              <div className="flex flex-col space-y-3">
+                <input
+                  className="text-xs cursor-pointer"
+                  accept=".jpeg,.jpg,.png"
+                  onChange={(e) => handleIdPictureBackUpload(e, true, student.studentId)}
+                  type="file"
+                />
+                <div className="w-full rounded-full shadow bg-grey-light">
+                  <div
+                    className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
+                    style={{ width: `${idPictureBackProgress}%` }}
+                  >
+                    <span className="px-3">{idPictureBackProgress}%</span>
+                  </div>
+                </div>
+                {idPictureBackLink && (
+                  <div className="flex flex-col items-center justify-center space-y-3">
+                    <Link href={idPictureBackLink}>
+                      <a className="text-sm text-blue-600 underline" target="_blank">
+                        Preview New ID Picture Back
                       </a>
                     </Link>
                   </div>

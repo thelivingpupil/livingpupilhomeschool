@@ -183,6 +183,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const [paymentLink, setPaymentLink] = useState(null);
   const [filteredProgram, setFilteredProgram] = useState(null);
 
+  const [idPictureFrontProgress, setIdPictureFrontProgress] = useState(0);
+  const [idPictureBackProgress, setIdPictureBackProgress] = useState(0);
+  const [idPictureFrontLink, setIdPictureFrontLink] = useState(null);
+  const [idPictureBackLink, setIdPictureBackLink] = useState(null);
+
   const handlePrimaryGuardianName = (event) =>
     setPrimaryGuardianName(event.target.value);
   const handlePrimaryGuardianOccupation = (event) =>
@@ -726,6 +731,100 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     }
   };
 
+  const handleIdPictureFrontUpload = (e, auto, studentId) => {
+    const file = e.target?.files[0];
+
+    if (file) {
+      // 10 MB
+      if (file.size < 10485760) {
+        const extension = file.name.split('.').pop();
+        const storageRef = ref(
+          storage,
+          `files/${workspace.slug}/id-picture-front-${crypto
+            .createHash('md5')
+            .update(file.name)
+            .digest('hex')
+            .substring(0, 12)}-${format(
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            setIdPictureFrontProgress(progress);
+          },
+          (error) => {
+            toast.error(error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              if (!auto) {
+                setIdPictureFrontLink(downloadURL);
+              } else {
+                updateFile(studentId, 'idPictureFront', downloadURL);
+              }
+            });
+          }
+        );
+      }
+    } else {
+      toast.error('File too large. Size should not exceed 10 MB.');
+    }
+  };
+
+  const handleIdPictureBackUpload = (e, auto, studentId) => {
+    const file = e.target?.files[0];
+
+    if (file) {
+      // 10 MB
+      if (file.size < 10485760) {
+        const extension = file.name.split('.').pop();
+        const storageRef = ref(
+          storage,
+          `files/${workspace.slug}/id-picture-back-${crypto
+            .createHash('md5')
+            .update(file.name)
+            .digest('hex')
+            .substring(0, 12)}-${format(
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            setIdPictureBackProgress(progress);
+          },
+          (error) => {
+            toast.error(error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              if (!auto) {
+                setIdPictureBackLink(downloadURL);
+              } else {
+                updateFile(studentId, 'idPictureBack', downloadURL);
+              }
+            });
+          }
+        );
+      }
+    } else {
+      toast.error('File too large. Size should not exceed 10 MB.');
+    }
+  };
+
   const saveSignature = () => {
     const dataUrl = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
     uploadSignature(dataUrl);
@@ -837,7 +936,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         specialNeeds,
         formerRegistrar,
         formerRegistrarEmail,
-        formerRegistrarNumber
+        formerRegistrarNumber,
+        idPictureFrontLink,
+        idPictureBackLink
       },
       method: 'POST',
     })
@@ -891,6 +992,14 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           }
           case 'idPicture': {
             setIdPictureLink(url);
+            break;
+          }
+          case 'idPictureFront': {
+            setIdPictureFrontLink(url);
+            break;
+          }
+          case 'idPictureBack': {
+            setIdPictureBackLink(url);
             break;
           }
         }
@@ -2250,7 +2359,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </p>
           <ol className="px-5 list-disc">
             <li>
-              Support and encourage Living Pupil Homeschool’s values central
+              Support and encourage Living Pupil Homeschool's values central
               to the philosophy and mission of Charlotte Mason.
             </li>
             <li>
@@ -3132,7 +3241,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </Content.Container>
         ) : (
           <Content.Container>
-            <div className="grid grid-cols-3 gap-5">
+            <div className="grid grid-cols-4 gap-5">
               <div
                 className={`flex flex-col justify-between rounded ${birthCertificateLink ||
                   workspace.studentRecord.liveBirthCertificate
@@ -3150,10 +3259,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                           : 'bg-red-200'
                           }`}
                       >
-                        <DocumentIcon className="w-12 h-12" />
+                        <DocumentIcon className="w-8 h-8" />
                       </div>
                       <div className="flex flex-col space-y-2">
-                        <h2 className="text-2xl font-medium">
+                        <h4 className="text-xl font-medium">
                           Birth Certificate{' '}
                           {!birthCertificateLink &&
                             !workspace.studentRecord.liveBirthCertificate && (
@@ -3161,7 +3270,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                 Missing
                               </span>
                             )}
-                        </h2>
+                        </h4>
                         <div>
                           {birthCertificateLink ||
                             workspace.studentRecord.liveBirthCertificate ? (
@@ -3207,7 +3316,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                 className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
                                 htmlFor="fileBirthCertificate"
                               >
-                                Upload Document Now
+                                Upload Document
                               </label>
                               <input
                                 id="fileBirthCertificate"
@@ -3246,10 +3355,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                           : 'bg-red-200'
                           }`}
                       >
-                        <DocumentIcon className="w-12 h-12" />
+                        <DocumentIcon className="w-8 h-8" />
                       </div>
                       <div className="flex flex-col space-y-2">
-                        <h2 className="text-2xl font-medium">
+                        <h4 className="text-xl font-medium">
                           Report Card{' '}
                           {!reportCardLink &&
                             !workspace.studentRecord.reportCard && (
@@ -3257,7 +3366,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                 Missing
                               </span>
                             )}
-                        </h2>
+                        </h4>
                         <div className="flex items-center space-x-3">
                           {reportCardLink ||
                             workspace.studentRecord.reportCard ? (
@@ -3303,7 +3412,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                 className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
                                 htmlFor="fileReportCard"
                               >
-                                Upload Document Now
+                                Upload Document
                               </label>
                               <input
                                 id="fileReportCard"
@@ -3327,55 +3436,51 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   </div>
                 </div>
               </div>
-              <div
-                className={`flex flex-col justify-between rounded ${idPictureLink || workspace.studentRecord.idPicture
-                  ? 'border'
-                  : 'border-2 border-red-400 border-dashed'
-                  }`}
-              >
+              {/* ID Picture Front Card */}
+              <div className={`flex flex-col justify-between rounded ${idPictureFrontLink || workspace.studentRecord.idPictureFront ? 'border' : 'border-2 border-red-400 border-dashed'}`}>
                 <div className="flex flex-col p-5 space-y-3 overflow-auto">
                   <div className="flex flex-col space-y-5">
                     <div className="flex space-x-5">
-                      <div
-                        className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${idPictureLink || workspace.studentRecord.idPicture
-                          ? 'bg-primary-400'
-                          : 'bg-red-200'
-                          }`}
-                      >
-                        <DocumentIcon className="w-12 h-12" />
+                      <div className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${idPictureFrontLink || workspace.studentRecord.idPictureFront ? 'bg-primary-400' : 'bg-red-200'}`}>
+                        <DocumentIcon className="w-8 h-8" />
                       </div>
                       <div className="flex flex-col space-y-2">
-                        <h2 className="text-2xl font-medium">
-                          ID Picture{' '}
-                          {!idPictureLink &&
-                            !workspace.studentRecord.idPicture && (
-                              <span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">
-                                Missing
-                              </span>
-                            )}
-                        </h2>
+                        <h4 className="text-xl font-medium">ID Picture (Front) {!idPictureFrontLink && !workspace.studentRecord.idPictureFront && (<span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">Missing</span>)}</h4>
                         <div className="flex items-center space-x-3">
-                          {idPictureLink ||
-                            workspace.studentRecord.idPicture ? (
+                          {idPictureFrontLink || workspace.studentRecord.idPictureFront ? (
                             <>
-                              <Link
-                                href={
-                                  idPictureLink ||
-                                  workspace.studentRecord.idPicture
-                                }
-                              >
-                                <a
-                                  className="underline text-primary-500"
-                                  target="_blank"
-                                >
-                                  Open
-                                </a>
+                              <Link href={idPictureFrontLink || workspace.studentRecord.idPictureFront}>
+                                <a className="underline text-primary-500" target="_blank">Open</a>
                               </Link>
                             </>
                           ) : (
-                            <span className="text-sm text-gray-500">
-                              Admin upload only
-                            </span>
+                            <span className="text-sm text-gray-500">Admin upload only</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* ID Picture Back Card */}
+              <div className={`flex flex-col justify-between rounded ${idPictureBackLink || workspace.studentRecord.idPictureBack ? 'border' : 'border-2 border-red-400 border-dashed'}`}>
+                <div className="flex flex-col p-5 space-y-3 overflow-auto">
+                  <div className="flex flex-col space-y-5">
+                    <div className="flex space-x-5">
+                      <div className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${idPictureBackLink || workspace.studentRecord.idPictureBack ? 'bg-primary-400' : 'bg-red-200'}`}>
+                        <DocumentIcon className="w-8 h-8" />
+                      </div>
+                      <div className="flex flex-col space-y-2">
+                        <h4 className="text-xl font-medium">ID Picture (Back) {!idPictureBackLink && !workspace.studentRecord.idPictureBack && (<span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">Missing</span>)}</h4>
+                        <div className="flex items-center space-x-3">
+                          {idPictureBackLink || workspace.studentRecord.idPictureBack ? (
+                            <>
+                              <Link href={idPictureBackLink || workspace.studentRecord.idPictureBack}>
+                                <a className="underline text-primary-500" target="_blank">Open</a>
+                              </Link>
+                            </>
+                          ) : (
+                            <span className="text-sm text-gray-500">Admin upload only</span>
                           )}
                         </div>
                       </div>
@@ -3505,39 +3610,51 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 </div>
 
                 {/* ID Picture Download Section */}
-                {workspace.studentRecord.idPicture && (
+                {(workspace.studentRecord.idPictureFront || workspace.studentRecord.idPictureBack) && (
                   <div className="mt-6 p-4 border rounded-lg bg-gray-50">
                     <h4 className="font-bold text-gray-600 mb-3">ID Picture</h4>
                     <div className="flex items-center space-x-4">
-                      <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
-                        <Image
-                          alt="ID Picture"
-                          className="object-cover"
-                          layout="fill"
-                          loading="lazy"
-                          src={workspace.studentRecord.idPicture}
-                        />
-                      </div>
+                      {workspace.studentRecord.idPictureFront && (
+                        <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
+                          <Image
+                            alt="ID Picture Front"
+                            className="object-cover"
+                            layout="fill"
+                            loading="lazy"
+                            src={workspace.studentRecord.idPictureFront}
+                          />
+                        </div>
+                      )}
+                      {workspace.studentRecord.idPictureBack && (
+                        <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
+                          <Image
+                            alt="ID Picture Back"
+                            className="object-cover"
+                            layout="fill"
+                            loading="lazy"
+                            src={workspace.studentRecord.idPictureBack}
+                          />
+                        </div>
+                      )}
                       <div className="flex flex-col space-y-2">
-                        <p className="text-sm text-gray-600">
-                          Official ID picture uploaded by admin
-                        </p>
+                        <p className="text-sm text-gray-600">Official ID pictures uploaded by admin</p>
                         <div className="flex space-x-2">
-                          <Link href={workspace.studentRecord.idPicture}>
-                            <a
-                              className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
-                              target="_blank"
-                            >
-                              View
-                            </a>
-                          </Link>
-                          <a
-                            className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
-                            download
-                            href={workspace.studentRecord.idPicture}
-                          >
-                            Download
-                          </a>
+                          {workspace.studentRecord.idPictureFront && (
+                            <Link href={workspace.studentRecord.idPictureFront}>
+                              <a className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors" target="_blank">View Front</a>
+                            </Link>
+                          )}
+                          {workspace.studentRecord.idPictureBack && (
+                            <Link href={workspace.studentRecord.idPictureBack}>
+                              <a className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors" target="_blank">View Back</a>
+                            </Link>
+                          )}
+                          {workspace.studentRecord.idPictureFront && (
+                            <a className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors" download href={workspace.studentRecord.idPictureFront}>Download Front</a>
+                          )}
+                          {workspace.studentRecord.idPictureBack && (
+                            <a className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors" download href={workspace.studentRecord.idPictureBack}>Download Back</a>
+                          )}
                         </div>
                       </div>
                     </div>

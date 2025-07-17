@@ -246,8 +246,12 @@ export const updateFile = async (studentId, type, url) => {
       data.reportCard = url;
       break;
     }
-    case 'idPicture': {
-      data.idPicture = url;
+    case 'idPictureFront': {
+      data.idPictureFront = url;
+      break;
+    }
+    case 'idPictureBack': {
+      data.idPictureBack = url;
       break;
     }
     default:
@@ -283,7 +287,8 @@ export const getStudentRecords = async () =>
       image: true,
       liveBirthCertificate: true,
       reportCard: true,
-      idPicture: true,
+      idPictureFront: true,
+      idPictureBack: true,
       discount: true,
       studentStatus: true,
       cottageType: true,
@@ -362,7 +367,8 @@ export const getEnrolledStudentRecords = async () =>
       image: true,
       liveBirthCertificate: true,
       reportCard: true,
-      idPicture: true,
+      idPictureFront: true,
+      idPictureBack: true,
       discount: true,
       studentStatus: true,
       cottageType: true,
@@ -439,7 +445,8 @@ export const getStudentRecord = async (id) =>
       image: true,
       liveBirthCertificate: true,
       reportCard: true,
-      idPicture: true,
+      idPictureFront: true,
+      idPictureBack: true,
       discount: true,
       scholarship: true,
 
@@ -472,7 +479,9 @@ export const updateStudentRecord = async (studentId, studentNewData) =>
       reportCard: studentNewData.reportCardLink,
       discount: studentNewData.discountCode,
       accreditation: studentNewData.accreditation,
-      scholarship: studentNewData.scholarshipCode
+      scholarship: studentNewData.scholarshipCode,
+      idPictureFront: studentNewData.idPictureFront,
+      idPictureBack: studentNewData.idPictureBack,
     },
     where: { studentId }
   });
