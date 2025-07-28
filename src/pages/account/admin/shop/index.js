@@ -48,7 +48,51 @@ const Shop = () => {
     return filteredOrders?.map((order) => {
       const address = order.transaction?.purchaseHistory?.deliveryAddress ?? '';
       const itemCount = getItemCountFromOrder(order);
-      const shippingFee = calculateShippingFeeFromAddress(address, itemCount);
+
+      // Calculate shipping fee based on the actual shipping type stored in the database
+      const shippingType = order.transaction?.purchaseHistory?.shippingType;
+      let shippingFee = 0;
+
+      if (shippingType === 'WITHIN_CEBU') {
+        // For Within Cebu, we need to determine the specific city rate
+        const lowerAddress = address.toLowerCase();
+        const cebuRates = {
+          'mandaue city': 130,
+          'consolacion': 140,
+          'lapu-lapu city': 150,
+          'cebu city': 160,
+          'talisay city': 170,
+          'minglanilia': 180,
+          'naga city': 200,
+          'compostela': 200,
+        };
+
+        for (const city in cebuRates) {
+          if (lowerAddress.includes(city)) {
+            shippingFee = cebuRates[city];
+            break;
+          }
+        }
+
+        // Default to Cebu City rate if no specific city found
+        if (shippingFee === 0) {
+          shippingFee = 160;
+        }
+      } else if (shippingType === 'NCR') {
+        shippingFee = itemCount >= 25 ? 500 : itemCount >= 10 ? 400 : 300;
+      } else if (shippingType === 'NORTH_LUZON') {
+        shippingFee = itemCount >= 25 ? 500 : itemCount >= 10 ? 400 : 300;
+      } else if (shippingType === 'SOUTH_LUZON') {
+        shippingFee = itemCount >= 25 ? 500 : itemCount >= 10 ? 400 : 300;
+      } else if (shippingType === 'VISAYAS') {
+        shippingFee = itemCount >= 25 ? 500 : itemCount >= 10 ? 400 : 300;
+      } else if (shippingType === 'MINDANAO') {
+        shippingFee = itemCount >= 25 ? 500 : itemCount >= 10 ? 400 : 300;
+      } else if (shippingType === 'ISLANDER') {
+        shippingFee = itemCount >= 25 ? 500 : itemCount >= 10 ? 400 : 300;
+      } else if (shippingType === 'PICK_UP') {
+        shippingFee = 0;
+      }
 
       return {
         orderCode: order.orderCode,
@@ -367,15 +411,19 @@ const Shop = () => {
                     )}
                   </h5>
                 </div>
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-left">Delivery Fee</h4>
-                  <h5 className="font-bold text-right text-green-600">
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'PHP',
-                    }).format(shippingData?.[0]?.shippingFee)}
-                  </h5>
-                </div>
+                {order
+                  .filter(order => order.order === 0)
+                  .some(orderDetails => orderDetails?.transaction?.purchaseHistory?.shippingType !== 'PICK_UP') && (
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-left">Delivery Fee</h4>
+                      <h5 className="font-bold text-right text-green-600">
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'PHP',
+                        }).format(shippingData?.[0]?.shippingFee)}
+                      </h5>
+                    </div>
+                  )}
                 <div className="flex items-center justify-between">
                   <h4 className="font-medium text-left">Gateway Fee</h4>
                   <h5 className="font-bold text-right text-green-600">
@@ -402,23 +450,19 @@ const Shop = () => {
                     )}
                   </h5>
                 </div>
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-left">Delivery Fee</h4>
-                  <h5 className="font-bold text-right text-green-600">
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'PHP',
-                    }).format(
-                      ((order.reduce((total, feeWrapper) => {
-                        return total + (Number(feeWrapper.transaction.amount));
-                      }, 0) - 20)) // Total - Gateway fee of 100
-                      - (order
-                        .filter(order => order.order === 0)
-                        .flatMap(orderDetails => orderDetails.transaction.purchaseHistory.orderItems)
-                        .reduce((sum, item) => sum + Number(item.totalPrice), 0))
-                    )}
-                  </h5>
-                </div>
+                {order
+                  .filter(order => order.order === 0)
+                  .some(orderDetails => orderDetails?.transaction?.purchaseHistory?.shippingType !== 'PICK_UP') && (
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-left">Delivery Fee</h4>
+                      <h5 className="font-bold text-right text-green-600">
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'PHP',
+                        }).format(shippingData?.[0]?.shippingFee || 0)}
+                      </h5>
+                    </div>
+                  )}
                 <div className="flex items-center justify-between">
                   <h4 className="font-medium text-left">Gateway Fee</h4>
                   <h5 className="font-bold text-right text-green-600">
