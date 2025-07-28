@@ -208,7 +208,7 @@ const Shop = ({ categories, items }) => {
     [items, categories]
   );
 
-  const disableShop = false;
+  const disableShop = true;
 
   const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -232,10 +232,10 @@ const Shop = ({ categories, items }) => {
           />
           <h1 className="text-4xl font-bold text-center text-primary-500">Shop Announcement</h1>
           <p className="text-center">
-            Our shop is closed today in preparation for Pagbukas Cebu tomorrow!
+            Our shop is closed today due to maintenance.
           </p>
           <p className="text-center">
-            We’ll resume regular operations next week. Thank you for your understanding and support—see you at Pagbukas!
+            We apologize for the inconvenience and appreciate your understanding.
           </p>
           <p className="text-center">
             — The Living Pupil Homeschool Team
