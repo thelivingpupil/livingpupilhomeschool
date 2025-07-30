@@ -9,6 +9,7 @@ import {
 import { PortableText } from '@portabletext/react';
 import imageUrlBuilder from '@sanity/image-url';
 import crypto from 'crypto';
+import toast from 'react-hot-toast';
 
 import sanityClient from '@/lib/server/sanity';
 import { useEffect, useState } from 'react';
@@ -38,6 +39,8 @@ const ShopItem = ({ item }) => {
     togglePaymentLinkVisibility,
     isSubmitting,
     paymentLink,
+    paymentAmount,
+    totalPayment,
     checkoutCart,
   } = useCartContext();
 
@@ -230,18 +233,85 @@ const ShopItem = ({ item }) => {
           </Modal>
           <Modal
             show={showPaymentLink}
-            title="Go To Payment Link"
+            title="LP UNION BANK ACCOUNT"
             toggle={togglePaymentLinkVisibility}
           >
-            <p>You may view your purchase history in your account profile.</p>
-            <Link href={paymentLink}>
-              <a
-                className="inline-block w-full px-3 py-2 text-lg text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-                target="_blank"
-              >
-                Pay Now
-              </a>
-            </Link>
+            <div className="space-y-6">
+              <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                <h3 className="text-lg font-semibold text-green-800 mb-2">
+                  {paymentType === 'INSTALLMENT' ? 'First Installment Amount' : 'Total Payment Amount'}
+                </h3>
+                <div className="text-3xl font-bold text-green-600">
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(paymentAmount || total)}
+                </div>
+                {paymentType === 'INSTALLMENT' && totalPayment > 0 && (
+                  <div className="text-sm text-gray-600 mt-2">
+                    Total: {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(totalPayment)} (5 installments)
+                  </div>
+                )}
+              </div>
+
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FF7F00' }}>
+                    <span className="text-white text-2xl font-bold">UB</span>
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  Living Pupil Homeschool Solutions
+                </h3>
+              </div>
+
+              <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-gray-700">Bank:</span>
+                  <span className="text-gray-900">Union Bank</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-gray-700">Account Number:</span>
+                  <span className="font-mono text-gray-900">003110001844</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-gray-700">Account Name:</span>
+                  <span className="text-gray-900">Living Pupil Homeschool Solutions</span>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-blue-800 mb-2">Payment Instructions:</h4>
+                <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
+                  <li>Transfer the exact amount to the Union Bank account above</li>
+                  <li>Use your transaction reference number as payment description</li>
+                  <li>Keep your payment receipt for verification</li>
+                  <li>Payment will be verified within 24-48 hours</li>
+                </ol>
+              </div>
+
+              <div className="flex space-x-3">
+                <button
+                  onClick={togglePaymentLinkVisibility}
+                  className="flex-1 py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => {
+                    // Copy account number to clipboard
+                    navigator.clipboard.writeText('003110001844');
+                    toast.success('Account number copied to clipboard!');
+                  }}
+                  className="flex-1 py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                >
+                  Copy Account Number
+                </button>
+              </div>
+            </div>
           </Modal>
           <div className="flex flex-col px-5 py-3 border-4 space-y-5 rounded-lg border-primary-500 md:hidden">
             <div className="flex flex-col text-sm">

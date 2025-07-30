@@ -133,6 +133,8 @@ const CartProvider = ({ children }) => {
   const [showPaymentLink, setPaymentLinkVisibility] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
   const [paymentLink, setPaymentLink] = useState('');
+  const [paymentAmount, setPaymentAmount] = useState(0);
+  const [totalPayment, setTotalPayment] = useState(0);
   const [shippingFee, setShippingFee] = useState({});
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [contactNumber, setContactNumber] = useState('');
@@ -273,6 +275,8 @@ const CartProvider = ({ children }) => {
       } else {
         toggleCartVisibility();
         setPaymentLink(response.data.paymentLink);
+        setPaymentAmount(response.data.amount || total);
+        setTotalPayment(response.data.totalPayment || 0);
         togglePaymentLinkVisibility();
         setCart([]);
         localStorage.setItem(LPH_CART_KEY, JSON.stringify([]));
@@ -346,6 +350,8 @@ const CartProvider = ({ children }) => {
         contactNumber,
         isSubmitting,
         paymentLink,
+        paymentAmount,
+        totalPayment,
         paymentType,
         signatureProgress,
         signatureLink,

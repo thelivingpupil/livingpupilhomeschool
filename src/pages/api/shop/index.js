@@ -40,12 +40,14 @@ const handler = async (req, res) => {
       let result;
       const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
       const totalWithShipping = total + shippingFee.fee;
+      let installmentAmount = 0;
+      let totalPayment = 0;
 
       if (paymentType === 'INSTALLMENT') {
         const interestRate = 0.1;
-        const installmentAmount = ((total * (1 + interestRate)) + shippingFee.fee) / 5;
+        installmentAmount = ((total * (1 + interestRate)) + shippingFee.fee) / 5;
         const payments = Array(5).fill(installmentAmount);
-        const totalPayment = installmentAmount * 5;
+        totalPayment = installmentAmount * 5;
 
 
         result = await createOrderFee({
@@ -204,7 +206,7 @@ const handler = async (req, res) => {
           }), // Generate HTML content from the template
         });
 
-        res.status(200).json({ data: { paymentLink: transaction?.url } });
+        res.status(200).json({ data: { paymentLink: transaction?.url, amount: totalWithShipping } });
         return;
       }
 
@@ -215,7 +217,7 @@ const handler = async (req, res) => {
       }
 
       // For successful INSTALLMENT processing
-      res.status(200).json({ data: { paymentLink: result.paymentLink } });
+      res.status(200).json({ data: { paymentLink: result.paymentLink, amount: installmentAmount, totalPayment: totalPayment } });
 
     } catch (error) {
       console.error('API Handler Error:', error.message);

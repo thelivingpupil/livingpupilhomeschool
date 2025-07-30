@@ -16,6 +16,7 @@ import toast from 'react-hot-toast';
 import { getOrderFeeDeadline } from '@/utils/index';
 import { SHOP_PAYMENT_TYPE } from '@/providers/cart'
 import { ChevronDownIcon } from '@heroicons/react/outline';
+import Modal from '@/components/Modal';
 
 const PurchaseHistory = () => {
   const { data, isLoading } = usePurchaseHistory();
@@ -23,6 +24,8 @@ const PurchaseHistory = () => {
   const [isSubmitting, setSubmittingState] = useState(false);
   const [sortedOrderFees, setSortedOrderFees] = useState([]);
   const [table, setTable] = useState("NEW");
+  const [showBankModal, setShowBankModal] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   useEffect(() => {
     // Run this effect when orderFeeDataIsLoading changes and is false
@@ -55,26 +58,18 @@ const PurchaseHistory = () => {
     }
   }, [orderFeeDataIsLoading, orderFeeData]);
 
-  const renew = (transactionId, referenceNumber) => {
-    setSubmittingState(true);
-    api(`/api/payments/transaction`, {
-      body: {
-        transactionId,
-        referenceNumber,
-      },
-      method: 'PUT',
-    }).then((response) => {
-      setSubmittingState(false);
-
-      if (response.errors) {
-        Object.keys(response.errors).forEach((error) =>
-          toast.error(response.errors[error].msg)
-        );
-      } else {
-        window.open(response.data.paymentLink, '_blank');
-        toast.success('Payment link has been updated!');
-      }
+  const showBankPaymentModal = (transactionId, referenceNumber, amount, total) => {
+    setSelectedTransaction({
+      transactionId,
+      referenceNumber,
+      amount,
+      total
     });
+    setShowBankModal(true);
+  };
+
+  const toggleBankModal = () => {
+    setShowBankModal(!showBankModal);
   };
 
   return (
@@ -203,9 +198,11 @@ const PurchaseHistory = () => {
                       className="inline-block px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
                       disabled={isSubmitting}
                       onClick={() =>
-                        renew(
+                        showBankPaymentModal(
                           purchase.transactionId,
-                          purchase.transaction.referenceNumber
+                          purchase.transaction.referenceNumber,
+                          purchase.total,
+                          purchase.total
                         )
                       }
                     >
@@ -370,9 +367,11 @@ const PurchaseHistory = () => {
                                   className="ml-auto px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
                                   disabled={isSubmitting}
                                   onClick={() =>
-                                    renew(
+                                    showBankPaymentModal(
                                       feeWrapper.transaction.transactionId,
-                                      feeWrapper.transaction.referenceNumber
+                                      feeWrapper.transaction.referenceNumber,
+                                      feeWrapper.transaction.amount,
+                                      feeWrapper.transaction.amount
                                     )
                                   }
                                 >
@@ -407,6 +406,103 @@ const PurchaseHistory = () => {
             )}
         </Content.Container>
       )}
+
+      {/* Bank Payment Modal */}
+      <Modal
+        show={showBankModal}
+        title="LP UNION BANK ACCOUNT"
+        toggle={toggleBankModal}
+      >
+        <div className="space-y-6">
+          {selectedTransaction && (
+            <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
+              <h3 className="text-lg font-semibold text-green-800 mb-2">Total Payment Amount</h3>
+              <div className="text-3xl font-bold text-green-600">
+                {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(selectedTransaction.total)}
+              </div>
+            </div>
+          )}
+
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FF7F00' }}>
+                <span className="text-white text-2xl font-bold">UB</span>
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              Living Pupil Homeschool Solutions
+            </h3>
+          </div>
+
+          <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="font-medium text-gray-700">Bank:</span>
+              <span className="text-gray-900">Union Bank</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="font-medium text-gray-700">Account Number:</span>
+              <span className="font-mono text-gray-900">003110001844</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="font-medium text-gray-700">Account Name:</span>
+              <span className="text-gray-900">Living Pupil Homeschool Solutions</span>
+            </div>
+            {selectedTransaction && (
+              <div className="flex justify-between items-center pt-3 border-t border-gray-200">
+                <span className="font-medium text-gray-700">Amount Due:</span>
+                <span className="font-bold text-green-600">
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(selectedTransaction.total)}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <h4 className="font-semibold text-blue-800 mb-2">Payment Instructions:</h4>
+            <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
+              <li>Transfer the exact amount to the Union Bank account above</li>
+              <li>Use your transaction reference number as payment description</li>
+              <li>Keep your payment receipt for verification</li>
+              <li>Payment will be verified within 24-48 hours</li>
+            </ol>
+          </div>
+
+          {selectedTransaction && (
+            <div className="bg-yellow-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-yellow-800 mb-2">Transaction Details:</h4>
+              <div className="space-y-1 text-sm text-yellow-700">
+                <div>Transaction ID: <span className="font-mono">{selectedTransaction.transactionId}</span></div>
+                <div>Reference Number: <span className="font-mono">{selectedTransaction.referenceNumber}</span></div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex space-x-3">
+            <button
+              onClick={toggleBankModal}
+              className="flex-1 py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+            >
+              Close
+            </button>
+            <button
+              onClick={() => {
+                // Copy account number to clipboard
+                navigator.clipboard.writeText('003110001844');
+                toast.success('Account number copied to clipboard!');
+              }}
+              className="flex-1 py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            >
+              Copy Account Number
+            </button>
+          </div>
+        </div>
+      </Modal>
 
     </AccountLayout>
   );
