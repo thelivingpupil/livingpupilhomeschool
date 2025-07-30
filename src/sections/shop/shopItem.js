@@ -41,6 +41,7 @@ const ShopItem = ({ item }) => {
     paymentLink,
     paymentAmount,
     totalPayment,
+    paymentType,
     checkoutCart,
   } = useCartContext();
 
@@ -239,7 +240,7 @@ const ShopItem = ({ item }) => {
             <div className="space-y-6">
               <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
                 <h3 className="text-lg font-semibold text-green-800 mb-2">
-                  {paymentType === 'INSTALLMENT' ? 'First Installment Amount' : 'Total Payment Amount'}
+                  {(paymentType || 'FULL_PAYMENT') === 'INSTALLMENT' ? 'First Installment Amount' : 'Total Payment Amount'}
                 </h3>
                 <div className="text-3xl font-bold text-green-600">
                   {new Intl.NumberFormat('en-US', {
@@ -247,7 +248,7 @@ const ShopItem = ({ item }) => {
                     currency: 'PHP',
                   }).format(paymentAmount || total)}
                 </div>
-                {paymentType === 'INSTALLMENT' && totalPayment > 0 && (
+                {(paymentType || 'FULL_PAYMENT') === 'INSTALLMENT' && totalPayment > 0 && (
                   <div className="text-sm text-gray-600 mt-2">
                     Total: {new Intl.NumberFormat('en-US', {
                       style: 'currency',

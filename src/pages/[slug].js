@@ -29,8 +29,13 @@ export const getStaticPaths = async () => {
   const paths = await sanityClient.fetch(
     `*[_type == 'pages' && index != true && defined(slug.current)][].slug.current`
   );
+
+  // Filter out conflicting static pages
+  const conflictingPaths = ['senior-high', 'homeschool-program', 'homeschool-cottage'];
+  const filteredPaths = paths.filter(slug => !conflictingPaths.includes(slug));
+
   return {
-    paths: paths.map((slug) => ({ params: { slug } })),
+    paths: filteredPaths.map((slug) => ({ params: { slug } })),
     fallback: true,
   };
 };

@@ -71,12 +71,22 @@ export const getStaticProps = async ({ params }) => {
   let workspace = null;
 
   if (siteWorkspace) {
-    const { host } = new URL(process.env.APP_URL);
-    workspace = {
-      domains: siteWorkspace.domains,
-      name: siteWorkspace.name,
-      hostname: `${siteWorkspace.slug}.${host}`,
-    };
+    try {
+      const appUrl = process.env.APP_URL || 'https://livingpupilhomeschool.com';
+      const { host } = new URL(appUrl);
+      workspace = {
+        domains: siteWorkspace.domains,
+        name: siteWorkspace.name,
+        hostname: `${siteWorkspace.slug}.${host}`,
+      };
+    } catch (error) {
+      console.error('Error creating workspace URL:', error);
+      workspace = {
+        domains: siteWorkspace.domains,
+        name: siteWorkspace.name,
+        hostname: `${siteWorkspace.slug}.livingpupilhomeschool.com`,
+      };
+    }
   }
 
   return {
