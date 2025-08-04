@@ -17,6 +17,8 @@ import { getOrderFeeDeadline } from '@/utils/index';
 import { SHOP_PAYMENT_TYPE } from '@/providers/cart'
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import Modal from '@/components/Modal';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage } from '@/lib/client/firebase';
 
 const PurchaseHistory = () => {
   const { data, isLoading } = usePurchaseHistory();
@@ -26,6 +28,8 @@ const PurchaseHistory = () => {
   const [table, setTable] = useState("NEW");
   const [showBankModal, setShowBankModal] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [paymentProofFile, setPaymentProofFile] = useState(null);
+  const [uploadingProof, setUploadingProof] = useState(false);
 
   useEffect(() => {
     // Run this effect when orderFeeDataIsLoading changes and is false
@@ -70,6 +74,58 @@ const PurchaseHistory = () => {
 
   const toggleBankModal = () => {
     setShowBankModal(!showBankModal);
+    if (!showBankModal) {
+      setPaymentProofFile(null);
+    }
+  };
+
+  const handlePaymentProofUpload = async () => {
+    if (!paymentProofFile || !selectedTransaction) return;
+
+    setUploadingProof(true);
+    try {
+      // Upload file to Firebase storage
+      const fileName = `payment-proof-${selectedTransaction.transactionId}-${Date.now()}.jpg`;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, paymentProofFile);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          // Progress tracking if needed
+        },
+        (error) => {
+          toast.error('Failed to upload payment proof');
+          setUploadingProof(false);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+          // Update transaction with payment proof link
+          const response = await api('/api/transactions/payment-proof', {
+            method: 'PUT',
+            body: {
+              transactionId: selectedTransaction.transactionId,
+              paymentProofLink: downloadURL
+            }
+          });
+
+          if (response.errors) {
+            Object.keys(response.errors).forEach((error) =>
+              toast.error(response.errors[error].msg)
+            );
+          } else {
+            toast.success('Payment proof uploaded successfully!');
+            setPaymentProofFile(null);
+            toggleBankModal();
+          }
+          setUploadingProof(false);
+        }
+      );
+    } catch (error) {
+      toast.error('Failed to upload payment proof');
+      setUploadingProof(false);
+    }
   };
 
   return (
@@ -407,10 +463,10 @@ const PurchaseHistory = () => {
         </Content.Container>
       )}
 
-      {/* Bank Payment Modal */}
+      {/* Payment QR Modal */}
       <Modal
         show={showBankModal}
-        title="LP UNION BANK ACCOUNT"
+        title="Payment Options"
         toggle={toggleBankModal}
       >
         <div className="space-y-6">
@@ -426,51 +482,114 @@ const PurchaseHistory = () => {
             </div>
           )}
 
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-4">
-              <div className="w-16 h-16 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FF7F00' }}>
-                <span className="text-white text-2xl font-bold">UB</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Union Bank Option */}
+            <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
+              <div className="text-center mb-4">
+                <div className="flex items-center justify-center mb-2">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FF7F00' }}>
+                    <span className="text-white text-lg font-bold">UB</span>
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800">Union Bank</h3>
               </div>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Living Pupil Homeschool Solutions
-            </h3>
-          </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="font-medium text-gray-700">Bank:</span>
-              <span className="text-gray-900">Union Bank</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="font-medium text-gray-700">Account Number:</span>
-              <span className="font-mono text-gray-900">003110001844</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="font-medium text-gray-700">Account Name:</span>
-              <span className="text-gray-900">Living Pupil Homeschool Solutions</span>
-            </div>
-            {selectedTransaction && (
-              <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-                <span className="font-medium text-gray-700">Amount Due:</span>
-                <span className="font-bold text-green-600">
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(selectedTransaction.total)}
-                </span>
+
+
+              <div className="mt-4 text-center">
+                <img
+                  src="/files/qr/ub_qr.jpg"
+                  alt="Union Bank QR Code"
+                  className="w-64 h-64 mx-auto border border-gray-300 rounded"
+                />
+                <div className="mt-2 space-y-2">
+                  <button
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = '/files/qr/ub_qr.jpg';
+                      link.download = 'union-bank-qr.jpg';
+                      link.click();
+                    }}
+                    className="w-full py-2 px-3 text-white rounded hover:bg-orange-600 transition-colors text-sm"
+                    style={{ backgroundColor: '#FF7F00' }}
+                  >
+                    Download QR Code
+                  </button>
+                </div>
               </div>
-            )}
+            </div>
+
+            {/* GCash Option */}
+            <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-green-500 transition-colors">
+              <div className="text-center mb-4">
+                <div className="flex items-center justify-center mb-2">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#3B82F6' }}>
+                    <span className="text-white text-lg font-bold">GC</span>
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800">GCash</h3>
+              </div>
+
+
+
+              <div className="mt-4 text-center">
+                <img
+                  src="/files/qr/gcash_qr.jpg"
+                  alt="GCash QR Code"
+                  className="w-64 h-64 mx-auto border border-gray-300 rounded"
+                />
+                <div className="mt-2 space-y-2">
+                  <button
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = '/files/qr/gcash_qr.jpg';
+                      link.download = 'gcash-qr.jpg';
+                      link.click();
+                    }}
+                    className="w-full py-2 px-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    Download QR Code
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="bg-blue-50 p-4 rounded-lg">
             <h4 className="font-semibold text-blue-800 mb-2">Payment Instructions:</h4>
             <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
-              <li>Transfer the exact amount to the Union Bank account above</li>
+              <li>Choose your preferred payment method (Union Bank or GCash)</li>
+              <li>Scan the QR code or transfer the exact amount</li>
               <li>Use your transaction reference number as payment description</li>
               <li>Keep your payment receipt for verification</li>
+              <li>Upload your proof of payment using the form below</li>
               <li>Payment will be verified within 24-48 hours</li>
             </ol>
+          </div>
+
+          {/* Payment Proof Upload */}
+          <div className="bg-yellow-50 p-4 rounded-lg">
+            <h4 className="font-semibold text-yellow-800 mb-2">Upload Payment Proof</h4>
+            <div className="space-y-3">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setPaymentProofFile(e.target.files[0])}
+                className="w-full p-2 border border-gray-300 rounded text-sm"
+              />
+              {paymentProofFile && (
+                <div className="text-sm text-green-600">
+                  ✓ {paymentProofFile.name} selected
+                </div>
+              )}
+              <button
+                onClick={handlePaymentProofUpload}
+                disabled={!paymentProofFile || uploadingProof}
+                className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {uploadingProof ? 'Uploading...' : 'Upload Payment Proof'}
+              </button>
+            </div>
           </div>
 
           {selectedTransaction && (
@@ -489,16 +608,6 @@ const PurchaseHistory = () => {
               className="flex-1 py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
             >
               Close
-            </button>
-            <button
-              onClick={() => {
-                // Copy account number to clipboard
-                navigator.clipboard.writeText('003110001844');
-                toast.success('Account number copied to clipboard!');
-              }}
-              className="flex-1 py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-            >
-              Copy Account Number
             </button>
           </div>
         </div>

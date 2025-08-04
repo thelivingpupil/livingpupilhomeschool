@@ -282,6 +282,7 @@ model Transaction {
   schoolFee         SchoolFee?
   payment           Decimal?
   balance           Decimal?
+  paymentProofLink  String?
   orderFee          OrderFee?
   documentRequest   DocumentRequest?
 

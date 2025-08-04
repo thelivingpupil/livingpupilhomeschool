@@ -47,6 +47,7 @@ export const getStoreOrders = async () =>
                     description: true,
                     message: true,
                     url: true,
+                    paymentProofLink: true,
                     purchaseHistory: {
                         select: {
                             id: true,

@@ -30,6 +30,9 @@ const Shop = () => {
   const [shippingData, setShippingData] = useState(null);
   const [showConfirmChange, setShowConfirmChange] = useState(false);
   const [isUpdatingOrder, setIsUpdatingOrder] = useState(false);
+  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [isUpdatingPaymentStatus, setIsUpdatingPaymentStatus] = useState(false);
 
   const getItemCountFromOrder = (order) => {
     const items = order.transaction?.purchaseHistory?.orderItems || [];
@@ -182,6 +185,51 @@ const Shop = () => {
     } catch (err) {
       toast.error(`Error cancelling order: ${err}`);
       setIsUpdatingOrder(false)
+    }
+  };
+
+  const viewPaymentDetails = (transaction) => {
+    setSelectedTransaction(transaction);
+    setShowPaymentDetails(true);
+  };
+
+  const togglePaymentDetailsModal = () => {
+    setShowPaymentDetails(!showPaymentDetails);
+    if (!showPaymentDetails) {
+      setSelectedTransaction(null);
+    }
+  };
+
+  const updatePaymentStatus = async () => {
+    if (!selectedTransaction) return;
+
+    try {
+      setIsUpdatingPaymentStatus(true);
+      const response = await fetch('/api/admin/transactions/update-payment-status', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          transactionId: selectedTransaction.transactionId,
+          paymentStatus: 'S'
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success('Payment status updated successfully!');
+        togglePaymentDetailsModal();
+        // Refresh the data
+        window.location.reload();
+      } else {
+        toast.error(`Error updating payment status: ${data.errors?.error?.msg}`);
+      }
+    } catch (error) {
+      toast.error('Failed to update payment status');
+    } finally {
+      setIsUpdatingPaymentStatus(false);
     }
   };
 
@@ -496,37 +544,8 @@ const Shop = () => {
                 .map((feeWrapper, feeIndex) => (
                   <>
                     <div key={feeIndex} className="flex items-center justify-between w-full">
-                      <div className="flex flex-col items-left space-x-2">
-                        <div className="flex items-center space-y-2">
-                          {feeWrapper.transaction.paymentReference ? (
-                            <h6 className="flex space-x-3">
-                              <span className="font-mono font-bold uppercase">
-                                {feeWrapper.transaction.paymentReference}
-                              </span>
-                              <span
-                                className={`rounded-full py-0.5 text-2xs px-2 ${STATUS_BG_COLOR[
-                                  feeWrapper.transaction.paymentStatus
-                                ]
-                                  }`}
-                              >
-                                {
-                                  STATUS_CODES[
-                                  feeWrapper.transaction.paymentStatus
-                                  ]
-                                }
-                              </span>
-                            </h6>
-                          ) : (
-                            <h6 className="text-xs font-bold text-gray-300">
-                              -
-                            </h6>
-                          )}
-                        </div>
-                        <span className="font-mono text-2xs text-gray-400 font-bold mt-2">
-                          {feeWrapper.transaction.transactionId || " "}
-                        </span>
-                      </div>
-                      <div className='flex items-center space-x-5'>
+
+                      <div className='flex items-center justify-between w-full'>
                         <div className='flex flex-col items-center'>
                           {feeWrapper.paymentType === 'INSTALLMENT' && (
                             <>
@@ -562,6 +581,13 @@ const Shop = () => {
 
                         </div>
 
+                        {/* View Payment Details Button */}
+                        <button
+                          onClick={() => viewPaymentDetails(feeWrapper.transaction)}
+                          className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                        >
+                          View Payment Details
+                        </button>
                       </div>
                     </div>
                     <hr className="border-1 border-dashed border-gray-600" />
@@ -570,15 +596,17 @@ const Shop = () => {
 
                 ))}
               <div className="flex flex-col p-3 space-y-2">
-                <button
-                  className="px-3 py-1 my-1 text-white rounded bg-red-600 hover:bg-red-400"
-                  onClick={() => {
-                    //deleteStudentRecord(studentId, inviteCode);
-                    toggleConfirmChangeModal()
-                  }}
-                >
-                  Cancel Order
-                </button>
+                {order[0].orderStatus !== 'Cancelled' && (
+                  <button
+                    className="px-3 py-1 my-1 text-white rounded bg-red-600 hover:bg-red-400"
+                    onClick={() => {
+                      //deleteStudentRecord(studentId, inviteCode);
+                      toggleConfirmChangeModal()
+                    }}
+                  >
+                    Cancel Order
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -615,6 +643,102 @@ const Shop = () => {
           </div>
         </CenteredModal>
       )}
+
+      {/* Payment Details Modal */}
+      {selectedTransaction && (
+        <CenteredModal
+          show={showPaymentDetails}
+          toggle={togglePaymentDetailsModal}
+          title="Payment Details"
+        >
+          <div className="space-y-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-gray-800 mb-2">Transaction Information</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="font-medium">Transaction ID:</span>
+                  <span className="font-mono">{selectedTransaction.transactionId}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium">Reference Number:</span>
+                  <span className="font-mono">{selectedTransaction.referenceNumber}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium">Amount:</span>
+                  <span className="font-bold text-green-600">
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(selectedTransaction.amount)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium">Payment Status:</span>
+                  <span className={`px-2 py-1 rounded text-xs font-medium ${STATUS_BG_COLOR[selectedTransaction.paymentStatus]}`}>
+                    {STATUS_CODES[selectedTransaction.paymentStatus]}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Proof Section */}
+            {selectedTransaction.paymentProofLink ? (
+              <div className="bg-green-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-green-800 mb-2">Payment Proof</h4>
+                <div className="space-y-3">
+                  <div className="relative w-full h-64">
+                    <Image
+                      src={selectedTransaction.paymentProofLink}
+                      alt="Payment Proof"
+                      layout="fill"
+                      objectFit="contain"
+                      className="rounded border"
+                    />
+                  </div>
+                  <a
+                    href={selectedTransaction.paymentProofLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                  >
+                    View Full Size
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-yellow-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-yellow-800 mb-2">Payment Proof</h4>
+                <p className="text-sm text-yellow-700">No payment proof uploaded yet.</p>
+              </div>
+            )}
+
+            {/* Update Payment Status Section */}
+            {selectedTransaction.paymentStatus !== 'S' && (
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-blue-800 mb-2">Update Payment Status</h4>
+                <p className="text-sm text-blue-700 mb-3">
+                  Mark this payment as successful after verifying the payment proof.
+                </p>
+                <button
+                  onClick={updatePaymentStatus}
+                  disabled={isUpdatingPaymentStatus}
+                  className="w-full py-2 px-4 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {isUpdatingPaymentStatus ? 'Updating...' : 'Mark as Paid'}
+                </button>
+              </div>
+            )}
+
+            {selectedTransaction.paymentStatus === 'S' && (
+              <div className="bg-green-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-green-800 mb-2">Payment Status</h4>
+                <p className="text-sm text-green-700">This payment has been marked as successful.</p>
+              </div>
+            )}
+          </div>
+        </CenteredModal>
+      )}
+
       <Content.Title
         title="Shop Purchases"
         subtitle="View and manage all shop orders and purchases"
