@@ -347,16 +347,16 @@ const ShopItem = ({ item }) => {
 
                   <div className="mt-4 text-center">
                     <img
-                      src="/files/qr/gcash_qr.jpg"
+                      src="/files/qr/gcash_qr.png"
                       alt="GCash QR Code"
-                      className="w-64 h-64 mx-auto border border-gray-300 rounded"
+                      className="w-full h-64 mx-auto border border-gray-300 rounded object-contain"
                     />
                     <div className="mt-2 space-y-2">
                       <button
                         onClick={() => {
                           const link = document.createElement('a');
-                          link.href = '/files/qr/gcash_qr.jpg';
-                          link.download = 'gcash-qr.jpg';
+                          link.href = '/files/qr/gcash_qr.png';
+                          link.download = 'gcash-qr.png';
                           link.click();
                         }}
                         className="w-full py-2 px-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
