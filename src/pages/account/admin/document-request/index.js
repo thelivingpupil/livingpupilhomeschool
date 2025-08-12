@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { Button } from '@mui/material';
 import Meta from '@/components/Meta';
 import SideModal from '@/components/Modal/side-modal';
+import CenteredModal from '@/components/Modal/centered-modal';
 import { AdminLayout } from '@/layouts/index';
 import Content from '@/components/Content';
 import Card from '@/components/Card';
@@ -37,6 +38,11 @@ const DocumentRequest = () => {
     const [region, setRegion] = useState("")
     const [courier, setCourier] = useState("")
 
+    // Payment status update states
+    const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+    const [selectedTransaction, setSelectedTransaction] = useState(null);
+    const [isUpdatingPaymentStatus, setIsUpdatingPaymentStatus] = useState(false);
+
     // Function to flatten the document request data
     const flattenDocumentRequests = (requests) => {
         if (!requests || !Array.isArray(requests)) return [];
@@ -55,13 +61,25 @@ const DocumentRequest = () => {
             createdAt: request.createdAt,
             updatedAt: request.updatedAt,
 
-            // Flattened student information
-            studentFullName: request.studentInformation?.studentFullName || 'N/A',
-            studentLrn: request.studentInformation?.lrn || 'N/A',
-            studentCurrentGradeLevel: request.studentInformation?.currentGradeLevel || 'N/A',
-            studentCurrentSchool: request.studentInformation?.currentSchool || 'N/A',
-            studentGradeLevelsWithLp: request.studentInformation?.gradeLevelsWithLp || 'N/A',
-            studentLastSchoolYearWithLp: request.studentInformation?.lastSchoolYearWithLp || 'N/A',
+            // Flattened student information (handle multiple students)
+            studentFullName: request.studentInformation && request.studentInformation.length > 0
+                ? request.studentInformation.map(s => s.studentFullName).join(', ')
+                : 'N/A',
+            studentLrn: request.studentInformation && request.studentInformation.length > 0
+                ? request.studentInformation.map(s => s.lrn).join(', ')
+                : 'N/A',
+            studentCurrentGradeLevel: request.studentInformation && request.studentInformation.length > 0
+                ? request.studentInformation.map(s => s.currentGradeLevel).join(', ')
+                : 'N/A',
+            studentCurrentSchool: request.studentInformation && request.studentInformation.length > 0
+                ? request.studentInformation.map(s => s.currentSchool).join(', ')
+                : 'N/A',
+            studentGradeLevelsWithLp: request.studentInformation && request.studentInformation.length > 0
+                ? request.studentInformation.map(s => s.gradeLevelsWithLp).join(', ')
+                : 'N/A',
+            studentLastSchoolYearWithLp: request.studentInformation && request.studentInformation.length > 0
+                ? request.studentInformation.map(s => s.lastSchoolYearWithLp).join(', ')
+                : 'N/A',
 
             // Flattened requestor information
             requestorFullName: request.requestorInformation?.requestorFullName || 'N/A',
@@ -74,7 +92,7 @@ const DocumentRequest = () => {
             // Flattened transaction information
             transactionPaymentReference: request.transaction?.paymentReference || 'N/A',
             transactionAmount: request.transaction?.amount || 'N/A',
-            transactionStatus: request.transaction?.status || 'N/A',
+            transactionStatus: request.transaction?.paymentStatus || 'N/A',
 
             // Keep original nested objects for modal display
             originalData: request
@@ -138,7 +156,9 @@ const DocumentRequest = () => {
                 status: docStatus,
                 email: document.requestorInformation.requestorEmail,
                 requestorFullName: document.requestorInformation.requestorFullName,
-                studentFullName: document.studentInformation.studentFullName,
+                studentFullName: document.studentInformation && document.studentInformation.length > 0
+                    ? document.studentInformation.map(s => s.studentFullName).join(', ')
+                    : 'N/A',
                 document: document.documents,
                 documentCollection: document.documentCollection,
                 trackingCode: trackingCode,
@@ -165,6 +185,52 @@ const DocumentRequest = () => {
             });
     };
 
+    // Payment status update functions
+    const viewPaymentDetails = (transaction) => {
+        setSelectedTransaction(transaction);
+        setShowPaymentDetails(true);
+    };
+
+    const togglePaymentDetailsModal = () => {
+        setShowPaymentDetails(!showPaymentDetails);
+        if (!showPaymentDetails) {
+            setSelectedTransaction(null);
+        }
+    };
+
+    const updatePaymentStatus = async () => {
+        if (!selectedTransaction) return;
+
+        try {
+            setIsUpdatingPaymentStatus(true);
+            const response = await fetch('/api/admin/transactions/update-payment-status', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    transactionId: selectedTransaction.transactionId,
+                    paymentStatus: 'S'
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                toast.success('Payment status updated successfully!');
+                togglePaymentDetailsModal();
+                // Refresh the data
+                window.location.reload();
+            } else {
+                toast.error(`Error updating payment status: ${data.errors?.error?.msg}`);
+            }
+        } catch (error) {
+            toast.error('Failed to update payment status');
+        } finally {
+            setIsUpdatingPaymentStatus(false);
+        }
+    };
+
     return (
         <AdminLayout>
             <Meta title="Living Pupil Homeschool - Users" />
@@ -187,42 +253,61 @@ const DocumentRequest = () => {
                         </p>
                     </div>
 
-                    <div className="mt-6">
-                        <p className="font-bold text-blue-600 text-sm">Documents:</p>
-                        <ul className="list-disc list-inside text-sm text-gray-600">
-                            {document.documents.map((doc) => (
-                                <li key={doc.id}>
-                                    {DOCUMENT_DETAILS[doc.docName]?.label}
-                                    <div className="ml-5">
-                                        {doc.url
-                                            .split(", ")
-                                            .map((url, index) => (
-                                                <a
-                                                    key={index}
-                                                    href={url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="text-blue-500 underline block"
-                                                >
-                                                    View Document {index + 1}
-                                                </a>
-                                            ))}
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+
 
                     <div>
                         <p className="font-bold text-blue-600 text-sm">Student Information</p>
-                        <div className="px-3 text-sm">
-                            <p><strong>Student Full Name:</strong> {document?.studentInformation.studentFullName}</p>
-                            <p><strong>LRN:</strong> {document?.studentInformation.lrn}</p>
-                            <p><strong>Grade Level:</strong> {document?.studentInformation.currentGradeLevel}</p>
-                            <p><strong>Current School:</strong> {document?.studentInformation.currentSchool}</p>
-                            <p><strong>Grades With LP:</strong> {document?.studentInformation.gradeLevelsWithLp}</p>
-                            <p><strong>Last School Year:</strong> {document?.studentInformation.lastSchoolYearWithLp}</p>
-                        </div>
+                        {document?.studentInformation && document.studentInformation.length > 0 ? (
+                            document.studentInformation.map((student, index) => (
+                                <div key={student.id} className="px-3 text-sm mb-4 p-3 bg-gray-50 rounded-lg">
+                                    <p className="font-semibold text-gray-800 mb-2">Student {index + 1}:</p>
+                                    <p><strong>Student Full Name:</strong> {student.studentFullName || 'N/A'}</p>
+                                    <p><strong>LRN:</strong> {student.lrn || 'N/A'}</p>
+                                    <p><strong>Grade Level:</strong> {student.currentGradeLevel || 'N/A'}</p>
+                                    <p><strong>Current School:</strong> {student.currentSchool || 'N/A'}</p>
+                                    <p><strong>Grades With LP:</strong> {student.gradeLevelsWithLp || 'N/A'}</p>
+                                    <p><strong>Last School Year:</strong> {student.lastSchoolYearWithLp || 'N/A'}</p>
+
+                                    {/* Student's Documents */}
+                                    <div className="mt-3">
+                                        <p className="font-semibold text-gray-700 mb-2">Documents:</p>
+                                        {document?.documents &&
+                                            document.documents.filter(doc => doc.studentId === student.id).length > 0 ? (
+                                            <ul className="list-disc list-inside text-gray-600">
+                                                {document.documents
+                                                    .filter(doc => doc.studentId === student.id)
+                                                    .map((doc) => (
+                                                        <li key={doc.id}>
+                                                            {DOCUMENT_DETAILS[doc.docName]?.label || doc.docName}
+                                                            <div className="ml-5">
+                                                                {doc.url
+                                                                    .split(", ")
+                                                                    .map((url, index) => (
+                                                                        <a
+                                                                            key={index}
+                                                                            href={url}
+                                                                            target="_blank"
+                                                                            rel="noopener noreferrer"
+                                                                            className="text-blue-500 underline block"
+                                                                        >
+                                                                            View Document {index + 1}
+                                                                        </a>
+                                                                    ))}
+                                                            </div>
+                                                        </li>
+                                                    ))}
+                                            </ul>
+                                        ) : (
+                                            <p className="text-gray-500 italic">No documents uploaded yet</p>
+                                        )}
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="px-3 text-sm">
+                                <p className="text-gray-500 italic">No student information available</p>
+                            </div>
+                        )}
                     </div>
 
                     <div>
@@ -249,9 +334,9 @@ const DocumentRequest = () => {
                     </div>
 
 
-                    <div class="mt-6 flex items-center justify-between">
+                    <div class="mt-6">
                         <div className="flex items-center space-x-5">
-                            {document?.transaction.paymentReference ? (
+                            {document?.transaction?.paymentReference ? (
                                 <h4 className="text-sm font-bold text-gray-400">
                                     Payment Reference:{' '}
                                     <span className="font-mono font-bold uppercase">
@@ -262,7 +347,7 @@ const DocumentRequest = () => {
                                 <h4 className="text-sm font-bold text-gray-400">
                                     Payment Reference:{' '}
                                     <span className="font-mono font-bold uppercase">
-                                        {document?.transaction.paymentReference}
+                                        No payment reference available
                                     </span>
                                 </h4>
                             )}
@@ -274,7 +359,7 @@ const DocumentRequest = () => {
                                     }).format(document?.transaction?.amount || 0)}
                                 </h6>
                             </div>
-                            {document && document?.transaction && (
+                            {document?.transaction && (
                                 <span
                                     className={`rounded-full py-0.5 text-sm px-2 ${STATUS_BG_COLOR[document?.transaction.paymentStatus]
                                         }`}
@@ -283,6 +368,16 @@ const DocumentRequest = () => {
                                 </span>
                             )}
                         </div>
+                        {document?.transaction && (
+                            <div className="mt-3 flex justify-center">
+                                <button
+                                    onClick={() => viewPaymentDetails(document.transaction)}
+                                    className="px-3 py-1 text-white rounded bg-blue-600 hover:bg-blue-700 transition-colors"
+                                >
+                                    View Payment Details
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex flex-col p-3 space-y-2">
@@ -612,6 +707,113 @@ const DocumentRequest = () => {
                     </div>
                 </Card.Body>
             </Card>
+
+            {/* Payment Details Modal */}
+            {selectedTransaction && (
+                <CenteredModal
+                    show={showPaymentDetails}
+                    toggle={togglePaymentDetailsModal}
+                    title="Payment Details"
+                >
+                    <div className="space-y-4">
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                            <h4 className="font-semibold text-gray-800 mb-2">Transaction Information</h4>
+                            <div className="space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                    <span className="font-medium">Transaction ID:</span>
+                                    <span className="font-mono">{selectedTransaction.transactionId}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="font-medium">Reference Number:</span>
+                                    <span className="font-mono">{selectedTransaction.referenceNumber}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="font-medium">Amount:</span>
+                                    <span className="font-bold text-green-600">
+                                        {new Intl.NumberFormat('en-US', {
+                                            style: 'currency',
+                                            currency: 'PHP',
+                                        }).format(selectedTransaction.amount)}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="font-medium">Payment Status:</span>
+                                    <span className={`px-2 py-1 rounded text-xs font-medium ${STATUS_BG_COLOR[selectedTransaction.paymentStatus]}`}>
+                                        {STATUS_CODES[selectedTransaction.paymentStatus]}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Payment Proof Section */}
+                        {selectedTransaction.paymentProofLink && (
+                            <div className="bg-yellow-50 p-4 rounded-lg">
+                                <h4 className="font-semibold text-yellow-800 mb-2">Payment Proof</h4>
+                                <div className="space-y-3">
+                                    <div className="flex items-center space-x-2">
+                                        <span className="text-sm text-gray-600">Uploaded:</span>
+                                        <span className="text-sm font-medium text-green-600">✓ Available</span>
+                                    </div>
+                                    <div className="flex space-x-2">
+                                        <a
+                                            href={selectedTransaction.paymentProofLink}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
+                                        >
+                                            View Payment Proof
+                                        </a>
+                                        <a
+                                            href={selectedTransaction.paymentProofLink}
+                                            download
+                                            className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm"
+                                        >
+                                            Download
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {!selectedTransaction.paymentProofLink && (
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                                <h4 className="font-semibold text-gray-800 mb-2">Payment Proof</h4>
+                                <div className="flex items-center space-x-2">
+                                    <span className="text-sm text-gray-600">Status:</span>
+                                    <span className="text-sm font-medium text-red-600">✗ Not uploaded</span>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    No payment proof has been uploaded for this transaction.
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Update Payment Status Section */}
+                        {selectedTransaction.paymentStatus !== 'S' && (
+                            <div className="bg-blue-50 p-4 rounded-lg">
+                                <h4 className="font-semibold text-blue-800 mb-2">Update Payment Status</h4>
+                                <p className="text-sm text-blue-700 mb-3">
+                                    Mark this payment as successful after verifying the payment proof.
+                                </p>
+                                <button
+                                    onClick={updatePaymentStatus}
+                                    disabled={isUpdatingPaymentStatus}
+                                    className="w-full py-2 px-4 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    {isUpdatingPaymentStatus ? 'Updating...' : 'Mark as Paid'}
+                                </button>
+                            </div>
+                        )}
+
+                        {selectedTransaction.paymentStatus === 'S' && (
+                            <div className="bg-green-50 p-4 rounded-lg">
+                                <h4 className="font-semibold text-green-800 mb-2">Payment Status</h4>
+                                <p className="text-sm text-green-700">This payment has been marked as successful.</p>
+                            </div>
+                        )}
+                    </div>
+                </CenteredModal>
+            )}
         </AdminLayout>
     );
 };
