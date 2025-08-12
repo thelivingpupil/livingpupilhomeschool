@@ -12,11 +12,14 @@ import api from '@/lib/common/api';
 import { getDeadline } from '@/utils/index';
 import { WrongLocation } from '@mui/icons-material';
 import CenteredModal from '@/components/Modal/centered-modal';
+import Modal from '@/components/Modal';
 
 const Fees = () => {
   const { workspace } = useWorkspace();
   const [isSubmitting, setSubmittingState] = useState(false);
   const [showPayAllModal, setShowPayAllModal] = useState(false);
+  const [showBankModal, setShowBankModal] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
   const fees = {
     [GradeLevel.PRESCHOOL]: { schoolFees: [] },
     [GradeLevel.K1]: { schoolFees: [] },
@@ -85,6 +88,19 @@ const Fees = () => {
         toast.success('Payment link has been updated!');
       }
     });
+  };
+
+  const showBankPaymentModal = (transactionId, referenceNumber, amount) => {
+    setSelectedTransaction({
+      transactionId,
+      referenceNumber,
+      amount
+    });
+    setShowBankModal(true);
+  };
+
+  const toggleBankModal = () => {
+    setShowBankModal(!showBankModal);
   };
 
   const payAll = () => {
@@ -307,18 +323,33 @@ const Fees = () => {
                                           Unpaid Initial Fee
                                         </span>
                                       ) : (
-                                        <button
-                                          className="inline-block px-3 py-2 text-xs text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
-                                          disabled={isSubmitting}
-                                          onClick={() =>
-                                            renew(
-                                              f.transaction.transactionId,
-                                              f.transaction.referenceNumber
-                                            )
-                                          }
-                                        >
-                                          Get New Link
-                                        </button>
+                                        <div className="flex flex-col space-y-2">
+                                          <button
+                                            className="inline-block px-3 py-2 text-xs text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
+                                            disabled={isSubmitting}
+                                            onClick={() =>
+                                              renew(
+                                                f.transaction.transactionId,
+                                                f.transaction.referenceNumber
+                                              )
+                                            }
+                                          >
+                                            Pay via Dragonpay
+                                          </button>
+                                          <button
+                                            className="inline-block px-3 py-2 text-xs text-white rounded bg-green-600 hover:bg-green-500 disabled:opacity-25"
+                                            disabled={isSubmitting}
+                                            onClick={() =>
+                                              showBankPaymentModal(
+                                                f.transaction.transactionId,
+                                                f.transaction.referenceNumber,
+                                                f.transaction.amount
+                                              )
+                                            }
+                                          >
+                                            Pay via Bank Transfer
+                                          </button>
+                                        </div>
                                       )}
                                     </>
                                   ) : (
@@ -366,6 +397,126 @@ const Fees = () => {
             </Card>
           </Content.Container>
         )}
+
+        {/* Bank Transfer Payment Modal */}
+        <Modal
+          show={showBankModal}
+          title="Payment Options"
+          toggle={toggleBankModal}
+        >
+          <div className="space-y-6">
+            {selectedTransaction && (
+              <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                <h3 className="text-lg font-semibold text-green-800 mb-2">Total Payment Amount</h3>
+                <div className="text-3xl font-bold text-green-600">
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(selectedTransaction.amount)}
+                </div>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Union Bank Option */}
+              <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
+                <div className="text-center mb-4">
+                  <div className="flex items-center justify-center mb-2">
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FF7F00' }}>
+                      <span className="text-white text-lg font-bold">UB</span>
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">Union Bank</h3>
+                </div>
+
+                <div className="mt-4 text-center">
+                  <img
+                    src="/files/qr/ub_qr.jpg"
+                    alt="Union Bank QR Code"
+                    className="w-64 h-64 mx-auto border border-gray-300 rounded"
+                  />
+                  <div className="mt-2 space-y-2">
+                    <button
+                      onClick={() => {
+                        const link = document.createElement('a');
+                        link.href = '/files/qr/ub_qr.jpg';
+                        link.download = 'union-bank-qr.jpg';
+                        link.click();
+                      }}
+                      className="w-full py-2 px-3 text-white rounded hover:bg-orange-600 transition-colors text-sm"
+                      style={{ backgroundColor: '#FF7F00' }}
+                    >
+                      Download QR Code
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* GCash Option */}
+              <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-green-500 transition-colors">
+                <div className="text-center mb-4">
+                  <div className="flex items-center justify-center mb-2">
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#3B82F6' }}>
+                      <span className="text-white text-lg font-bold">GC</span>
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">GCash</h3>
+                </div>
+
+                <div className="mt-4 text-center">
+                  <img
+                    src="/files/qr/gcash_qr.png"
+                    alt="GCash QR Code"
+                    className="w-full h-64 mx-auto border border-gray-300 rounded object-contain"
+                  />
+                  <div className="mt-2 space-y-2">
+                    <button
+                      onClick={() => {
+                        const link = document.createElement('a');
+                        link.href = '/files/qr/gcash_qr.png';
+                        link.download = 'gcash-qr.png';
+                        link.click();
+                      }}
+                      className="w-full py-2 px-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
+                    >
+                      Download QR Code
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-blue-800 mb-2">Payment Instructions:</h4>
+              <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
+                <li>Choose your preferred payment method (Union Bank or GCash)</li>
+                <li>Scan the QR code or transfer the exact amount</li>
+                <li>Use your transaction reference number as payment description</li>
+                <li>Keep your payment receipt for verification</li>
+                <li>Payment will be verified within 24-48 hours</li>
+              </ol>
+            </div>
+
+            {selectedTransaction && (
+              <div className="bg-yellow-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-yellow-800 mb-2">Transaction Details:</h4>
+                <div className="space-y-1 text-sm text-yellow-700">
+                  <div>Transaction ID: <span className="font-mono">{selectedTransaction.transactionId}</span></div>
+                  <div>Reference Number: <span className="font-mono">{selectedTransaction.referenceNumber}</span></div>
+                </div>
+              </div>
+            )}
+
+            <div className="flex space-x-3">
+              <button
+                onClick={toggleBankModal}
+                className="flex-1 py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </Modal>
       </AccountLayout>
     )
   );

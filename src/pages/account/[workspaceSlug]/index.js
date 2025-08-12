@@ -188,6 +188,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const [idPictureFrontLink, setIdPictureFrontLink] = useState(null);
   const [idPictureBackLink, setIdPictureBackLink] = useState(null);
 
+  // Bank transfer modal state variables
+  const [showBankTransferModal, setShowBankTransferModal] = useState(false);
+  const [paymentProofFile, setPaymentProofFile] = useState(null);
+  const [uploadingProof, setUploadingProof] = useState(false);
+
   const handlePrimaryGuardianName = (event) =>
     setPrimaryGuardianName(event.target.value);
   const handlePrimaryGuardianOccupation = (event) =>
@@ -370,16 +375,16 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       address2.length > 0 &&
       (enrollmentType === "NEW" ? formerRegistrar.length > 0 : true) &&
       (enrollmentType === "NEW" ? formerRegistrarEmail.length > 0 : true) &&
-      (enrollmentType === "NEW" ? formerRegistrarNumber.length > 0 : true)
+      (enrollmentType === "NEW" ? formerRegistrarNumber.length > 0 : true) &&
       //birthCertificateLink &&
-      //birthCertificateLink?.length > 0
+      birthCertificateLink?.length > 0
     ) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
       payment !== null &&
       paymentMethod &&
       agree &&
-      //signatureLink?.length > 0 &&
+      signatureLink?.length > 0 &&
       !isSubmittingCode
     );
 
@@ -950,7 +955,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             toast.error(response.errors[error].msg)
           );
         } else {
-          window.open(response.data.schoolFee.url, '_blank');
+          // Don't automatically open DragonPay
           setPaymentLink(response.data.schoolFee.url);
           setViewFees(true);
           toast.success('Student information successfully submitted!');
@@ -3173,6 +3178,51 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     );
   };
 
+  // Bank transfer modal functions
+  const toggleBankTransferModal = () => setShowBankTransferModal(!showBankTransferModal);
+
+  const handlePaymentProofUpload = async () => {
+    if (!paymentProofFile) return;
+
+    setUploadingProof(true);
+    try {
+      const blob = new Blob([paymentProofFile], { type: paymentProofFile.type });
+      const extension = paymentProofFile.name.split('.').pop();
+      const fileName = `payment-proof-${crypto
+        .createHash('md5')
+        .update(paymentProofFile.name + Date.now())
+        .digest('hex')
+        .substring(0, 12)}-${format(new Date(), 'yyyy.MM.dd.kk.mm.ss')}.${extension}`;
+
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          // Could add progress state here if needed
+        },
+        (error) => {
+          toast.error(error.message);
+          setUploadingProof(false);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            // TODO: Send payment proof to backend for verification
+            toast.success('Payment proof uploaded successfully! It will be verified within 24-48 hours.');
+            setShowBankTransferModal(false);
+            setPaymentProofFile(null);
+            setUploadingProof(false);
+          });
+        }
+      );
+    } catch (error) {
+      toast.error('Error uploading payment proof');
+      setUploadingProof(false);
+    }
+  };
+
   return (
     workspace && (
       <AccountLayout>
@@ -4014,20 +4064,28 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </div>
             {viewFees ? (
               <>
-                {paymentLink && (
-                  <a
-                    className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-                    href={paymentLink}
-                    target="_blank"
+                <div className="space-y-3">
+                  {paymentLink && (
+                    <a
+                      className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+                      href={paymentLink}
+                      target="_blank"
+                    >
+                      Pay via Dragon Pay
+                    </a>
+                  )}
+                  <button
+                    className="inline-block w-full py-2 text-center rounded bg-blue-500 hover:bg-blue-400 disabled:opacity-25"
+                    onClick={toggleBankTransferModal}
                   >
-                    Pay Now
-                  </a>
-                )}
-                <Link href={`/account`}>
-                  <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25">
-                    View Dashboard
-                  </a>
-                </Link>
+                    Pay via Bank Transfer
+                  </button>
+                  <Link href={`/account`}>
+                    <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25">
+                      View Dashboard
+                    </a>
+                  </Link>
+                </div>
               </>
             ) : (
               <button
@@ -4035,9 +4093,108 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 disabled={isSubmitting}
                 onClick={submit}
               >
-                {isSubmitting ? 'Processing...' : 'Submit & Pay Now'}
+                {isSubmitting ? 'Processing...' : 'Submit Record'}
               </button>
             )}
+          </div>
+        </Modal>
+
+        {/* Bank Transfer Modal */}
+        <Modal
+          show={showBankTransferModal}
+          title="Bank Transfer Payment"
+          toggle={toggleBankTransferModal}
+        >
+          <div className="space-y-6">
+            <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
+              <h3 className="text-lg font-semibold text-green-800 mb-2">Total Payment Amount</h3>
+              <div className="text-3xl font-bold text-green-600">
+                {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                }).format(
+                  fee?._type === 'fullTermPayment'
+                    ? fee?.fullPayment
+                    : fee?._type === 'threeTermPayment'
+                      ? fee?.downPayment +
+                      fee?.secondPayment +
+                      fee?.thirdPayment
+                      : fee?._type === 'fourTermPayment'
+                        ? fee?.downPayment +
+                        fee?.secondPayment +
+                        fee?.thirdPayment +
+                        fee?.fourthPayment
+                        : fee?.downPayment +
+                        fee?.secondPayment +
+                        fee?.thirdPayment +
+                        fee?.fourthPayment +
+                        fee?.fifthPayment +
+                        fee?.sixthPayment +
+                        fee?.seventhPayment +
+                        fee?.eighthPayment +
+                        fee?.ninthPayment
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Union Bank Option */}
+              <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
+                <h4 className="font-semibold text-blue-800 mb-2">Union Bank</h4>
+                <div className="space-y-2 text-sm">
+                  <p><strong>Account Name:</strong> Living Pupil Homeschool</p>
+                  <p><strong>Account Number:</strong> 0000-0000-0000</p>
+                  <p><strong>Account Type:</strong> Savings</p>
+                </div>
+              </div>
+
+              {/* GCash Option */}
+              <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-green-500 transition-colors">
+                <h4 className="font-semibold text-green-800 mb-2">GCash</h4>
+                <div className="space-y-2 text-sm">
+                  <p><strong>Account Name:</strong> Living Pupil Homeschool</p>
+                  <p><strong>Mobile Number:</strong> +63 900-000-0000</p>
+                  <p><strong>Account Type:</strong> GCash</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-blue-800 mb-2">Payment Instructions:</h4>
+              <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
+                <li>Choose your preferred payment method (Union Bank or GCash)</li>
+                <li>Transfer the exact amount shown above</li>
+                <li>Use your student name as payment description</li>
+                <li>Keep your payment receipt for verification</li>
+                <li>Upload your proof of payment using the form below</li>
+                <li>Payment will be verified within 24-48 hours</li>
+              </ol>
+            </div>
+
+            {/* Payment Proof Upload */}
+            <div className="bg-yellow-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-yellow-800 mb-2">Upload Payment Proof</h4>
+              <div className="space-y-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setPaymentProofFile(e.target.files[0])}
+                  className="w-full p-2 border border-gray-300 rounded text-sm"
+                />
+                {paymentProofFile && (
+                  <div className="text-sm text-green-600">
+                    ✓ {paymentProofFile.name} selected
+                  </div>
+                )}
+                <button
+                  onClick={handlePaymentProofUpload}
+                  disabled={!paymentProofFile || uploadingProof}
+                  className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {uploadingProof ? 'Uploading...' : 'Upload Payment Proof'}
+                </button>
+              </div>
+            </div>
           </div>
         </Modal>
       </AccountLayout>

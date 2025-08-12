@@ -66,44 +66,53 @@ export const getDocumentRequests = async () => {
 
 export const createDocumentRequest = async (data) => {
     try {
-        const { requestCode, purpose, status, deliveryAddress, requestorInformation, studentInformation, documents, transaction, deliveryOption } = data;
+        const { requestCode, purpose, status, deliveryAddress, requestorInformation, students, documents, transaction, deliveryOption } = data;
 
         // Create requestor information if it exists
         if (requestorInformation) {
             await createRequestorInformation(prisma, requestCode, requestorInformation);
         }
 
-        // Create student information if it exists
-        if (studentInformation) {
-            await createStudentInformation(prisma, requestCode, studentInformation);
+        // Create student information for each student
+        const createdStudents = [];
+        if (students && students.length > 0) {
+            for (const studentInfo of students) {
+                const student = await createStudentInformation(prisma, requestCode, studentInfo);
+                createdStudents.push(student);
+            }
         }
 
         // Handle transaction creation if provided
         let transactionId = null;
-        let transactionUrl = null;
+        let referenceNumber = null;
         if (transaction) {
-            const { url, transactionId: createdTransactionId } = await createTransaction(
+            const { transactionId: createdTransactionId, referenceNumber: createdReferenceNumber } = await createTransactionForDocumentRequest(
                 transaction.email,
                 transaction.amount,
                 transaction.description,
                 transaction.source,
                 transaction.fee
             );
-            transactionUrl = url;
-            transactionId = createdTransactionId; // Capture the transactionId to connect later
+            transactionId = createdTransactionId;
+            referenceNumber = createdReferenceNumber;
         }
 
         // Create the main document request record
         const documentRequest = await createDocumentRequestRecord(prisma, { requestCode, purpose, status, deliveryAddress, transactionId, deliveryOption });
 
-        // Create documents if they exist
+        // Create documents for each student
         if (documents && documents.length > 0) {
-            await createDocuments(prisma, requestCode, documents);
+            for (let i = 0; i < documents.length; i++) {
+                const studentDoc = documents[i];
+                if (studentDoc.studentIndex !== undefined && createdStudents[studentDoc.studentIndex]) {
+                    await createDocuments(prisma, requestCode, studentDoc.documents, createdStudents[studentDoc.studentIndex].id);
+                }
+            }
         }
 
-        console.log("Document request created successfully:", { requestCode, transactionUrl });
+        console.log("Document request created successfully:", { requestCode, transactionId, referenceNumber, studentCount: createdStudents.length });
 
-        return { requestCode, transactionUrl }; // Return both requestCode and transactionUrl
+        return { requestCode, transactionId, referenceNumber }; // Return transaction details instead of URL
     } catch (error) {
         console.error("Error creating document request:", error);
         throw error;
@@ -115,25 +124,12 @@ export const createDocumentRequest = async (data) => {
 export const createDocumentRequestRecord = async (prisma, data) => {
     return await prisma.documentRequest.create({
         data: {
+            requestCode: data.requestCode,
             purpose: data.purpose,
             status: data.status,
             documentCollection: data.deliveryOption,
-            requestorInformation: {
-                connect: {
-                    requestCode: data.requestCode, // Ensure requestCode is passed here correctly
-                },
-            },
-            studentInformation: {
-                connect: {
-                    requestCode: data.requestCode, // Ensure requestCode is passed here correctly
-                },
-            },
-            transaction: {
-                connect: {
-                    transactionId: data.transactionId, // Ensure requestCode is passed here correctly
-                },
-            },
-            deliveryAddress: data.deliveryAddress || "", // Ensure a valid value for deliveryAddress
+            deliveryAddress: data.deliveryAddress || "",
+            transactionId: data.transactionId, // ✅ ADD THIS LINE to link to transaction
         },
     });
 };
@@ -156,7 +152,7 @@ export const createStudentInformation = async (prisma, requestCode, studentInfor
     });
 };
 
-export const createDocuments = async (prisma, requestCode, documents) => {
+export const createDocuments = async (prisma, requestCode, documents, studentId = null) => {
     // Ensure documents is always an array
     const documentsArray = Array.isArray(documents) ? documents : [documents];
 
@@ -164,18 +160,43 @@ export const createDocuments = async (prisma, requestCode, documents) => {
         documentsArray.map((doc) =>
             prisma.documents.create({
                 data: {
+                    requestCode: requestCode,
                     docName: doc.docName,
                     url: doc.url,
+                    studentId: studentId, // Link document to specific student
                     createdAt: new Date(),
-                    DocumentRequest: {
-                        connect: {
-                            requestCode: requestCode,
-                        },
-                    },
                 },
             })
         )
     );
+};
+
+export const createTransactionForDocumentRequest = async (
+    email,
+    amount,
+    description,
+    source,
+    fee
+) => {
+    const transactionId = uuidv4();
+    const referenceNumber = `DOC-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+
+    await prisma.transaction.create({
+        data: {
+            transactionId,
+            referenceNumber,
+            amount,
+            transactionStatus: "P",
+            paymentStatus: "P",
+            source: source || description,
+            description,
+            message: "Payment pending - QR code payment",
+            url: "QR_PAYMENT",
+            fee,
+        },
+    });
+
+    return { transactionId, referenceNumber };
 };
 
 export const createTransaction = async (

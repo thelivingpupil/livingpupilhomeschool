@@ -66,6 +66,7 @@ const Transactions = () => {
     paymentType: '',
     currency: '',
     deadline: '',
+    paymentProofLink: '',
   });
   const [newPayment, setNewPayment] = useState(0.0);
   const [filter, setFilter] = useState(['', '']);
@@ -73,6 +74,7 @@ const Transactions = () => {
   const [uploadCount, setUploadCount] = useState(0);
   const [totalUpload, setTotalUpload] = useState(0);
   const [newAmount, setNewAmount] = useState(0.0);
+  const [newPaymentStatus, setNewPaymentStatus] = useState('');
   const [action, setAction] = useState("UPDATE");
 
   const filterTransactions = useMemo(() => {
@@ -128,7 +130,12 @@ const Transactions = () => {
 
   const inputFileRef = useRef();
 
-  const toggleModal = () => setModalVisibility((state) => !state);
+  const toggleModal = () => {
+    if (showModal) {
+      setNewPaymentStatus('');
+    }
+    setModalVisibility((state) => !state);
+  };
 
   const openUpdateModal = (transaction) => () => {
     const balance = transaction.balance !== null ? transaction.balance : transaction.amount;
@@ -166,6 +173,7 @@ const Transactions = () => {
       paymentType: transaction.schoolFee.paymentType,
       currency: transaction.currency,
       deadline,
+      paymentProofLink: transaction.paymentProofLink,
       paymentOrder:
         transaction.schoolFee.paymentType === PaymentType.ANNUAL
           ? 'Total Fee'
@@ -174,6 +182,7 @@ const Transactions = () => {
             : `Payment #${transaction.schoolFee.order}`,
     });
 
+    setNewPaymentStatus('');
     setModalVisibility(true);
   };
 
@@ -226,6 +235,31 @@ const Transactions = () => {
 
   const handleNewAmount = (e) => {
     setNewAmount(Number(e.target.value).toFixed(2));
+  };
+
+  const handleUpdateStatus = () => {
+    setUpdatingTransaction(true);
+    api(`/api/admin/transactions/update-payment-status`, {
+      body: {
+        transactionId: updateTransaction.transactionId,
+        paymentStatus: newPaymentStatus
+      },
+      method: 'PUT',
+    })
+      .then(() => {
+        setUpdatingTransaction(false);
+        toast.success(
+          `Successfully updated payment status for ${updateTransaction.name}`
+        );
+        setNewPaymentStatus('');
+        toggleModal();
+      })
+      .catch(() => {
+        setUpdatingTransaction(false);
+        toast.error(
+          `Error in updating payment status for ${updateTransaction.name}`
+        );
+      });
   };
 
   const handleApply = (e) => {
@@ -465,6 +499,19 @@ const Transactions = () => {
           <p className="text-xs text-gray-400">
             Last Updated: {new Date(updateTransaction.updatedAt).toDateString()}
           </p>
+          {updateTransaction.paymentProofLink && (
+            <p className="text-xs text-gray-400">
+              Payment Proof: {' '}
+              <a
+                href={updateTransaction.paymentProofLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary-500 hover:text-primary-600 underline"
+              >
+                View Proof of Payment
+              </a>
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col py-4">
@@ -484,6 +531,7 @@ const Transactions = () => {
               >
                 <option value="CHANGE">Change Amount</option>
                 <option value="UPDATE">Update Payment</option>
+                <option value="UPDATE_STATUS">Update Status</option>
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                 <ChevronDownIcon className="w-5 h-5" />
@@ -596,6 +644,44 @@ const Transactions = () => {
                   onClick={toggleConfirmChangeModal}
                 >
                   Update Transaction
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* Update Status */}
+          {action === "UPDATE_STATUS" && (
+            <>
+              <div className="grid grid-cols-2 gap-2 my-2 p-2 border border-primary-500 rounded shadow">
+                <div className="flex capitalize font-semibold text-lg">Current Status:</div>
+                <div className="flex">
+                  <span
+                    className={`px-6 py-0.5 rounded-full flex items-center ${STATUS_BG_COLOR[updateTransaction.paymentStatus]}`}
+                  >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
+                </div>
+                <div className="flex py-2 capitalize font-semibold text-lg">New Status:</div>
+                <div className="flex">
+                  <select
+                    className="px-3 py-2 border rounded truncate"
+                    onChange={(e) => setNewPaymentStatus(e.target.value)}
+                    value={newPaymentStatus}
+                  >
+                    <option value="">Select Status</option>
+                    {Object.entries(STATUS).map(([value, name]) => (
+                      <option key={value} value={value}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <button
+                  className="px-3 py-1 text-white text-base text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+                  disabled={isUpdatingTransaction || !newPaymentStatus}
+                  onClick={handleUpdateStatus}
+                >
+                  Update Status
                 </button>
               </div>
             </>
@@ -856,23 +942,20 @@ const Transactions = () => {
                           </td>
                           <td className="p-2 text-left">
                             <div>
-                              {transaction.paymentReference ? (
-                                <h4 className="flex space-x-3">
+                              <h4 className="flex space-x-3">
+                                {transaction.paymentReference ? (
                                   <span className="font-mono font-bold uppercase">
                                     {transaction.paymentReference}
                                   </span>
-                                  <span
-                                    className={`rounded-full py-0.5 text-xs px-2 ${STATUS_BG_COLOR[transaction.paymentStatus]
-                                      }`}
-                                  >
-                                    {STATUS_CODES[transaction.paymentStatus]}
-                                  </span>
-                                </h4>
-                              ) : (
-                                <h4 className="text-lg font-bold text-gray-300">
-                                  -
-                                </h4>
-                              )}
+                                ) : (
+                                  <span className="text-gray-300">No Reference</span>
+                                )}
+                                <span
+                                  className={`rounded-full py-0.5 text-xs px-2 ${STATUS_BG_COLOR[transaction.paymentStatus]}`}
+                                >
+                                  {STATUS_CODES[transaction.paymentStatus]}
+                                </span>
+                              </h4>
                               <p className="font-mono text-xs text-gray-400 lowercase">
                                 {transaction.transactionId}
                               </p>
@@ -908,21 +991,12 @@ const Transactions = () => {
                             </div>
                           </td>
                           <td className="p-2 space-x-2 text-xs text-center">
-                            {transaction.paymentStatus !==
-                              TransactionStatus.S && (
-                                <button
-                                  className="px-3 py-1 text-white rounded bg-cyan-600"
-                                  onClick={openUpdateModal(transaction)}
-                                >
-                                  Update
-                                </button>
-                              )}
-                            {/* <button
-                            className="px-3 py-1 text-white rounded bg-cyan-600"
-                            onClick={renew}
-                          >
-                            View
-                          </button> */}
+                            <button
+                              className="px-3 py-1 text-white rounded bg-cyan-600"
+                              onClick={openUpdateModal(transaction)}
+                            >
+                              View Details
+                            </button>
                           </td>
                         </tr>
                       ))

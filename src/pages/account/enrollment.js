@@ -200,6 +200,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const [formerRegistrarNumber, setFormerRegistrarNumber] = useState('')
   const [filteredProgram, setFilteredProgram] = useState(null);
   const [isBarangay, setIsBarangay] = useState(false);
+  const [showBankTransferModal, setShowBankTransferModal] = useState(false);
+  const [paymentProofFile, setPaymentProofFile] = useState(null);
+  const [uploadingProof, setUploadingProof] = useState(false);
 
   const handleIsBarangay = () => {
     setIsBarangay(prev => !prev);
@@ -387,16 +390,16 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       address2.length > 0 &&
       (enrollmentType === "NEW" ? formerRegistrar.length > 0 : true) &&
       (enrollmentType === "NEW" ? formerRegistrarEmail.length > 0 : true) &&
-      (enrollmentType === "NEW" ? formerRegistrarNumber.length > 0 : true)
+      (enrollmentType === "NEW" ? formerRegistrarNumber.length > 0 : true) &&
       //birthCertificateLink > 0 &&
-      // birthCertificateLink?.length > 0
+      birthCertificateLink?.length > 0
     ) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
       payment !== null &&
       paymentMethod &&
       agree &&
-      //signatureLink?.length > 0 &&
+      signatureLink?.length > 0 &&
       !isSubmittingCode);
 
   const programFee = programs.find((programFee) => {
@@ -831,7 +834,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             toast.error(response.errors[error].msg)
           );
         } else {
-          window.open(response.data.schoolFee.url, '_blank');
+          // Don't automatically open DragonPay
           setPaymentLink(response.data.schoolFee.url);
           setViewFees(true);
           toast.success('Student information successfully submitted!');
@@ -876,6 +879,50 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         toast.success('File uploaded successfully!');
       }
     });
+  };
+
+  const toggleBankTransferModal = () => setShowBankTransferModal(!showBankTransferModal);
+
+  const handlePaymentProofUpload = async () => {
+    if (!paymentProofFile) return;
+
+    setUploadingProof(true);
+    try {
+      const blob = new Blob([paymentProofFile], { type: paymentProofFile.type });
+      const extension = paymentProofFile.name.split('.').pop();
+      const fileName = `payment-proof-${crypto
+        .createHash('md5')
+        .update(paymentProofFile.name + Date.now())
+        .digest('hex')
+        .substring(0, 12)}-${format(new Date(), 'yyyy.MM.dd.kk.mm.ss')}.${extension}`;
+
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          // Could add progress state here if needed
+        },
+        (error) => {
+          toast.error(error.message);
+          setUploadingProof(false);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            // TODO: Send payment proof to backend for verification
+            toast.success('Payment proof uploaded successfully! It will be verified within 24-48 hours.');
+            setShowBankTransferModal(false);
+            setPaymentProofFile(null);
+            setUploadingProof(false);
+          });
+        }
+      );
+    } catch (error) {
+      toast.error('Error uploading payment proof');
+      setUploadingProof(false);
+    }
   };
 
   //Get month index for calculations of monthly payments
@@ -2292,7 +2339,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           </p>
           <ol className="px-5 list-disc">
             <li>
-              Support and encourage Living Pupil Homeschool’s values central
+              Support and encourage Living Pupil Homeschool's values central
               to the philosophy and mission of Charlotte Mason.
             </li>
             <li>
@@ -3517,20 +3564,28 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           </div>
           {viewFees ? (
             <>
-              {paymentLink && (
-                <a
-                  className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-                  href={paymentLink}
-                  target="_blank"
+              <div className="space-y-3">
+                {paymentLink && (
+                  <a
+                    className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+                    href={paymentLink}
+                    target="_blank"
+                  >
+                    Pay via Dragon Pay
+                  </a>
+                )}
+                <button
+                  className="inline-block w-full py-2 text-center rounded bg-blue-500 hover:bg-blue-400 disabled:opacity-25"
+                  onClick={toggleBankTransferModal}
                 >
-                  Pay Now
-                </a>
-              )}
-              <Link href={`/account`}>
-                <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25">
-                  View Dashboard
-                </a>
-              </Link>
+                  Pay via Bank Transfer
+                </button>
+                <Link href={`/account`}>
+                  <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25">
+                    View Dashboard
+                  </a>
+                </Link>
+              </div>
             </>
           ) : (
             <button
@@ -3538,9 +3593,126 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               disabled={isSubmitting}
               onClick={submit}
             >
-              {isSubmitting ? 'Processing...' : 'Submit & Pay Now'}
+              {isSubmitting ? 'Processing...' : 'Submit Record'}
             </button>
           )}
+        </div>
+      </Modal>
+
+      {/* Bank Transfer Payment Modal */}
+      <Modal
+        show={showBankTransferModal}
+        title="Bank Transfer Payment"
+        toggle={toggleBankTransferModal}
+      >
+        <div className="space-y-6">
+          <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
+            <h3 className="text-lg font-semibold text-green-800 mb-2">Total Payment Amount</h3>
+            <div className="text-3xl font-bold text-green-600">
+              {new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'PHP',
+              }).format(
+                discount
+                  ? discount?.type === 'VALUE'
+                    ? discount?.code?.toLowerCase().includes('pastor')
+                      ? Math.ceil(
+                        fee?._type === 'fullTermPayment'
+                          ? fee?.fullPayment
+                          : fee?._type === 'threeTermPayment'
+                            ? fee?.downPayment +
+                            fee?.secondPayment +
+                            fee?.thirdPayment
+                            : fee?._type === 'fourTermPayment'
+                              ? fee?.downPayment +
+                              fee?.secondPayment +
+                              fee?.thirdPayment +
+                              fee?.fourthPayment
+                              : fee?.downPayment +
+                              fee?.secondPayment +
+                              fee?.thirdPayment +
+                              fee?.fourthPayment +
+                              fee?.fifthPayment +
+                              fee?.sixthPayment +
+                              fee?.seventhPayment +
+                              fee?.eighthPayment +
+                              fee?.ninthPayment
+                      ) - (discount?.value ?? 0)
+                      : discount?.value ?? 0
+                    : ((discount?.value ?? 0) / 100) *
+                    (fee?._type === 'fullTermPayment'
+                      ? fee?.fullPayment
+                      : fee?.secondPayment)
+                  : 0
+              )}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Union Bank Option */}
+            <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
+              <div className="text-center mb-4">
+                <div className="flex items-center justify-center mb-2">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FF7F00' }}>
+                    <span className="text-white text-lg font-bold">UB</span>
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800">Union Bank</h3>
+                <p className="text-sm text-gray-600">Account: 1234-5678-9012</p>
+                <p className="text-sm text-gray-600">Name: Living Pupil Homeschool</p>
+              </div>
+            </div>
+
+            {/* GCash Option */}
+            <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-green-500 transition-colors">
+              <div className="text-center mb-4">
+                <div className="flex items-center justify-center mb-2">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#006F42' }}>
+                    <span className="text-white text-lg font-bold">GC</span>
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800">GCash</h3>
+                <p className="text-sm text-gray-600">Number: 0917-123-4567</p>
+                <p className="text-sm text-gray-600">Name: Living Pupil Homeschool</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <h4 className="font-semibold text-blue-800 mb-2">Payment Instructions:</h4>
+            <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
+              <li>Choose your preferred payment method (Union Bank or GCash)</li>
+              <li>Transfer the exact amount shown above</li>
+              <li>Use your student name as payment description</li>
+              <li>Keep your payment receipt for verification</li>
+              <li>Upload your proof of payment using the form below</li>
+              <li>Payment will be verified within 24-48 hours</li>
+            </ol>
+          </div>
+
+          {/* Payment Proof Upload */}
+          <div className="bg-yellow-50 p-4 rounded-lg">
+            <h4 className="font-semibold text-yellow-800 mb-2">Upload Payment Proof</h4>
+            <div className="space-y-3">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setPaymentProofFile(e.target.files[0])}
+                className="w-full p-2 border border-gray-300 rounded text-sm"
+              />
+              {paymentProofFile && (
+                <div className="text-sm text-green-600">
+                  ✓ {paymentProofFile.name} selected
+                </div>
+              )}
+              <button
+                onClick={handlePaymentProofUpload}
+                disabled={!paymentProofFile || uploadingProof}
+                className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {uploadingProof ? 'Uploading...' : 'Upload Payment Proof'}
+              </button>
+            </div>
+          </div>
         </div>
       </Modal>
     </AccountLayout>

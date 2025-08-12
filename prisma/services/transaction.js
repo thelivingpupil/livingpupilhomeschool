@@ -328,6 +328,7 @@ export const getTransactions = async () =>
       currency: true,
       paymentStatus: true,
       paymentReference: true,
+      paymentProofLink: true,
       createdAt: true,
       updatedAt: true,
       user: {

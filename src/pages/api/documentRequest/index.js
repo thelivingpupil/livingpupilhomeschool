@@ -43,7 +43,6 @@ const handler = async (req, res) => {
     } else if (method === 'POST') {
         try {
             const {
-                selectedDocuments,
                 selectedPurpose,
                 deliveryOption,
                 deliveryAddress,
@@ -51,21 +50,11 @@ const handler = async (req, res) => {
                 letterRequest137,
                 eccdForm,
                 affidavit,
-                formData, // For student information
+                students, // Multiple students
+                documents, // Documents grouped by student
                 formData2, // For requestor information
                 totalFee,
             } = req.body;
-
-            // Map student information from formData
-            const studentInformation = {
-                studentFullName: formData.studentName,
-                lrn: formData.lrn,
-                currentGradeLevel: formData.gradeLevel,
-                currentSchool: formData.currentSchool,
-                gradeLevelsWithLp: formData.gradesWithLP,
-                lastSchoolYearWithLp: formData.lastSchoolYear,
-            };
-
 
             // Map requestor information from formData2
             const requestorInformation = {
@@ -77,27 +66,24 @@ const handler = async (req, res) => {
                 requestorMobileNumber: formData2.guardianMobile,
             };
 
-            // Map documents
-            const documents = selectedDocuments.map((doc) => {
-                const details = DOCUMENT_DETAILS[doc]; // Lookup the document details by its value
-                let url = "N/A"; // Default to N/A
+            // Map students information
+            const studentsData = students.map(student => ({
+                studentFullName: student.studentFullName,
+                lrn: student.lrn,
+                currentGradeLevel: student.currentGradeLevel,
+                currentSchool: student.currentSchool,
+                gradeLevelsWithLp: student.gradeLevelsWithLp,
+                lastSchoolYearWithLp: student.lastSchoolYearWithLp,
+            }));
 
-                if (doc === "re_form_138") {
-                    url = affidavit;
-                } else if (doc === "form_137") {
-                    url = letterRequest137;
-                } else if (doc === "eccd") {
-                    url = [letterRequestEccd, eccdForm].filter(Boolean).join(", "); // Join available parts with a comma
-                }
-
-                return {
-                    docName: details.value,
-                    url,
-                    fee: details.fee,
-                    requirement: typeof details.requirement === "string" ? details.requirement : JSON.stringify(details.requirement), // Convert object to string if necessary
-                    processingTime: details.processing_time,
-                };
-            });
+            // Map documents for each student
+            const documentsData = documents.map(studentDoc => ({
+                studentIndex: studentDoc.studentIndex,
+                documents: studentDoc.documents.map(doc => ({
+                    docName: doc.docName,
+                    url: doc.url,
+                }))
+            }));
 
             // Map transaction details
             const transaction = {
@@ -140,8 +126,8 @@ const handler = async (req, res) => {
                 status: 'Pending',
                 deliveryAddress: deliveryAddress,
                 requestorInformation,
-                studentInformation,
-                documents,
+                students: studentsData, // Multiple students
+                documents: documentsData, // Documents grouped by student
                 transaction,
                 deliveryOption,
             };
@@ -149,15 +135,16 @@ const handler = async (req, res) => {
             // Call the service
             const result = await createDocumentRequest(requestData);
 
-            // Destructure the result to get both requestCode and transactionUrl
-            const { requestCode: returnedRequestCode, transactionUrl } = result;
+            // Destructure the result to get transaction details
+            const { requestCode: returnedRequestCode, transactionId, referenceNumber } = result;
 
             res.status(201).json({
                 success: true,
                 message: 'Document request created successfully.',
                 data: {
                     requestCode: returnedRequestCode,
-                    transactionUrl: transactionUrl,
+                    transactionId: transactionId,
+                    referenceNumber: referenceNumber,
                 },
             });
         } catch (error) {

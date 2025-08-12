@@ -48,6 +48,14 @@ const RegistrarPortal = ({ page }) => {
     const [affidavitProgress, setAffidavitProgress] = useState(0);
     const [submittingState, setSubmittingState] = useState(false);
     const [paymentLink, setPaymentLink] = useState("")
+
+    // Payment modal states
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [paymentAmount, setPaymentAmount] = useState(0);
+    const [transactionId, setTransactionId] = useState("");
+    const [referenceNumber, setReferenceNumber] = useState("");
+    const [paymentProofFile, setPaymentProofFile] = useState(null);
+    const [uploadingProof, setUploadingProof] = useState(false);
     const [formData, setFormData] = useState({
         studentName: '',
         lrn: '',
@@ -56,6 +64,17 @@ const RegistrarPortal = ({ page }) => {
         gradesWithLP: '',
         lastSchoolYear: '',
     });
+
+    // Multi-student state
+    const [students, setStudents] = useState([{
+        studentName: '',
+        lrn: '',
+        gradeLevel: '',
+        currentSchool: '',
+        gradesWithLP: '',
+        lastSchoolYear: '',
+        selectedDocuments: []
+    }]);
     const [formData2, setFormData2] = useState({
         requestorName: '',
         relationship: '',
@@ -97,8 +116,10 @@ const RegistrarPortal = ({ page }) => {
     const deliveryFee = deliveryOption === "delivery" ? 200 : 0;
 
     // Calculating total fee including the "Document Collection" fee if Delivery is selected
-    const totalFee = selectedDocuments.reduce((total, doc) => {
-        return total + DOCUMENT_DETAILS[doc].fee;
+    const totalFee = students.reduce((total, student) => {
+        return total + student.selectedDocuments.reduce((studentTotal, doc) => {
+            return studentTotal + DOCUMENT_DETAILS[doc].fee;
+        }, 0);
     }, 0) + deliveryFee;
 
     const handleCheckboxChange = (document) => {
@@ -157,8 +178,91 @@ const RegistrarPortal = ({ page }) => {
 
 
     const goToStep = (nextStep) => {
+        // If moving from Step 4 to Step 5, ensure the current student is added
+        if (step === 4 && nextStep === 5) {
+            // Save the current student data before proceeding
+            saveCurrentStudent();
+        }
+
         setStep(nextStep);
         document.getElementById('scroller').scroll(0, 0); // Reset scroll position
+    };
+
+    // Multi-student functions
+    const saveCurrentStudent = () => {
+        // Save the current form data as a student
+        const currentStudent = {
+            studentName: formData.studentName,
+            lrn: formData.lrn,
+            gradeLevel: formData.gradeLevel,
+            currentSchool: formData.currentSchool,
+            gradesWithLP: formData.gradesWithLP,
+            lastSchoolYear: formData.lastSchoolYear,
+            selectedDocuments: selectedDocuments
+        };
+
+        // Check if a student with the same name already exists
+        const existingStudent = students.find(student =>
+            student.studentName.toLowerCase() === formData.studentName.toLowerCase()
+        );
+
+        if (existingStudent) {
+            // Student with this name already exists, don't add duplicate
+            toast.error(`A student named "${formData.studentName}" already exists in your request.`);
+            return;
+        }
+
+        // Check if this is the first student or an additional one
+        setStudents(prev => {
+            if (prev.length === 0 || !prev[0].studentName) {
+                // First student or empty array, replace/add
+                return [currentStudent];
+            } else {
+                // Additional student, add to array
+                return [...prev, currentStudent];
+            }
+        });
+
+        // Show success message
+        toast.success(`Student "${formData.studentName}" added successfully!`);
+    };
+
+    const addStudent = () => {
+        // Clear the form for the next student
+        setFormData({
+            studentName: '',
+            lrn: '',
+            gradeLevel: '',
+            currentSchool: '',
+            gradesWithLP: '',
+            lastSchoolYear: '',
+        });
+        setSelectedDocuments([]);
+
+        // Go back to Step 2 to add the next student
+        setStep(2);
+    };
+
+    const removeStudent = (index) => {
+        if (students.length > 1) {
+            setStudents(prev => prev.filter((_, i) => i !== index));
+        }
+    };
+
+    const editStudent = (index) => {
+        // Go back to Step 2 to edit student information
+        setStep(2);
+        // Load the student data into the form
+        const student = students[index];
+        setFormData({
+            studentName: student.studentName,
+            lrn: student.lrn,
+            gradeLevel: student.gradeLevel,
+            currentSchool: student.currentSchool,
+            gradesWithLP: student.gradesWithLP,
+            lastSchoolYear: student.lastSchoolYear,
+        });
+        setSelectedDocuments(student.selectedDocuments);
     };
 
     useEffect(() => {
@@ -311,9 +415,52 @@ const RegistrarPortal = ({ page }) => {
 
     const submit = () => {
         setSubmittingState(true);
+
+        // Prepare multi-student data
+        let studentsData;
+        let documentsData;
+
+        if (students.length > 0 && students[0].studentName) {
+            // Use saved students data
+            studentsData = students.map(student => ({
+                studentFullName: student.studentName,
+                lrn: student.lrn,
+                currentGradeLevel: student.gradeLevel,
+                currentSchool: student.currentSchool,
+                gradeLevelsWithLp: student.gradesWithLP,
+                lastSchoolYearWithLp: student.lastSchoolYear,
+            }));
+
+            // Prepare documents data grouped by student
+            documentsData = students.map((student, index) => ({
+                studentIndex: index,
+                documents: student.selectedDocuments.map(docName => ({
+                    docName: docName,
+                    url: 'N/A', // Documents will be uploaded separately
+                }))
+            }));
+        } else {
+            // Fallback to current form data (single student)
+            studentsData = [{
+                studentFullName: formData.studentName,
+                lrn: formData.lrn,
+                currentGradeLevel: formData.gradeLevel,
+                currentSchool: formData.currentSchool,
+                gradeLevelsWithLp: formData.gradesWithLP,
+                lastSchoolYearWithLp: formData.lastSchoolYear,
+            }];
+
+            documentsData = [{
+                studentIndex: 0,
+                documents: selectedDocuments.map(docName => ({
+                    docName: docName,
+                    url: 'N/A', // Documents will be uploaded separately
+                }))
+            }];
+        }
+
         api('/api/documentRequest', {
             body: {
-                selectedDocuments,
                 selectedPurpose,
                 deliveryOption,
                 deliveryAddress,
@@ -321,7 +468,8 @@ const RegistrarPortal = ({ page }) => {
                 letterRequest137,
                 eccdForm,
                 affidavit,
-                formData, // For student information
+                students: studentsData, // Multi-student information
+                documents: documentsData, // Multi-student documents
                 formData2, // For requestor information
                 totalFee,
             },
@@ -335,17 +483,16 @@ const RegistrarPortal = ({ page }) => {
                         toast.error(response.errors[error].msg)
                     );
                 } else {
-                    if (response.data.transactionUrl === 'N/A') {
-                        setPaymentLink(response.data.transactionUrl);
-                        setTrackingCode(response.data.requestCode);
-                        setViewFees(true);
-                        toast.success('Document request successfully submitted!');
-                    } else {
-                        window.open(response.data.transactionUrl, '_blank');
-                        setPaymentLink(response.data.transactionUrl);
-                        setTrackingCode(response.data.requestCode);
-                        setViewFees(true);
-                        toast.success('Document request successfully submitted!');
+                    // ✅ Document request created successfully
+                    setTrackingCode(response.data.requestCode);
+                    toast.success('Document request successfully submitted!');
+
+                    // ✅ Open payment modal with transaction details
+                    if (response.data.transactionId && response.data.referenceNumber) {
+                        setPaymentAmount(totalFee);
+                        setTransactionId(response.data.transactionId);
+                        setReferenceNumber(response.data.referenceNumber);
+                        setShowPaymentModal(true);
                     }
                 }
             })
@@ -424,6 +571,42 @@ const RegistrarPortal = ({ page }) => {
                 setSubmittingState(false);
                 toast.error('Something went wrong. Please try again.');
             });
+    };
+
+    // Handle payment proof upload
+    const handlePaymentProofUpload = async () => {
+        if (!paymentProofFile || !transactionId) {
+            toast.error('Please select a file and ensure transaction is available');
+            return;
+        }
+
+        setUploadingProof(true);
+        try {
+            const formData = new FormData();
+            formData.append('paymentProof', paymentProofFile);
+            formData.append('transactionId', transactionId);
+
+            const response = await api('/api/documentRequest/updatePaymentProof', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.success) {
+                toast.success('Payment proof uploaded successfully!');
+                setPaymentProofFile(null);
+                setShowPaymentModal(false);
+            } else {
+                toast.error('Failed to upload payment proof');
+            }
+        } catch (error) {
+            console.error('Error uploading payment proof:', error);
+            toast.error('Error uploading payment proof');
+        } finally {
+            setUploadingProof(false);
+        }
     };
 
     const handleTrack = () => {
@@ -520,29 +703,46 @@ const RegistrarPortal = ({ page }) => {
                                         <p class="font-semibold text-gray-800">Email:</p>
                                         <p class="text-gray-600">{documentRequest?.requestorInformation.requestorEmail}</p>
                                     </div>
-                                    <div class="flex items-center mt-2 space-x-2">
-                                        <p class="font-semibold text-gray-800">Student:</p>
-                                        <p class="text-gray-600">{documentRequest?.studentInformation.studentFullName}</p>
+                                    {/* Students Information */}
+                                    <div class="mt-4">
+                                        <p class="font-bold text-gray-800 mb-2">Students:</p>
+                                        {documentRequest?.studentInformation && documentRequest.studentInformation.length > 0 ? (
+                                            <div class="space-y-2">
+                                                {documentRequest.studentInformation.map((student, index) => (
+                                                    <div key={student.id} class="flex items-center space-x-2">
+                                                        <span class="font-semibold text-gray-800">Student {index + 1}:</span>
+                                                        <span class="text-gray-600">{student.studentFullName || 'N/A'}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p class="text-gray-500 italic">No student information available</p>
+                                        )}
                                     </div>
-                                </div>
 
-                                <div class="mt-6">
-                                    <p class="font-bold text-gray-800 mb-2">Documents:</p>
-                                    <ul class="list-disc list-inside text-gray-600">
-                                        {documentRequest?.documents.map((doc) => (
-                                            <li key={doc.id}>
-                                                {DOCUMENT_DETAILS[doc.docName]?.label} -
-                                                <a
-                                                    href={doc.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    class="text-blue-500 underline"
-                                                >
-                                                    {doc.url !== 'N/A' ? 'View Document' : 'N/A'}
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    {/* Documents Section */}
+                                    <div class="mt-6">
+                                        <p class="font-bold text-gray-800 mb-2">Documents:</p>
+                                        {documentRequest?.documents && documentRequest.documents.length > 0 ? (
+                                            <ul class="list-disc list-inside text-gray-600">
+                                                {documentRequest.documents.map((doc) => (
+                                                    <li key={doc.id}>
+                                                        {DOCUMENT_DETAILS[doc.docName]?.label || doc.docName} -
+                                                        <a
+                                                            href={doc.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            class="text-blue-500 underline"
+                                                        >
+                                                            {doc.url !== 'N/A' ? 'View Document' : 'N/A'}
+                                                        </a>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p class="text-gray-500 italic">No documents uploaded yet</p>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div class="mt-6">
@@ -603,12 +803,13 @@ const RegistrarPortal = ({ page }) => {
                                             <button
                                                 className="inline-block px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
                                                 disabled={submittingState}
-                                                onClick={() =>
-                                                    renew(
-                                                        documentRequest?.transactionId,
-                                                        documentRequest?.transaction.referenceNumber
-                                                    )
-                                                }
+                                                onClick={() => {
+                                                    // Open payment modal for existing transaction
+                                                    setPaymentAmount(documentRequest?.transaction?.amount || 0);
+                                                    setTransactionId(documentRequest?.transactionId);
+                                                    setReferenceNumber(documentRequest?.transaction?.referenceNumber);
+                                                    setShowPaymentModal(true);
+                                                }}
                                             >
                                                 Pay Now
                                             </button>
@@ -739,6 +940,9 @@ const RegistrarPortal = ({ page }) => {
                     < div className="w-full flex-shrink-0 flex justify-center items-center p-5" >
                         <div className="p-10 max-w-xl w-full shadow">
                             <h2 className="text-lg font-bold mb-4 text-center">Student Information</h2>
+                            <p className="text-sm text-gray-600 mb-4 text-center">
+                                {students.length > 1 ? `Adding Student ${students.length}` : 'Fill in the student information below'}
+                            </p>
                             <div className="flex flex-col space-y-4">
                                 {/* Student's Full Name */}
                                 <div>
@@ -942,6 +1146,7 @@ const RegistrarPortal = ({ page }) => {
                     <div className="w-full flex-shrink-0 flex justify-center items-center" >
                         <div className="p-10 max-w-xl w-full shadow">
                             <h2 className="text-lg font-bold mb-4 text-center">Document Requirements</h2>
+
                             <div className="flex flex-col space-y-4">
                                 {/* Good Moral */}
                                 {selectedDocuments.some((doc) => doc === "good_moral") && (
@@ -1227,6 +1432,56 @@ const RegistrarPortal = ({ page }) => {
                                     I agree.
                                 </label>
                             </div>
+
+                            {/* Students Summary */}
+                            <div className="mt-6">
+                                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                                    Students Summary ({students.length} student{students.length !== 1 ? 's' : ''})
+                                </h3>
+                                <p className="text-sm text-gray-600 mb-4">
+                                    Total fee is calculated based on all students and their selected documents.
+                                    Adding more students will increase the total cost.
+                                </p>
+
+                                <div className="space-y-3 mb-6">
+                                    {students.map((student, index) => (
+                                        <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                            <div className="flex justify-between items-start">
+                                                <div className="flex-1">
+                                                    <h4 className="font-medium text-gray-800 mb-2">
+                                                        Student {index + 1}: {student.studentName || 'Unnamed Student'}
+                                                    </h4>
+                                                    <div className="text-sm text-gray-600 space-y-1">
+                                                        <p><strong>LRN:</strong> {student.lrn || 'Not provided'}</p>
+                                                        <p><strong>Grade Level:</strong> {student.gradeLevel || 'Not provided'}</p>
+                                                        <p><strong>Documents:</strong> {student.selectedDocuments.length > 0 ? student.selectedDocuments.join(', ') : 'None selected'}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex space-x-2">
+                                                    <button
+                                                        onClick={() => editStudent(index)}
+                                                        className="px-2 py-1 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    {students.length > 1 && (
+                                                        <button
+                                                            onClick={() => removeStudent(index)}
+                                                            className="px-2 py-1 text-red-600 hover:text-red-800 text-sm font-medium"
+                                                        >
+                                                            Remove
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <p className="text-sm text-blue-600 mb-4">
+                                    💡 You can add more students in the payment step if needed.
+                                </p>
+                            </div>
                         </div>
                     </div>
 
@@ -1247,15 +1502,19 @@ const RegistrarPortal = ({ page }) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {selectedDocuments.map((doc) => {
-                                            const documentDetail = DOCUMENT_DETAILS[doc];
-                                            return (
-                                                <tr key={doc} className="border-b">
-                                                    <td className="px-4 py-2 text-sm text-gray-700">{documentDetail.label}</td>
-                                                    <td className="px-4 py-2 text-sm text-gray-700">₱ {documentDetail.fee}</td>
-                                                </tr>
-                                            );
-                                        })}
+                                        {students.map((student, index) => (
+                                            student.selectedDocuments.map((doc) => {
+                                                const documentDetail = DOCUMENT_DETAILS[doc];
+                                                return (
+                                                    <tr key={`${index}-${doc}`} className="border-b">
+                                                        <td className="px-4 py-2 text-sm text-gray-700">
+                                                            {documentDetail.label} - {student.studentName || `Student ${index + 1}`}
+                                                        </td>
+                                                        <td className="px-4 py-2 text-sm text-gray-700">₱ {documentDetail.fee}</td>
+                                                    </tr>
+                                                );
+                                            })
+                                        ))}
 
                                         {/* Add "Document Collection" fee if Delivery is selected */}
                                         {deliveryOption === "delivery" && (
@@ -1273,6 +1532,16 @@ const RegistrarPortal = ({ page }) => {
                                         </tr>
                                     </tbody>
                                 </table>
+                            </div>
+
+                            {/* Add Another Student Button */}
+                            <div className="mt-6 flex justify-center mb-4">
+                                <button
+                                    className="px-4 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors"
+                                    onClick={addStudent}
+                                >
+                                    + Add Another Student
+                                </button>
                             </div>
 
                             {/* Submit button */}
@@ -1308,25 +1577,42 @@ const RegistrarPortal = ({ page }) => {
                             </div>
 
                             <div className="mt-6">
-                                <p className="font-bold text-blue-600 text-sm">Documents:</p>
-                                <ul className="list-disc list-inside text-sm text-gray-600">
-                                    {selectedDocuments.map((doc) => (
-                                        <li key={doc.id}>
-                                            {DOCUMENT_DETAILS[doc]?.label}
-                                        </li>
+                                <p className="font-bold text-blue-600 text-sm">Documents by Student:</p>
+                                <div className="space-y-3">
+                                    {students.map((student, index) => (
+                                        <div key={index} className="border-l-4 border-green-500 pl-3">
+                                            <h4 className="font-semibold text-gray-800 mb-2">Student {index + 1}: {student.studentName}</h4>
+                                            <ul className="list-disc list-inside text-sm text-gray-600">
+                                                {student.selectedDocuments.length > 0 ? (
+                                                    student.selectedDocuments.map((doc) => (
+                                                        <li key={doc}>
+                                                            {DOCUMENT_DETAILS[doc]?.label}
+                                                        </li>
+                                                    ))
+                                                ) : (
+                                                    <li>No documents selected</li>
+                                                )}
+                                            </ul>
+                                        </div>
                                     ))}
-                                </ul>
+                                </div>
                             </div>
 
                             <div>
-                                <p className="font-bold text-blue-600 text-sm">Student Information</p>
-                                <div className="px-3 text-sm">
-                                    <p><strong>Student Fullname:</strong> {formData.studentName}</p>
-                                    <p><strong>LRN:</strong> {formData.lrn}</p>
-                                    <p><strong>Grade Level:</strong> {formData.gradeLevel}</p>
-                                    <p><strong>Current School:</strong> {formData.currentSchool}</p>
-                                    <p><strong>Grades With LP:</strong> {formData.gradesWithLP}</p>
-                                    <p><strong>Last School Year:</strong> {formData.lastSchoolYear}</p>
+                                <p className="font-bold text-blue-600 text-sm">Students Information</p>
+                                <div className="px-3 text-sm space-y-4">
+                                    {students.map((student, index) => (
+                                        <div key={index} className="border-l-4 border-blue-500 pl-3">
+                                            <h4 className="font-semibold text-gray-800 mb-2">Student {index + 1}</h4>
+                                            <p><strong>Student Fullname:</strong> {student.studentName}</p>
+                                            <p><strong>LRN:</strong> {student.lrn}</p>
+                                            <p><strong>Grade Level:</strong> {student.gradeLevel}</p>
+                                            <p><strong>Current School:</strong> {student.currentSchool}</p>
+                                            <p><strong>Grades With LP:</strong> {student.gradesWithLP}</p>
+                                            <p><strong>Last School Year:</strong> {student.lastSchoolYear}</p>
+                                            <p><strong>Documents:</strong> {student.selectedDocuments.length > 0 ? student.selectedDocuments.join(', ') : 'None selected'}</p>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
 
@@ -1410,6 +1696,155 @@ const RegistrarPortal = ({ page }) => {
                             </div>
                         </div>
                     )}
+                </div>
+            </Modal>
+
+            {/* Payment QR Modal - Same as Shop */}
+            <Modal
+                show={showPaymentModal}
+                title="Payment Options"
+                toggle={() => setShowPaymentModal(false)}
+            >
+                <div className="space-y-6">
+                    <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                        <h3 className="text-lg font-semibold text-green-800 mb-2">Total Payment Amount</h3>
+                        <div className="text-3xl font-bold text-green-600">
+                            {new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'PHP',
+                            }).format(paymentAmount)}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Union Bank Option */}
+                        <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
+                            <div className="text-center mb-4">
+                                <div className="flex items-center justify-center mb-2">
+                                    <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FF7F00' }}>
+                                        <span className="text-white text-lg font-bold">UB</span>
+                                    </div>
+                                </div>
+                                <h3 className="text-lg font-semibold text-gray-800">Union Bank</h3>
+                            </div>
+
+                            <div className="mt-4 text-center">
+                                <img
+                                    src="/files/qr/ub_qr.jpg"
+                                    alt="Union Bank QR Code"
+                                    className="w-64 h-64 mx-auto border border-gray-300 rounded"
+                                />
+                                <div className="mt-2 space-y-2">
+                                    <button
+                                        onClick={() => {
+                                            const link = document.createElement('a');
+                                            link.href = '/files/qr/ub_qr.jpg';
+                                            link.download = 'union-bank-qr.jpg';
+                                            link.click();
+                                        }}
+                                        className="w-full py-2 px-3 text-white rounded hover:bg-orange-600 transition-colors text-sm"
+                                        style={{ backgroundColor: '#FF7F00' }}
+                                    >
+                                        Download QR Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* GCash Option */}
+                        <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-green-500 transition-colors">
+                            <div className="text-center mb-4">
+                                <div className="flex items-center justify-center mb-2">
+                                    <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#3B82F6' }}>
+                                        <span className="text-white text-lg font-bold">GC</span>
+                                    </div>
+                                </div>
+                                <h3 className="text-lg font-semibold text-gray-800">GCash</h3>
+                            </div>
+
+                            <div className="mt-4 text-center">
+                                <img
+                                    src="/files/qr/gcash_qr.png"
+                                    alt="GCash QR Code"
+                                    className="w-full h-64 mx-auto border border-gray-300 rounded object-contain"
+                                />
+                                <div className="mt-2 space-y-2">
+                                    <button
+                                        onClick={() => {
+                                            const link = document.createElement('a');
+                                            link.href = '/files/qr/gcash_qr.png';
+                                            link.download = 'gcash-qr.png';
+                                            link.click();
+                                        }}
+                                        className="w-full py-2 px-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
+                                    >
+                                        Download QR Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                        <h4 className="font-semibold text-blue-800 mb-2">Payment Instructions:</h4>
+                        <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
+                            <li>Choose your preferred payment method (Union Bank or GCash)</li>
+                            <li>Scan the QR code or transfer the exact amount</li>
+                            <li>Use your transaction reference number as payment description</li>
+                            <li>Keep your payment receipt for verification</li>
+                            <li>Upload your proof of payment using the form below</li>
+                            <li>Payment will be verified within 24-48 hours</li>
+                        </ol>
+                    </div>
+
+                    {/* Payment Proof Upload */}
+                    <div className="bg-yellow-50 p-4 rounded-lg">
+                        <h4 className="font-semibold text-yellow-800 mb-2">Upload Payment Proof</h4>
+                        <div className="space-y-3">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => setPaymentProofFile(e.target.files[0])}
+                                className="w-full p-2 border border-gray-300 rounded text-sm"
+                            />
+                            {paymentProofFile && (
+                                <div className="text-sm text-green-600">
+                                    ✓ {paymentProofFile.name} selected
+                                </div>
+                            )}
+                            <button
+                                onClick={handlePaymentProofUpload}
+                                disabled={!paymentProofFile || uploadingProof}
+                                className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                {uploadingProof ? 'Uploading...' : 'Upload Payment Proof'}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="bg-yellow-50 p-4 rounded-lg">
+                        <h4 className="font-semibold text-yellow-800 mb-2">Transaction Details:</h4>
+                        <div className="space-y-1 text-sm text-yellow-700">
+                            <div>Transaction ID: <span className="font-mono">{transactionId}</span></div>
+                            <div>Reference Number: <span className="font-mono">{referenceNumber}</span></div>
+                        </div>
+                    </div>
+
+                    <div className="flex space-x-3">
+                        <button
+                            onClick={() => {
+                                setShowPaymentModal(false);
+                                handleTrack();
+                            }}
+                            className="flex-1 py-2 px-4 bg-primary-500 text-white rounded hover:bg-primary-600 transition-colors"
+                        >
+                            Track Document Request
+                        </button>
+                    </div>
+
+                    <div className="text-center text-sm text-gray-600">
+                        Your tracking code: <span className="font-mono font-bold text-primary-600">{trackingCode}</span>
+                    </div>
                 </div>
             </Modal>
 
