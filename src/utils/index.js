@@ -3,6 +3,7 @@ import add from 'date-fns/add';
 import format from 'date-fns/format';
 import { addMonths, setDate } from 'date-fns';
 import { ShippingType } from '@prisma/client';
+import { parse } from 'date-fns';
 
 const deadlines = {
   currentYear: [
@@ -715,4 +716,49 @@ export const calculateShippingFeeFromAddress = (address, itemCount) => {
   if (itemCount >= 25) return 500;
   if (itemCount >= 10) return 400;
   return 300;
+};
+
+export const hasUnpaidAugust2025Fees = (schoolFees, schoolYear) => {
+  // Only check for 2025-2026 school year
+  if (schoolYear !== '2025-2026') {
+    return false;
+  }
+
+  if (!schoolFees || schoolFees.length === 0) {
+    return false;
+  }
+
+  // Find the initial payment (order 0)
+  const initialPayment = schoolFees.find(fee => fee.order === 0);
+  if (!initialPayment || !initialPayment.transaction || initialPayment.transaction.paymentStatus !== 'S') {
+    return false; // Can't check deadlines if initial payment is unpaid
+  }
+
+  const downpaymentDate = initialPayment.transaction.updatedAt;
+  
+  // Check each fee for August 2025 deadline
+  for (const fee of schoolFees) {
+    if (fee.order === 0) continue; // Skip initial payment
+    
+    if (fee.transaction && fee.transaction.paymentStatus !== 'S') {
+      // Get the deadline for this fee
+      const deadlineStr = getDeadline(
+        fee.order,
+        fee.paymentType,
+        downpaymentDate,
+        schoolYear,
+        fee.transaction.paymentStatus
+      );
+      
+      if (deadlineStr) {
+        // Parse the deadline and check if it's August 2025
+        const deadline = parse(deadlineStr, 'MMMM dd, yyyy', new Date());
+        if (deadline.getMonth() === 7 && deadline.getFullYear() === 2025) { // August is month 7 (0-indexed)
+          return true; // Found an unpaid fee with August 2025 deadline
+        }
+      }
+    }
+  }
+  
+  return false;
 };

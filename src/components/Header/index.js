@@ -22,7 +22,7 @@ import { useWorkspace } from '@/providers/workspace';
 import { TransactionStatus } from '@prisma/client';
 
 
-const Header = ({menu}) => {
+const Header = ({ menu }) => {
   const router = useRouter();
   const { data } = useSession();
   // const { theme, setTheme } = useTheme();
@@ -62,6 +62,7 @@ const Header = ({menu}) => {
               (fee) => fee.transaction.paymentStatus === TransactionStatus.S
             )?.length > 0
           }
+          workspace={workspace}
         />
       ))
     );
@@ -211,8 +212,8 @@ const Header = ({menu}) => {
       </div>
 
     </div>
-    
-    
+
+
   );
 };
 

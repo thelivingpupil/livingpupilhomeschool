@@ -6,6 +6,7 @@ const Menu = ({
   menuCondition,
   showMenu,
   validate = false,
+  workspace = null,
 }) => {
   return showMenu ? (
     <div className="space-y-2">
@@ -15,9 +16,9 @@ const Menu = ({
           (entry.showDefault && (
             <Item key={index} data={entry} isLoading={isLoading} />
           )) ||
-          (menuCondition &&
-            entry.validateItem &&
-            entry.validateItem(validate)) ? (
+            (menuCondition &&
+              entry.validateItem &&
+              entry.validateItem(validate, workspace)) ? (
             <Item key={index} data={entry} isLoading={isLoading} />
           ) : null
         )}
