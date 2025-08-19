@@ -40,6 +40,9 @@ export const getDocumentRequest = async (requestCode) => {
 export const getDocumentRequests = async () => {
     try {
         const documentRequests = await prisma.documentRequest.findMany({
+            where: {
+                deletedAt: null, // Only get non-deleted records
+            },
             include: {
                 requestorInformation: true, // Include related RequestorInformation
                 studentInformation: true,   // Include related StudentInformation
@@ -47,7 +50,7 @@ export const getDocumentRequests = async () => {
                 transaction: true,          // Include Transaction details if available
             },
             orderBy: {
-                updatedAt: 'desc', // Order by updatedAt in descending order
+                createdAt: 'desc', // Order by creation date in descending order (newest first)
             },
         });
 
