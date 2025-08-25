@@ -223,7 +223,15 @@ const handler = async (req, res) => {
       }),
       to: [session.user.email],
     });
-    res.status(200).json({ data: { studentRecord, schoolFee } });
+    res.status(200).json({
+      data: {
+        studentRecord,
+        schoolFee: {
+          ...schoolFee.transaction,
+          amount: schoolFee.amount
+        }
+      }
+    });
   } else {
     res
       .status(405)
