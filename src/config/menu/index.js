@@ -32,6 +32,7 @@ const menu = (workspaceId) => [
                 // Check each fee for summer 2025 deadline
                 for (const fee of workspace.schoolFees) {
                   if (fee.order === 0) continue; // Skip initial payment
+                  if (fee.deletedAt) continue; // Skip deleted fees
 
                   if (fee.transaction && fee.transaction.paymentStatus !== 'S') {
                     // Use the proper getDeadline function from utils
