@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react';
 import { SHOP_SHIPPING, useCartContext } from '@/providers/cart';
 import Modal from '@/components/Modal';
 import useUser from '@/hooks/data/useUser';
+import api from '@/lib/common/api';
 
 const imageBuilder = imageUrlBuilder(sanityClient);
 
@@ -44,6 +45,7 @@ const ShopItem = ({ item }) => {
     paymentAmount,
     totalPayment,
     paymentType,
+    transactionId, // Get transactionId from cart context
     checkoutCart,
   } = useCartContext();
 
@@ -68,12 +70,15 @@ const ShopItem = ({ item }) => {
   const increase = () => setQuantity((state) => state + 1);
 
   const handlePaymentProofUpload = async () => {
-    if (!paymentProofFile) return;
+    if (!paymentProofFile || !transactionId.trim()) {
+      toast.error('Please select a file and enter your transaction ID');
+      return;
+    }
 
     setUploadingProof(true);
     try {
       // Upload file to Firebase storage
-      const fileName = `payment-proof-${Date.now()}.jpg`;
+      const fileName = `payment-proof-${transactionId}-${Date.now()}.jpg`;
       const storageRef = ref(storage, fileName);
       const uploadTask = uploadBytesResumable(storageRef, paymentProofFile);
 
@@ -89,8 +94,28 @@ const ShopItem = ({ item }) => {
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
-          toast.success('Payment proof uploaded successfully! Please contact support with your transaction details.');
-          setPaymentProofFile(null);
+          // Update transaction with payment proof link
+          try {
+            const response = await api('/api/transactions/payment-proof', {
+              method: 'PUT',
+              body: {
+                transactionId: transactionId.trim(),
+                paymentProofLink: downloadURL
+              }
+            });
+
+            if (response.errors) {
+              Object.keys(response.errors).forEach((error) =>
+                toast.error(response.errors[error].msg)
+              );
+            } else {
+              toast.success('Payment proof uploaded successfully!');
+              setPaymentProofFile(null);
+              // setShowPaymentProofModal(false); // This line is removed
+            }
+          } catch (apiError) {
+            toast.error('Failed to update transaction with payment proof. Please contact support.');
+          }
           setUploadingProof(false);
         }
       );
@@ -384,20 +409,41 @@ const ShopItem = ({ item }) => {
               <div className="bg-yellow-50 p-4 rounded-lg">
                 <h4 className="font-semibold text-yellow-800 mb-2">Upload Payment Proof</h4>
                 <div className="space-y-3">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setPaymentProofFile(e.target.files[0])}
-                    className="w-full p-2 border border-gray-300 rounded text-sm"
-                  />
-                  {paymentProofFile && (
-                    <div className="text-sm text-green-600">
-                      ✓ {paymentProofFile.name} selected
+                  {transactionId ? (
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <p className="text-sm text-green-700">
+                        <strong>Transaction ID:</strong> {transactionId}
+                      </p>
+                      <p className="text-xs text-green-600 mt-1">
+                        This transaction ID will be used for your payment proof upload.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="bg-yellow-50 p-3 rounded-lg">
+                      <p className="text-sm text-yellow-700">
+                        Please complete checkout first to get your transaction ID.
+                      </p>
                     </div>
                   )}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Payment Proof Image *
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setPaymentProofFile(e.target.files[0])}
+                      className="w-full p-2 border border-gray-300 rounded text-sm"
+                    />
+                    {paymentProofFile && (
+                      <div className="text-sm text-green-600 mt-1">
+                        ✓ {paymentProofFile.name} selected
+                      </div>
+                    )}
+                  </div>
                   <button
                     onClick={handlePaymentProofUpload}
-                    disabled={!paymentProofFile || uploadingProof}
+                    disabled={!paymentProofFile || uploadingProof || !transactionId}
                     className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {uploadingProof ? 'Uploading...' : 'Upload Payment Proof'}

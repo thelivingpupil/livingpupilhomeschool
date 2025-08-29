@@ -206,7 +206,7 @@ const handler = async (req, res) => {
           }), // Generate HTML content from the template
         });
 
-        res.status(200).json({ data: { paymentLink: transaction?.url, amount: totalWithShipping } });
+        res.status(200).json({ data: { paymentLink: transaction?.url, amount: totalWithShipping, transactionId: transactionId } });
         return;
       }
 

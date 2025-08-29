@@ -14,6 +14,9 @@ const cartInitialState = {
   showPaymentLink: false,
   isSubmitting: false,
   paymentLink: '',
+  paymentAmount: 0,
+  totalPayment: 0,
+  transactionId: '', // Add transactionId to store
   shippingFee: {},
   deliveryAddress: '',
   contactNumber: '',
@@ -135,6 +138,7 @@ const CartProvider = ({ children }) => {
   const [paymentLink, setPaymentLink] = useState('');
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [totalPayment, setTotalPayment] = useState(0);
+  const [transactionId, setTransactionId] = useState(''); // Add transactionId state
   const [shippingFee, setShippingFee] = useState({});
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [contactNumber, setContactNumber] = useState('');
@@ -277,6 +281,7 @@ const CartProvider = ({ children }) => {
         setPaymentLink(response.data.paymentLink);
         setPaymentAmount(response.data.amount || total);
         setTotalPayment(response.data.totalPayment || 0);
+        setTransactionId(response.data.transactionId); // Store transactionId
         togglePaymentLinkVisibility();
         setCart([]);
         localStorage.setItem(LPH_CART_KEY, JSON.stringify([]));
@@ -352,6 +357,7 @@ const CartProvider = ({ children }) => {
         paymentLink,
         paymentAmount,
         totalPayment,
+        transactionId, // Add transactionId to context
         paymentType,
         signatureProgress,
         signatureLink,
