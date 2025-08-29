@@ -112,7 +112,7 @@ const handler = async (req, res) => {
         }
 
         const { id, transactionId, total } = result;
-        const totalAmountDue = Number(total) + 20;
+        const totalAmountDue = Number(total); // Removed +20 gateway fee
         const transaction = await createTransaction(
           session.user.userId,
           session.user.email,
