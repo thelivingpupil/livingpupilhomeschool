@@ -54,7 +54,7 @@ import {
   GridToolbarContainer,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
-  GridToolbarDensitySelector
+  GridToolbarDensitySelector,
 } from '@mui/x-data-grid';
 import toast from 'react-hot-toast';
 import api from '@/lib/common/api';
@@ -79,8 +79,8 @@ const filterValueOptions = {
 const scholarships = {
   semi: 'Semi-scholar-regular',
   semiCottage: 'Semi-scholar-cottage',
-  full: 'Full-scholar'
-}
+  full: 'Full-scholar',
+};
 
 const payments = [
   'downPayment',
@@ -116,7 +116,8 @@ const Students = ({ schoolFees, programs }) => {
   const [showModal, setModalVisibility] = useState(false);
   const [showModal2, setModalVisibility2] = useState(false);
   const [showModal3, setModalVisibility3] = useState(false);
-  const [showUpdateStudentStatusModal, setUpdateStudentStatusModalVisibility] = useState(false);
+  const [showUpdateStudentStatusModal, setUpdateStudentStatusModalVisibility] =
+    useState(false);
   const [filter, setFilter] = useState(['', '']);
   const [filterBy, filterValue] = filter;
   const [student, setStudent] = useState(null);
@@ -174,9 +175,10 @@ const Students = ({ schoolFees, programs }) => {
   const toggleModal = () => setModalVisibility(!showModal);
   const toggleModal2 = () => setModalVisibility2(!showModal2);
   const toggleModal3 = () => setModalVisibility3(!showModal3);
-  const toggleUpdateStudentStatusModal = () => setUpdateStudentStatusModalVisibility(!showUpdateStudentStatusModal)
+  const toggleUpdateStudentStatusModal = () =>
+    setUpdateStudentStatusModalVisibility(!showUpdateStudentStatusModal);
   const toggleConfirmChangeModal = () => {
-    console.log("empty")
+    console.log('empty');
     setShowConfirmChange(!showConfirmChange);
   };
 
@@ -215,12 +217,12 @@ const Students = ({ schoolFees, programs }) => {
     const evaluate =
       program === Program.HOMESCHOOL_COTTAGE
         ? programFee.programType === program &&
-        programFee.enrollmentType === enrollmentType &&
-        programFee.gradeLevel === gradeLevel &&
-        programFee.cottageType === cottageType
+          programFee.enrollmentType === enrollmentType &&
+          programFee.gradeLevel === gradeLevel &&
+          programFee.cottageType === cottageType
         : programFee.programType === program &&
-        programFee.enrollmentType === enrollmentType &&
-        programFee.gradeLevel === gradeLevel;
+          programFee.enrollmentType === enrollmentType &&
+          programFee.gradeLevel === gradeLevel;
 
     return evaluate;
   });
@@ -270,7 +272,7 @@ const Students = ({ schoolFees, programs }) => {
   const applyAllDiscount = () => {
     applyDiscount();
     applyScholarship();
-  }
+  };
 
   const view = (student) => {
     toggleModal();
@@ -280,13 +282,18 @@ const Students = ({ schoolFees, programs }) => {
     setIdPictureBackLink(student.idPictureBack);
     //setInviteCode(student.studentId)
     if (isWorkspaceDataFetched) {
-      const workspaceContainingStudent = workspaceData.workspaces.find(workspace => {
-        return workspace.studentRecord && workspace.studentRecord.studentId === student.studentId;
-      });
+      const workspaceContainingStudent = workspaceData.workspaces.find(
+        (workspace) => {
+          return (
+            workspace.studentRecord &&
+            workspace.studentRecord.studentId === student.studentId
+          );
+        }
+      );
 
       if (workspaceContainingStudent) {
         setInviteCode(workspaceContainingStudent.inviteCode);
-        setWorkspaceId(workspaceContainingStudent.id)
+        setWorkspaceId(workspaceContainingStudent.id);
       } else {
         setInviteCode(''); // Reset invite code if no workspace is found
       }
@@ -301,21 +308,21 @@ const Students = ({ schoolFees, programs }) => {
     setLastName(student.lastName);
     setBirthDate(new Date(student.birthDate));
     setGender(student.gender);
-    setReligion(student.religion)
-    setEnrollmentType(student.enrollmentType)
-    setIncomingGradeLevel(student.incomingGradeLevel)
-    setSchoolYear(student.schoolYear)
-    setDiscountCode(student.discount)
-    setBirthCertificateLink(student.liveBirthCertificate)
-    setPictureLink(student.image)
-    setReportCardLink(student.reportCard)
-    setAccreditation(student.accreditation)
-    setPayment(student.student.schoolFees[0].paymentType)
-    setScholarship(student.scholarship)
-    setUserId(student.student.creator.guardianInformation.userId)
-    setPaymentMethod('ONLINE')
-    setEmail(student.student.creator.email)
-    setStudentStatus(student.studentStatus)
+    setReligion(student.religion);
+    setEnrollmentType(student.enrollmentType);
+    setIncomingGradeLevel(student.incomingGradeLevel);
+    setSchoolYear(student.schoolYear);
+    setDiscountCode(student.discount);
+    setBirthCertificateLink(student.liveBirthCertificate);
+    setPictureLink(student.image);
+    setReportCardLink(student.reportCard);
+    setAccreditation(student.accreditation);
+    setPayment(student.student.schoolFees[0].paymentType);
+    setScholarship(student.scholarship);
+    setUserId(student.student.creator.guardianInformation.userId);
+    setPaymentMethod('ONLINE');
+    setEmail(student.student.creator.email);
+    setStudentStatus(student.studentStatus);
   };
 
   const viewEditSchoolFees = (student) => {
@@ -326,20 +333,20 @@ const Students = ({ schoolFees, programs }) => {
     setLastName(student.lastName);
     setBirthDate(new Date(student.birthDate));
     setGender(student.gender);
-    setReligion(student.religion)
-    setEnrollmentType(student.enrollmentType)
-    setIncomingGradeLevel(student.incomingGradeLevel)
-    setSchoolYear(student.schoolYear)
-    setDiscountCode(student.discount)
-    setBirthCertificateLink(student.liveBirthCertificate)
-    setPictureLink(student.image)
-    setReportCardLink(student.reportCard)
-    setAccreditation(student.accreditation)
-    setPayment(student.student.schoolFees[0].paymentType)
-    setScholarship(student.scholarship)
-    setUserId(student.student.creator.guardianInformation.userId)
-    setPaymentMethod('ONLINE')
-    setEmail(student.student.creator.email)
+    setReligion(student.religion);
+    setEnrollmentType(student.enrollmentType);
+    setIncomingGradeLevel(student.incomingGradeLevel);
+    setSchoolYear(student.schoolYear);
+    setDiscountCode(student.discount);
+    setBirthCertificateLink(student.liveBirthCertificate);
+    setPictureLink(student.image);
+    setReportCardLink(student.reportCard);
+    setAccreditation(student.accreditation);
+    setPayment(student.student.schoolFees[0].paymentType);
+    setScholarship(student.scholarship);
+    setUserId(student.student.creator.guardianInformation.userId);
+    setPaymentMethod('ONLINE');
+    setEmail(student.student.creator.email);
   };
 
   const viewUpdateStudentStatus = (student) => {
@@ -348,15 +355,17 @@ const Students = ({ schoolFees, programs }) => {
     setFirstName(student.firstName);
     setLastName(student.lastName);
     setMiddleName(student.middleName);
-    setAccreditation(student.accreditation)
-    setProgram(student.program)
-    setBirthCertificateLink(student.liveBirthCertificate)
-    setEnrollmentType(student.enrollmentType)
-    setIncomingGradeLevel(student.incomingGradeLevel)
-    setEmail(student.student.creator.email)
-    setPrimaryGuardianName(student.student.creator.guardianInformation.primaryGuardianName)
-    setCottageType(student.cottageType)
-    setSchoolYear(student.schoolYear)
+    setAccreditation(student.accreditation);
+    setProgram(student.program);
+    setBirthCertificateLink(student.liveBirthCertificate);
+    setEnrollmentType(student.enrollmentType);
+    setIncomingGradeLevel(student.incomingGradeLevel);
+    setEmail(student.student.creator.email);
+    setPrimaryGuardianName(
+      student.student.creator.guardianInformation.primaryGuardianName
+    );
+    setCottageType(student.cottageType);
+    setSchoolYear(student.schoolYear);
   };
 
   const editStudentRecord = (studentId) => {
@@ -380,7 +389,7 @@ const Students = ({ schoolFees, programs }) => {
         scholarshipCode,
         accreditation,
         email,
-        studentStatus
+        studentStatus,
       },
       method: 'PUT',
     })
@@ -419,11 +428,11 @@ const Students = ({ schoolFees, programs }) => {
         discountCode,
         scholarshipCode,
         studentId,
-        monthIndex
+        monthIndex,
       },
       method: 'POST',
     })
-      .then(response => {
+      .then((response) => {
         setSubmittingState(false);
         if (response.errors) {
           Object.keys(response.errors).forEach((error) =>
@@ -435,7 +444,7 @@ const Students = ({ schoolFees, programs }) => {
           toggleModal();
         }
       })
-      .catch(error => {
+      .catch((error) => {
         setSubmittingState(false);
         toast.error(`Error generating school fees: ${error.message}`);
       });
@@ -457,11 +466,11 @@ const Students = ({ schoolFees, programs }) => {
         studentStatus,
         primaryGuardianName,
         cottageType,
-        schoolYear
+        schoolYear,
       },
       method: 'PUT',
     })
-      .then(response => {
+      .then((response) => {
         setSubmittingState(false);
         if (response.errors) {
           Object.keys(response.errors).forEach((error) =>
@@ -473,7 +482,7 @@ const Students = ({ schoolFees, programs }) => {
           toggleModal();
         }
       })
-      .catch(error => {
+      .catch((error) => {
         setSubmittingState(false);
         toast.error(`Error generating school fees: ${error.message}`);
       });
@@ -481,10 +490,13 @@ const Students = ({ schoolFees, programs }) => {
 
   //Get month index for calculations of monthly payments
   const [monthIndex, setMonthIndex] = useState(null);
-  const [monthlyPayment, setMonthlyPayment] = useState(0)
+  const [monthlyPayment, setMonthlyPayment] = useState(0);
   useEffect(() => {
-    if (schoolYear === '2024-2025') { setMonthIndex(getMonthIndex(new Date())); }
-    else { setMonthIndex(getMonthIndexCurrent(new Date())); }
+    if (schoolYear === '2024-2025') {
+      setMonthIndex(getMonthIndex(new Date()));
+    } else {
+      setMonthIndex(getMonthIndexCurrent(new Date()));
+    }
   }, [schoolYear]);
 
   useEffect(() => {
@@ -492,7 +504,9 @@ const Students = ({ schoolFees, programs }) => {
       const programFeeByAccreditation = programFee?.tuitionFees.find(
         (tuition) => tuition.type === accreditation
       );
-      setMonthlyPayment(calculateMonthlyPayment(monthIndex, programFeeByAccreditation));
+      setMonthlyPayment(
+        calculateMonthlyPayment(monthIndex, programFeeByAccreditation)
+      );
     }
   }, [accreditation, programFee, monthIndex, calculateMonthlyPayment]);
 
@@ -509,7 +523,8 @@ const Students = ({ schoolFees, programs }) => {
     const file = e.target?.files[0];
 
     if (file) {
-      if (file.size < 5242880) { // 5MB limit
+      if (file.size < 5242880) {
+        // 5MB limit
         const extension = file.name.split('.').pop();
         const storageRef = ref(
           storage,
@@ -518,9 +533,9 @@ const Students = ({ schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-              new Date(),
-              'yyyy.MM.dd.kk.mm.ss'
-            )}.${extension}`
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss'
+          )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -555,7 +570,8 @@ const Students = ({ schoolFees, programs }) => {
     const file = e.target?.files[0];
 
     if (file) {
-      if (file.size < 5242880) { // 5MB limit
+      if (file.size < 5242880) {
+        // 5MB limit
         const extension = file.name.split('.').pop();
         const storageRef = ref(
           storage,
@@ -564,9 +580,9 @@ const Students = ({ schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-              new Date(),
-              'yyyy.MM.dd.kk.mm.ss'
-            )}.${extension}`
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss'
+          )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -627,7 +643,6 @@ const Students = ({ schoolFees, programs }) => {
   };
 
   const deleteStudentRecord = async (studentId, inviteCode) => {
-
     try {
       setUpdatingRecord(true);
 
@@ -652,7 +667,7 @@ const Students = ({ schoolFees, programs }) => {
       toggleConfirmChangeModal();
       toast.error(`Error deleting student record: ${error.message}`);
     }
-  }
+  };
 
   function CustomToolbar() {
     return (
@@ -678,7 +693,6 @@ const Students = ({ schoolFees, programs }) => {
     telNumber: false,
     mobileNumber: false,
     accreditation: false,
-
   });
 
   //   return (
@@ -818,8 +832,9 @@ const Students = ({ schoolFees, programs }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${!enrollmentType ? 'border-red-500 border-2' : 'border'
-              }`}
+            className={`relative inline-block w-full rounded ${
+              !enrollmentType ? 'border-red-500 border-2' : 'border'
+            }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -845,8 +860,9 @@ const Students = ({ schoolFees, programs }) => {
             </label>
             <div className="flex flex-row">
               <div
-                className={`relative inline-block w-full rounded ${!incomingGradeLevel ? 'border-red-500 border-2' : 'border'
-                  }`}
+                className={`relative inline-block w-full rounded ${
+                  !incomingGradeLevel ? 'border-red-500 border-2' : 'border'
+                }`}
               >
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -875,8 +891,9 @@ const Students = ({ schoolFees, programs }) => {
         </div>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${!schoolYear ? 'border-red-500 border-2' : 'border'
-              }`}
+            className={`relative inline-block w-full rounded ${
+              !schoolYear ? 'border-red-500 border-2' : 'border'
+            }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -912,7 +929,6 @@ const Students = ({ schoolFees, programs }) => {
     );
 
     return (
-
       <div>
         <div className="flex flex-col my-5 space-y-5 overflow-auto">
           <label className="text-lg font-bold" htmlFor="txtMother">
@@ -920,8 +936,9 @@ const Students = ({ schoolFees, programs }) => {
           </label>
           <div className="flex flex-row">
             <div
-              className={`relative inline-block w-full rounded ${!program ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`relative inline-block w-full rounded ${
+                !program ? 'border-red-500 border-2' : 'border'
+              }`}
             >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -958,8 +975,9 @@ const Students = ({ schoolFees, programs }) => {
               </label>
               <div className="flex flex-row">
                 <div
-                  className={`relative inline-block w-full rounded ${!cottageType ? 'border-red-500 border-2' : 'border'
-                    }`}
+                  className={`relative inline-block w-full rounded ${
+                    !cottageType ? 'border-red-500 border-2' : 'border'
+                  }`}
                 >
                   <select
                     className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -991,8 +1009,9 @@ const Students = ({ schoolFees, programs }) => {
           </label>
           <div className="flex flex-row">
             <div
-              className={`relative inline-block w-full rounded ${!accreditation ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`relative inline-block w-full rounded ${
+                !accreditation ? 'border-red-500 border-2' : 'border'
+              }`}
             >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1036,8 +1055,9 @@ const Students = ({ schoolFees, programs }) => {
               Select Payment Type <span className="ml-1 text-red-600">*</span>
             </label>
             <div
-              className={`relative inline-block w-full rounded ${!payment ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`relative inline-block w-full rounded ${
+                !payment ? 'border-red-500 border-2' : 'border'
+              }`}
             >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1075,9 +1095,7 @@ const Students = ({ schoolFees, programs }) => {
             <label className="text-lg font-bold" htmlFor="txtMother">
               Scholarship (optional)
             </label>
-            <div
-              className="relative inline-block w-full rounded border"
-            >
+            <div className="relative inline-block w-full rounded border">
               <select
                 className="w-full px-3 py-2 rounded appearance-none"
                 onChange={(e) => {
@@ -1087,7 +1105,9 @@ const Students = ({ schoolFees, programs }) => {
               >
                 <option value="">Please select scholarship</option>
                 <option value={scholarships.semi}>{scholarships.semi}</option>
-                <option value={scholarships.semiCottage}>{scholarships.semiCottage}</option>
+                <option value={scholarships.semiCottage}>
+                  {scholarships.semiCottage}
+                </option>
                 <option value={scholarships.full}>{scholarships.full}</option>
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -1162,12 +1182,12 @@ const Students = ({ schoolFees, programs }) => {
                       fee?._type === 'fullTermPayment'
                         ? 0
                         : fee?._type === 'threeTermPayment'
-                          ? 2
-                          : fee?._type === 'fourTermPayment'
-                            ? 3
-                            : fee?._type === 'nineTermPayment'
-                              ? monthIndex
-                              : 0 // Default to 0 if none of the specified types match
+                        ? 2
+                        : fee?._type === 'fourTermPayment'
+                        ? 3
+                        : fee?._type === 'nineTermPayment'
+                        ? monthIndex
+                        : 0 // Default to 0 if none of the specified types match
                     ),
                     (_, index) => (
                       <tr key={index}>
@@ -1175,12 +1195,12 @@ const Students = ({ schoolFees, programs }) => {
                           {fee?._type === 'fullTermPayment'
                             ? ''
                             : fee?._type === 'threeTermPayment'
-                              ? `Three (3) Term Payment #${index + 1}`
-                              : fee?._type === 'fourTermPayment'
-                                ? `Four (4) Term Payment #${index + 1}`
-                                : fee?._type === 'nineTermPayment'
-                                  ? `Monthly Term Payment #${index + 1}`
-                                  : `Unknown Payment Type #${index + 1}`}
+                            ? `Three (3) Term Payment #${index + 1}`
+                            : fee?._type === 'fourTermPayment'
+                            ? `Four (4) Term Payment #${index + 1}`
+                            : fee?._type === 'nineTermPayment'
+                            ? `Monthly Term Payment #${index + 1}`
+                            : `Unknown Payment Type #${index + 1}`}
                         </td>
                         <td className="px-3 py-1 text-right border">
                           {new Intl.NumberFormat('en-US', {
@@ -1190,11 +1210,11 @@ const Students = ({ schoolFees, programs }) => {
                             fee?._type === 'fullTermPayment'
                               ? 0
                               : fee?._type === 'nineTermPayment'
-                                ? monthlyPayment // Render monthly payment for nineTermPayment
-                                : fee && fee[payments[index + 1]]
+                              ? monthlyPayment // Render monthly payment for nineTermPayment
+                              : fee && fee[payments[index + 1]]
                           )}{' '}
                           {discount &&
-                            discount?.code?.toLowerCase().includes('pastor') ? (
+                          discount?.code?.toLowerCase().includes('pastor') ? (
                             <span className="text-red-600">
                               (-
                               {new Intl.NumberFormat('en-US', {
@@ -1202,9 +1222,11 @@ const Students = ({ schoolFees, programs }) => {
                                 currency: 'PHP',
                               }).format(
                                 fee?._type === 'nineTermPayment'
-                                  ? monthlyPayment - (discount?.value - fee?.downPayment) / 9
-                                  : fee && fee[payments[index + 1]] -
-                                  (discount?.value - fee?.downPayment) / 3
+                                  ? monthlyPayment -
+                                      (discount?.value - fee?.downPayment) / 9
+                                  : fee &&
+                                      fee[payments[index + 1]] -
+                                        (discount?.value - fee?.downPayment) / 3
                               )}
                               )
                             </span>
@@ -1220,7 +1242,7 @@ const Students = ({ schoolFees, programs }) => {
                                   discount?.type === 'VALUE'
                                     ? discount?.value
                                     : (discount?.value / 100) *
-                                    Math.ceil(fee?.secondPayment)
+                                        Math.ceil(fee?.secondPayment)
                                 )}
                                 )
                               </span>
@@ -1234,23 +1256,24 @@ const Students = ({ schoolFees, programs }) => {
                                 currency: 'PHP',
                               }).format(
                                 scholarship &&
-                                  index < (fee?._type === 'threeTermPayment'
-                                    ? 2
-                                    : fee?._type === 'fourTermPayment'
-                                      ? 3
-                                      : fee?._type === 'nineTermPayment'
-                                        ? 9
-                                        : 0)
-                                  ? Math.ceil(
-                                    scholarship.value /
+                                  index <
                                     (fee?._type === 'threeTermPayment'
                                       ? 2
                                       : fee?._type === 'fourTermPayment'
-                                        ? 3
-                                        : fee?._type === 'nineTermPayment'
+                                      ? 3
+                                      : fee?._type === 'nineTermPayment'
+                                      ? 9
+                                      : 0)
+                                  ? Math.ceil(
+                                      scholarship.value /
+                                        (fee?._type === 'threeTermPayment'
+                                          ? 2
+                                          : fee?._type === 'fourTermPayment'
+                                          ? 3
+                                          : fee?._type === 'nineTermPayment'
                                           ? 9
                                           : 1)
-                                  )
+                                    )
                                   : 0
                               )}
                               )
@@ -1267,11 +1290,13 @@ const Students = ({ schoolFees, programs }) => {
                         Total Discounts:{' '}
                         <strong className="text-green-600">
                           {discountCode || '-'}{' '}
-                          {`${discount
-                            ? `(${Number(discount.value).toFixed(2)}${discount.type === 'VALUE' ? 'Php' : '%'
-                            })`
-                            : ''
-                            }`}
+                          {`${
+                            discount
+                              ? `(${Number(discount.value).toFixed(2)}${
+                                  discount.type === 'VALUE' ? 'Php' : '%'
+                                })`
+                              : ''
+                          }`}
                         </strong>
                       </td>
                       <td className="px-3 py-1 text-right text-red-600 border">
@@ -1281,27 +1306,29 @@ const Students = ({ schoolFees, programs }) => {
                         }).format(
                           discount
                             ? discount.type === 'VALUE'
-                              ? (discount?.code?.toLowerCase().includes('pastor')
-                                ? Math.ceil(
+                              ? (discount?.code
+                                  ?.toLowerCase()
+                                  .includes('pastor')
+                                  ? Math.ceil(
+                                      fee?._type === 'fullTermPayment'
+                                        ? fee?.fullPayment
+                                        : fee?._type === 'threeTermPayment'
+                                        ? fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment
+                                        : fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment +
+                                          fee?.fourthPayment
+                                    ) - discount.value
+                                  : Number(discount.value).toFixed(2)) * -1
+                              : Math.ceil(
                                   fee?._type === 'fullTermPayment'
                                     ? fee?.fullPayment
-                                    : fee?._type === 'threeTermPayment'
-                                      ? fee?.downPayment +
-                                      fee?.secondPayment +
-                                      fee?.thirdPayment
-                                      : fee?.downPayment +
-                                      fee?.secondPayment +
-                                      fee?.thirdPayment +
-                                      fee?.fourthPayment
-                                ) - discount.value
-                                : Number(discount.value).toFixed(2)) * -1
-                              : Math.ceil(
-                                fee?._type === 'fullTermPayment'
-                                  ? fee?.fullPayment
-                                  : fee?.secondPayment
-                              ) *
-                              (discount.value / 100) *
-                              -1
+                                    : fee?.secondPayment
+                                ) *
+                                (discount.value / 100) *
+                                -1
                             : 0
                         )}
                       </td>
@@ -1314,11 +1341,13 @@ const Students = ({ schoolFees, programs }) => {
                         Total Scholarships:{' '}
                         <strong className="text-blue-600">
                           {scholarshipCode || '-'}{' '}
-                          {`${scholarship
-                            ? `(${Number(scholarship.value).toFixed(2)}${scholarship.type === 'VALUE' ? 'Php' : '%'
-                            })`
-                            : ''
-                            }`}
+                          {`${
+                            scholarship
+                              ? `(${Number(scholarship.value).toFixed(2)}${
+                                  scholarship.type === 'VALUE' ? 'Php' : '%'
+                                })`
+                              : ''
+                          }`}
                         </strong>
                       </td>
                       <td className="px-3 py-1 text-right text-blue-600 border">
@@ -1328,27 +1357,29 @@ const Students = ({ schoolFees, programs }) => {
                         }).format(
                           scholarship
                             ? scholarship.type === 'VALUE'
-                              ? (scholarship?.code?.toLowerCase().includes('merit')
-                                ? Math.ceil(
+                              ? (scholarship?.code
+                                  ?.toLowerCase()
+                                  .includes('merit')
+                                  ? Math.ceil(
+                                      fee?._type === 'fullTermPayment'
+                                        ? fee?.fullPayment
+                                        : fee?._type === 'threeTermPayment'
+                                        ? fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment
+                                        : fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment +
+                                          fee?.fourthPayment
+                                    ) - scholarship.value
+                                  : Number(scholarship.value).toFixed(2)) * -1
+                              : Math.ceil(
                                   fee?._type === 'fullTermPayment'
                                     ? fee?.fullPayment
-                                    : fee?._type === 'threeTermPayment'
-                                      ? fee?.downPayment +
-                                      fee?.secondPayment +
-                                      fee?.thirdPayment
-                                      : fee?.downPayment +
-                                      fee?.secondPayment +
-                                      fee?.thirdPayment +
-                                      fee?.fourthPayment
-                                ) - scholarship.value
-                                : Number(scholarship.value).toFixed(2)) * -1
-                              : Math.ceil(
-                                fee?._type === 'fullTermPayment'
-                                  ? fee?.fullPayment
-                                  : fee?.secondPayment
-                              ) *
-                              (scholarship.value / 100) *
-                              -1
+                                    : fee?.secondPayment
+                                ) *
+                                (scholarship.value / 100) *
+                                -1
                             : 0
                         )}
                       </td>
@@ -1368,80 +1399,86 @@ const Students = ({ schoolFees, programs }) => {
                     fee?._type === 'fullTermPayment'
                       ? fee?.fullPayment
                       : fee?._type === 'threeTermPayment'
-                        ? fee?.downPayment +
+                      ? fee?.downPayment +
                         fee?.secondPayment +
                         fee?.thirdPayment
-                        : fee?._type === 'fourTermPayment'
-                          ? fee?.downPayment +
-                          fee?.secondPayment +
-                          fee?.thirdPayment +
-                          fee?.fourthPayment
-                          : fee?.downPayment +
-                          fee?.secondPayment +
-                          fee?.thirdPayment +
-                          fee?.fourthPayment +
-                          fee?.fifthPayment +
-                          fee?.sixthPayment +
-                          fee?.seventhPayment +
-                          fee?.eighthPayment +
-                          fee?.ninthPayment
+                      : fee?._type === 'fourTermPayment'
+                      ? fee?.downPayment +
+                        fee?.secondPayment +
+                        fee?.thirdPayment +
+                        fee?.fourthPayment
+                      : fee?.downPayment +
+                        fee?.secondPayment +
+                        fee?.thirdPayment +
+                        fee?.fourthPayment +
+                        fee?.fifthPayment +
+                        fee?.sixthPayment +
+                        fee?.seventhPayment +
+                        fee?.eighthPayment +
+                        fee?.ninthPayment
                   ) -
-                  ((discount
-                    ? discount?.type === 'VALUE'
-                      ? discount?.code?.toLowerCase().includes('pastor')
-                        ? Math.ceil(
-                          fee?._type === 'fullTermPayment'
-                            ? fee?.fullPayment
-                            : fee?._type === 'threeTermPayment'
-                              ? fee?.downPayment +
-                              fee?.secondPayment +
-                              fee?.thirdPayment
-                              : fee?._type === 'fourTermPayment'
+                    ((discount
+                      ? discount?.type === 'VALUE'
+                        ? discount?.code?.toLowerCase().includes('pastor')
+                          ? Math.ceil(
+                              fee?._type === 'fullTermPayment'
+                                ? fee?.fullPayment
+                                : fee?._type === 'threeTermPayment'
                                 ? fee?.downPayment +
-                                fee?.secondPayment +
-                                fee?.thirdPayment +
-                                fee?.fourthPayment
-                                : fee?.downPayment +
-                                fee?.secondPayment +
-                                fee?.thirdPayment +
-                                fee?.fourthPayment +
-                                fee?.fifthPayment +
-                                fee?.sixthPayment +
-                                fee?.seventhPayment +
-                                fee?.eighthPayment +
-                                fee?.ninthPayment
-                        ) - discount.value
-                        : discount.value
-                      : (discount.value / 100) *
-                      (fee?._type === 'fullTermPayment'
-                        ? fee?.fullPayment
-                        : fee?.secondPayment)
-                    : 0) +
-                    (scholarship
-                      ? (scholarship?.type === 'VALUE'
-                        ? (scholarship?.code?.toLowerCase().includes('merit')
-                          ? Math.ceil(fee?._type === 'fullTermPayment'
-                            ? fee?.fullPayment
-                            : fee?._type === 'threeTermPayment'
-                              ? fee?.downPayment +
-                              fee?.secondPayment +
-                              fee?.thirdPayment
-                              : fee?._type === 'fourTermPayment'
+                                  fee?.secondPayment +
+                                  fee?.thirdPayment
+                                : fee?._type === 'fourTermPayment'
                                 ? fee?.downPayment +
-                                fee?.secondPayment +
-                                fee?.thirdPayment +
-                                fee?.fourthPayment
+                                  fee?.secondPayment +
+                                  fee?.thirdPayment +
+                                  fee?.fourthPayment
                                 : fee?.downPayment +
-                                fee?.secondPayment +
-                                fee?.thirdPayment +
-                                fee?.fourthPayment +
-                                fee?.fifthPayment +
-                                fee?.sixthPayment +
-                                fee?.seventhPayment +
-                                fee?.eighthPayment +
-                                fee?.ninthPayment
-                          ) - scholarship.value : scholarship.value)
-                        : (scholarship.value / 100) * (fee?._type === 'fullTermPayment' ? fee?.fullPayment : fee?.secondPayment)) : 0))
+                                  fee?.secondPayment +
+                                  fee?.thirdPayment +
+                                  fee?.fourthPayment +
+                                  fee?.fifthPayment +
+                                  fee?.sixthPayment +
+                                  fee?.seventhPayment +
+                                  fee?.eighthPayment +
+                                  fee?.ninthPayment
+                            ) - discount.value
+                          : discount.value
+                        : (discount.value / 100) *
+                          (fee?._type === 'fullTermPayment'
+                            ? fee?.fullPayment
+                            : fee?.secondPayment)
+                      : 0) +
+                      (scholarship
+                        ? scholarship?.type === 'VALUE'
+                          ? scholarship?.code?.toLowerCase().includes('merit')
+                            ? Math.ceil(
+                                fee?._type === 'fullTermPayment'
+                                  ? fee?.fullPayment
+                                  : fee?._type === 'threeTermPayment'
+                                  ? fee?.downPayment +
+                                    fee?.secondPayment +
+                                    fee?.thirdPayment
+                                  : fee?._type === 'fourTermPayment'
+                                  ? fee?.downPayment +
+                                    fee?.secondPayment +
+                                    fee?.thirdPayment +
+                                    fee?.fourthPayment
+                                  : fee?.downPayment +
+                                    fee?.secondPayment +
+                                    fee?.thirdPayment +
+                                    fee?.fourthPayment +
+                                    fee?.fifthPayment +
+                                    fee?.sixthPayment +
+                                    fee?.seventhPayment +
+                                    fee?.eighthPayment +
+                                    fee?.ninthPayment
+                              ) - scholarship.value
+                            : scholarship.value
+                          : (scholarship.value / 100) *
+                            (fee?._type === 'fullTermPayment'
+                              ? fee?.fullPayment
+                              : fee?.secondPayment)
+                        : 0))
                 )}
               </span>
             </h4>
@@ -1552,12 +1589,16 @@ const Students = ({ schoolFees, programs }) => {
 
             {/* Upload New ID Picture Front Section */}
             <div className="flex flex-col p-3 space-y-2 border rounded">
-              <h3 className="text-xl font-medium">Upload New ID Picture (Front)</h3>
+              <h3 className="text-xl font-medium">
+                Upload New ID Picture (Front)
+              </h3>
               <div className="flex flex-col space-y-3">
                 <input
                   className="text-xs cursor-pointer"
                   accept=".jpeg,.jpg,.png"
-                  onChange={(e) => handleIdPictureFrontUpload(e, true, student.studentId)}
+                  onChange={(e) =>
+                    handleIdPictureFrontUpload(e, true, student.studentId)
+                  }
                   type="file"
                 />
                 <div className="w-full rounded-full shadow bg-grey-light">
@@ -1571,7 +1612,10 @@ const Students = ({ schoolFees, programs }) => {
                 {idPictureFrontLink && (
                   <div className="flex flex-col items-center justify-center space-y-3">
                     <Link href={idPictureFrontLink}>
-                      <a className="text-sm text-blue-600 underline" target="_blank">
+                      <a
+                        className="text-sm text-blue-600 underline"
+                        target="_blank"
+                      >
                         Preview New ID Picture Front
                       </a>
                     </Link>
@@ -1582,12 +1626,16 @@ const Students = ({ schoolFees, programs }) => {
 
             {/* Upload New ID Picture Back Section */}
             <div className="flex flex-col p-3 space-y-2 border rounded">
-              <h3 className="text-xl font-medium">Upload New ID Picture (Back)</h3>
+              <h3 className="text-xl font-medium">
+                Upload New ID Picture (Back)
+              </h3>
               <div className="flex flex-col space-y-3">
                 <input
                   className="text-xs cursor-pointer"
                   accept=".jpeg,.jpg,.png"
-                  onChange={(e) => handleIdPictureBackUpload(e, true, student.studentId)}
+                  onChange={(e) =>
+                    handleIdPictureBackUpload(e, true, student.studentId)
+                  }
                   type="file"
                 />
                 <div className="w-full rounded-full shadow bg-grey-light">
@@ -1601,7 +1649,10 @@ const Students = ({ schoolFees, programs }) => {
                 {idPictureBackLink && (
                   <div className="flex flex-col items-center justify-center space-y-3">
                     <Link href={idPictureBackLink}>
-                      <a className="text-sm text-blue-600 underline" target="_blank">
+                      <a
+                        className="text-sm text-blue-600 underline"
+                        target="_blank"
+                      >
                         Preview New ID Picture Back
                       </a>
                     </Link>
@@ -1652,7 +1703,7 @@ const Students = ({ schoolFees, programs }) => {
                 className="px-3 py-1 my-1 text-white rounded bg-red-600 hover:bg-red-400"
                 onClick={() => {
                   //deleteStudentRecord(studentId, inviteCode);
-                  toggleConfirmChangeModal()
+                  toggleConfirmChangeModal();
                 }}
               >
                 delete
@@ -1692,9 +1743,15 @@ const Students = ({ schoolFees, programs }) => {
           title="Confirm Delete"
         >
           <div>
-            <p className="py-1">You are about to delete <b>{student.firstName}'s</b> school fee.</p>
-            <p className="mt-5">Student Records, Workspace and school fees will be deleted.</p>
-            <p className="mt-5">Please note that the changes may not be undone.</p>
+            <p className="py-1">
+              You are about to delete <b>{student.firstName}'s</b> school fee.
+            </p>
+            <p className="mt-5">
+              Student Records, Workspace and school fees will be deleted.
+            </p>
+            <p className="mt-5">
+              Please note that the changes may not be undone.
+            </p>
             <p className="mt-5">Do you wish to proceed?</p>
           </div>
           <div className="w-full flex justify-end">
@@ -1717,7 +1774,6 @@ const Students = ({ schoolFees, programs }) => {
         </CenteredModal>
       )}
 
-
       {/* Edit Student Details Modal */}
       {student && (
         <SideModal
@@ -1732,8 +1788,9 @@ const Students = ({ schoolFees, programs }) => {
               </label>
               <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
                 <input
-                  className={`px-3 py-2 rounded md:w-1/3 ${firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
-                    }`}
+                  className={`px-3 py-2 rounded md:w-1/3 ${
+                    firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                  }`}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="Given Name"
                   value={firstName}
@@ -1745,8 +1802,9 @@ const Students = ({ schoolFees, programs }) => {
                   value={middleName}
                 />
                 <input
-                  className={`px-3 py-2 rounded md:w-1/3 ${lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
-                    }`}
+                  className={`px-3 py-2 rounded md:w-1/3 ${
+                    lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                  }`}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="Last Name"
                   value={lastName}
@@ -1759,8 +1817,9 @@ const Students = ({ schoolFees, programs }) => {
                   Birthday <span className="ml-1 text-red-600">*</span>
                 </label>
                 <div
-                  className={`relative flex flex-row rounded ${!birthDate ? 'border-red-500 border-2' : 'border'
-                    }`}
+                  className={`relative flex flex-row rounded ${
+                    !birthDate ? 'border-red-500 border-2' : 'border'
+                  }`}
                 >
                   <DatePicker
                     selected={birthDate}
@@ -1831,9 +1890,7 @@ const Students = ({ schoolFees, programs }) => {
                   </div>
                 </div>
               </div>
-
             </div>
-
           </div>
           {/* {renderFileUpload()} */}
           <div className="flex flex-col p-3 space-y-2">
@@ -1887,7 +1944,9 @@ const Students = ({ schoolFees, programs }) => {
         >
           <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
             <div className="flex flex-col w-full">
-              <h4 className="font-bold text-gray-600">Current Status: {STUDENT_STATUS[student.studentStatus]}</h4>
+              <h4 className="font-bold text-gray-600">
+                Current Status: {STUDENT_STATUS[student.studentStatus]}
+              </h4>
               <label className="text-lg font-bold  mt-2" htmlFor="txtMother">
                 Student Status <span className="ml-1 text-red-600">*</span>
               </label>
@@ -1908,7 +1967,7 @@ const Students = ({ schoolFees, programs }) => {
                   <ChevronDownIcon className="w-5 h-5" />
                 </div>
               </div>
-              {studentStatus === "INITIALLY_ENROLLED" && (
+              {studentStatus === 'INITIALLY_ENROLLED' && (
                 <div className="flex flex-col mt-2">
                   <label className="text-lg font-bold" htmlFor="txtMother">
                     School Year <span className="ml-1 text-red-600">*</span>
@@ -2040,16 +2099,14 @@ const Students = ({ schoolFees, programs }) => {
                         <UserIcon className="w-8 h-8" />
                       )}
                     </div>
-                  )
+                  ),
                 },
                 {
                   field: 'firstName',
                   headerName: 'First Name',
                   headerAlign: 'left',
                   align: 'left',
-                  renderCell: (params) => (
-                    <span>{params.row.firstName}</span>
-                  ),
+                  renderCell: (params) => <span>{params.row.firstName}</span>,
                 },
                 {
                   field: 'middleName',
@@ -2057,7 +2114,9 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'left',
                   align: 'left',
                   renderCell: (params) => (
-                    <span>{params.row.middleName} { }</span>
+                    <span>
+                      {params.row.middleName} {}
+                    </span>
                   ),
                 },
                 {
@@ -2065,9 +2124,7 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Last Name',
                   headerAlign: 'left',
                   align: 'left',
-                  renderCell: (params) => (
-                    <span>{params.row.lastName}</span>
-                  ),
+                  renderCell: (params) => <span>{params.row.lastName}</span>,
                 },
                 {
                   field: 'incomingGradeLevel',
@@ -2075,10 +2132,8 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   renderCell: (params) => (
-                    <span>
-                      {GRADE_LEVEL[params.row.incomingGradeLevel]}
-                    </span>
-                  )
+                    <span>{GRADE_LEVEL[params.row.incomingGradeLevel]}</span>
+                  ),
                 },
                 {
                   field: 'schoolYear',
@@ -2086,9 +2141,7 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'left',
                   align: 'left',
                   renderCell: (params) => (
-                    <span className="text-xs">
-                      {params.row.schoolYear}
-                    </span>
+                    <span className="text-xs">{params.row.schoolYear}</span>
                   ),
                 },
                 {
@@ -2100,29 +2153,21 @@ const Students = ({ schoolFees, programs }) => {
                     <span>
                       {new Date(params.row.birthDate).toLocaleDateString()}
                     </span>
-                  )
+                  ),
                 },
                 {
                   field: 'gender',
                   headerName: 'Gender',
                   headerAlign: 'center',
                   align: 'center',
-                  renderCell: (params) => (
-                    <span>
-                      {params.row.gender}
-                    </span>
-                  )
+                  renderCell: (params) => <span>{params.row.gender}</span>,
                 },
                 {
                   field: 'religion',
                   headerName: 'Religion',
                   headerAlign: 'center',
                   align: 'center',
-                  renderCell: (params) => (
-                    <span>
-                      {params.row.religion}
-                    </span>
-                  )
+                  renderCell: (params) => <span>{params.row.religion}</span>,
                 },
                 {
                   field: 'enrollmentType',
@@ -2130,10 +2175,8 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   renderCell: (params) => (
-                    <span>
-                      {params.row.enrollmentType}
-                    </span>
-                  )
+                    <span>{params.row.enrollmentType}</span>
+                  ),
                 },
                 {
                   field: 'accreditation',
@@ -2141,10 +2184,8 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   renderCell: (params) => (
-                    <span>
-                      {params.row.accreditation}
-                    </span>
-                  )
+                    <span>{params.row.accreditation}</span>
+                  ),
                 },
                 {
                   field: 'primaryGuardianName',
@@ -2152,8 +2193,8 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation?.primaryGuardianName ||
-                    '',
+                    params.row.student.creator?.guardianInformation
+                      ?.primaryGuardianName || '',
                   renderCell: (params) => (
                     <div>
                       <p className="font-medium capitalize">{params.value}</p>
@@ -2169,8 +2210,8 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation?.primaryGuardianProfile ||
-                    '',
+                    params.row.student.creator?.guardianInformation
+                      ?.primaryGuardianProfile || '',
                   renderCell: (params) => (
                     <div>
                       <p className="font-medium capitalize">{params.value}</p>
@@ -2183,8 +2224,8 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation?.secondaryGuardianName ||
-                    '',
+                    params.row.student.creator?.guardianInformation
+                      ?.secondaryGuardianName || '',
                   renderCell: (params) => (
                     <div>
                       <p className="font-medium capitalize">{params.value}</p>
@@ -2200,8 +2241,8 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation?.secondaryGuardianProfile ||
-                    '',
+                    params.row.student.creator?.guardianInformation
+                      ?.secondaryGuardianProfile || '',
                   renderCell: (params) => (
                     <div>
                       <p className="font-medium capitalize">{params.value}</p>
@@ -2218,9 +2259,12 @@ const Students = ({ schoolFees, programs }) => {
                     '',
                   renderCell: (params) => (
                     <span>
-                      {params.row.student.creator?.guardianInformation?.address1}
+                      {
+                        params.row.student.creator?.guardianInformation
+                          ?.address1
+                      }
                     </span>
-                  )
+                  ),
                 },
                 {
                   field: 'island',
@@ -2232,9 +2276,12 @@ const Students = ({ schoolFees, programs }) => {
                     '',
                   renderCell: (params) => (
                     <span>
-                      {params.row.student.creator?.guardianInformation?.address2}
+                      {
+                        params.row.student.creator?.guardianInformation
+                          ?.address2
+                      }
                     </span>
-                  )
+                  ),
                 },
                 {
                   field: 'email',
@@ -2256,11 +2303,16 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation?.anotherEmail ||
-                    '',
+                    params.row.student.creator?.guardianInformation
+                      ?.anotherEmail || '',
                   renderCell: (params) => (
                     <div>
-                      <p className="font-small">{params.row.student.creator?.guardianInformation?.anotherEmail}</p>
+                      <p className="font-small">
+                        {
+                          params.row.student.creator?.guardianInformation
+                            ?.anotherEmail
+                        }
+                      </p>
                     </div>
                   ),
                 },
@@ -2270,13 +2322,16 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation?.telephoneNumber ||
-                    '',
+                    params.row.student.creator?.guardianInformation
+                      ?.telephoneNumber || '',
                   renderCell: (params) => (
                     <span>
-                      {params.row.student.creator?.guardianInformation?.telephoneNumber}
+                      {
+                        params.row.student.creator?.guardianInformation
+                          ?.telephoneNumber
+                      }
                     </span>
-                  )
+                  ),
                 },
                 {
                   field: 'mobileNumber',
@@ -2284,57 +2339,64 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation?.mobileNumber ||
-                    '',
+                    params.row.student.creator?.guardianInformation
+                      ?.mobileNumber || '',
                   renderCell: (params) => (
                     <span>
-                      {params.row.student.creator?.guardianInformation?.mobileNumber}
+                      {
+                        params.row.student.creator?.guardianInformation
+                          ?.mobileNumber
+                      }
                     </span>
-                  )
+                  ),
                 },
                 {
                   field: 'status',
                   headerName: 'Status',
                   headerAlign: 'center',
                   align: 'center',
-                  valueGetter: (params) =>
-                    params?.row?.studentStatus ||
-                    '',
+                  valueGetter: (params) => params?.row?.studentStatus || '',
                   renderCell: (params) => (
-                    <div>
+                    <div className="inline-flex items-center justify-center">
                       <h4 className="flex space-x-3">
                         <span
-                          className={`rounded-full py-0.5 text-xs px-2 ${ENROLLMENT_STATUS_BG_COLOR[params.row.studentStatus]
-                            }`}
+                          className={`rounded-full py-0.5 text-xs px-2 ${
+                            ENROLLMENT_STATUS_BG_COLOR[params.row.studentStatus]
+                          }`}
                         >
                           {STUDENT_STATUS[params.row?.studentStatus]}
                         </span>
                       </h4>
                     </div>
-                  )
+                  ),
                 },
                 {
                   field: 'paymentStatus',
                   headerName: 'Payment Status',
                   headerAlign: 'center',
                   align: 'center',
-                  valueGetter: (params) =>
-                    params?.row?.studentStatus || '',
+                  valueGetter: (params) => params?.row?.studentStatus || '',
                   renderCell: (params) => {
-                    const paymentStatus = params?.row?.student?.schoolFees?.[0]?.transaction?.paymentStatus;
-                    const statusClass = paymentStatus ? STATUS_BG_COLOR[paymentStatus] : '';
-                    const statusText = paymentStatus ? STATUS[paymentStatus] : 'N/A';
+                    const paymentStatus =
+                      params?.row?.student?.schoolFees?.[0]?.transaction
+                        ?.paymentStatus;
+                    const statusClass = paymentStatus
+                      ? STATUS_BG_COLOR[paymentStatus]
+                      : '';
+                    const statusText = paymentStatus
+                      ? STATUS[paymentStatus]
+                      : 'N/A';
 
                     return (
-                      <div>
-                        <h4 className="flex space-x-3">
-                          <span className={`rounded-full py-0.5 text-xs px-2 ${statusClass}`}>
-                            {statusText}
-                          </span>
-                        </h4>
+                      <div className="inline-flex items-center justify-center">
+                        <span
+                          className={`rounded-full py-0.5 text-xs px-2 ${statusClass}`}
+                        >
+                          {statusText}
+                        </span>
                       </div>
                     );
-                  }
+                  },
                 },
                 {
                   field: 'actions',
@@ -2343,9 +2405,9 @@ const Students = ({ schoolFees, programs }) => {
                   align: 'center',
                   hide: true,
                   renderCell: (params) => (
-                    <div className='center'>
+                    <div className="flex items-center justify-center space-x-2">
                       <button
-                        className="px-3 py-1 text-white rounded bg-primary-500 hover:bg-primary-400"
+                        className="px-3 py-1 text-xs text-white rounded-md bg-primary-500 hover:bg-primary-400"
                         onClick={() => {
                           view(params.row);
                         }}
@@ -2377,7 +2439,6 @@ const Students = ({ schoolFees, programs }) => {
                     </div>
                   ),
                 },
-
               ]}
             />
           </div>

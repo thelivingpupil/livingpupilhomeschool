@@ -1,10 +1,17 @@
 import { InvitationStatus, TeamRole } from '@prisma/client';
 import slugify from 'slugify';
-
+import {
+  html as updateHtml,
+  text as updateText,
+} from '@/config/email-templates/email-update';
 import {
   html as createHtml,
   text as createText,
 } from '@/config/email-templates/workspace-create';
+import {
+  html as deleteHtml,
+  text as deleteText,
+} from '@/config/email-templates/workspace-delete';
 import {
   html as inviteHtml,
   text as inviteText,
@@ -73,18 +80,65 @@ export const createWorkspace = async (creatorId, email, name, slug) => {
   });
 };
 
+// import { html, text } from './emailTemplates';
+
 export const deleteWorkspace = async (id, email, slug) => {
   const workspace = await getOwnWorkspace(id, email, slug);
+  if (!workspace) throw new Error('Unable to find workspace');
 
-  if (workspace) {
-    await prisma.workspace.update({
-      data: { deletedAt: new Date() },
+  await prisma.$transaction(async (tx) => {
+    const current = await tx.workspace.findUnique({
       where: { id: workspace.id },
+      include: {
+        schoolFees: { select: { transactionId: true } },
+        studentRecord: { select: { id: true } },
+      },
     });
-    return slug;
-  } else {
-    throw new Error('Unable to find workspace');
-  }
+    if (!current) throw new Error('Workspace not found');
+
+    await tx.workspace.update({
+      where: { id: workspace.id },
+      data: {
+        deletedAt: new Date(),
+        schoolFees: {
+          updateMany: {
+            where: { deletedAt: null },
+            data: { deletedAt: new Date() },
+          },
+        },
+        ...(current.studentRecord
+          ? { studentRecord: { update: { deletedAt: new Date() } } }
+          : {}),
+      },
+    });
+
+    const txnIds = current.schoolFees
+      .map((f) => f.transactionId)
+      .filter(Boolean);
+    if (txnIds.length) {
+      await tx.transaction.updateMany({
+        where: { id: { in: txnIds }, deletedAt: null },
+        data: { deletedAt: new Date() },
+      });
+    }
+  });
+
+  // Send admin alert email
+  await sendMail({
+    from: `Living Pupil Homeschool <info@livingpupilhomeschool.com>`,
+    to: 'lpwebsite2022@gmail.com',
+    subject: `Workspace Deleted: ${workspace.name}`,
+    html: deleteHtml({
+      workspaceName: workspace.name,
+      workspaceId: workspace.id,
+    }),
+    text: deleteText({
+      workspaceName: workspace.name,
+      workspaceId: workspace.id,
+    }),
+  });
+
+  return slug;
 };
 
 export const getInvitation = async (inviteCode) =>
@@ -141,13 +195,13 @@ export const getSiteWorkspace = async (slug, customDomain) =>
         { slug },
         customDomain
           ? {
-            domains: {
-              some: {
-                name: slug,
-                deletedAt: null,
+              domains: {
+                some: {
+                  name: slug,
+                  deletedAt: null,
+                },
               },
-            },
-          }
+            }
           : undefined,
       ],
       AND: { deletedAt: null },
@@ -373,8 +427,8 @@ export const getWorkspaces = async (id, email) => {
             select: {
               id: true,
               parentTraining: true,
-            }
-          }
+            },
+          },
         },
       },
       inviteCode: true,
@@ -582,8 +636,8 @@ export const joinWorkspace = async (workspaceCode, email) => {
       where: {
         workspaceId_email: {
           workspaceId: workspace.id,
-          email: email
-        }
+          email: email,
+        },
       },
     });
     return new Date();
@@ -643,6 +697,6 @@ export const getWorkspaceByStudentId = async (studentId) =>
       name: true,
     },
     where: {
-      workspaceCode: studentId
+      workspaceCode: studentId,
     },
   });
