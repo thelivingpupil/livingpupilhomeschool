@@ -32,6 +32,7 @@ const Sidebar = ({ menu, showModal }) => {
               (fee) => fee.transaction.paymentStatus === TransactionStatus.S
             )?.length > 0
           }
+          workspace={workspace}
         />
       ))
     );

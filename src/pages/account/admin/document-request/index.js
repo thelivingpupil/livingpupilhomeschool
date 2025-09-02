@@ -532,6 +532,16 @@ const DocumentRequest = () => {
                                 filterMode="client"
                                 disableColumnFilter={false}
                                 disableColumnMenu={false}
+                                initialState={{
+                                    sorting: {
+                                        sortModel: [
+                                            {
+                                                field: 'createdAt',
+                                                sort: 'desc'
+                                            }
+                                        ]
+                                    }
+                                }}
                                 columns={[
                                     {
                                         field: 'createdAt',

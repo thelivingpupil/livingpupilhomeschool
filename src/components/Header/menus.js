@@ -9,6 +9,7 @@ const Menus = ({
   menuCondition,
   showMenu,
   validate = false,
+  workspace = null,
 }) => {
   return showMenu ? (
     <div className="space-y-2 my-1">
@@ -27,20 +28,20 @@ const Menus = ({
           <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto bg-white rounded-md shadow-lg max-h-60">
             {data.menuItems.map((entry, index) =>
               (entry.showDefault && (
-                <Listbox.Option key={index} value={entry} disabled={isLoading || !entry.validateItem || !entry.validateItem(validate)}>
-                  
-                    <Item
-                      data={entry}
-                      isLoading={isLoading}
-                      className={`cursor-pointer select-none relative py-2 pl-10 pr-4`}
-                    />
-                  
+                <Listbox.Option key={index} value={entry} disabled={isLoading || !entry.validateItem || !entry.validateItem(validate, workspace)}>
+
+                  <Item
+                    data={entry}
+                    isLoading={isLoading}
+                    className={`cursor-pointer select-none relative py-2 pl-10 pr-4`}
+                  />
+
                 </Listbox.Option>
               )) ||
-              (menuCondition &&
-                entry.validateItem &&
-                entry.validateItem(validate)) ? (
-                <Listbox.Option key={index} value={entry} disabled={isLoading || !entry.validateItem || !entry.validateItem(validate)}>
+                (menuCondition &&
+                  entry.validateItem &&
+                  entry.validateItem(validate, workspace)) ? (
+                <Listbox.Option key={index} value={entry} disabled={isLoading || !entry.validateItem || !entry.validateItem(validate, workspace)}>
                   {({ active, selected }) => (
                     <Item
                       data={entry}

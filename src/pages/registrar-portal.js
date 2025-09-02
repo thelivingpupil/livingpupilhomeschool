@@ -493,6 +493,11 @@ const RegistrarPortal = ({ page }) => {
                         setTransactionId(response.data.transactionId);
                         setReferenceNumber(response.data.referenceNumber);
                         setShowPaymentModal(true);
+                        // Don't reset captcha immediately - let user complete it
+                        // setCaptcha(null);
+                        // if (recaptchaRef.current) {
+                        //     recaptchaRef.current.reset();
+                        // }
                     }
                 }
             })
@@ -582,29 +587,58 @@ const RegistrarPortal = ({ page }) => {
 
         setUploadingProof(true);
         try {
-            const formData = new FormData();
-            formData.append('paymentProof', paymentProofFile);
-            formData.append('transactionId', transactionId);
+            // Upload file to Firebase storage first
+            const fileName = `payment-proof-${transactionId}-${Date.now()}.jpg`;
+            const storageRef = ref(storage, fileName);
+            const uploadTask = uploadBytesResumable(storageRef, paymentProofFile);
 
-            const response = await api('/api/documentRequest/updatePaymentProof', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Content-Type': 'multipart/form-data',
+            uploadTask.on(
+                'state_changed',
+                (snapshot) => {
+                    // Progress tracking if needed
                 },
-            });
+                (error) => {
+                    toast.error('Failed to upload payment proof');
+                    setUploadingProof(false);
+                },
+                async () => {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
-            if (response.success) {
-                toast.success('Payment proof uploaded successfully!');
-                setPaymentProofFile(null);
-                setShowPaymentModal(false);
-            } else {
-                toast.error('Failed to upload payment proof');
-            }
+                    // Now send the URL to the API endpoint
+                    try {
+                        // Use the captcha state variable instead of trying to get it from the ref
+                        if (!captcha) {
+                            toast.error('Please complete the captcha verification');
+                            setUploadingProof(false);
+                            return;
+                        }
+
+                        const response = await api('/api/documentRequest/updatePaymentProof', {
+                            method: 'POST',
+                            body: {
+                                transactionId: transactionId,
+                                paymentProofUrl: downloadURL,
+                                captchaToken: captcha
+                            }
+                        });
+
+                        if (response.success) {
+                            toast.success('Payment proof uploaded successfully!');
+                            setPaymentProofFile(null);
+                            setShowPaymentModal(false);
+                        } else {
+                            toast.error('Failed to update payment proof');
+                        }
+                    } catch (apiError) {
+                        console.error('Error updating payment proof:', apiError);
+                        toast.error('Failed to update payment proof. Please contact support.');
+                    }
+                    setUploadingProof(false);
+                }
+            );
         } catch (error) {
             console.error('Error uploading payment proof:', error);
             toast.error('Error uploading payment proof');
-        } finally {
             setUploadingProof(false);
         }
     };
@@ -617,12 +651,29 @@ const RegistrarPortal = ({ page }) => {
     const onReCAPTCHAChange = (captchaCode) => {
         if (captchaCode) {
             setCaptcha(captchaCode);
+        } else {
+            setCaptcha(null);
         }
     };
 
     const refreshPage = () => {
         window.location.reload();
     };
+
+    // Reset captcha when modal opens
+    useEffect(() => {
+        if (showPaymentModal) {
+            // Small delay to ensure modal is fully rendered
+            const timer = setTimeout(() => {
+                if (recaptchaRef.current) {
+                    recaptchaRef.current.reset();
+                    setCaptcha(null);
+                }
+            }, 100);
+
+            return () => clearTimeout(timer);
+        }
+    }, [showPaymentModal]);
 
     return (
         <LandingLayout>
@@ -1703,7 +1754,14 @@ const RegistrarPortal = ({ page }) => {
             <Modal
                 show={showPaymentModal}
                 title="Payment Options"
-                toggle={() => setShowPaymentModal(false)}
+                toggle={() => {
+                    setShowPaymentModal(false);
+                    // Reset captcha when closing modal
+                    setCaptcha(null);
+                    if (recaptchaRef.current) {
+                        recaptchaRef.current.reset();
+                    }
+                }}
             >
                 <div className="space-y-6">
                     <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
@@ -1800,6 +1858,33 @@ const RegistrarPortal = ({ page }) => {
                     {/* Payment Proof Upload */}
                     <div className="bg-yellow-50 p-4 rounded-lg">
                         <h4 className="font-semibold text-yellow-800 mb-2">Upload Payment Proof</h4>
+
+                        {/* Show existing payment proof if available */}
+                        {documentRequest?.transaction?.paymentProofLink && (
+                            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-sm font-medium text-green-800">✓ Payment Proof Already Uploaded</span>
+                                    <span className={`text-xs px-2 py-1 rounded ${STATUS_BG_COLOR[documentRequest?.transaction?.paymentStatus] || 'bg-gray-200'}`}>
+                                        {STATUS_CODES[documentRequest?.transaction?.paymentStatus] || 'Unknown'}
+                                    </span>
+                                </div>
+                                <div className="flex items-center space-x-3 mb-3">
+                                    <button
+                                        onClick={() => window.open(documentRequest.transaction.paymentProofLink, '_blank')}
+                                        className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
+                                    >
+                                        View Uploaded
+                                    </button>
+                                    <span className="text-xs text-green-600">
+                                        Click to view the payment proof you previously uploaded
+                                    </span>
+                                </div>
+                                <div className="text-xs text-green-700 border-t border-green-200 pt-2">
+                                    💡 You can upload a new payment proof below to replace the existing one
+                                </div>
+                            </div>
+                        )}
+
                         <div className="space-y-3">
                             <input
                                 type="file"
@@ -1814,11 +1899,35 @@ const RegistrarPortal = ({ page }) => {
                             )}
                             <button
                                 onClick={handlePaymentProofUpload}
-                                disabled={!paymentProofFile || uploadingProof}
+                                disabled={!paymentProofFile || uploadingProof || !captcha}
                                 className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
-                                {uploadingProof ? 'Uploading...' : 'Upload Payment Proof'}
+                                {uploadingProof ? 'Uploading...' :
+                                    documentRequest?.transaction?.paymentProofLink ? 'Replace Payment Proof' : 'Upload Payment Proof'
+                                }
                             </button>
+                        </div>
+
+                        {/* Captcha verification */}
+                        <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                            <div className="text-center">
+                                <p className="text-sm text-gray-600 mb-2">Please verify you're human</p>
+                                {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
+                                    <ReCAPTCHA
+                                        ref={recaptchaRef}
+                                        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                                        onChange={onReCAPTCHAChange}
+                                        theme="light"
+                                        onExpired={() => {
+                                            setCaptcha(null);
+                                        }}
+                                        onError={() => {
+                                            setCaptcha(null);
+                                        }}
+                                    />
+                                )}
+
+                            </div>
                         </div>
                     </div>
 

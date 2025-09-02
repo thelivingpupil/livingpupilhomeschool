@@ -290,6 +290,9 @@ export const getSingleWorkspace = async (id, email, slug) =>
           createdAt: true,
           deletedAt: true,
         },
+        where: {
+          deletedAt: null,
+        },
       },
     },
     where: {
@@ -386,6 +389,9 @@ export const getWorkspace = async (id, email, slug) =>
           },
           createdAt: true,
           deletedAt: true,
+        },
+        where: {
+          deletedAt: null,
         },
       },
     },

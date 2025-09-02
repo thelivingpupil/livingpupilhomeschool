@@ -21,8 +21,7 @@ import { useWorkspaces } from '@/hooks/data';
 import { useWorkspace } from '@/providers/workspace';
 import { TransactionStatus } from '@prisma/client';
 
-
-const Header = ({menu}) => {
+const Header = ({ menu }) => {
   const router = useRouter();
   const { data } = useSession();
   // const { theme, setTheme } = useTheme();
@@ -49,7 +48,7 @@ const Header = ({menu}) => {
   const renderMenu = () => {
     return (
       workspace &&
-      menu.map((item, index) => (
+      menu?.map((item, index) => (
         <Menus
           key={index}
           data={item}
@@ -62,6 +61,7 @@ const Header = ({menu}) => {
               (fee) => fee.transaction.paymentStatus === TransactionStatus.S
             )?.length > 0
           }
+          workspace={workspace}
         />
       ))
     );
@@ -141,7 +141,10 @@ const Header = ({menu}) => {
                       className="flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group"
                       target="_blank"
                     >
-                      <ShoppingCartIcon aria-hidden="true" className="w-5 h-5" />
+                      <ShoppingCartIcon
+                        aria-hidden="true"
+                        className="w-5 h-5"
+                      />
                       <span>Shop</span>
                     </a>
                   </Link>
@@ -209,10 +212,7 @@ const Header = ({menu}) => {
         <Actions />
         {renderMenu()}
       </div>
-
     </div>
-    
-    
   );
 };
 

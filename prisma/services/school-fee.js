@@ -176,7 +176,10 @@ export const createSchoolFees = async (
         },
       }),
     ]);
-    result = response;
+    result = {
+      transaction: response,
+      amount: payments + FEES[paymentMethod] + miscellaneousFee - scholarshipValue
+    };
   } else if (payment === PaymentType.SEMI_ANNUAL) {
     const fee = schoolFee.paymentTerms[1];
 
@@ -304,7 +307,10 @@ export const createSchoolFees = async (
         },
       }),
     ]);
-    result = response;
+    result = {
+      transaction: response,
+      amount: payments[0] + FEES[paymentMethod]
+    };
   } else if (payment === PaymentType.QUARTERLY) {
     const fee = schoolFee.paymentTerms[2];
 
@@ -557,7 +563,10 @@ export const createSchoolFees = async (
     });
     const schoolFeeResponses = await Promise.all(schoolFeePromises);
     // Log the school fee responses for verification
-    result = responses;
+    result = {
+      transaction: responses,
+      amount: payments[0] + FEES[paymentMethod]
+    };
   }
   console.log("Exiting createSchoolFees function...")
   return result;
@@ -612,7 +621,10 @@ export const createPayAllFees = async (
         },
       }),
     ]);
-    result = response;
+    result = {
+      transaction: response,
+      amount: amount
+    };
   }
   console.log("Exiting createSchoolFees function...")
   return result;

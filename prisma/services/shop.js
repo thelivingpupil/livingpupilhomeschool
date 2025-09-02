@@ -239,19 +239,19 @@ export const createOrderFee = async ({
             select: { id: true, transactionId: true },
         }),
         prisma.purchaseHistory.create({
-            data: { total: payments[1] },
+            data: { total: payments[1] }, // Removed +20 gateway fee
             select: { id: true, transactionId: true },
         }),
         prisma.purchaseHistory.create({
-            data: { total: payments[2] },
+            data: { total: payments[2] }, // Removed +20 gateway fee
             select: { id: true, transactionId: true },
         }),
         prisma.purchaseHistory.create({
-            data: { total: payments[3] },
+            data: { total: payments[3] }, // Removed +20 gateway fee
             select: { id: true, transactionId: true },
         }),
         prisma.purchaseHistory.create({
-            data: { total: payments[4] },
+            data: { total: payments[4] }, // Removed +20 gateway fee
             select: { id: true, transactionId: true },
         }),
     ]);
@@ -260,7 +260,7 @@ export const createOrderFee = async ({
             userId,
             email,
             transactionIds[0].transactionId,
-            payments[0] + 20,
+            payments[0],
             'STORE',
             transactionIds[0].id,
             TransactionSource.STORE,
@@ -270,7 +270,7 @@ export const createOrderFee = async ({
             userId,
             email,
             transactionIds[1].transactionId,
-            payments[1] + 20,
+            payments[1],
             'STORE',
             transactionIds[1].id,
             TransactionSource.STORE,
@@ -280,7 +280,7 @@ export const createOrderFee = async ({
             userId,
             email,
             transactionIds[2].transactionId,
-            payments[2] + 20,
+            payments[2],
             'STORE',
             transactionIds[2].id,
             TransactionSource.STORE,
@@ -290,7 +290,7 @@ export const createOrderFee = async ({
             userId,
             email,
             transactionIds[3].transactionId,
-            payments[3] + 20,
+            payments[3],
             'STORE',
             transactionIds[3].id,
             TransactionSource.STORE,
@@ -300,7 +300,7 @@ export const createOrderFee = async ({
             userId,
             email,
             transactionIds[4].transactionId,
-            payments[4] + 20,
+            payments[4],
             'STORE',
             transactionIds[4].id,
             TransactionSource.STORE,

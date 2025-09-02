@@ -16,6 +16,7 @@ import sanityClient from '@/lib/server/sanity';
 import { SHOP_SHIPPING, useCartContext, SHOP_PAYMENT_TYPE } from '@/providers/cart';
 import useUser from '@/hooks/data/useUser';
 import SignatureCanvas from 'react-signature-canvas';
+import api from '@/lib/common/api';
 
 const builder = imageUrlBuilder(sanityClient);
 
@@ -64,6 +65,7 @@ const Shop = ({ categories, items }) => {
     paymentLink,
     paymentAmount,
     totalPayment,
+    transactionId, // Get transactionId from cart context
     checkoutCart,
     setPaymentType,
     clearSignature,
@@ -227,13 +229,23 @@ const Shop = ({ categories, items }) => {
   }
 
   const handlePaymentProofUpload = async () => {
-    if (!paymentProofFile) return;
+    if (!paymentProofFile) {
+      toast.error('Please select a file for payment proof');
+      return;
+    }
+
+    if (!transactionId) {
+      toast.error('Please complete checkout first to get your transaction ID.');
+      return;
+    }
 
     setUploadingProof(true);
     try {
       // Upload file to Firebase storage
-      const fileName = `payment-proof-${Date.now()}.jpg`;
+      const fileName = `payment-proof-${transactionId}-${Date.now()}.jpg`;
+      console.log('Creating storage reference with fileName:', fileName);
       const storageRef = ref(storage, fileName);
+      console.log('Storage reference created:', storageRef);
       const uploadTask = uploadBytesResumable(storageRef, paymentProofFile);
 
       uploadTask.on(
@@ -248,8 +260,28 @@ const Shop = ({ categories, items }) => {
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
-          toast.success('Payment proof uploaded successfully! Please contact support with your transaction details.');
-          setPaymentProofFile(null);
+          // Update transaction with payment proof link
+          try {
+            const response = await api('/api/transactions/payment-proof', {
+              method: 'PUT',
+              body: {
+                transactionId: transactionId,
+                paymentProofLink: downloadURL
+              }
+            });
+
+            if (response.errors) {
+              Object.keys(response.errors).forEach((error) =>
+                toast.error(response.errors[error].msg)
+              );
+            } else {
+              toast.success('Payment proof uploaded successfully!');
+              setPaymentProofFile(null);
+              // setTransactionId(''); // No need to clear transactionId here, it's from context
+            }
+          } catch (apiError) {
+            toast.error('Failed to update transaction with payment proof. Please contact support.');
+          }
           setUploadingProof(false);
         }
       );
@@ -258,6 +290,7 @@ const Shop = ({ categories, items }) => {
       setUploadingProof(false);
     }
   };
+
   return (
     <>
       {disableShop ? (
@@ -668,20 +701,41 @@ const Shop = ({ categories, items }) => {
                   <div className="bg-yellow-50 p-4 rounded-lg">
                     <h4 className="font-semibold text-yellow-800 mb-2">Upload Payment Proof</h4>
                     <div className="space-y-3">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => setPaymentProofFile(e.target.files[0])}
-                        className="w-full p-2 border border-gray-300 rounded text-sm"
-                      />
-                      {paymentProofFile && (
-                        <div className="text-sm text-green-600">
-                          ✓ {paymentProofFile.name} selected
+                      {transactionId ? (
+                        <div className="bg-green-50 p-3 rounded-lg">
+                          <p className="text-sm text-green-700">
+                            <strong>Transaction ID:</strong> {transactionId}
+                          </p>
+                          <p className="text-xs text-green-600 mt-1">
+                            This transaction ID will be used for your payment proof upload.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="bg-yellow-50 p-3 rounded-lg">
+                          <p className="text-sm text-yellow-700">
+                            Please complete checkout first to get your transaction ID.
+                          </p>
                         </div>
                       )}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Payment Proof Image *
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setPaymentProofFile(e.target.files[0])}
+                          className="w-full p-2 border border-gray-300 rounded text-sm"
+                        />
+                        {paymentProofFile && (
+                          <div className="text-sm text-green-600 mt-1">
+                            ✓ {paymentProofFile.name} selected
+                          </div>
+                        )}
+                      </div>
                       <button
                         onClick={handlePaymentProofUpload}
-                        disabled={!paymentProofFile || uploadingProof}
+                        disabled={!paymentProofFile || uploadingProof || !transactionId}
                         className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         {uploadingProof ? 'Uploading...' : 'Upload Payment Proof'}
@@ -1061,10 +1115,8 @@ const Shop = ({ categories, items }) => {
             </div>
           </section>
         </>
-      )
-      }
+      )}
     </>
-
   );
 };
 

@@ -40,6 +40,9 @@ export const getDocumentRequest = async (requestCode) => {
 export const getDocumentRequests = async () => {
     try {
         const documentRequests = await prisma.documentRequest.findMany({
+            where: {
+                deletedAt: null, // Only get non-deleted records
+            },
             include: {
                 requestorInformation: true, // Include related RequestorInformation
                 studentInformation: true,   // Include related StudentInformation
@@ -47,7 +50,7 @@ export const getDocumentRequests = async () => {
                 transaction: true,          // Include Transaction details if available
             },
             orderBy: {
-                updatedAt: 'desc', // Order by updatedAt in descending order
+                createdAt: 'desc', // Order by creation date in descending order (newest first)
             },
         });
 
@@ -68,7 +71,10 @@ export const createDocumentRequest = async (data) => {
     try {
         const { requestCode, purpose, status, deliveryAddress, requestorInformation, students, documents, transaction, deliveryOption } = data;
 
-        // Create requestor information if it exists
+        // Create the main document request record FIRST (before dependent records)
+        const documentRequest = await createDocumentRequestRecord(prisma, { requestCode, purpose, status, deliveryAddress, transactionId: null, deliveryOption });
+
+        // Create requestor information if it exists (now that DocumentRequest exists)
         if (requestorInformation) {
             await createRequestorInformation(prisma, requestCode, requestorInformation);
         }
@@ -95,10 +101,13 @@ export const createDocumentRequest = async (data) => {
             );
             transactionId = createdTransactionId;
             referenceNumber = createdReferenceNumber;
-        }
 
-        // Create the main document request record
-        const documentRequest = await createDocumentRequestRecord(prisma, { requestCode, purpose, status, deliveryAddress, transactionId, deliveryOption });
+            // Update the document request with the transaction ID
+            await prisma.documentRequest.update({
+                where: { requestCode },
+                data: { transactionId }
+            });
+        }
 
         // Create documents for each student
         if (documents && documents.length > 0) {

@@ -65,6 +65,7 @@ import {
 } from '@/utils/constants';
 import { PortableText } from '@portabletext/react';
 import { event } from 'react-ga';
+import Image from 'next/image';
 
 const steps = [
   'Student Information',
@@ -192,6 +193,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const [primaryTeacherRelationship, setPrimaryTeacherRelatiosnship] =
     useState('');
   const [paymentLink, setPaymentLink] = useState(null);
+  const [paymentAmount, setPaymentAmount] = useState(0);
   const [formerRegistrar, setFormerRegistrar] = useState('');
   const [formerRegistrarEmail, setFormerRegistrarEmail] = useState('');
   const [formerRegistrarNumber, setFormerRegistrarNumber] = useState('');
@@ -413,15 +415,15 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       address2.length > 0 &&
       (enrollmentType === 'NEW' ? formerRegistrar.length > 0 : true) &&
       (enrollmentType === 'NEW' ? formerRegistrarEmail.length > 0 : true) &&
-      (enrollmentType === 'NEW' ? formerRegistrarNumber.length > 0 : true) &&
-      //birthCertificateLink > 0 &&
-      birthCertificateLink?.length > 0) ||
+      (enrollmentType === 'NEW' ? formerRegistrarNumber.length > 0 : true)) ||
+    //birthCertificateLink > 0 &&
+    //birthCertificateLink?.length > 0
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
       payment !== null &&
       paymentMethod &&
       agree &&
-      signatureLink?.length > 0 &&
+      //signatureLink?.length > 0 &&
       !isSubmittingCode);
 
   const programFee = programs.find((programFee) => {
@@ -863,6 +865,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         } else {
           // Don't automatically open DragonPay
           setPaymentLink(response.data.schoolFee.url);
+          setPaymentAmount(response.data.schoolFee.amount || 0);
           setViewFees(true);
           toast.success('Student information successfully submitted!');
         }
@@ -3766,39 +3769,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               {new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'PHP',
-              }).format(
-                discount
-                  ? discount?.type === 'VALUE'
-                    ? discount?.code?.toLowerCase().includes('pastor')
-                      ? Math.ceil(
-                          fee?._type === 'fullTermPayment'
-                            ? fee?.fullPayment
-                            : fee?._type === 'threeTermPayment'
-                            ? fee?.downPayment +
-                              fee?.secondPayment +
-                              fee?.thirdPayment
-                            : fee?._type === 'fourTermPayment'
-                            ? fee?.downPayment +
-                              fee?.secondPayment +
-                              fee?.thirdPayment +
-                              fee?.fourthPayment
-                            : fee?.downPayment +
-                              fee?.secondPayment +
-                              fee?.thirdPayment +
-                              fee?.fourthPayment +
-                              fee?.fifthPayment +
-                              fee?.sixthPayment +
-                              fee?.seventhPayment +
-                              fee?.eighthPayment +
-                              fee?.ninthPayment
-                        ) - (discount?.value ?? 0)
-                      : discount?.value ?? 0
-                    : ((discount?.value ?? 0) / 100) *
-                      (fee?._type === 'fullTermPayment'
-                        ? fee?.fullPayment
-                        : fee?.secondPayment)
-                  : 0
-              )}
+              }).format(paymentAmount)}
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -3816,29 +3787,72 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                 <h3 className="text-lg font-semibold text-gray-800">
                   Union Bank
                 </h3>
-                <p className="text-sm text-gray-600">Account: 1234-5678-9012</p>
-                <p className="text-sm text-gray-600">
-                  Name: Living Pupil Homeschool
+              </div>
+              <div className="text-center">
+                <Image
+                  src="/files/qr/ub_qr.jpg"
+                  alt="Union Bank QR Code"
+                  width={200}
+                  height={200}
+                  className="mx-auto border border-gray-300 rounded-lg"
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  Scan to pay via Union Bank
                 </p>
+                <div className="mt-2">
+                  <button
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = '/files/qr/ub_qr.jpg';
+                      link.download = 'union-bank-qr.jpg';
+                      link.click();
+                    }}
+                    className="w-full py-2 px-3 text-white rounded hover:bg-orange-600 transition-colors text-sm"
+                    style={{ backgroundColor: '#FF7F00' }}
+                  >
+                    Download QR Code
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* GCash Option */}
-            <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-green-500 transition-colors">
+            <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
               <div className="text-center mb-4">
                 <div className="flex items-center justify-center mb-2">
                   <div
                     className="w-12 h-12 rounded-lg flex items-center justify-center"
-                    style={{ backgroundColor: '#006F42' }}
+                    style={{ backgroundColor: '#3B82F6' }}
                   >
                     <span className="text-white text-lg font-bold">GC</span>
                   </div>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800">GCash</h3>
-                <p className="text-sm text-gray-600">Number: 0917-123-4567</p>
-                <p className="text-sm text-gray-600">
-                  Name: Living Pupil Homeschool
+              </div>
+              <div className="text-center">
+                <Image
+                  src="/files/qr/gcash_qr.png"
+                  alt="GCash QR Code"
+                  width={200}
+                  height={200}
+                  className="mx-auto border border-gray-300 rounded-lg"
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  Scan to pay via GCash
                 </p>
+                <div className="mt-2">
+                  <button
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = '/files/qr/gcash_qr.png';
+                      link.download = 'gcash-qr.png';
+                      link.click();
+                    }}
+                    className="w-full py-2 px-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    Download QR Code
+                  </button>
+                </div>
               </div>
             </div>
           </div>

@@ -160,7 +160,7 @@ export const getServerSideProps = async () => {
             transaction: true,          // Include Transaction details if available
         },
         orderBy: {
-            updatedAt: 'desc', // Order by updatedAt in descending order
+            createdAt: 'desc', // Order by creation date in descending order (newest first)
         },
     });
 
