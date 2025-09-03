@@ -8,36 +8,62 @@ import {
   FaFacebookMessenger,
   FaGlobe,
   FaHome,
-  FaCommentDots
+  FaCommentDots,
 } from 'react-icons/fa';
 import { HiOutlineUserGroup } from 'react-icons/hi';
 import Image from 'next/image';
 import { useWorkspaces } from '@/hooks/data';
 
 const formGradeLevels = {
+  PRESCHOOL: {
+    grades: ['PRESCHOOL'],
+    title: 'Preschool Parents',
+    url: 'https://m.me/j/AbYuhpIUz4PV3F5Y/',
+  },
   KINDER: {
     grades: ['K1', 'K2'],
-    title: 'K1 & K2 parents',
-    url: 'https://m.me/j/AbbL9iaOGC3zXStR/',
+    title: 'K1 & K2 Parents',
+    url: 'https://m.me/j/AbbuotkgGJHeCK_E/',
   },
-  FORM_1: {
+  GRADE_1_3: {
     grades: ['GRADE_1', 'GRADE_2', 'GRADE_3'],
     title: 'Grade 1-3 Parents',
-    url: 'https://m.me/j/AbY19X_tskHnJCAM/',
+    url: 'https://m.me/j/AbY3WhELWX3l9A9H/',
   },
-  FORM_2: {
+  GRADE_4_6: {
     grades: ['GRADE_4', 'GRADE_5', 'GRADE_6'],
     title: 'Grade 4-6 Parents',
-    url: 'https://m.me/j/AbafH0XOzI9MzEKu/',
+    url: 'https://m.me/j/AbYVyng-IHFe7Bnd/',
   },
-  FORM_3: {
+  GRADE_7_10: {
     grades: ['GRADE_7', 'GRADE_8', 'GRADE_9', 'GRADE_10'],
     title: 'Grade 7-10 Parents',
-    url: 'https://m.me/j/AbakbwKDgy0q8DLr/',
+    url: 'https://m.me/j/AbaofMA1h89he-TG/',
+  },
+  SENIOR_HIGH: {
+    grades: ['GRADE_11', 'GRADE_12'],
+    title: 'Senior High Parents',
+    url: 'https://m.me/j/Abb5saK-v8If8MLG/',
   },
 };
 
-
+const cottageFormGradeLevels = {
+  FORM_1: {
+    grades: ['GRADE_1', 'GRADE_2', 'GRADE_3'],
+    title: 'Form 1 Cottage Parents',
+    url: 'https://m.me/j/Abasrv3abQI3d60o/',
+  },
+  FORM_2: {
+    grades: ['GRADE_4', 'GRADE_5', 'GRADE_6'],
+    title: 'Form 2 Cottage Parents',
+    url: 'https://m.me/j/AbaNYTIZrKv9LWLo/',
+  },
+  FORM_3: {
+    grades: ['GRADE_7', 'GRADE_8', 'GRADE_9', 'GRADE_10'],
+    title: 'Form 3 Cottage Parents',
+    url: 'https://m.me/j/AbbBY3h1cjQS5jXV/',
+  },
+};
 
 const Community = () => {
   const { data } = useWorkspaces();
@@ -49,21 +75,30 @@ const Community = () => {
 
     return data?.workspaces
       ?.filter((workspace) => workspace?.studentRecord)
-      ?.map((workspace) => workspace?.studentRecord?.incomingGradeLevel);
+      ?.map((workspace) => ({
+        gradeLevel: workspace.studentRecord?.incomingGradeLevel,
+        program: workspace.studentRecord?.program,
+      }));
   }, [data]);
+  const availableMessengerGroups = useMemo(() => {
+    // merge both regular + cottage forms
+    const allForms = {
+      ...formGradeLevels,
+      ...cottageFormGradeLevels,
+    };
 
-  const availableMessengerGroups = useMemo(
-    () =>
-      Object.keys(formGradeLevels).filter((form) => {
-        const formGradeLevel = formGradeLevels[form];
+    return Object.keys(allForms).filter((form) => {
+      const formGradeLevel = formGradeLevels[form];
+      const cottageFormGradeLevel = cottageFormGradeLevels[form];
 
-        return formGradeLevel?.grades?.find((gradeLevel) =>
-          availableGrades.includes(gradeLevel)
-        );
-      }),
-    [availableGrades]
-  );
-
+      return availableGrades.some(({ gradeLevel, program }) => {
+        if (program === 'HOMESCHOOL_COTTAGE') {
+          return cottageFormGradeLevel?.grades?.includes(gradeLevel);
+        }
+        return formGradeLevel?.grades?.includes(gradeLevel);
+      });
+    });
+  }, [availableGrades, formGradeLevels, cottageFormGradeLevels]);
   const showBookClubLink = useMemo(() => {
     // Check if any grade between 7 and 10 is in the available grades
     const grades7to10 = ['GRADE_7', 'GRADE_8', 'GRADE_9', 'GRADE_10'];
@@ -109,7 +144,12 @@ const Community = () => {
             </div>
           </a>
           {availableMessengerGroups?.map((form) => {
-            const formGradeLevel = formGradeLevels[form];
+            const allForms = {
+              ...formGradeLevels,
+              ...cottageFormGradeLevels,
+            };
+            const formGradeLevel = allForms[form];
+
             return (
               <a className="flex" href={formGradeLevel?.url} target="_blank">
                 <div className="flex flex-col xs:flex-row bg-secondary-500 p-8 items-center rounded-xl mt-5 ml-5">
@@ -129,7 +169,11 @@ const Community = () => {
               </span>
             </div>
           </a>
-          <a className="flex" href="/files/lp-communication-guide.pdf" target="_blank">
+          <a
+            className="flex"
+            href="/files/lp-communication-guide.pdf"
+            target="_blank"
+          >
             <div className="flex flex-col xs:flex-row bg-water-700 p-8 items-center rounded-xl mt-5 ml-5">
               <FaCommentDots size={100} color="#FFFFFF" />
               <span className="text-lg text-white font-semibold p-2 max-w-[200px] text-center">
