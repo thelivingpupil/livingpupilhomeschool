@@ -9,11 +9,16 @@ import { usePurchases, useStoreOrders } from '@/hooks/data';
 import Card from '@/components/Card';
 import formatDistance from 'date-fns/formatDistance';
 import { STATUS_CODES } from '@/lib/server/dragonpay';
-import { SHOP_SHIPPING_TYPE, STATUS_BG_COLOR, ORDER_STATUS, ORDER_STATUS_BG_COLOR } from '@/utils/constants';
+import {
+  SHOP_SHIPPING_TYPE,
+  STATUS_BG_COLOR,
+  ORDER_STATUS,
+  ORDER_STATUS_BG_COLOR,
+} from '@/utils/constants';
 import Image from 'next/image';
 import { getOrderFeeDeadline } from '@/utils/index';
 import { ChevronDownIcon } from '@heroicons/react/outline';
-import { SHOP_PAYMENT_TYPE } from '@/providers/cart'
+import { SHOP_PAYMENT_TYPE } from '@/providers/cart';
 import { calculateShippingFeeFromAddress } from '@/utils/index';
 import CenteredModal from '@/components/Modal/centered-modal';
 import toast from 'react-hot-toast';
@@ -26,7 +31,7 @@ const Shop = () => {
   const [purchase, setPurchase] = useState(null);
   const [order, setOrder] = useState(null);
   const [sortedOrderFees, setSortedOrderFees] = useState([]);
-  const [table, setTable] = useState("OLD");
+  const [table, setTable] = useState('OLD');
   const [shippingData, setShippingData] = useState(null);
   const [showConfirmChange, setShowConfirmChange] = useState(false);
   const [isUpdatingOrder, setIsUpdatingOrder] = useState(false);
@@ -61,13 +66,13 @@ const Shop = () => {
         const lowerAddress = address.toLowerCase();
         const cebuRates = {
           'mandaue city': 130,
-          'consolacion': 140,
+          consolacion: 140,
           'lapu-lapu city': 150,
           'cebu city': 160,
           'talisay city': 170,
-          'minglanilia': 180,
+          minglanilia: 180,
           'naga city': 200,
-          'compostela': 200,
+          compostela: 200,
         };
 
         for (const city in cebuRates) {
@@ -110,6 +115,7 @@ const Shop = () => {
     if (order) {
       const result = processOrders(order); // assuming this returns data
       setShippingData(result);
+      console.log('Order: ', order);
     }
   }, [order]);
 
@@ -142,8 +148,6 @@ const Shop = () => {
     }
   }, [orderDataIsLoading, orderData]);
 
-
-
   const toggleModal = () => setModalVisibility(!showModal);
   const toggleModal2 = () => setModalVisibility2(!showModal2);
 
@@ -173,18 +177,21 @@ const Shop = () => {
       const data = await res.json();
 
       if (res.ok) {
-        setIsUpdatingOrder(false)
+        setIsUpdatingOrder(false);
         toast.success('Order Cancelled');
-        toggleConfirmChangeModal()
-        toggleModal2()
+        toggleConfirmChangeModal();
+        toggleModal2();
       } else {
         toast.error(`Error cancelling order: ${data.errors?.error?.msg}`);
-        console.error('Error cancelling order:', data.errors?.error?.msg || data);
-        setIsUpdatingOrder(false)
+        console.error(
+          'Error cancelling order:',
+          data.errors?.error?.msg || data
+        );
+        setIsUpdatingOrder(false);
       }
     } catch (err) {
       toast.error(`Error cancelling order: ${err}`);
-      setIsUpdatingOrder(false)
+      setIsUpdatingOrder(false);
     }
   };
 
@@ -205,16 +212,19 @@ const Shop = () => {
 
     try {
       setIsUpdatingPaymentStatus(true);
-      const response = await fetch('/api/admin/transactions/update-payment-status', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          transactionId: selectedTransaction.transactionId,
-          paymentStatus: 'S'
-        })
-      });
+      const response = await fetch(
+        '/api/admin/transactions/update-payment-status',
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            transactionId: selectedTransaction.transactionId,
+            paymentStatus: 'S',
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -224,7 +234,9 @@ const Shop = () => {
         // Refresh the data
         window.location.reload();
       } else {
-        toast.error(`Error updating payment status: ${data.errors?.error?.msg}`);
+        toast.error(
+          `Error updating payment status: ${data.errors?.error?.msg}`
+        );
       }
     } catch (error) {
       toast.error('Failed to update payment status');
@@ -232,7 +244,6 @@ const Shop = () => {
       setIsUpdatingPaymentStatus(false);
     }
   };
-
 
   return (
     <AdminLayout>
@@ -257,7 +268,7 @@ const Shop = () => {
                 <span className="text-xs text-gray-400">
                   {purchase.transaction.user.guardianInformation
                     ? purchase.transaction.user.guardianInformation
-                      .primaryGuardianName
+                        .primaryGuardianName
                     : ''}{' '}
                   - {purchase.transaction.user.email}
                 </span>
@@ -337,7 +348,7 @@ const Shop = () => {
         >
           <div className="space-y-5">
             {order
-              .filter(order => order.order === 0)
+              .filter((order) => order.order === 0)
               .map((orderDetails, orderDeatilsIndex) => (
                 <>
                   <div className="flex flex-col">
@@ -348,8 +359,8 @@ const Shop = () => {
                       Purchased by:{' '}
                       <span className="text-xs text-gray-400">
                         {order[0].user.guardianInformation
-                          ? order[0].user
-                            .guardianInformation.primaryGuardianName
+                          ? order[0].user.guardianInformation
+                              .primaryGuardianName
                           : order[0]?.user?.name}{' '}
                         - {order[0]?.user?.email || 'No email available'}
                       </span>
@@ -357,13 +368,21 @@ const Shop = () => {
                     <h5 className="font-medium">
                       Delivery Address:{' '}
                       <span className="text-xs text-gray-400">
-                        {orderDetails.transaction.purchaseHistory.deliveryAddress}
+                        {
+                          orderDetails.transaction.purchaseHistory
+                            .deliveryAddress
+                        }
                       </span>
                     </h5>
                     <h5 className="font-medium">
                       Shipping Type:{' '}
                       <span className="text-xs text-gray-400">
-                        {SHOP_SHIPPING_TYPE[orderDetails?.transaction.purchaseHistory.shippingType]}
+                        {
+                          SHOP_SHIPPING_TYPE[
+                            orderDetails?.transaction.purchaseHistory
+                              .shippingType
+                          ]
+                        }
                       </span>
                     </h5>
                     <h5 className="font-medium">
@@ -380,45 +399,53 @@ const Shop = () => {
                     className="flex flex-col space-y-3"
                   >
                     <h4 className="text-xl font-medium text-primary-500">
-                      Ordered {orderDetails.transaction.purchaseHistory.orderItems.length} Item(s)
+                      Ordered{' '}
+                      {
+                        orderDetails.transaction.purchaseHistory.orderItems
+                          .length
+                      }{' '}
+                      Item(s)
                     </h4>
-                    {orderDetails.transaction.purchaseHistory.orderItems.map((item, itemIndex) => (
-                      <div
-                        key={itemIndex}
-                        className="flex items-center p-3 space-x-3 border rounded"
-                      >
-                        <div className="relative w-1/4 h-20">
-                          <Image
-                            alt={item.name}
-                            layout="fill"
-                            loading="lazy"
-                            objectFit="contain"
-                            src={
-                              item.image || '/images/livingpupil-homeschool-logo.png'
-                            }
-                          />
+                    {orderDetails.transaction.purchaseHistory.orderItems.map(
+                      (item, itemIndex) => (
+                        <div
+                          key={itemIndex}
+                          className="flex items-center p-3 space-x-3 border rounded"
+                        >
+                          <div className="relative w-1/4 h-20">
+                            <Image
+                              alt={item.name}
+                              layout="fill"
+                              loading="lazy"
+                              objectFit="contain"
+                              src={
+                                item.image ||
+                                '/images/livingpupil-homeschool-logo.png'
+                              }
+                            />
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-primary-500">
+                              {item.name} (x{item.quantity})
+                            </h3>
+                            <p className="text-xs">
+                              Price:{' '}
+                              {new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'PHP',
+                              }).format(item.basePrice)}
+                            </p>
+                            <p className="text-xs font-bold">
+                              Subtotal:{' '}
+                              {new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'PHP',
+                              }).format(item.totalPrice)}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <h3 className="font-medium text-primary-500">
-                            {item.name} (x{item.quantity})
-                          </h3>
-                          <p className="text-xs">
-                            Price:{' '}
-                            {new Intl.NumberFormat('en-US', {
-                              style: 'currency',
-                              currency: 'PHP',
-                            }).format(item.basePrice)}
-                          </p>
-                          <p className="text-xs font-bold">
-                            Subtotal:{' '}
-                            {new Intl.NumberFormat('en-US', {
-                              style: 'currency',
-                              currency: 'PHP',
-                            }).format(item.totalPrice)}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
+                      )
+                    )}
                   </div>
                 </>
               ))}
@@ -429,7 +456,7 @@ const Shop = () => {
                 {SHOP_PAYMENT_TYPE[order[0].paymentType]}
               </h5>
             </div>
-            {SHOP_PAYMENT_TYPE[order[0].paymentType] === "Installment" ? (
+            {SHOP_PAYMENT_TYPE[order[0].paymentType] === 'Installment' ? (
               <>
                 <div className="flex items-center justify-between">
                   <h4 className="font-medium text-left">Books/Merch</h4>
@@ -439,8 +466,11 @@ const Shop = () => {
                       currency: 'PHP',
                     }).format(
                       order
-                        .filter(order => order.order === 0)
-                        .flatMap(orderDetails => orderDetails.transaction.purchaseHistory.orderItems)
+                        .filter((order) => order.order === 0)
+                        .flatMap(
+                          (orderDetails) =>
+                            orderDetails.transaction.purchaseHistory.orderItems
+                        )
                         .reduce((sum, item) => sum + Number(item.totalPrice), 0)
                     )}
                   </h5>
@@ -453,25 +483,35 @@ const Shop = () => {
                       currency: 'PHP',
                     }).format(
                       order
-                        .filter(order => order.order === 0)
-                        .flatMap(orderDetails => orderDetails.transaction.purchaseHistory.orderItems)
-                        .reduce((sum, item) => sum + Number(item.totalPrice), 0) * 0.10 // Just the 10% interest
+                        .filter((order) => order.order === 0)
+                        .flatMap(
+                          (orderDetails) =>
+                            orderDetails.transaction.purchaseHistory.orderItems
+                        )
+                        .reduce(
+                          (sum, item) => sum + Number(item.totalPrice),
+                          0
+                        ) * 0.1 // Just the 10% interest
                     )}
                   </h5>
                 </div>
                 {order
-                  .filter(order => order.order === 0)
-                  .some(orderDetails => orderDetails?.transaction?.purchaseHistory?.shippingType !== 'PICK_UP') && (
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-medium text-left">Delivery Fee</h4>
-                      <h5 className="font-bold text-right text-green-600">
-                        {new Intl.NumberFormat('en-US', {
-                          style: 'currency',
-                          currency: 'PHP',
-                        }).format(shippingData?.[0]?.shippingFee)}
-                      </h5>
-                    </div>
-                  )}
+                  .filter((order) => order.order === 0)
+                  .some(
+                    (orderDetails) =>
+                      orderDetails?.transaction?.purchaseHistory
+                        ?.shippingType !== 'PICK_UP'
+                  ) && (
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-left">Delivery Fee</h4>
+                    <h5 className="font-bold text-right text-green-600">
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(shippingData?.[0]?.shippingFee)}
+                    </h5>
+                  </div>
+                )}
                 <div className="flex items-center justify-between">
                   <h4 className="font-medium text-left">Gateway Fee</h4>
                   <h5 className="font-bold text-right text-green-600">
@@ -492,34 +532,43 @@ const Shop = () => {
                       currency: 'PHP',
                     }).format(
                       order
-                        .filter(order => order.order === 0)
-                        .flatMap(orderDetails => orderDetails.transaction.purchaseHistory.orderItems)
+                        .filter((order) => order.order === 0)
+                        .flatMap(
+                          (orderDetails) =>
+                            orderDetails.transaction.purchaseHistory.orderItems
+                        )
                         .reduce((sum, item) => sum + Number(item.totalPrice), 0)
                     )}
                   </h5>
                 </div>
                 {order
-                  .filter(order => order.order === 0)
-                  .some(orderDetails => orderDetails?.transaction?.purchaseHistory?.shippingType !== 'PICK_UP') && (
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-medium text-left">Delivery Fee</h4>
-                      <h5 className="font-bold text-right text-green-600">
-                        {new Intl.NumberFormat('en-US', {
-                          style: 'currency',
-                          currency: 'PHP',
-                        }).format(shippingData?.[0]?.shippingFee || 0)}
-                      </h5>
-                    </div>
-                  )}
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-left">Gateway Fee</h4>
-                  <h5 className="font-bold text-right text-green-600">
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'PHP',
-                    }).format(20)}
-                  </h5>
-                </div>
+                  .filter((order) => order.order === 0)
+                  .some(
+                    (orderDetails) =>
+                      orderDetails?.transaction?.purchaseHistory
+                        ?.shippingType !== 'PICK_UP'
+                  ) && (
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-left">Delivery Fee</h4>
+                    <h5 className="font-bold text-right text-green-600">
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(shippingData?.[0]?.shippingFee || 0)}
+                    </h5>
+                  </div>
+                )}
+                {new Date(order[0].createdAt) < new Date('2025-08-30') && (
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-left">Gateway Fee</h4>
+                    <h5 className="font-bold text-right text-green-600">
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(20)}
+                    </h5>
+                  </div>
+                )}
               </>
             )}
 
@@ -531,7 +580,7 @@ const Shop = () => {
                   currency: 'PHP',
                 }).format(
                   order.reduce((total, feeWrapper) => {
-                    return total + (Number(feeWrapper.transaction.amount));
+                    return total + Number(feeWrapper.transaction.amount);
                   }, 0)
                 )}
               </h5>
@@ -543,14 +592,17 @@ const Shop = () => {
                 .sort((a, b) => a.order - b.order) // Sort the array based on `order` property
                 .map((feeWrapper, feeIndex) => (
                   <>
-                    <div key={feeIndex} className="flex items-center justify-between w-full">
-
-                      <div className='flex items-center justify-between w-full'>
-                        <div className='flex flex-col items-center'>
+                    <div
+                      key={feeIndex}
+                      className="flex items-center justify-between w-full"
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex flex-col items-center">
                           {feeWrapper.paymentType === 'INSTALLMENT' && (
                             <>
                               <h6 className="font-bold text-sm text-center text-gray-400">
-                                Payment{" #"}{feeWrapper.order + 1}
+                                Payment{' #'}
+                                {feeWrapper.order + 1}
                               </h6>
                               <h6 className="font-bold text-sm text-center text-green-600">
                                 {new Intl.NumberFormat('en-US', {
@@ -572,28 +624,40 @@ const Shop = () => {
                           )}
 
                           <h6 className="font-bold text-sm text-center text-gray-400">
-                            {getOrderFeeDeadline(feeWrapper.order, feeWrapper.paymentType, feeWrapper.createdAt).toLocaleDateString('en-US', {
+                            {getOrderFeeDeadline(
+                              feeWrapper.order,
+                              feeWrapper.paymentType,
+                              feeWrapper.createdAt
+                            ).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'long',
-                              day: 'numeric'
+                              day: 'numeric',
                             })}
                           </h6>
-
                         </div>
 
                         {/* View Payment Details Button */}
-                        <button
-                          onClick={() => viewPaymentDetails(feeWrapper.transaction)}
-                          className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                        >
-                          View Payment Details
-                        </button>
+                        {order[0].orderStatus !== 'Cancelled' ? (
+                          <button
+                            onClick={() =>
+                              viewPaymentDetails(feeWrapper.transaction)
+                            }
+                            className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                          >
+                            View Payment Details
+                          </button>
+                        ) : (
+                          <button
+                            disabled
+                            className="px-3 py-1 text-xs bg-red-600 text-white rounded transition-colors"
+                          >
+                            Cancelled
+                          </button>
+                        )}
                       </div>
                     </div>
                     <hr className="border-1 border-dashed border-gray-600" />
-
                   </>
-
                 ))}
               <div className="flex flex-col p-3 space-y-2">
                 {order[0].orderStatus !== 'Cancelled' && (
@@ -601,7 +665,7 @@ const Shop = () => {
                     className="px-3 py-1 my-1 text-white rounded bg-red-600 hover:bg-red-400"
                     onClick={() => {
                       //deleteStudentRecord(studentId, inviteCode);
-                      toggleConfirmChangeModal()
+                      toggleConfirmChangeModal();
                     }}
                   >
                     Cancel Order
@@ -619,9 +683,15 @@ const Shop = () => {
           title="Confirm Cancel"
         >
           <div>
-            <p className="py-1">You are about to Cencel <b>{order[0].orderCode}</b>.</p>
-            <p className="mt-5">This order's transaction(s) and the inventory will be updated.</p>
-            <p className="mt-5">Please note that the changes may not be undone.</p>
+            <p className="py-1">
+              You are about to Cencel <b>{order[0].orderCode}</b>.
+            </p>
+            <p className="mt-5">
+              This order's transaction(s) and the inventory will be updated.
+            </p>
+            <p className="mt-5">
+              Please note that the changes may not be undone.
+            </p>
             <p className="mt-5">Do you wish to proceed?</p>
           </div>
           <div className="w-full flex justify-end">
@@ -653,15 +723,21 @@ const Shop = () => {
         >
           <div className="space-y-4">
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-2">Transaction Information</h4>
+              <h4 className="font-semibold text-gray-800 mb-2">
+                Transaction Information
+              </h4>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="font-medium">Transaction ID:</span>
-                  <span className="font-mono">{selectedTransaction.transactionId}</span>
+                  <span className="font-mono">
+                    {selectedTransaction.transactionId}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Reference Number:</span>
-                  <span className="font-mono">{selectedTransaction.referenceNumber}</span>
+                  <span className="font-mono">
+                    {selectedTransaction.referenceNumber}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Amount:</span>
@@ -674,7 +750,11 @@ const Shop = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Payment Status:</span>
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${STATUS_BG_COLOR[selectedTransaction.paymentStatus]}`}>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-medium ${
+                      STATUS_BG_COLOR[selectedTransaction.paymentStatus]
+                    }`}
+                  >
                     {STATUS_CODES[selectedTransaction.paymentStatus]}
                   </span>
                 </div>
@@ -684,7 +764,9 @@ const Shop = () => {
             {/* Payment Proof Section */}
             {selectedTransaction.paymentProofLink ? (
               <div className="bg-green-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-green-800 mb-2">Payment Proof</h4>
+                <h4 className="font-semibold text-green-800 mb-2">
+                  Payment Proof
+                </h4>
                 <div className="space-y-3">
                   <div className="relative w-full h-64">
                     <Image
@@ -707,17 +789,24 @@ const Shop = () => {
               </div>
             ) : (
               <div className="bg-yellow-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-yellow-800 mb-2">Payment Proof</h4>
-                <p className="text-sm text-yellow-700">No payment proof uploaded yet.</p>
+                <h4 className="font-semibold text-yellow-800 mb-2">
+                  Payment Proof
+                </h4>
+                <p className="text-sm text-yellow-700">
+                  No payment proof uploaded yet.
+                </p>
               </div>
             )}
 
             {/* Update Payment Status Section */}
             {selectedTransaction.paymentStatus !== 'S' && (
               <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-blue-800 mb-2">Update Payment Status</h4>
+                <h4 className="font-semibold text-blue-800 mb-2">
+                  Update Payment Status
+                </h4>
                 <p className="text-sm text-blue-700 mb-3">
-                  Mark this payment as successful after verifying the payment proof.
+                  Mark this payment as successful after verifying the payment
+                  proof.
                 </p>
                 <button
                   onClick={updatePaymentStatus}
@@ -731,8 +820,12 @@ const Shop = () => {
 
             {selectedTransaction.paymentStatus === 'S' && (
               <div className="bg-green-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-green-800 mb-2">Payment Status</h4>
-                <p className="text-sm text-green-700">This payment has been marked as successful.</p>
+                <h4 className="font-semibold text-green-800 mb-2">
+                  Payment Status
+                </h4>
+                <p className="text-sm text-green-700">
+                  This payment has been marked as successful.
+                </p>
               </div>
             )}
           </div>
@@ -763,16 +856,20 @@ const Shop = () => {
                   </div>
                 </div>
               </div>
-              {table === "OLD" && (
+              {table === 'OLD' && (
                 <table className="w-full">
                   <thead>
                     <tr className="bg-gray-200 border-t border-b border-t-gray-300 border-b-gray-300">
-                      <th className="p-2 font-medium text-left">Order Details</th>
+                      <th className="p-2 font-medium text-left">
+                        Order Details
+                      </th>
                       <th className="p-2 font-medium text-center">
                         Shipping Area
                       </th>
                       <th className="p-2 font-medium text-center">Items</th>
-                      <th className="p-2 font-medium text-center">Payment Type</th>
+                      <th className="p-2 font-medium text-center">
+                        Payment Type
+                      </th>
                       <th className="p-2 font-medium text-right">Amount</th>
                       <th className="p-2 font-medium text-center">Actions</th>
                     </tr>
@@ -808,9 +905,11 @@ const Shop = () => {
                                   )}{' '}
                                   by{' '}
                                   <strong>
-                                    {purchase.transaction.user.guardianInformation
+                                    {purchase.transaction.user
+                                      .guardianInformation
                                       ? purchase.transaction.user
-                                        .guardianInformation.primaryGuardianName
+                                          .guardianInformation
+                                          .primaryGuardianName
                                       : ''}{' '}
                                     - {purchase.transaction.user.email}
                                   </strong>
@@ -821,9 +920,9 @@ const Shop = () => {
                                     {purchase?.deliveryAddress
                                       ? purchase?.deliveryAddress
                                       : purchase.transaction.user
-                                        .guardianInformation
-                                        ? `${purchase.transaction.user.guardianInformation.address1} ${purchase.transaction.user.guardianInformation.address2}`
-                                        : 'Not provided by guardian'}
+                                          .guardianInformation
+                                      ? `${purchase.transaction.user.guardianInformation.address1} ${purchase.transaction.user.guardianInformation.address2}`
+                                      : 'Not provided by guardian'}
                                   </strong>
                                 </p>
                                 <p className="text-xs text-gray-400">
@@ -832,16 +931,17 @@ const Shop = () => {
                                     {purchase?.contactNumber
                                       ? purchase?.contactNumber
                                       : purchase.transaction.user
-                                        .guardianInformation?.mobilenumber
-                                        ? purchase.transaction.user
                                           .guardianInformation?.mobilenumber
-                                        : 'Not provided by guardian'}
+                                      ? purchase.transaction.user
+                                          .guardianInformation?.mobilenumber
+                                      : 'Not provided by guardian'}
                                   </strong>
                                 </p>
                               </div>
                             </td>
                             <td className="p-2 text-center">
-                              {SHOP_SHIPPING_TYPE[purchase?.shippingType] || '-'}
+                              {SHOP_SHIPPING_TYPE[purchase?.shippingType] ||
+                                '-'}
                             </td>
                             <td className="p-2 text-center">
                               {purchase.orderItems.length}
@@ -854,14 +954,15 @@ const Shop = () => {
                                       {purchase.transaction.paymentReference}
                                     </span>
                                     <span
-                                      className={`rounded-full py-0.5 text-xs px-2 ${STATUS_BG_COLOR[
-                                        purchase.transaction.paymentStatus
-                                      ]
-                                        }`}
+                                      className={`rounded-full py-0.5 text-xs px-2 ${
+                                        STATUS_BG_COLOR[
+                                          purchase.transaction.paymentStatus
+                                        ]
+                                      }`}
                                     >
                                       {
                                         STATUS_CODES[
-                                        purchase.transaction.paymentStatus
+                                          purchase.transaction.paymentStatus
                                         ]
                                       }
                                     </span>
@@ -907,16 +1008,20 @@ const Shop = () => {
                   </tbody>
                 </table>
               )}
-              {table === "NEW" && (
+              {table === 'NEW' && (
                 <table className="w-full">
                   <thead>
                     <tr className="bg-gray-200 border-t border-b border-t-gray-300 border-b-gray-300">
-                      <th className="p-2 font-medium text-left">Order Details</th>
+                      <th className="p-2 font-medium text-left">
+                        Order Details
+                      </th>
                       <th className="p-2 font-medium text-center">
                         Shipping Area
                       </th>
                       <th className="p-2 font-medium text-center">Items</th>
-                      <th className="p-2 font-medium text-center">Payment Type</th>
+                      <th className="p-2 font-medium text-center">
+                        Payment Type
+                      </th>
                       <th className="p-2 font-medium text-right">Amount</th>
                       <th className="p-2 font-medium text-right">Status</th>
                       <th className="p-2 font-medium text-center">Actions</th>
@@ -933,9 +1038,7 @@ const Shop = () => {
                             <td className="p-2 text-left">
                               <div>
                                 <h4 className="flex items-center space-x-3 text-lg font-medium uppercase text-primary-500">
-                                  <span>
-                                    {order[0].orderCode}
-                                  </span>
+                                  <span>{order[0].orderCode}</span>
                                 </h4>
                                 <p className="text-xs text-gray-400">
                                   Date of Order:{' '}
@@ -949,53 +1052,65 @@ const Shop = () => {
                                   by{' '}
                                   <strong>
                                     {order[0].user.guardianInformation
-                                      ? order[0].user
-                                        .guardianInformation.primaryGuardianName
+                                      ? order[0].user.guardianInformation
+                                          .primaryGuardianName
                                       : ''}{' '}
                                     - {order[0].user.email}
                                   </strong>
                                 </p>
                                 {order
-                                  .filter(order => order.order === 0)
+                                  .filter((order) => order.order === 0)
                                   .map((orderDetails, orderDeatilsIndex) => (
                                     <>
                                       <p className="text-xs text-gray-400">
                                         Delivery Address:{' '}
                                         <strong>
-                                          {orderDetails.transaction.purchaseHistory?.deliveryAddress
-                                            ? orderDetails.transaction.purchaseHistory?.deliveryAddress
+                                          {orderDetails.transaction
+                                            .purchaseHistory?.deliveryAddress
+                                            ? orderDetails.transaction
+                                                .purchaseHistory
+                                                ?.deliveryAddress
                                             : orderDetails.user
-                                              .guardianInformation
-                                              ? `${orderDetails.user.guardianInformation.address1} ${orderDetails.user.guardianInformation.address2}`
-                                              : 'Not provided by guardian'}
+                                                .guardianInformation
+                                            ? `${orderDetails.user.guardianInformation.address1} ${orderDetails.user.guardianInformation.address2}`
+                                            : 'Not provided by guardian'}
                                         </strong>
                                       </p>
                                       <p className="text-xs text-gray-400">
                                         Contact Number:{' '}
                                         <strong>
-                                          {orderDetails.transaction.purchaseHistory?.contactNumber
-                                            ? orderDetails.transaction.purchaseHistory?.contactNumber
+                                          {orderDetails.transaction
+                                            .purchaseHistory?.contactNumber
+                                            ? orderDetails.transaction
+                                                .purchaseHistory?.contactNumber
                                             : orderDetails.user
-                                              .guardianInformation?.mobilenumber
-                                              ? orderDetails.user
-                                                .guardianInformation?.mobilenumber
-                                              : 'Not provided by guardian'}
+                                                .guardianInformation
+                                                ?.mobilenumber
+                                            ? orderDetails.user
+                                                .guardianInformation
+                                                ?.mobilenumber
+                                            : 'Not provided by guardian'}
                                         </strong>
                                       </p>
                                     </>
                                   ))}
-
                               </div>
                             </td>
                             {order
-                              .filter(order => order.order === 0)
+                              .filter((order) => order.order === 0)
                               .map((orderDetails, orderDeatilsIndex) => (
                                 <>
                                   <td className="p-2 text-center">
-                                    {SHOP_SHIPPING_TYPE[orderDetails?.transaction.purchaseHistory.shippingType] || '-'}
+                                    {SHOP_SHIPPING_TYPE[
+                                      orderDetails?.transaction.purchaseHistory
+                                        .shippingType
+                                    ] || '-'}
                                   </td>
                                   <td className="p-2 text-center">
-                                    {orderDetails?.transaction.purchaseHistory.orderItems.length}
+                                    {
+                                      orderDetails?.transaction.purchaseHistory
+                                        .orderItems.length
+                                    }
                                   </td>
                                 </>
                               ))}
@@ -1008,21 +1123,31 @@ const Shop = () => {
                                 currency: 'PHP',
                               }).format(
                                 order.reduce((total, feeWrapper) => {
-                                  return total + (Number(feeWrapper.transaction.amount));
+                                  return (
+                                    total +
+                                    Number(feeWrapper.transaction.amount)
+                                  );
                                 }, 0)
                               )}
                             </td>
                             <td className="p-2 text-right">
-                              {order[0].orderStatus === null ? ' '
-                                :
+                              {order[0].orderStatus === null ? (
+                                ' '
+                              ) : (
                                 <>
                                   <h4 className="flex space-x-3">
-                                    <span className={`rounded-full py-0.5 text-xs px-2 ${ORDER_STATUS_BG_COLOR[order[0].orderStatus]}`}>
+                                    <span
+                                      className={`rounded-full py-0.5 text-xs px-2 ${
+                                        ORDER_STATUS_BG_COLOR[
+                                          order[0].orderStatus
+                                        ]
+                                      }`}
+                                    >
                                       {ORDER_STATUS[order[0].orderStatus]}
                                     </span>
                                   </h4>
                                 </>
-                              }
+                              )}
                             </td>
 
                             <td className="p-2 space-x-2 text-xs text-center">

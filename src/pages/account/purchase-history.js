@@ -14,7 +14,7 @@ import { TransactionStatus } from '@prisma/client';
 import api from '@/lib/common/api';
 import toast from 'react-hot-toast';
 import { getOrderFeeDeadline } from '@/utils/index';
-import { SHOP_PAYMENT_TYPE } from '@/providers/cart'
+import { SHOP_PAYMENT_TYPE } from '@/providers/cart';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import Modal from '@/components/Modal';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
@@ -25,7 +25,7 @@ const PurchaseHistory = () => {
   const { orderFeeData, orderFeeDataIsLoading } = useOrderFees();
   const [isSubmitting, setSubmittingState] = useState(false);
   const [sortedOrderFees, setSortedOrderFees] = useState([]);
-  const [table, setTable] = useState("NEW");
+  const [table, setTable] = useState('NEW');
   const [showBankModal, setShowBankModal] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [paymentProofFile, setPaymentProofFile] = useState(null);
@@ -58,16 +58,22 @@ const PurchaseHistory = () => {
       // Use the function and store the result in the state
       const { orderFee } = orderFeeData.data.orderFees;
       const sortedFees = groupAndSortOrderFees(orderFee);
-      setSortedOrderFees(sortedFees); // Store sorted fees in state
+      setSortedOrderFees(sortedFees);
+      // Store sorted fees in state
     }
   }, [orderFeeDataIsLoading, orderFeeData]);
 
-  const showBankPaymentModal = (transactionId, referenceNumber, amount, total) => {
+  const showBankPaymentModal = (
+    transactionId,
+    referenceNumber,
+    amount,
+    total
+  ) => {
     setSelectedTransaction({
       transactionId,
       referenceNumber,
       amount,
-      total
+      total,
     });
     setShowBankModal(true);
   };
@@ -85,7 +91,9 @@ const PurchaseHistory = () => {
     setUploadingProof(true);
     try {
       // Upload file to Firebase storage
-      const fileName = `payment-proof-${selectedTransaction.transactionId}-${Date.now()}.jpg`;
+      const fileName = `payment-proof-${
+        selectedTransaction.transactionId
+      }-${Date.now()}.jpg`;
       const storageRef = ref(storage, fileName);
       const uploadTask = uploadBytesResumable(storageRef, paymentProofFile);
 
@@ -106,8 +114,8 @@ const PurchaseHistory = () => {
             method: 'PUT',
             body: {
               transactionId: selectedTransaction.transactionId,
-              paymentProofLink: downloadURL
-            }
+              paymentProofLink: downloadURL,
+            },
           });
 
           if (response.errors) {
@@ -151,7 +159,7 @@ const PurchaseHistory = () => {
         </div>
       </div>
       <Content.Divider />
-      {table === "OLD" && (
+      {table === 'OLD' && (
         <Content.Container>
           {!data?.purchaseHistory || isLoading ? (
             <Card>
@@ -243,13 +251,15 @@ const PurchaseHistory = () => {
                       </h4>
                     )}
                     <span
-                      className={`rounded-full py-0.5 text-xs px-2 ${STATUS_BG_COLOR[purchase.transaction.paymentStatus]
-                        }`}
+                      className={`rounded-full py-0.5 text-xs px-2 ${
+                        STATUS_BG_COLOR[purchase.transaction.paymentStatus]
+                      }`}
                     >
                       {STATUS_CODES[purchase.transaction.paymentStatus]}
                     </span>
                   </div>
-                  {purchase.transaction.paymentStatus !== TransactionStatus.S && (
+                  {purchase.transaction.paymentStatus !==
+                    TransactionStatus.S && (
                     <button
                       className="inline-block px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
                       disabled={isSubmitting}
@@ -287,30 +297,42 @@ const PurchaseHistory = () => {
           )}
         </Content.Container>
       )}
-      {table === "NEW" && (
+      {table === 'NEW' && (
         <Content.Container>
           {!orderFeeData?.data?.orderFees?.orderFee || orderFeeDataIsLoading ? (
             <Card>
               <Card.Body />
             </Card>
-          ) :
-            sortedOrderFees.length > 0 ? (
-              sortedOrderFees.map((order, index) => (
-                <Card key={index}>
-                  <Card.Body
-                    title={`${order[0].orderCode}`}
-                    subtitle={`Date of Order: ${formatDistance(
-                      new Date(order[0].createdAt), // Assuming current date for simplicity
-                      new Date(),
-                      { addSuffix: true }
-                    )}`}
-                  >
-                    <hr />
-                    {order
-                      .filter(order => order.order === 0)
-                      .map((order, orderIndex) => (
-                        <div key={orderIndex} className="flex flex-col p-3 space-y-4">
-                          {order.transaction.purchaseHistory.orderItems.map((item, itemIndex) => (
+          ) : sortedOrderFees.length > 0 ? (
+            sortedOrderFees.map((order, index) => (
+              <Card key={index}>
+                <Card.Body
+                  title={
+                    <div className="flex items-center justify-between">
+                      <span>{order[0].orderCode}</span>
+                      {order[0].orderStatus === 'Cancelled' && (
+                        <span className="rounded-full py-1 px-3 text-xs font-semibold bg-red-500 text-white">
+                          {order[0].orderStatus}
+                        </span>
+                      )}
+                    </div>
+                  }
+                  subtitle={`Date of Order: ${formatDistance(
+                    new Date(order[0].createdAt), // Assuming current date for simplicity
+                    new Date(),
+                    { addSuffix: true }
+                  )}`}
+                >
+                  <hr />
+                  {order
+                    .filter((order) => order.order === 0)
+                    .map((order, orderIndex) => (
+                      <div
+                        key={orderIndex}
+                        className="flex flex-col p-3 space-y-4"
+                      >
+                        {order.transaction.purchaseHistory.orderItems.map(
+                          (item, itemIndex) => (
                             <div
                               key={itemIndex}
                               className="flex items-center space-x-5 p-3 border rounded"
@@ -347,78 +369,95 @@ const PurchaseHistory = () => {
                                 </p>
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      ))}
-
-                    <hr className="border-2 border-gray-600" />
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-medium text-left">Payment Type</h4>
-                      <h5 className="font-bold text-right">
-                        {SHOP_PAYMENT_TYPE[order[0].paymentType]}
-                      </h5>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-medium text-left">Total</h4>
-                      <h5 className="font-bold text-right text-green-600">
-                        {new Intl.NumberFormat('en-US', {
-                          style: 'currency',
-                          currency: 'PHP',
-                        }).format(
-                          order.reduce((total, feeWrapper) => {
-                            return total + (Number(feeWrapper.transaction.amount));
-                          }, 0)
+                          )
                         )}
-                      </h5>
-                    </div>
+                      </div>
+                    ))}
 
-                  </Card.Body>
-                  <Card.Footer>
-                    <div className="flex flex-col space-y-4 w-full">
-                      {order
-                        .slice() // Create a copy of the array to avoid mutating the original array
-                        .sort((a, b) => a.order - b.order) // Sort the array based on `order` property
-                        .map((feeWrapper, feeIndex) => (
-                          <div key={feeIndex} className="flex items-center justify-between w-full">
-                            <div className="flex items-center space-x-2">
-                              <h6 className="font-bold text-gray-400">
-                                Payment Reference:{" "}
-                                <span className="font-mono font-bold uppercase">
-                                  {feeWrapper.transaction.paymentReference || " "}
-                                </span>
-                              </h6>
-                              <span
-                                className={`rounded-full py-0.5 text-xs px-2 ${STATUS_BG_COLOR[feeWrapper.transaction.paymentStatus]}`}
-                              >
-                                {STATUS_CODES[feeWrapper.transaction.paymentStatus]}
+                  <hr className="border-2 border-gray-600" />
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-left">Payment Type</h4>
+                    <h5 className="font-bold text-right">
+                      {SHOP_PAYMENT_TYPE[order[0].paymentType]}
+                    </h5>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-left">Total</h4>
+                    <h5 className="font-bold text-right text-green-600">
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(
+                        order.reduce((total, feeWrapper) => {
+                          return total + Number(feeWrapper.transaction.amount);
+                        }, 0)
+                      )}
+                    </h5>
+                  </div>
+                </Card.Body>
+                <Card.Footer>
+                  <div className="flex flex-col space-y-4 w-full">
+                    {order
+                      .slice() // Create a copy of the array to avoid mutating the original array
+                      .sort((a, b) => a.order - b.order) // Sort the array based on `order` property
+                      .map((feeWrapper, feeIndex) => (
+                        <div
+                          key={feeIndex}
+                          className="flex items-center justify-between w-full"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <h6 className="font-bold text-gray-400">
+                              Payment Reference:{' '}
+                              <span className="font-mono font-bold uppercase">
+                                {feeWrapper.transaction.paymentReference || ' '}
                               </span>
-                            </div>
-                            {feeWrapper.transaction.paymentStatus !== TransactionStatus.S && (
-                              <div className='flex items-center space-x-5'>
-                                <div className='flex flex-col items-center'>
-                                  {feeWrapper.paymentType === 'INSTALLMENT' && (
-                                    <>
-                                      <h6 className="font-bold text-sm text-center text-gray-400">
-                                        Payment{" #"}{feeWrapper.order + 1}
-                                      </h6>
-                                      <h6 className="font-bold text-sm text-center text-green-600">
-                                        {new Intl.NumberFormat('en-US', {
-                                          style: 'currency',
-                                          currency: 'PHP',
-                                        }).format(feeWrapper.transaction.amount)}
-                                      </h6>
-                                    </>
-                                  )}
+                            </h6>
+                            <span
+                              className={`rounded-full py-0.5 text-xs px-2 ${
+                                STATUS_BG_COLOR[
+                                  feeWrapper.transaction.paymentStatus
+                                ]
+                              }`}
+                            >
+                              {
+                                STATUS_CODES[
+                                  feeWrapper.transaction.paymentStatus
+                                ]
+                              }
+                            </span>
+                          </div>
+                          {feeWrapper.transaction.paymentStatus !==
+                            TransactionStatus.S && (
+                            <div className="flex items-center space-x-5">
+                              <div className="flex flex-col items-center">
+                                {feeWrapper.paymentType === 'INSTALLMENT' && (
+                                  <>
+                                    <h6 className="font-bold text-sm text-center text-gray-400">
+                                      Payment{' #'}
+                                      {feeWrapper.order + 1}
+                                    </h6>
+                                    <h6 className="font-bold text-sm text-center text-green-600">
+                                      {new Intl.NumberFormat('en-US', {
+                                        style: 'currency',
+                                        currency: 'PHP',
+                                      }).format(feeWrapper.transaction.amount)}
+                                    </h6>
+                                  </>
+                                )}
 
-                                  <h6 className="font-bold text-sm text-center text-gray-400">
-                                    {getOrderFeeDeadline(feeWrapper.order, feeWrapper.paymentType, feeWrapper.createdAt).toLocaleDateString('en-US', {
-                                      year: 'numeric',
-                                      month: 'long',
-                                      day: 'numeric'
-                                    })}
-                                  </h6>
-
-                                </div>
+                                <h6 className="font-bold text-sm text-center text-gray-400">
+                                  {getOrderFeeDeadline(
+                                    feeWrapper.order,
+                                    feeWrapper.paymentType,
+                                    feeWrapper.createdAt
+                                  ).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                  })}
+                                </h6>
+                              </div>
+                              {order[0].orderStatus !== 'Cancelled' ? (
                                 <button
                                   className="ml-auto px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
                                   disabled={isSubmitting}
@@ -433,33 +472,47 @@ const PurchaseHistory = () => {
                                 >
                                   Pay Now
                                 </button>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-
-                    </div>
-                  </Card.Footer>
-
-                </Card>
-              ))
-            ) : (
-              <Card>
-                <Card.Body
-                  title="You haven't purchased anything from the Living Pupil Homeschool Shop yet or the order you're looking for is in the Old Purchases..."
-                  subtitle="You may select the Old Purchases above or visit the shop the in link below to start seeing your purchases here"
-                >
-                  <Link href="/shop">
-                    <a
-                      className="w-full py-2 text-center rounded-lg text-primary-500 bg-secondary-500 hover:bg-secondary-600 disabled:opacity-25"
-                      target="_blank"
-                    >
-                      Visit Shop
-                    </a>
-                  </Link>
-                </Card.Body>
+                              ) : (
+                                <button
+                                  className="ml-auto px-3 py-2 text-white rounded bg-red-500 disabled:opacity-50"
+                                  disabled
+                                  // onClick={() =>
+                                  //   showBankPaymentModal(
+                                  //     feeWrapper.transaction.transactionId,
+                                  //     feeWrapper.transaction.referenceNumber,
+                                  //     feeWrapper.transaction.amount,
+                                  //     feeWrapper.transaction.amount
+                                  //   )
+                                  // }
+                                >
+                                  Cancelled
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                  </div>
+                </Card.Footer>
               </Card>
-            )}
+            ))
+          ) : (
+            <Card>
+              <Card.Body
+                title="You haven't purchased anything from the Living Pupil Homeschool Shop yet or the order you're looking for is in the Old Purchases..."
+                subtitle="You may select the Old Purchases above or visit the shop the in link below to start seeing your purchases here"
+              >
+                <Link href="/shop">
+                  <a
+                    className="w-full py-2 text-center rounded-lg text-primary-500 bg-secondary-500 hover:bg-secondary-600 disabled:opacity-25"
+                    target="_blank"
+                  >
+                    Visit Shop
+                  </a>
+                </Link>
+              </Card.Body>
+            </Card>
+          )}
         </Content.Container>
       )}
 
@@ -472,7 +525,9 @@ const PurchaseHistory = () => {
         <div className="space-y-6">
           {selectedTransaction && (
             <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
-              <h3 className="text-lg font-semibold text-green-800 mb-2">Total Payment Amount</h3>
+              <h3 className="text-lg font-semibold text-green-800 mb-2">
+                Total Payment Amount
+              </h3>
               <div className="text-3xl font-bold text-green-600">
                 {new Intl.NumberFormat('en-US', {
                   style: 'currency',
@@ -487,14 +542,17 @@ const PurchaseHistory = () => {
             <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
               <div className="text-center mb-4">
                 <div className="flex items-center justify-center mb-2">
-                  <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FF7F00' }}>
+                  <div
+                    className="w-12 h-12 rounded-lg flex items-center justify-center"
+                    style={{ backgroundColor: '#FF7F00' }}
+                  >
                     <span className="text-white text-lg font-bold">UB</span>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800">Union Bank</h3>
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Union Bank
+                </h3>
               </div>
-
-
 
               <div className="mt-4 text-center">
                 <img
@@ -523,14 +581,15 @@ const PurchaseHistory = () => {
             <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-green-500 transition-colors">
               <div className="text-center mb-4">
                 <div className="flex items-center justify-center mb-2">
-                  <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#3B82F6' }}>
+                  <div
+                    className="w-12 h-12 rounded-lg flex items-center justify-center"
+                    style={{ backgroundColor: '#3B82F6' }}
+                  >
                     <span className="text-white text-lg font-bold">GC</span>
                   </div>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800">GCash</h3>
               </div>
-
-
 
               <div className="mt-4 text-center">
                 <img
@@ -556,11 +615,17 @@ const PurchaseHistory = () => {
           </div>
 
           <div className="bg-blue-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-blue-800 mb-2">Payment Instructions:</h4>
+            <h4 className="font-semibold text-blue-800 mb-2">
+              Payment Instructions:
+            </h4>
             <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
-              <li>Choose your preferred payment method (Union Bank or GCash)</li>
+              <li>
+                Choose your preferred payment method (Union Bank or GCash)
+              </li>
               <li>Scan the QR code or transfer the exact amount</li>
-              <li>Use your transaction reference number as payment description</li>
+              <li>
+                Use your transaction reference number as payment description
+              </li>
               <li>Keep your payment receipt for verification</li>
               <li>Upload your proof of payment using the form below</li>
               <li>Payment will be verified within 24-48 hours</li>
@@ -569,7 +634,9 @@ const PurchaseHistory = () => {
 
           {/* Payment Proof Upload */}
           <div className="bg-yellow-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-yellow-800 mb-2">Upload Payment Proof</h4>
+            <h4 className="font-semibold text-yellow-800 mb-2">
+              Upload Payment Proof
+            </h4>
             <div className="space-y-3">
               <input
                 type="file"
@@ -594,10 +661,22 @@ const PurchaseHistory = () => {
 
           {selectedTransaction && (
             <div className="bg-yellow-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-yellow-800 mb-2">Transaction Details:</h4>
+              <h4 className="font-semibold text-yellow-800 mb-2">
+                Transaction Details:
+              </h4>
               <div className="space-y-1 text-sm text-yellow-700">
-                <div>Transaction ID: <span className="font-mono">{selectedTransaction.transactionId}</span></div>
-                <div>Reference Number: <span className="font-mono">{selectedTransaction.referenceNumber}</span></div>
+                <div>
+                  Transaction ID:{' '}
+                  <span className="font-mono">
+                    {selectedTransaction.transactionId}
+                  </span>
+                </div>
+                <div>
+                  Reference Number:{' '}
+                  <span className="font-mono">
+                    {selectedTransaction.referenceNumber}
+                  </span>
+                </div>
               </div>
             </div>
           )}
@@ -612,7 +691,6 @@ const PurchaseHistory = () => {
           </div>
         </div>
       </Modal>
-
     </AccountLayout>
   );
 };
