@@ -14,6 +14,7 @@ export const getStoreOrders = async () =>
       transactionId: true,
       order: true,
       paymentType: true,
+      orderStatus: true,
       orderCode: true,
       createdAt: true,
       deletedAt: true,
@@ -359,6 +360,7 @@ export const createOrderFee = async ({
         order: 0,
         paymentType,
         orderCode: uniqueOrderCode,
+        orderStatus: 'Order_Placed',
         signatureLink: signatureLink,
         transaction: {
           connect: {
@@ -377,6 +379,7 @@ export const createOrderFee = async ({
         order: 1,
         paymentType,
         orderCode: uniqueOrderCode,
+        orderStatus: 'Order_Placed',
         signatureLink: signatureLink,
         transaction: {
           connect: {
@@ -395,6 +398,7 @@ export const createOrderFee = async ({
         order: 2,
         paymentType,
         orderCode: uniqueOrderCode,
+        orderStatus: 'Order_Placed',
         signatureLink: signatureLink,
         transaction: {
           connect: {
@@ -413,6 +417,7 @@ export const createOrderFee = async ({
         order: 3,
         paymentType,
         orderCode: uniqueOrderCode,
+        orderStatus: 'Order_Placed',
         signatureLink: signatureLink,
         transaction: {
           connect: {
@@ -431,6 +436,7 @@ export const createOrderFee = async ({
         order: 4,
         paymentType,
         orderCode: uniqueOrderCode,
+        orderStatus: 'Order_Placed',
         signatureLink: signatureLink,
         transaction: {
           connect: {
@@ -462,6 +468,21 @@ export const cancelOrder = async (orderCode) => {
     return { success: true, data: updatedOrder };
   } catch (error) {
     console.error('Error cancelling order:', error);
+    return { success: false, error: 'Failed to update order status.' };
+  }
+};
+
+export const updateOrderFeeStatus = async (orderCode, status) => {
+  try {
+    const updatedOrderFee = await prisma.orderFee.updateMany({
+      data: {
+        orderStatus: status,
+      },
+      where: { orderCode },
+    });
+    return { success: true, data: updatedOrderFee };
+  } catch (error) {
+    console.log(`Error updating order status: `, error);
     return { success: false, error: 'Failed to update order status.' };
   }
 };

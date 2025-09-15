@@ -7,7 +7,11 @@ import Card from '@/components/Card';
 import Link from 'next/link';
 import crypto from 'crypto';
 import formatDistance from 'date-fns/formatDistance';
-import { STATUS_BG_COLOR } from '@/utils/constants';
+import {
+  STATUS_BG_COLOR,
+  ORDER_STATUS,
+  ORDER_STATUS_BG_COLOR,
+} from '@/utils/constants';
 import { STATUS_CODES } from '@/lib/server/dragonpay';
 import Image from 'next/image';
 import { TransactionStatus } from '@prisma/client';
@@ -59,6 +63,7 @@ const PurchaseHistory = () => {
       const { orderFee } = orderFeeData.data.orderFees;
       const sortedFees = groupAndSortOrderFees(orderFee);
       setSortedOrderFees(sortedFees);
+
       // Store sorted fees in state
     }
   }, [orderFeeDataIsLoading, orderFeeData]);
@@ -310,11 +315,19 @@ const PurchaseHistory = () => {
                   title={
                     <div className="flex items-center justify-between">
                       <span>{order[0].orderCode}</span>
-                      {order[0].orderStatus === 'Cancelled' && (
-                        <span className="rounded-full py-1 px-3 text-xs font-semibold bg-red-500 text-white">
-                          {order[0].orderStatus}
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">
+                          Order Status:
                         </span>
-                      )}
+                        <span
+                          className={`rounded-full py-0.5 px-2 text-xs font-semibold text-white ${
+                            ORDER_STATUS_BG_COLOR[order[0].orderStatus]
+                          }`}
+                        >
+                          {ORDER_STATUS[order[0].orderStatus]}
+                        </span>
+                      </div>
                     </div>
                   }
                   subtitle={`Date of Order: ${formatDistance(
@@ -457,7 +470,7 @@ const PurchaseHistory = () => {
                                   })}
                                 </h6>
                               </div>
-                              {order[0].orderStatus !== 'Cancelled' ? (
+                              {order[0].orderStatus === 'Order_Placed' ? (
                                 <button
                                   className="ml-auto px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
                                   disabled={isSubmitting}
@@ -472,10 +485,10 @@ const PurchaseHistory = () => {
                                 >
                                   Pay Now
                                 </button>
-                              ) : (
+                              ) : order[0].orderStatus === 'Cancelled' ? (
                                 <button
                                   className="ml-auto px-3 py-2 text-white rounded bg-red-500 disabled:opacity-50"
-                                  disabled
+
                                   // onClick={() =>
                                   //   showBankPaymentModal(
                                   //     feeWrapper.transaction.transactionId,
@@ -486,6 +499,13 @@ const PurchaseHistory = () => {
                                   // }
                                 >
                                   Cancelled
+                                </button>
+                              ) : (
+                                <button
+                                  className="ml-auto px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
+                                  disabled
+                                >
+                                  Pay Now
                                 </button>
                               )}
                             </div>

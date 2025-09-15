@@ -9,6 +9,7 @@ import { usePurchases, useStoreOrders } from '@/hooks/data';
 import Card from '@/components/Card';
 import formatDistance from 'date-fns/formatDistance';
 import { STATUS_CODES } from '@/lib/server/dragonpay';
+import api from '@/lib/common/api';
 import {
   SHOP_SHIPPING_TYPE,
   STATUS_BG_COLOR,
@@ -38,15 +39,20 @@ const Shop = () => {
   const [showPaymentDetails, setShowPaymentDetails] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [isUpdatingPaymentStatus, setIsUpdatingPaymentStatus] = useState(false);
-
+  const [showUpdateOrderStatusModal, setUpdateOrderStatusModalVisibility] =
+    useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [orderStatus, setOrderStatus] = useState('');
   const getItemCountFromOrder = (order) => {
     const items = order.transaction?.purchaseHistory?.orderItems || [];
     return items.reduce((total, item) => total + (item.quantity || 0), 0);
   };
-
+  const [isUpdatinOrderStatus, setIsUpdatinOrderStatus] = useState(false);
   const toggleConfirmChangeModal = () => {
     setShowConfirmChange(!showConfirmChange);
   };
+  const toggleUpdateOrderStatusModal = () =>
+    setUpdateOrderStatusModalVisibility(!showUpdateOrderStatusModal);
 
   const processOrders = (orders) => {
     // Filter for orders where `order === 0`
@@ -115,10 +121,14 @@ const Shop = () => {
     if (order) {
       const result = processOrders(order); // assuming this returns data
       setShippingData(result);
-      console.log('Order: ', order);
     }
   }, [order]);
 
+  useEffect(() => {
+    if (selectedOrder) {
+      setOrderStatus(selectedOrder[0].orderStatus);
+    }
+  }, [selectedOrder]);
   useEffect(() => {
     if (!orderDataIsLoading && orderData?.data?.orders) {
       const groupAndSortOrderFees = (orders) => {
@@ -243,6 +253,36 @@ const Shop = () => {
     } finally {
       setIsUpdatingPaymentStatus(false);
     }
+  };
+
+  const updateOrderStatus = async () => {
+    setIsUpdatinOrderStatus(true);
+    api('/api/shop/orderFees', {
+      body: {
+        orderStatus,
+        orderCode: selectedOrder[0].orderCode,
+      },
+      method: 'PATCH',
+    })
+      .then((response) => {
+        setIsUpdatinOrderStatus(true);
+        if (response.errors) {
+          Object.keys(response.errors).forEach((error) =>
+            toast.error(response.errors[error].msg)
+          );
+        } else {
+          toast.success('Update order status success');
+          toggleUpdateOrderStatusModal();
+          // Refresh the data
+        }
+      })
+      .catch((error) => {
+        setIsUpdatinOrderStatus(false);
+        toast.error(`Error order status: ${error.message}`);
+      })
+      .finally(() => {
+        setIsUpdatinOrderStatus(false);
+      });
   };
 
   return (
@@ -660,6 +700,15 @@ const Shop = () => {
                   </>
                 ))}
               <div className="flex flex-col p-3 space-y-2">
+                <button
+                  className="px-3 py-1 my-1 text-white rounded bg-primary-600 hover:bg-primary-400"
+                  onClick={() => {
+                    setSelectedOrder(order);
+                    toggleUpdateOrderStatusModal();
+                  }}
+                >
+                  Update Order Status
+                </button>
                 {order[0].orderStatus !== 'Cancelled' && (
                   <button
                     className="px-3 py-1 my-1 text-white rounded bg-red-600 hover:bg-red-400"
@@ -672,6 +721,61 @@ const Shop = () => {
                   </button>
                 )}
               </div>
+            </div>
+          </div>
+        </SideModal>
+      )}
+      {selectedOrder && (
+        <SideModal
+          show={showUpdateOrderStatusModal}
+          toggle={toggleUpdateOrderStatusModal}
+          // title={'Order - ' + selectedOrder[0].orderCode}
+          title={'Update Order Status'}
+        >
+          <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
+            <div className="flex flex-col w-full">
+              <h3 className="font-bold text-gray-600">
+                Order Code: {selectedOrder[0].orderCode}
+              </h3>
+              <h4 className="font-bold text-gray-600">
+                Current Status: {ORDER_STATUS[selectedOrder[0].orderStatus]}
+              </h4>
+              <label className="text-lg font-bold" htmlFor="txtMother">
+                Order Request Status{' '}
+                <span className="ml-1 text-red-600">*</span>
+              </label>
+              <div className="relative inline-block w-full border rounded">
+                <select
+                  className="w-full px-3 py-2 capitalize rounded appearance-none"
+                  onChange={(e) => setOrderStatus(e.target.value)}
+                  value={orderStatus}
+                >
+                  <option value="">Select status</option>
+                  {Object.keys(ORDER_STATUS).map((entry, index) => (
+                    <option key={index} value={entry}>
+                      {ORDER_STATUS[entry]}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col p-3 space-y-2">
+              <button
+                className="px-3 py-1 my-1 text-white rounded bg-green-600 hover:bg-green-400"
+                onClick={() => {
+                  //editStudentRecord(studentId);
+                  toast('Updating Order Status', {
+                    icon: '⚠️', // Optional: you can customize the icon
+                  });
+                  updateOrderStatus();
+                }}
+                disabled={isUpdatinOrderStatus}
+              >
+                Save Changes
+              </button>
             </div>
           </div>
         </SideModal>
@@ -1130,7 +1234,7 @@ const Shop = () => {
                                 }, 0)
                               )}
                             </td>
-                            <td className="p-2 text-right">
+                            <td className="p-2 text-center">
                               {order[0].orderStatus === null ? (
                                 ' '
                               ) : (

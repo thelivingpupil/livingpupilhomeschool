@@ -47,9 +47,9 @@ export const getPurchaseHistory = async (userId) =>
           },
           orderFee: {
             select: {
-              order: true
+              order: true,
             },
-          }
+          },
         },
       },
     },
@@ -117,9 +117,9 @@ export const getStorePurchases = async () =>
           },
           orderFee: {
             select: {
-              order: true
+              order: true,
             },
-          }
+          },
         },
       },
     },
@@ -144,54 +144,70 @@ export const createPurchase = async ({
 }) => {
   try {
     // Fetch current inventory
-    const itemIds = items.map(item => item.id);
-    const currentInventory = await sanityClient.fetch(`*[_type == "shopItems" && _id in $itemIds]`, { itemIds });
+    const itemIds = items.map((item) => item.id);
+    const currentInventory = await sanityClient.fetch(
+      `*[_type == "shopItems" && _id in $itemIds]`,
+      { itemIds }
+    );
 
     // Check and prepare inventory updates
-    const inventoryIssues = items.map(purchasedItem => {
-      const inventoryItem = currentInventory.find(item => item._id === purchasedItem.id);
-      if (inventoryItem) {
-        const newQuantity = inventoryItem.inventory - purchasedItem.quantity;
-        if (newQuantity < 0) {
-          return {
-            name: inventoryItem.name,
-            id: inventoryItem._id,
-            requestedQuantity: purchasedItem.quantity,
-            availableQuantity: inventoryItem.inventory
-          };
+    const inventoryIssues = items
+      .map((purchasedItem) => {
+        const inventoryItem = currentInventory.find(
+          (item) => item._id === purchasedItem.id
+        );
+        if (inventoryItem) {
+          const newQuantity = inventoryItem.inventory - purchasedItem.quantity;
+          if (newQuantity < 0) {
+            return {
+              name: inventoryItem.name,
+              id: inventoryItem._id,
+              requestedQuantity: purchasedItem.quantity,
+              availableQuantity: inventoryItem.inventory,
+            };
+          }
         }
-      }
-      return null;
-    }).filter(Boolean);
+        return null;
+      })
+      .filter(Boolean);
 
-    console.log(inventoryIssues)
+    console.log(inventoryIssues);
 
     // Return errors if any inventory issues
     if (inventoryIssues.length > 0) {
       const errorMessage = inventoryIssues
-        .map(item => `Insufficient inventory for item "${item.name}". Requested: ${item.requestedQuantity}, Available: ${item.availableQuantity}`)
+        .map(
+          (item) =>
+            `Insufficient inventory for item "${item.name}". Requested: ${item.requestedQuantity}, Available: ${item.availableQuantity}`
+        )
         .join(', ');
       return { errors: { error: { msg: errorMessage } } };
     }
 
     // Proceed with inventory updates if no issues
-    const inventoryUpdates = items.map(purchasedItem => {
-      const inventoryItem = currentInventory.find(item => item._id === purchasedItem.id);
-      if (inventoryItem) {
-        const newQuantity = inventoryItem.inventory - purchasedItem.quantity;
-        return {
-          id: inventoryItem._id,
-          patch: {
-            set: { inventory: newQuantity },
-          },
-        };
-      }
-      return null;
-    }).filter(Boolean);
+    const inventoryUpdates = items
+      .map((purchasedItem) => {
+        const inventoryItem = currentInventory.find(
+          (item) => item._id === purchasedItem.id
+        );
+        if (inventoryItem) {
+          const newQuantity = inventoryItem.inventory - purchasedItem.quantity;
+          return {
+            id: inventoryItem._id,
+            patch: {
+              set: { inventory: newQuantity },
+            },
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
 
     // Batch update inventory
     const transaction = sanityClient.transaction();
-    inventoryUpdates.forEach(update => transaction.patch(update.id, update.patch));
+    inventoryUpdates.forEach((update) =>
+      transaction.patch(update.id, update.patch)
+    );
 
     const result = await transaction.commit();
 
@@ -232,10 +248,12 @@ export const createPurchase = async ({
     });
 
     return purchase;
-
   } catch (error) {
     console.error('Error creating purchase:', error);
-    return { errors: { error: { msg: 'An error occurred while processing your purchase.' } } };
+    return {
+      errors: {
+        error: { msg: 'An error occurred while processing your purchase.' },
+      },
+    };
   }
 };
-
