@@ -22,11 +22,11 @@ export const getTotalEnrollmentRevenuesByStatus = async (
   const filterDate =
     startDate && endDate
       ? {
-        AND: [
-          { createdAt: { gte: new Date(startDate) } },
-          { createdAt: { lte: new Date(endDate) } },
-        ],
-      }
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
       : {};
   const result = await prisma.transaction.groupBy({
     by: ['paymentStatus'],
@@ -99,13 +99,13 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
         deadline:
           schoolFee.transaction.paymentStatus === TransactionStatus.U
             ? new Date(
-              getDeadline(
-                schoolFee.order,
-                schoolFee.paymentType,
-                schoolFee.transaction.createdAt,
-                workspace.studentRecord.schoolYear
-              ) || schoolFee.transaction.createdAt
-            )
+                getDeadline(
+                  schoolFee.order,
+                  schoolFee.paymentType,
+                  schoolFee.transaction.createdAt,
+                  workspace.studentRecord.schoolYear
+                ) || schoolFee.transaction.createdAt
+              )
             : schoolFee.transaction.createdAt,
       };
     })
@@ -148,16 +148,15 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
   return data;
 };
 
-
 export const getTotalStoreRevenuesByStatus = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-        AND: [
-          { createdAt: { gte: new Date(startDate) } },
-          { createdAt: { lte: new Date(endDate) } },
-        ],
-      }
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
       : {};
   const result = await prisma.transaction.groupBy({
     by: ['paymentStatus'],
@@ -188,11 +187,11 @@ export const getTotalSales = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-        AND: [
-          { createdAt: { gte: new Date(startDate) } },
-          { createdAt: { lte: new Date(endDate) } },
-        ],
-      }
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
       : {};
   const total = await prisma.transaction.aggregate({
     _sum: { amount: true },
@@ -209,11 +208,11 @@ export const getPendingSales = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-        AND: [
-          { createdAt: { gte: new Date(startDate) } },
-          { createdAt: { lte: new Date(endDate) } },
-        ],
-      }
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
       : {};
   const total = await prisma.transaction.aggregate({
     _sum: { amount: true },
@@ -304,7 +303,7 @@ export const createTransaction = async (
       },
     },
   });
-  return { url: `${url}`, referenceNumber };
+  return { url: `${url}`, referenceNumber, transactionId };
 };
 
 export const getTransaction = async (transactionId, referenceNumber) =>
@@ -329,6 +328,7 @@ export const getTransactions = async () =>
       paymentStatus: true,
       paymentReference: true,
       paymentProofLink: true,
+      url: true,
       createdAt: true,
       updatedAt: true,
       user: {
@@ -382,7 +382,6 @@ export const getTransactions = async () =>
       source: TransactionSource.ENROLLMENT,
     },
   });
-
 
 export const renewTransaction = async (
   email,
@@ -488,7 +487,7 @@ export const updateTransaction = async (
   message,
   balance = undefined,
   payment = undefined,
-  amount = undefined,
+  amount = undefined
 ) => {
   const transaction = await prisma.transaction.update({
     data: {
@@ -523,7 +522,11 @@ export const updateTransaction = async (
   };
 };
 
-export const changeTransactionAmount = async (transactionId, amount, balance) => {
+export const changeTransactionAmount = async (
+  transactionId,
+  amount,
+  balance
+) => {
   const transaction = await prisma.transaction.update({
     data: {
       ...(typeof amount !== 'undefined' && { amount }), // Check for undefined

@@ -30,9 +30,9 @@ export const createSchoolFees = async (
   paymentMethod,
   discountCode = '',
   monthIndex,
-  scholarshipCode = '',
+  scholarshipCode = ''
 ) => {
-  console.log("Entering createSchoolFees function...");
+  console.log('Entering createSchoolFees function...');
   let gradeLevel = incomingGradeLevel;
   const miscellaneousFee = 500;
 
@@ -68,22 +68,22 @@ export const createSchoolFees = async (
   const sanityFetchArgs =
     program === Program.HOMESCHOOL_COTTAGE
       ? [
-        `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType && cottageType == $cottageType][0]{...}`,
-        {
-          enrollmentType,
-          gradeLevel,
-          program,
-          cottageType,
-        },
-      ]
+          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType && cottageType == $cottageType][0]{...}`,
+          {
+            enrollmentType,
+            gradeLevel,
+            program,
+            cottageType,
+          },
+        ]
       : [
-        `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType][0]{...}`,
-        {
-          enrollmentType,
-          gradeLevel,
-          program,
-        },
-      ];
+          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType][0]{...}`,
+          {
+            enrollmentType,
+            gradeLevel,
+            program,
+          },
+        ];
 
   const fetchProgram = await sanityClient.fetch(...sanityFetchArgs);
 
@@ -119,15 +119,16 @@ export const createSchoolFees = async (
     const payments = isPastorsFee
       ? discount.value
       : discount
-        ? fee.fullPayment -
+      ? fee.fullPayment -
         (discount.type === 'VALUE'
           ? discount.value
           : (discount.value / 100) * fee.fullPayment)
-        : fee.fullPayment;
+      : fee.fullPayment;
 
-    scholarshipValue = scholarship ?
-      scholarship.type === 'VALUE' ? scholarship.value :
-        (scholarship.value / 100) * fee.fullPayment
+    scholarshipValue = scholarship
+      ? scholarship.type === 'VALUE'
+        ? scholarship.value
+        : (scholarship.value / 100) * fee.fullPayment
       : 0;
 
     let total;
@@ -135,9 +136,10 @@ export const createSchoolFees = async (
     if (scholarshipCode === 'Full-scholar') {
       total = 0;
     } else {
-      total = payments + FEES[paymentMethod] + miscellaneousFee - scholarshipValue;
+      total =
+        payments + FEES[paymentMethod] + miscellaneousFee - scholarshipValue;
     }
-    console.log("Fee: " + total)
+    console.log('Fee: ' + total);
     if (typeof total !== 'number' || isNaN(total)) {
       throw new Error('Invalid total value');
     }
@@ -178,14 +180,16 @@ export const createSchoolFees = async (
     ]);
     result = {
       transaction: response,
-      amount: payments + FEES[paymentMethod] + miscellaneousFee - scholarshipValue
+      amount:
+        payments + FEES[paymentMethod] + miscellaneousFee - scholarshipValue,
     };
   } else if (payment === PaymentType.SEMI_ANNUAL) {
     const fee = schoolFee.paymentTerms[1];
 
-    scholarshipValue = scholarship ?
-      scholarship.type === 'VALUE' ? scholarship.value :
-        (scholarship.value / 100) * fee.fullPayment
+    scholarshipValue = scholarship
+      ? scholarship.type === 'VALUE'
+        ? scholarship.value
+        : (scholarship.value / 100) * fee.fullPayment
       : 0;
 
     const calculatedScholarship = scholarshipValue / 2;
@@ -193,20 +197,21 @@ export const createSchoolFees = async (
 
     const payments = isPastorsFee
       ? [
-        fee.downPayment,
-        (discount.value - fee.downPayment) / 2,
-        (discount.value - fee.downPayment) / 2,
-      ]
+          fee.downPayment,
+          (discount.value - fee.downPayment) / 2,
+          (discount.value - fee.downPayment) / 2,
+        ]
       : discount
-        ? [
+      ? [
           fee.downPayment,
           fee.secondPayment -
-          (discount.type === 'VALUE'
-            ? discount.value
-            : (discount.value / 100) * (fee.secondPayment + fee.thirdPayment)),
+            (discount.type === 'VALUE'
+              ? discount.value
+              : (discount.value / 100) *
+                (fee.secondPayment + fee.thirdPayment)),
           fee.thirdPayment,
         ]
-        : [fee.downPayment, fee.secondPayment, fee.thirdPayment];
+      : [fee.downPayment, fee.secondPayment, fee.thirdPayment];
 
     const transactionIds = await Promise.all([
       prisma.purchaseHistory.create({
@@ -214,11 +219,15 @@ export const createSchoolFees = async (
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[1] + FEES[paymentMethod] - calculatedScholarship },
+        data: {
+          total: payments[1] + FEES[paymentMethod] - calculatedScholarship,
+        },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[2] + FEES[paymentMethod] - calculatedScholarship },
+        data: {
+          total: payments[2] + FEES[paymentMethod] - calculatedScholarship,
+        },
         select: { id: true, transactionId: true },
       }),
     ]);
@@ -237,7 +246,10 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[1].transactionId,
-        payments[1] + FEES[paymentMethod] + calculatedMisc - calculatedScholarship,
+        payments[1] +
+          FEES[paymentMethod] +
+          calculatedMisc -
+          calculatedScholarship,
         description,
         transactionIds[1].id,
         TransactionSource.ENROLLMENT,
@@ -247,7 +259,10 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[2].transactionId,
-        payments[2] + FEES[paymentMethod] + calculatedMisc - calculatedScholarship,
+        payments[2] +
+          FEES[paymentMethod] +
+          calculatedMisc -
+          calculatedScholarship,
         description,
         transactionIds[2].id,
         TransactionSource.ENROLLMENT,
@@ -309,14 +324,15 @@ export const createSchoolFees = async (
     ]);
     result = {
       transaction: response,
-      amount: payments[0] + FEES[paymentMethod]
+      amount: payments[0] + FEES[paymentMethod],
     };
   } else if (payment === PaymentType.QUARTERLY) {
     const fee = schoolFee.paymentTerms[2];
 
-    scholarshipValue = scholarship ?
-      scholarship.type === 'VALUE' ? scholarship.value :
-        (scholarship.value / 100) * fee.fullPayment
+    scholarshipValue = scholarship
+      ? scholarship.type === 'VALUE'
+        ? scholarship.value
+        : (scholarship.value / 100) * fee.fullPayment
       : 0;
 
     const calculatedScholarship = scholarshipValue / 3;
@@ -324,22 +340,26 @@ export const createSchoolFees = async (
 
     const payments = isPastorsFee
       ? [
-        fee.downPayment,
-        (discount.value - fee.downPayment) / 3,
-        (discount.value - fee.downPayment) / 3,
-        (discount.value - fee.downPayment) / 3,
-      ]
+          fee.downPayment,
+          (discount.value - fee.downPayment) / 3,
+          (discount.value - fee.downPayment) / 3,
+          (discount.value - fee.downPayment) / 3,
+        ]
       : discount
-        ? [
+      ? [
           fee.downPayment,
           fee.secondPayment -
-          (discount.type === 'VALUE'
-            ? discount.value
-            : (discount.value / 100) * (fee.secondPayment + fee.thirdPayment + fee.thirdPayment + fee.fourthPayment)),
+            (discount.type === 'VALUE'
+              ? discount.value
+              : (discount.value / 100) *
+                (fee.secondPayment +
+                  fee.thirdPayment +
+                  fee.thirdPayment +
+                  fee.fourthPayment)),
           fee.thirdPayment,
           fee.fourthPayment,
         ]
-        : [
+      : [
           fee.downPayment,
           fee.secondPayment,
           fee.thirdPayment,
@@ -352,15 +372,33 @@ export const createSchoolFees = async (
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[1] + FEES[paymentMethod] + calculatedMisc - calculatedScholarship },
+        data: {
+          total:
+            payments[1] +
+            FEES[paymentMethod] +
+            calculatedMisc -
+            calculatedScholarship,
+        },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[2] + FEES[paymentMethod] + calculatedMisc - calculatedScholarship },
+        data: {
+          total:
+            payments[2] +
+            FEES[paymentMethod] +
+            calculatedMisc -
+            calculatedScholarship,
+        },
         select: { id: true, transactionId: true },
       }),
       prisma.purchaseHistory.create({
-        data: { total: payments[3] + FEES[paymentMethod] + calculatedMisc - calculatedScholarship },
+        data: {
+          total:
+            payments[3] +
+            FEES[paymentMethod] +
+            calculatedMisc -
+            calculatedScholarship,
+        },
         select: { id: true, transactionId: true },
       }),
     ]);
@@ -379,7 +417,10 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[1].transactionId,
-        payments[1] + FEES[paymentMethod] + calculatedMisc - calculatedScholarship,
+        payments[1] +
+          FEES[paymentMethod] +
+          calculatedMisc -
+          calculatedScholarship,
         description,
         transactionIds[1].id,
         TransactionSource.ENROLLMENT,
@@ -389,7 +430,10 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[2].transactionId,
-        payments[2] + FEES[paymentMethod] + calculatedMisc - calculatedScholarship,
+        payments[2] +
+          FEES[paymentMethod] +
+          calculatedMisc -
+          calculatedScholarship,
         description,
         transactionIds[2].id,
         TransactionSource.ENROLLMENT,
@@ -399,7 +443,10 @@ export const createSchoolFees = async (
         userId,
         email,
         transactionIds[3].transactionId,
-        payments[3] + FEES[paymentMethod] + calculatedMisc - calculatedScholarship,
+        payments[3] +
+          FEES[paymentMethod] +
+          calculatedMisc -
+          calculatedScholarship,
         description,
         transactionIds[3].id,
         TransactionSource.ENROLLMENT,
@@ -476,13 +523,17 @@ export const createSchoolFees = async (
         },
       }),
     ]);
-    result = response;
+    result = {
+      transaction: response,
+      amount: payments[0] + FEES[paymentMethod],
+    };
   } else if (payment === PaymentType.MONTHLY) {
     const fee = schoolFee.paymentTerms[3];
 
-    scholarshipValue = scholarship ?
-      scholarship.type === 'VALUE' ? scholarship.value :
-        (scholarship.value / 100) * fee.fullPayment
+    scholarshipValue = scholarship
+      ? scholarship.type === 'VALUE'
+        ? scholarship.value
+        : (scholarship.value / 100) * fee.fullPayment
       : 0;
 
     const calculatedScholarship = scholarshipValue / monthIndex;
@@ -497,28 +548,35 @@ export const createSchoolFees = async (
       ];
     } else {
       // Calculate total payment before applying discount
-      const totalPayment = fee.secondPayment + fee.thirdPayment + fee.fourthPayment + fee.fifthPayment + fee.sixthPayment + fee.seventhPayment + fee.eighthPayment + fee.ninthPayment;
+      const totalPayment =
+        fee.secondPayment +
+        fee.thirdPayment +
+        fee.fourthPayment +
+        fee.fifthPayment +
+        fee.sixthPayment +
+        fee.seventhPayment +
+        fee.eighthPayment +
+        fee.ninthPayment;
 
       // Calculate monthly payments
-      const monthlyPayment = (totalPayment / monthIndex) - calculatedScholarship;
+      const monthlyPayment = totalPayment / monthIndex - calculatedScholarship;
 
       // Create payments array with monthly payments
-      payments = [
-        fee.downPayment,
-        ...Array(monthIndex).fill(monthlyPayment),
-      ];
+      payments = [fee.downPayment, ...Array(monthIndex).fill(monthlyPayment)];
 
       // Apply discount to the second payment
       if (discount) {
-        const discountValue = discount.type === 'VALUE'
-          ? discount.value
-          : (discount.value / 100) * totalPayment;
+        const discountValue =
+          discount.type === 'VALUE'
+            ? discount.value
+            : (discount.value / 100) * totalPayment;
         payments[1] -= discountValue;
       }
     }
 
     const purchaseHistoryPromises = payments.map((payment, index) => {
-      const total = payment + FEES[paymentMethod] - (index > 0 ? calculatedScholarship : 0); // Apply scholarship only from the second payment onwards
+      const total =
+        payment + FEES[paymentMethod] - (index > 0 ? calculatedScholarship : 0); // Apply scholarship only from the second payment onwards
       return prisma.purchaseHistory.create({
         data: { total },
         select: { id: true, transactionId: true },
@@ -527,7 +585,11 @@ export const createSchoolFees = async (
 
     const transactionIds = await Promise.all(purchaseHistoryPromises);
     const transactionPromises = transactionIds.map((transaction, index) => {
-      const total = payments[index] + (index > 0 ? calculatedMisc : 0) + FEES[paymentMethod] - (index > 0 ? calculatedScholarship : 0); // Apply scholarship only from the second payment onwards
+      const total =
+        payments[index] +
+        (index > 0 ? calculatedMisc : 0) +
+        FEES[paymentMethod] -
+        (index > 0 ? calculatedScholarship : 0); // Apply scholarship only from the second payment onwards
       return createTransaction(
         userId,
         email,
@@ -565,10 +627,10 @@ export const createSchoolFees = async (
     // Log the school fee responses for verification
     result = {
       transaction: responses,
-      amount: payments[0] + FEES[paymentMethod]
+      amount: payments[0] + FEES[paymentMethod],
     };
   }
-  console.log("Exiting createSchoolFees function...")
+  console.log('Exiting createSchoolFees function...');
   return result;
 };
 
@@ -581,11 +643,10 @@ export const createPayAllFees = async (
   paymentMethod,
   amount
 ) => {
-  console.log("Entering createSchoolFees function...");
+  console.log('Entering createSchoolFees function...');
   let result = null;
 
   if (payment === PaymentType.PAY_ALL) {
-
     const transaction = await prisma.purchaseHistory.create({
       data: { total: amount },
       select: { id: true, transactionId: true },
@@ -623,12 +684,12 @@ export const createPayAllFees = async (
     ]);
     result = {
       transaction: response,
-      amount: amount
+      amount: amount,
     };
   }
-  console.log("Exiting createSchoolFees function...")
+  console.log('Exiting createSchoolFees function...');
   return result;
-}
+};
 
 export const deleteStudentSchoolFees = async (studentId) => {
   try {
@@ -660,7 +721,7 @@ export const getSchoolFeeByStudentIdAndOrder = async (studentId, order) => {
             balance: true,
             paymentStatus: true,
             updatedAt: true,
-          }
+          },
         },
       },
       where: {
@@ -692,7 +753,7 @@ export const getSchoolFees = async () => {
             balance: true,
             paymentStatus: true,
             updatedAt: true,
-          }
+          },
         },
       },
       where: {
@@ -704,4 +765,4 @@ export const getSchoolFees = async () => {
   } catch (error) {
     throw new Error(`Error fetching school fees: ${error.message}`);
   }
-}
+};

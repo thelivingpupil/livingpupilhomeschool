@@ -144,7 +144,7 @@ const Transactions = () => {
     const initialPayment = getStudentInitialFee(
       transaction.schoolFee.student.studentRecord.studentId
     );
-
+    console.log('Trasanction:', transaction);
     const deadline =
       initialPayment?.transaction?.paymentStatus === 'S'
         ? getDeadline(

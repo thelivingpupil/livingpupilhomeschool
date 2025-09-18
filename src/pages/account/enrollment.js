@@ -96,6 +96,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const clearSignature = () => {
     sigCanvas.current.clear();
   };
+  const [transactionId, setTransactionId] = useState(null);
   const [slug, setSlug] = useState('');
   const [firstName, setFirstName] = useState(student?.firstName || '');
   const [middleName, setMiddleName] = useState(student?.middleName || '');
@@ -268,6 +269,22 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       setValidMobileNumber(true);
     }
   };
+  useEffect(() => {
+    if (enrollmentType === Enrollment.CONTINUING) {
+      setFormerSchoolName('Living Pupil Homeschool');
+      setFormerSchoolAddress('N/A');
+      setFormerRegistrar('N/A');
+      setFormerRegistrarEmail('N/A');
+      setFormerRegistrarNumber('N/A');
+    } else {
+      setFormerSchoolName('');
+      setFormerSchoolAddress('');
+      setFormerRegistrar('');
+      setFormerRegistrarEmail('');
+      setFormerRegistrarNumber('');
+    }
+  }, [enrollmentType]);
+
   const validNumber = (value, countryData) => {
     if (
       countryData &&
@@ -866,6 +883,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           // Don't automatically open DragonPay
           setPaymentLink(response.data.schoolFee.url);
           setPaymentAmount(response.data.schoolFee.amount || 0);
+          setTransactionId(response.data.schoolFee.transactionId);
           setViewFees(true);
           toast.success('Student information successfully submitted!');
         }
@@ -915,13 +933,17 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
     setShowBankTransferModal(!showBankTransferModal);
 
   const handlePaymentProofUpload = async () => {
-    if (!paymentProofFile) return;
-
+    if (!paymentProofFile) {
+      toast.error('No transaction or file selected');
+      return;
+    }
+    if (!transactionId) {
+      toast.error('No transactionId');
+      return;
+    }
+    console.log('Transaction ID:', transactionId);
     setUploadingProof(true);
     try {
-      const blob = new Blob([paymentProofFile], {
-        type: paymentProofFile.type,
-      });
       const extension = paymentProofFile.name.split('.').pop();
       const fileName = `payment-proof-${crypto
         .createHash('md5')
@@ -931,36 +953,43 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         new Date(),
         'yyyy.MM.dd.kk.mm.ss'
       )}.${extension}`;
-
       const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, blob);
-
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          const progress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          // Could add progress state here if needed
+      const uploadTask = uploadBytesResumable(storageRef, paymentProofFile);
+      const downloadURL = await new Promise((resolve, reject) => {
+        uploadTask.on(
+          'state_changed',
+          // Optional: track progress if you want
+          undefined,
+          (error) => reject(error),
+          async () => {
+            try {
+              const url = await getDownloadURL(uploadTask.snapshot.ref);
+              resolve(url);
+            } catch (err) {
+              reject(err);
+            }
+          }
+        );
+      });
+      const response = await api('/api/transactions/payment-proof', {
+        method: 'PUT',
+        body: {
+          transactionId: transactionId,
+          paymentProofLink: downloadURL,
         },
-        (error) => {
-          toast.error(error.message);
-          setUploadingProof(false);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            // TODO: Send payment proof to backend for verification
-            toast.success(
-              'Payment proof uploaded successfully! It will be verified within 24-48 hours.'
-            );
-            setShowBankTransferModal(false);
-            setPaymentProofFile(null);
-            setUploadingProof(false);
-          });
-        }
-      );
+      });
+      if (response.errors) {
+        Object.values(response.errors).forEach((err) => toast.error(err.msg));
+      } else {
+        toast.success('Payment proof uploaded successfully!');
+        toast.success('It will be verified within 24–48 hours.');
+        setShowBankTransferModal(false);
+        setPaymentProofFile(null);
+      }
     } catch (error) {
+      console.error('Error uploading payment proof:', error);
       toast.error('Error uploading payment proof');
+    } finally {
       setUploadingProof(false);
     }
   };
@@ -1642,9 +1671,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                   value={schoolYear}
                 >
                   <option value="">Please select School year...</option>
-                  <option value={SCHOOL_YEAR.SY_2024_2025}>
-                    {SCHOOL_YEAR.SY_2024_2025}
-                  </option>
+                  {enrollmentType !== Enrollment.CONTINUING && (
+                    <option value={SCHOOL_YEAR.SY_2024_2025}>
+                      {SCHOOL_YEAR.SY_2024_2025}
+                    </option>
+                  )}
                   <option value={SCHOOL_YEAR.SY_2025_2026}>
                     {SCHOOL_YEAR.SY_2025_2026}
                   </option>

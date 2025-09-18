@@ -70,57 +70,80 @@ const ShopItem = ({ item }) => {
   const increase = () => setQuantity((state) => state + 1);
 
   const handlePaymentProofUpload = async () => {
-    if (!paymentProofFile || !transactionId.trim()) {
-      toast.error('Please select a file and enter your transaction ID');
+    if (!paymentProofFile || !selectedTransaction?.transactionId) {
+      toast.error('No transaction or file selected');
       return;
     }
 
     setUploadingProof(true);
+
     try {
-      // Upload file to Firebase storage
-      const fileName = `payment-proof-${transactionId}-${Date.now()}.jpg`;
+      // ✅ Generate unique filename
+      const extension = paymentProofFile.name.split('.').pop();
+      const hash = crypto
+        .MD5(paymentProofFile.name + Date.now())
+        .toString()
+        .substring(0, 12);
+      const timestamp = new Date()
+        .toISOString()
+        .replace(/[:.]/g, '-') // safer filename
+        .slice(0, 19);
+      const fileName = `payment-proof-${hash}-${timestamp}.${extension}`;
+
+      // ✅ Upload to Firebase
       const storageRef = ref(storage, fileName);
       const uploadTask = uploadBytesResumable(storageRef, paymentProofFile);
 
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          // Progress tracking if needed
-        },
-        (error) => {
-          toast.error('Failed to upload payment proof');
-          setUploadingProof(false);
-        },
-        async () => {
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-
-          // Update transaction with payment proof link
-          try {
-            const response = await api('/api/transactions/payment-proof', {
-              method: 'PUT',
-              body: {
-                transactionId: transactionId.trim(),
-                paymentProofLink: downloadURL
-              }
-            });
-
-            if (response.errors) {
-              Object.keys(response.errors).forEach((error) =>
-                toast.error(response.errors[error].msg)
-              );
-            } else {
-              toast.success('Payment proof uploaded successfully!');
-              setPaymentProofFile(null);
-              // setShowPaymentProofModal(false); // This line is removed
+      // ✅ Wrap in Promise for cleaner async/await
+      const downloadURL = await new Promise((resolve, reject) => {
+        uploadTask.on(
+          'state_changed',
+          // Progress (optional)
+          (snapshot) => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            console.log('Upload progress:', progress + '%');
+          },
+          (error) => reject(error),
+          async () => {
+            try {
+              const url = await getDownloadURL(uploadTask.snapshot.ref);
+              resolve(url);
+            } catch (err) {
+              reject(err);
             }
-          } catch (apiError) {
-            toast.error('Failed to update transaction with payment proof. Please contact support.');
           }
-          setUploadingProof(false);
-        }
-      );
-    } catch (error) {
-      toast.error('Failed to upload payment proof');
+        );
+      });
+
+      // ✅ Send to backend
+      const response = await fetch('/api/transactions/payment-proof', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          transactionId: selectedTransaction.transactionId.trim(),
+          paymentProofLink: downloadURL,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || data.errors) {
+        const errors = data.errors || [
+          { msg: 'Failed to upload payment proof' },
+        ];
+        errors.forEach((err) => toast.error(err.msg));
+      } else {
+        toast.success('Payment proof uploaded successfully!');
+        toast.info('It will be verified within 24–48 hours.');
+        setShowBankTransferModal(false);
+        setPaymentProofFile(null);
+      }
+    } catch (err) {
+      console.error('Upload error:', err);
+      toast.error(err.message || 'Error uploading payment proof');
+    } finally {
       setUploadingProof(false);
     }
   };
@@ -195,9 +218,9 @@ const ShopItem = ({ item }) => {
                           <p className="text-xs">
                             {`(${quantity}x) @
                               ${new Intl.NumberFormat('en-US', {
-                              style: 'currency',
-                              currency: 'PHP',
-                            }).format(price)}`}
+                                style: 'currency',
+                                currency: 'PHP',
+                              }).format(price)}`}
                           </p>
                         </div>
                       </div>
@@ -302,7 +325,9 @@ const ShopItem = ({ item }) => {
             <div className="space-y-6">
               <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
                 <h3 className="text-lg font-semibold text-green-800 mb-2">
-                  {(paymentType || 'FULL_PAYMENT') === 'INSTALLMENT' ? 'First Installment Amount' : 'Total Payment Amount'}
+                  {(paymentType || 'FULL_PAYMENT') === 'INSTALLMENT'
+                    ? 'First Installment Amount'
+                    : 'Total Payment Amount'}
                 </h3>
                 <div className="text-3xl font-bold text-green-600">
                   {new Intl.NumberFormat('en-US', {
@@ -310,14 +335,17 @@ const ShopItem = ({ item }) => {
                     currency: 'PHP',
                   }).format(paymentAmount || total)}
                 </div>
-                {(paymentType || 'FULL_PAYMENT') === 'INSTALLMENT' && totalPayment > 0 && (
-                  <div className="text-sm text-gray-600 mt-2">
-                    Total: {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'PHP',
-                    }).format(totalPayment)} (5 installments)
-                  </div>
-                )}
+                {(paymentType || 'FULL_PAYMENT') === 'INSTALLMENT' &&
+                  totalPayment > 0 && (
+                    <div className="text-sm text-gray-600 mt-2">
+                      Total:{' '}
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'PHP',
+                      }).format(totalPayment)}{' '}
+                      (5 installments)
+                    </div>
+                  )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -325,14 +353,17 @@ const ShopItem = ({ item }) => {
                 <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
                   <div className="text-center mb-4">
                     <div className="flex items-center justify-center mb-2">
-                      <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FF7F00' }}>
+                      <div
+                        className="w-12 h-12 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: '#FF7F00' }}
+                      >
                         <span className="text-white text-lg font-bold">UB</span>
                       </div>
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-800">Union Bank</h3>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      Union Bank
+                    </h3>
                   </div>
-
-
 
                   <div className="mt-4 text-center">
                     <img
@@ -361,14 +392,17 @@ const ShopItem = ({ item }) => {
                 <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-green-500 transition-colors">
                   <div className="text-center mb-4">
                     <div className="flex items-center justify-center mb-2">
-                      <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#3B82F6' }}>
+                      <div
+                        className="w-12 h-12 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: '#3B82F6' }}
+                      >
                         <span className="text-white text-lg font-bold">GC</span>
                       </div>
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-800">GCash</h3>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      GCash
+                    </h3>
                   </div>
-
-
 
                   <div className="mt-4 text-center">
                     <img
@@ -394,11 +428,17 @@ const ShopItem = ({ item }) => {
               </div>
 
               <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-blue-800 mb-2">Payment Instructions:</h4>
+                <h4 className="font-semibold text-blue-800 mb-2">
+                  Payment Instructions:
+                </h4>
                 <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
-                  <li>Choose your preferred payment method (Union Bank or GCash)</li>
+                  <li>
+                    Choose your preferred payment method (Union Bank or GCash)
+                  </li>
                   <li>Scan the QR code or transfer the exact amount</li>
-                  <li>Use your transaction reference number as payment description</li>
+                  <li>
+                    Use your transaction reference number as payment description
+                  </li>
                   <li>Keep your payment receipt for verification</li>
                   <li>Upload your proof of payment using the form below</li>
                   <li>Payment will be verified within 24-48 hours</li>
@@ -407,7 +447,9 @@ const ShopItem = ({ item }) => {
 
               {/* Payment Proof Upload */}
               <div className="bg-yellow-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-yellow-800 mb-2">Upload Payment Proof</h4>
+                <h4 className="font-semibold text-yellow-800 mb-2">
+                  Upload Payment Proof
+                </h4>
                 <div className="space-y-3">
                   {transactionId ? (
                     <div className="bg-green-50 p-3 rounded-lg">
@@ -415,13 +457,15 @@ const ShopItem = ({ item }) => {
                         <strong>Transaction ID:</strong> {transactionId}
                       </p>
                       <p className="text-xs text-green-600 mt-1">
-                        This transaction ID will be used for your payment proof upload.
+                        This transaction ID will be used for your payment proof
+                        upload.
                       </p>
                     </div>
                   ) : (
                     <div className="bg-yellow-50 p-3 rounded-lg">
                       <p className="text-sm text-yellow-700">
-                        Please complete checkout first to get your transaction ID.
+                        Please complete checkout first to get your transaction
+                        ID.
                       </p>
                     </div>
                   )}
@@ -443,7 +487,9 @@ const ShopItem = ({ item }) => {
                   </div>
                   <button
                     onClick={handlePaymentProofUpload}
-                    disabled={!paymentProofFile || uploadingProof || !transactionId}
+                    disabled={
+                      !paymentProofFile || uploadingProof || !transactionId
+                    }
                     className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {uploadingProof ? 'Uploading...' : 'Upload Payment Proof'}
@@ -501,8 +547,7 @@ const ShopItem = ({ item }) => {
                     //cart.length &&
                     //shippingFee?.fee &&
                     //shippingFee?.fee < 0 &&
-                    deliveryAddress &&
-                    contactNumber
+                    (deliveryAddress && contactNumber)
                   )
                   //&& !(shippingFee?.value === 'pickup' && cart.length)
                 }

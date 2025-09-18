@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { GradeLevel, PaymentType, TransactionStatus } from '@prisma/client';
-import toast from 'react-hot-toast';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
+import { storage } from '@/lib/client/firebase';
+import toast from 'react-hot-toast';
+import crypto from 'crypto';
 import Card from '@/components/Card';
 import Content from '@/components/Content';
 import Meta from '@/components/Meta';
@@ -13,13 +16,15 @@ import { getDeadline } from '@/utils/index';
 import { WrongLocation } from '@mui/icons-material';
 import CenteredModal from '@/components/Modal/centered-modal';
 import Modal from '@/components/Modal';
-
+import format from 'date-fns/format';
 const Fees = () => {
   const { workspace } = useWorkspace();
   const [isSubmitting, setSubmittingState] = useState(false);
   const [showPayAllModal, setShowPayAllModal] = useState(false);
   const [showBankModal, setShowBankModal] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [uploadingProof, setUploadingProof] = useState(false);
+  const [paymentProofFile, setPaymentProofFile] = useState(null);
   const fees = {
     [GradeLevel.PRESCHOOL]: { schoolFees: [] },
     [GradeLevel.K1]: { schoolFees: [] },
@@ -38,7 +43,7 @@ const Fees = () => {
     [GradeLevel.GRADE_12]: { schoolFees: [] },
   };
   workspace?.schoolFees
-    ?.filter(fee => fee.deletedAt === null)
+    ?.filter((fee) => fee.deletedAt === null)
     .map((fee) => {
       fees[fee.gradeLevel].schoolFees[fee.order] = fee;
     });
@@ -51,7 +56,11 @@ const Fees = () => {
     let total = 0;
     Object.keys(fees).forEach((level) => {
       fees[level].schoolFees.forEach((fee) => {
-        if (fee.transaction && fee.transaction.paymentStatus !== TransactionStatus.S && fee.paymentType !== "PAY_ALL") {
+        if (
+          fee.transaction &&
+          fee.transaction.paymentStatus !== TransactionStatus.S &&
+          fee.paymentType !== 'PAY_ALL'
+        ) {
           // Only count unpaid fees and convert amount to a float
           total += parseFloat(fee.transaction.amount) || 0;
         }
@@ -60,11 +69,76 @@ const Fees = () => {
     setUnpaidTotal(total);
   };
 
-
   // Function to toggle the modal and calculate the total before showing it
   const togglePayAllModal = () => {
     calculateUnpaidTotal(); // Calculate total before showing the modal
     setShowPayAllModal((prev) => !prev); // Toggle modal visibility
+  };
+  const handlePaymentProofUpload = async () => {
+    if (!paymentProofFile || !selectedTransaction?.transactionId) {
+      toast.error('No transaction or file selected');
+      return;
+    }
+
+    setUploadingProof(true);
+
+    try {
+      // ✅ Prepare unique filename
+      const extension = paymentProofFile.name.split('.').pop();
+      const fileName = `payment-proof-${crypto
+        .createHash('md5')
+        .update(paymentProofFile.name + Date.now())
+        .digest('hex')
+        .substring(0, 12)}-${format(
+        new Date(),
+        'yyyy.MM.dd.kk.mm.ss'
+      )}.${extension}`;
+
+      // ✅ Upload to Firebase Storage
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, paymentProofFile);
+
+      // ✅ Wrap upload in a Promise so we can `await`
+      const downloadURL = await new Promise((resolve, reject) => {
+        uploadTask.on(
+          'state_changed',
+          // Optional: track progress if you want
+          undefined,
+          (error) => reject(error),
+          async () => {
+            try {
+              const url = await getDownloadURL(uploadTask.snapshot.ref);
+              resolve(url);
+            } catch (err) {
+              reject(err);
+            }
+          }
+        );
+      });
+
+      // ✅ Call backend API once file is uploaded
+      const response = await api('/api/transactions/payment-proof', {
+        method: 'PUT',
+        body: {
+          transactionId: selectedTransaction.transactionId.trim(),
+          paymentProofLink: downloadURL,
+        },
+      });
+
+      if (response.errors) {
+        Object.values(response.errors).forEach((err) => toast.error(err.msg));
+      } else {
+        toast.success('Payment proof uploaded successfully!');
+        toast.success('It will be verified within 24–48 hours.');
+        toggleBankModal();
+        setPaymentProofFile(null);
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error(error.message || 'Error uploading payment proof');
+    } finally {
+      setUploadingProof(false);
+    }
   };
 
   const renew = (transactionId, referenceNumber) => {
@@ -94,7 +168,7 @@ const Fees = () => {
     setSelectedTransaction({
       transactionId,
       referenceNumber,
-      amount
+      amount,
     });
     setShowBankModal(true);
   };
@@ -108,7 +182,7 @@ const Fees = () => {
 
     // Check if a PAY_ALL transaction exists
     const payAllFee = workspace.schoolFees.find(
-      fee => fee.paymentType === "PAY_ALL"
+      (fee) => fee.paymentType === 'PAY_ALL'
     );
 
     if (unpaidTotal < payAllFee?.transaction.amount) {
@@ -117,7 +191,7 @@ const Fees = () => {
           transactionId: payAllFee.transaction.transactionId,
           amount: unpaidTotal,
           description: payAllFee.transaction.description,
-          description: payAllFee.transaction.source
+          description: payAllFee.transaction.source,
         },
         method: 'PATCH',
       }).then((response) => {
@@ -129,11 +203,12 @@ const Fees = () => {
           );
         } else {
           const paymentLink = response.data.paymentLink;
+
           if (paymentLink) {
             window.open(paymentLink, '_blank');
             toast.success('Pay All payment link has renewed!');
           } else {
-            toast.error('Error retrieving link!')
+            toast.error('Error retrieving link!');
           }
         }
       });
@@ -145,7 +220,7 @@ const Fees = () => {
           transactionId: payAllFee.transaction.transactionId,
           amount: payAllFee.transaction.amount,
           description: payAllFee.transaction.description,
-          description: payAllFee.transaction.source
+          description: payAllFee.transaction.source,
         },
         method: 'PATCH',
       }).then((response) => {
@@ -165,7 +240,7 @@ const Fees = () => {
               window.open(payAllFee.transaction.url, '_blank');
               toast.success('Navigated to existing Pay All payment link!');
             } else {
-              toast.error('Error retrieving link!')
+              toast.error('Error retrieving link!');
             }
           }
         }
@@ -236,7 +311,10 @@ const Fees = () => {
         {workspace.studentRecord ? (
           <Content.Container>
             {Object.keys(fees).map((level) => {
-              if (fees[level].schoolFees.length > 0 && fees[level].schoolFees[0].deletedAt === null) {
+              if (
+                fees[level].schoolFees.length > 0 &&
+                fees[level].schoolFees[0].deletedAt === null
+              ) {
                 return (
                   <Card key={level}>
                     <Card.Body
@@ -248,31 +326,46 @@ const Fees = () => {
                           <tr className="text-left">
                             <th className="px-3 py-2">Name</th>
                             <th className="px-3 py-2">Fee</th>
-                            <th className="px-3 text-center py-2">Manual Payment</th>
+                            <th className="px-3 text-center py-2">
+                              Manual Payment
+                            </th>
                             <th className="px-3 py-2 text-center">Deadline</th>
-                            <th className="px-3 py-2 text-center">Action / Status</th>
+                            <th className="px-3 py-2 text-center">
+                              Action / Status
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
                           {fees[level].schoolFees
-                            .filter((f) => f.paymentType !== PaymentType.PAY_ALL) // Filter out PAY_ALL fees
+                            .filter(
+                              (f) => f.paymentType !== PaymentType.PAY_ALL
+                            ) // Filter out PAY_ALL fees
                             .map((f, index) => (
                               <tr key={index}>
                                 <td className="px-3 py-2">
                                   <p>
-                                    {index === 0 && f.paymentType === PaymentType.ANNUAL
+                                    {index === 0 &&
+                                    f.paymentType === PaymentType.ANNUAL
                                       ? 'Total School Fee'
-                                      : index === 0 && f.paymentType !== PaymentType.ANNUAL
-                                        ? 'Initial School Fee'
-                                        : index > 0 && f.paymentType === PaymentType.SEMI_ANNUAL
-                                          ? `Three (3) Term Payment School Fee #${index}`
-                                          : index > 0 && f.paymentType === PaymentType.QUARTERLY
-                                            ? `Three (4) Term Payment School Fee #${index}`
-                                            : `Monthly Payment School Fee #${index}`}
+                                      : index === 0 &&
+                                        f.paymentType !== PaymentType.ANNUAL
+                                      ? 'Initial School Fee'
+                                      : index > 0 &&
+                                        f.paymentType ===
+                                          PaymentType.SEMI_ANNUAL
+                                      ? `Three (3) Term Payment School Fee #${index}`
+                                      : index > 0 &&
+                                        f.paymentType === PaymentType.QUARTERLY
+                                      ? `Three (4) Term Payment School Fee #${index}`
+                                      : `Monthly Payment School Fee #${index}`}
                                   </p>
                                   <p className="text-xs italic text-gray-400">
-                                    <span className="font-medium">Reference Number: </span>
-                                    <strong>{f.transaction.paymentReference}</strong>
+                                    <span className="font-medium">
+                                      Reference Number:{' '}
+                                    </span>
+                                    <strong>
+                                      {f.transaction.paymentReference}
+                                    </strong>
                                   </p>
                                 </td>
                                 <td className="px-3 py-2">
@@ -283,14 +376,12 @@ const Fees = () => {
                                 </td>
                                 <td className="px-3 py-2 text-sm text-center">
                                   <div>
-                                    {f.transaction.payment ? (
-                                      new Intl.NumberFormat('en-US', {
-                                        style: 'currency',
-                                        currency: 'PHP',
-                                      }).format(f.transaction.payment)
-                                    ) : (
-                                      '-'
-                                    )}
+                                    {f.transaction.payment
+                                      ? new Intl.NumberFormat('en-US', {
+                                          style: 'currency',
+                                          currency: 'PHP',
+                                        }).format(f.transaction.payment)
+                                      : '-'}
                                     {f.transaction.balance ? (
                                       <p className="font-mono text-xs text-gray-400 lowercase">
                                         bal: {f.transaction.balance}
@@ -302,23 +393,28 @@ const Fees = () => {
                                 </td>
                                 <td className="px-3 py-2 text-sm text-center">
                                   {index !== 0 &&
-                                    fees[level].schoolFees[0].transaction.paymentStatus !== 'S'
+                                  fees[level].schoolFees[0].transaction
+                                    .paymentStatus !== 'S'
                                     ? '-'
                                     : index === 0
-                                      ? 'Initial Fee'
-                                      : getDeadline(
+                                    ? 'Initial Fee'
+                                    : getDeadline(
                                         index,
                                         f.paymentType,
-                                        fees[level].schoolFees[0].transaction.updatedAt,
+                                        fees[level].schoolFees[0].transaction
+                                          .updatedAt,
                                         workspace.studentRecord.schoolYear,
-                                        fees[level].schoolFees[0].transaction.paymentStatus
+                                        fees[level].schoolFees[0].transaction
+                                          .paymentStatus
                                       ) || '-'}
                                 </td>
                                 <td className="px-3 py-2 space-x-3 text-center">
-                                  {f.transaction.paymentStatus !== TransactionStatus.S ? (
+                                  {f.transaction.paymentStatus !==
+                                  TransactionStatus.S ? (
                                     <>
                                       {index !== 0 &&
-                                        fees[level].schoolFees[0].transaction.paymentStatus !== 'S' ? (
+                                      fees[level].schoolFees[0].transaction
+                                        .paymentStatus !== 'S' ? (
                                         <span className="inline-block px-3 py-1 text-xs text-white bg-red-600 rounded-full">
                                           Unpaid Initial Fee
                                         </span>
@@ -365,7 +461,7 @@ const Fees = () => {
                         </tbody>
                       </table>
                       {/* Pay All Button */}
-                      {workspace.schoolFees[0].paymentType !== "ANNUAL" && (
+                      {workspace.schoolFees[0].paymentType !== 'ANNUAL' && (
                         <div className="flex justify-center mt-4">
                           <button
                             className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-400 disabled:opacity-50"
@@ -381,7 +477,6 @@ const Fees = () => {
                 );
               }
             })}
-
           </Content.Container>
         ) : (
           <Content.Container>
@@ -407,7 +502,9 @@ const Fees = () => {
           <div className="space-y-6">
             {selectedTransaction && (
               <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
-                <h3 className="text-lg font-semibold text-green-800 mb-2">Total Payment Amount</h3>
+                <h3 className="text-lg font-semibold text-green-800 mb-2">
+                  Total Payment Amount
+                </h3>
                 <div className="text-3xl font-bold text-green-600">
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
@@ -422,11 +519,16 @@ const Fees = () => {
               <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
                 <div className="text-center mb-4">
                   <div className="flex items-center justify-center mb-2">
-                    <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FF7F00' }}>
+                    <div
+                      className="w-12 h-12 rounded-lg flex items-center justify-center"
+                      style={{ backgroundColor: '#FF7F00' }}
+                    >
                       <span className="text-white text-lg font-bold">UB</span>
                     </div>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-800">Union Bank</h3>
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Union Bank
+                  </h3>
                 </div>
 
                 <div className="mt-4 text-center">
@@ -456,7 +558,10 @@ const Fees = () => {
               <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-green-500 transition-colors">
                 <div className="text-center mb-4">
                   <div className="flex items-center justify-center mb-2">
-                    <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#3B82F6' }}>
+                    <div
+                      className="w-12 h-12 rounded-lg flex items-center justify-center"
+                      style={{ backgroundColor: '#3B82F6' }}
+                    >
                       <span className="text-white text-lg font-bold">GC</span>
                     </div>
                   </div>
@@ -487,11 +592,17 @@ const Fees = () => {
             </div>
 
             <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-blue-800 mb-2">Payment Instructions:</h4>
+              <h4 className="font-semibold text-blue-800 mb-2">
+                Payment Instructions:
+              </h4>
               <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
-                <li>Choose your preferred payment method (Union Bank or GCash)</li>
+                <li>
+                  Choose your preferred payment method (Union Bank or GCash)
+                </li>
                 <li>Scan the QR code or transfer the exact amount</li>
-                <li>Use your transaction reference number as payment description</li>
+                <li>
+                  Use your transaction reference number as payment description
+                </li>
                 <li>Keep your payment receipt for verification</li>
                 <li>Payment will be verified within 24-48 hours</li>
               </ol>
@@ -499,14 +610,50 @@ const Fees = () => {
 
             {selectedTransaction && (
               <div className="bg-yellow-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-yellow-800 mb-2">Transaction Details:</h4>
+                <h4 className="font-semibold text-yellow-800 mb-2">
+                  Transaction Details:
+                </h4>
                 <div className="space-y-1 text-sm text-yellow-700">
-                  <div>Transaction ID: <span className="font-mono">{selectedTransaction.transactionId}</span></div>
-                  <div>Reference Number: <span className="font-mono">{selectedTransaction.referenceNumber}</span></div>
+                  <div>
+                    Transaction ID:{' '}
+                    <span className="font-mono">
+                      {selectedTransaction.transactionId}
+                    </span>
+                  </div>
+                  <div>
+                    Reference Number:{' '}
+                    <span className="font-mono">
+                      {selectedTransaction.referenceNumber}
+                    </span>
+                  </div>
                 </div>
               </div>
             )}
-
+            <div className="bg-yellow-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-yellow-800 mb-2">
+                Upload Payment Proof
+              </h4>
+              <div className="space-y-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setPaymentProofFile(e.target.files[0])}
+                  className="w-full p-2 border border-gray-300 rounded text-sm"
+                />
+                {paymentProofFile && (
+                  <div className="text-sm text-green-600">
+                    ✓ {paymentProofFile.name} selected
+                  </div>
+                )}
+                <button
+                  onClick={handlePaymentProofUpload}
+                  disabled={!paymentProofFile || uploadingProof}
+                  className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {uploadingProof ? 'Uploading...' : 'Upload Payment Proof'}
+                </button>
+              </div>
+            </div>
             <div className="flex space-x-3">
               <button
                 onClick={toggleBankModal}

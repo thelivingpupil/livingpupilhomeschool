@@ -14,7 +14,10 @@ import { createStudentRecord } from '@/prisma/services/student-record';
 import { updateGuardianInformation } from '@/prisma/services/user';
 import { getOwnWorkspace } from '@/prisma/services/workspace';
 import { STUDENT_STATUS } from '@/utils/constants';
-import { createParentTrainingsForGrade, getGuardianInformationID } from '@/prisma/services/parent-training';
+import {
+  createParentTrainingsForGrade,
+  getGuardianInformationID,
+} from '@/prisma/services/parent-training';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -22,7 +25,7 @@ const handler = async (req, res) => {
   if (method === 'POST') {
     const session = await validateSession(req, res);
     const studentStatus = STUDENT_STATUS.PENDING.toString();
-    console.log(studentStatus)
+    console.log(studentStatus);
     const {
       firstName,
       middleName,
@@ -97,8 +100,6 @@ const handler = async (req, res) => {
 
     const parentName = getParentName(primaryGuardianName);
 
-
-
     const workspace = await getOwnWorkspace(
       session.user.userId,
       session.user.email,
@@ -153,15 +154,20 @@ const handler = async (req, res) => {
         accreditation,
         paymentMethod,
         discountCode,
-        monthIndex,
+        monthIndex
       ),
       updateGuardianInformation(session.user.userId, guardianInformation),
     ]);
 
     const guardianInfoId = await getGuardianInformationID(session.user.userId); // get guardian ID
-    await createParentTrainingsForGrade(incomingGradeLevel, guardianInfoId, schoolYear, 'UNFINISHED') //create parent training
-
-    const url = schoolFee.url
+    await createParentTrainingsForGrade(
+      incomingGradeLevel,
+      guardianInfoId,
+      schoolYear,
+      'UNFINISHED'
+    ); //create parent training
+    console.log('sCHOOL FEE', schoolFee);
+    const url = schoolFee.url;
     await sendMail({
       html: html({
         parentName,
@@ -177,12 +183,12 @@ const handler = async (req, res) => {
     const attachments = [
       {
         filename: 'Payment Policies.pdf',
-        path: 'https://livingpupilhomeschool.com/files/Payment_Policies.pdf'
+        path: 'https://livingpupilhomeschool.com/files/Payment_Policies.pdf',
       },
       {
         filename: 'Homeschool Agreement.pdf',
-        path: 'https://livingpupilhomeschool.com/files/Homeschool_Agreement.pdf'
-      }
+        path: 'https://livingpupilhomeschool.com/files/Homeschool_Agreement.pdf',
+      },
     ];
     await sendMail({
       html: policiesHtml({
@@ -231,9 +237,9 @@ const handler = async (req, res) => {
         studentRecord,
         schoolFee: {
           ...schoolFee.transaction,
-          amount: schoolFee.amount
-        }
-      }
+          amount: schoolFee.amount,
+        },
+      },
     });
   } else {
     res
