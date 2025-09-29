@@ -52,13 +52,25 @@ const handler = async (req, res) => {
       const totalWithShipping = total + shippingFee.fee;
       let installmentAmount = 0;
       let totalPayment = 0;
-
+      let firstPayment = 0;
+      let payments;
       if (paymentType === 'INSTALLMENT') {
         const interestRate = 0.1;
-        installmentAmount = (total * (1 + interestRate) + shippingFee.fee) / 5;
-        const payments = Array(5).fill(installmentAmount);
-        totalPayment = installmentAmount * 5;
+        installmentAmount = (total * (1 + interestRate)) / 5;
 
+        firstPayment =
+          shippingFee.key !== ShippingType.PICK_UP
+            ? shippingFee.fee
+            : installmentAmount;
+        if (shippingFee.key === ShippingType.PICK_UP) {
+          payments = Array(5).fill(installmentAmount);
+        } else {
+          payments = [
+            shippingFee.fee, // shipping as its own first payment
+            ...Array(5).fill(installmentAmount), // then 5 installments
+          ];
+        }
+        totalPayment = installmentAmount * 5 + shippingFee.fee;
         result = await createOrderFee({
           userId,
           email,
@@ -70,7 +82,7 @@ const handler = async (req, res) => {
           payments,
           signatureLink,
         });
-
+        console.log('Create Order Fee Result:', result);
         await sendMail({
           from: process.env.EMAIL_FROM,
           html: installmentHtml({
@@ -227,13 +239,15 @@ const handler = async (req, res) => {
         res.status(400).json(result);
         return;
       }
-
+      console.log('Order Result:', result);
       // For successful INSTALLMENT processing
       res.status(200).json({
         data: {
           paymentLink: result.paymentLink,
-          amount: installmentAmount,
+          amount: firstPayment,
           totalPayment: totalPayment,
+          transactionId: result.transactionId,
+          payments: payments,
         },
       });
     } catch (error) {

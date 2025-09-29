@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useState, useRef } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from 'react';
 import api from '@/lib/common/api';
 import toast from 'react-hot-toast';
 import { ShippingType } from '@prisma/client';
@@ -25,20 +32,20 @@ const cartInitialState = {
   signatureLink: '', //returned
   sigCanvas: null, //returned
   showSignCanvas: false, //returned
-  addToCart: () => { },
-  removeFromCart: () => { },
-  setShippingFee: () => { },
-  setDeliveryAddress: () => { },
-  setContactNumber: () => { },
-  clearCart: () => { },
-  toggleCartVisibility: () => { },
-  togglePaymentLinkVisibility: () => { },
-  checkoutCart: () => { },
-  setPaymentType: () => { },
-  clearSignature: () => { }, //returned
-  toggleSignCanvasVisibility: () => { }, //returned
-  saveSignature: () => { },
-  handleEndDrawing: () => { },
+  addToCart: () => {},
+  removeFromCart: () => {},
+  setShippingFee: () => {},
+  setDeliveryAddress: () => {},
+  setContactNumber: () => {},
+  clearCart: () => {},
+  toggleCartVisibility: () => {},
+  togglePaymentLinkVisibility: () => {},
+  checkoutCart: () => {},
+  setPaymentType: () => {},
+  clearSignature: () => {}, //returned
+  toggleSignCanvasVisibility: () => {}, //returned
+  saveSignature: () => {},
+  handleEndDrawing: () => {},
 };
 
 const LPH_CART_KEY = 'LPHCART';
@@ -72,13 +79,13 @@ export const SHOP_SHIPPING = {
       const rates = {
         Liloan: 130,
         'Mandaue City': 130,
-        'Consolation': 140,
+        Consolation: 140,
         'Lapu-Lapu City': 150,
         'Cebu City': 160,
         'Talisay City': 170,
-        'Minglanilia': 180,
+        Minglanilia: 180,
         'Naga City': 200,
-        'Compostela': 200,
+        Compostela: 200,
       };
       return rates[location]; // Default to Cebu City rate if location is not found
     },
@@ -93,13 +100,15 @@ export const SHOP_SHIPPING = {
   },
   northLuzon: {
     title: 'North Luzon',
-    fee: (itemCount) => calculateShippingFee(ShippingType.NORTH_LUZON, itemCount),
+    fee: (itemCount) =>
+      calculateShippingFee(ShippingType.NORTH_LUZON, itemCount),
     key: ShippingType.NORTH_LUZON,
     value: 'northLuzon',
   },
   southLuzon: {
     title: 'South Luzon',
-    fee: (itemCount) => calculateShippingFee(ShippingType.SOUTH_LUZON, itemCount),
+    fee: (itemCount) =>
+      calculateShippingFee(ShippingType.SOUTH_LUZON, itemCount),
     key: ShippingType.SOUTH_LUZON,
     value: 'southLuzon',
   },
@@ -125,7 +134,7 @@ export const SHOP_SHIPPING = {
 
 export const SHOP_PAYMENT_TYPE = {
   FULL_PAYMENT: 'Full Payment',
-  INSTALLMENT: 'Installment'
+  INSTALLMENT: 'Installment',
 };
 
 export const useCartContext = () => useContext(CartContext);
@@ -147,7 +156,8 @@ const CartProvider = ({ children }) => {
   const [signatureProgress, setSignatureProgress] = useState(0); //initiated
   const sigCanvas = useRef(null); //initiated
   const [isEmptyCanvas, setIsEmptyCanvas] = useState(true); //initiated
-  const [showSignCanvas, setShowSignCanvas] = useState(false); //initiated
+  const [showSignCanvas, setShowSignCanvas] = useState(false);
+  const [paymentBreakdown, setPaymentBreakdown] = useState([]); //initiated
 
   //initiated
   const clearSignature = () => {
@@ -160,7 +170,6 @@ const CartProvider = ({ children }) => {
   //initiated
   // Toggle modal visibility
   const toggleSignCanvasVisibility = () => setShowSignCanvas((state) => !state);
-
 
   const dataURLToBlob = (dataURL) => {
     const arr = dataURL.split(',');
@@ -175,14 +184,17 @@ const CartProvider = ({ children }) => {
   };
 
   const uploadSignature = (dataUrl) => {
-    console.log(dataUrl)
+    console.log(dataUrl);
     const blob = dataURLToBlob(dataUrl);
     const extension = 'png';
     const fileName = `signature-${crypto
       .createHash('md5')
       .update(dataUrl)
       .digest('hex')
-      .substring(0, 12)}-${format(new Date(), 'yyyy.MM.dd.kk.mm.ss')}.${extension}`;
+      .substring(0, 12)}-${format(
+      new Date(),
+      'yyyy.MM.dd.kk.mm.ss'
+    )}.${extension}`;
 
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, blob);
@@ -190,7 +202,9 @@ const CartProvider = ({ children }) => {
     uploadTask.on(
       'state_changed',
       (snapshot) => {
-        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
         setSignatureProgress(progress);
       },
       (error) => {
@@ -207,10 +221,12 @@ const CartProvider = ({ children }) => {
   //initiated
   const saveSignature = () => {
     if (sigCanvas.current && !isEmptyCanvas) {
-      const signatureData = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
+      const signatureData = sigCanvas.current
+        .getTrimmedCanvas()
+        .toDataURL('image/png');
       uploadSignature(signatureData);
     } else {
-      alert("Please sign before saving.");
+      alert('Please sign before saving.');
     }
   };
 
@@ -218,7 +234,7 @@ const CartProvider = ({ children }) => {
     if (showSignCanvas && sigCanvas.current) {
       sigCanvas.current.clear(); // Ensure the canvas is clear on show
       setIsEmptyCanvas(true); // Reset the empty status when modal opens
-      console.log(isEmptyCanvas)
+      console.log(isEmptyCanvas);
     }
   }, [showSignCanvas]);
 
@@ -242,11 +258,17 @@ const CartProvider = ({ children }) => {
     }
   }, []);
 
-  const itemCount = useMemo(() => cart.reduce((total, item) => total + item.quantity, 0), [cart]);
+  const itemCount = useMemo(
+    () => cart.reduce((total, item) => total + item.quantity, 0),
+    [cart]
+  );
 
   useEffect(() => {
     if (shippingFee.key) {
-      const fee = typeof shippingFee.fee === 'function' ? shippingFee.fee(itemCount) : shippingFee.fee || 0;
+      const fee =
+        typeof shippingFee.fee === 'function'
+          ? shippingFee.fee(itemCount)
+          : shippingFee.fee || 0;
       setShippingFee((prev) => ({ ...prev, fee }));
     }
   }, [cart, shippingFee.key]);
@@ -267,7 +289,14 @@ const CartProvider = ({ children }) => {
     setSubmitting(true);
 
     api('/api/shop', {
-      body: { items: cart, shippingFee, deliveryAddress, contactNumber, paymentType, signatureLink },
+      body: {
+        items: cart,
+        shippingFee,
+        deliveryAddress,
+        contactNumber,
+        paymentType,
+        signatureLink,
+      },
       method: 'POST',
     }).then((response) => {
       setSubmitting(false);
@@ -281,7 +310,9 @@ const CartProvider = ({ children }) => {
         setPaymentLink(response.data.paymentLink);
         setPaymentAmount(response.data.amount || total);
         setTotalPayment(response.data.totalPayment || 0);
-        setTransactionId(response.data.transactionId); // Store transactionId
+        setTransactionId(response.data.transactionId);
+        setPaymentBreakdown(response.data.payments || []); // Store payment breakdown
+        console.log('Response: ', { response }); // Store transactionId
         togglePaymentLinkVisibility();
         setCart([]);
         localStorage.setItem(LPH_CART_KEY, JSON.stringify([]));
@@ -298,7 +329,10 @@ const CartProvider = ({ children }) => {
     const newCart =
       findExistingItem !== -1
         ? [...cart].map((cartItem, index) =>
-          index === findExistingItem ? { ...cartItem, quantity: cartItem.quantity + item.quantity } : cartItem)
+            index === findExistingItem
+              ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
+              : cartItem
+          )
         : [...cart, item];
 
     setCart([...newCart]);
@@ -307,9 +341,10 @@ const CartProvider = ({ children }) => {
     // Update shipping fee based on the new cart
     const itemCount = newCart.reduce((total, item) => total + item.quantity, 0);
     if (shippingFee.key) {
-      const fee = typeof SHOP_SHIPPING[shippingFee.value].fee === 'function'
-        ? SHOP_SHIPPING[shippingFee.value].fee(itemCount)
-        : SHOP_SHIPPING[shippingFee.value].fee;
+      const fee =
+        typeof SHOP_SHIPPING[shippingFee.value].fee === 'function'
+          ? SHOP_SHIPPING[shippingFee.value].fee(itemCount)
+          : SHOP_SHIPPING[shippingFee.value].fee;
       setShippingFee((prev) => ({ ...prev, fee }));
     }
   };
@@ -323,9 +358,10 @@ const CartProvider = ({ children }) => {
     // Update shipping fee based on the new cart
     const itemCount = newCart.reduce((total, item) => total + item.quantity, 0);
     if (shippingFee.key) {
-      const fee = typeof SHOP_SHIPPING[shippingFee.value].fee === 'function'
-        ? SHOP_SHIPPING[shippingFee.value].fee(itemCount)
-        : SHOP_SHIPPING[shippingFee.value].fee;
+      const fee =
+        typeof SHOP_SHIPPING[shippingFee.value].fee === 'function'
+          ? SHOP_SHIPPING[shippingFee.value].fee(itemCount)
+          : SHOP_SHIPPING[shippingFee.value].fee;
       setShippingFee((prev) => ({ ...prev, fee }));
     }
   };
@@ -357,6 +393,7 @@ const CartProvider = ({ children }) => {
         paymentLink,
         paymentAmount,
         totalPayment,
+        paymentBreakdown,
         transactionId, // Add transactionId to context
         paymentType,
         signatureProgress,
@@ -376,7 +413,7 @@ const CartProvider = ({ children }) => {
         clearSignature,
         toggleSignCanvasVisibility,
         saveSignature,
-        handleEndDrawing
+        handleEndDrawing,
       }}
     >
       {children}

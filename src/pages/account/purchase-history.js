@@ -413,105 +413,116 @@ const PurchaseHistory = () => {
                     {order
                       .slice() // Create a copy of the array to avoid mutating the original array
                       .sort((a, b) => a.order - b.order) // Sort the array based on `order` property
-                      .map((feeWrapper, feeIndex) => (
-                        <div
-                          key={feeIndex}
-                          className="flex items-center justify-between w-full"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <h6 className="font-bold text-gray-400">
-                              Payment Reference:{' '}
-                              <span className="font-mono font-bold uppercase">
-                                {feeWrapper.transaction.paymentReference || ' '}
+                      .map((feeWrapper, feeIndex) => {
+                      
+                        let label = '';
+                        if (order.length === 6) {
+                          // Case: Shipping + 5 payments
+                          label =
+                            feeIndex === 0
+                              ? 'Shipping Fee'
+                              : `Payment #${feeIndex}`;
+                        } else if (feeWrapper.length === 5) {
+                          // Case: 5 payments only
+                          label = `Payment #${feeIndex + 1}`;
+                        } else {
+                          // Fallback (in case length is different)
+                          label = `Payment #${feeIndex + 1}`;
+                        }
+                        return (
+                          <div
+                            key={feeIndex}
+                            className="flex items-center justify-between w-full"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <h6 className="font-bold text-gray-400">
+                                Payment Reference:{' '}
+                                <span className="font-mono font-bold uppercase">
+                                  {feeWrapper.transaction.paymentReference ||
+                                    ' '}
+                                </span>
+                              </h6>
+                              <span
+                                className={`rounded-full py-0.5 text-xs px-2 ${
+                                  STATUS_BG_COLOR[
+                                    feeWrapper.transaction.paymentStatus
+                                  ]
+                                }`}
+                              >
+                                {
+                                  STATUS_CODES[
+                                    feeWrapper.transaction.paymentStatus
+                                  ]
+                                }
                               </span>
-                            </h6>
-                            <span
-                              className={`rounded-full py-0.5 text-xs px-2 ${
-                                STATUS_BG_COLOR[
-                                  feeWrapper.transaction.paymentStatus
-                                ]
-                              }`}
-                            >
-                              {
-                                STATUS_CODES[
-                                  feeWrapper.transaction.paymentStatus
-                                ]
-                              }
-                            </span>
-                          </div>
-                          {feeWrapper.transaction.paymentStatus !==
-                            TransactionStatus.S && (
-                            <div className="flex items-center space-x-5">
-                              <div className="flex flex-col items-center">
-                                {feeWrapper.paymentType === 'INSTALLMENT' && (
-                                  <>
-                                    <h6 className="font-bold text-sm text-center text-gray-400">
-                                      Payment{' #'}
-                                      {feeWrapper.order + 1}
-                                    </h6>
-                                    <h6 className="font-bold text-sm text-center text-green-600">
-                                      {new Intl.NumberFormat('en-US', {
-                                        style: 'currency',
-                                        currency: 'PHP',
-                                      }).format(feeWrapper.transaction.amount)}
-                                    </h6>
-                                  </>
-                                )}
-
-                                <h6 className="font-bold text-sm text-center text-gray-400">
-                                  {getOrderFeeDeadline(
-                                    feeWrapper.order,
-                                    feeWrapper.paymentType,
-                                    feeWrapper.createdAt
-                                  ).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                  })}
-                                </h6>
-                              </div>
-                              {order[0].orderStatus === 'Order_Placed' ? (
-                                <button
-                                  className="ml-auto px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
-                                  disabled={isSubmitting}
-                                  onClick={() =>
-                                    showBankPaymentModal(
-                                      feeWrapper.transaction.transactionId,
-                                      feeWrapper.transaction.referenceNumber,
-                                      feeWrapper.transaction.amount,
-                                      feeWrapper.transaction.amount
-                                    )
-                                  }
-                                >
-                                  Pay Now
-                                </button>
-                              ) : order[0].orderStatus === 'Cancelled' ? (
-                                <button
-                                  className="ml-auto px-3 py-2 text-white rounded bg-red-500 disabled:opacity-50"
-
-                                  // onClick={() =>
-                                  //   showBankPaymentModal(
-                                  //     feeWrapper.transaction.transactionId,
-                                  //     feeWrapper.transaction.referenceNumber,
-                                  //     feeWrapper.transaction.amount,
-                                  //     feeWrapper.transaction.amount
-                                  //   )
-                                  // }
-                                >
-                                  Cancelled
-                                </button>
-                              ) : (
-                                <button
-                                  className="ml-auto px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
-                                  disabled
-                                >
-                                  Pay Now
-                                </button>
-                              )}
                             </div>
-                          )}
-                        </div>
-                      ))}
+                            {feeWrapper.transaction.paymentStatus !==
+                              TransactionStatus.S && (
+                              <div className="flex items-center space-x-5">
+                                <div className="flex flex-col items-center">
+                                  {feeWrapper.paymentType === 'INSTALLMENT' && (
+                                    <>
+                                      <h6 className="font-bold text-sm text-center text-gray-400">
+                                        {label}
+                                      </h6>
+                                      <h6 className="font-bold text-sm text-center text-green-600">
+                                        {new Intl.NumberFormat('en-US', {
+                                          style: 'currency',
+                                          currency: 'PHP',
+                                        }).format(
+                                          feeWrapper.transaction.amount
+                                        )}
+                                      </h6>
+                                    </>
+                                  )}
+
+                                  <h6 className="font-bold text-sm text-center text-gray-400">
+                                    {getOrderFeeDeadline(
+                                      feeWrapper.order,
+                                      feeWrapper.paymentType,
+                                      feeWrapper.createdAt
+                                    ).toLocaleDateString('en-US', {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric',
+                                    })}
+                                  </h6>
+                                </div>
+                                {order[0].orderStatus === 'Order_Placed' ||
+                                order[0].orderStatus === 'In_Transit' ||
+                                order[0].orderStatus === 'For_Delivery' ||
+                                order[0].orderStatus === 'For_Delivery' ? (
+                                  <button
+                                    className="ml-auto px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
+                                    disabled={isSubmitting}
+                                    onClick={() =>
+                                      showBankPaymentModal(
+                                        feeWrapper.transaction.transactionId,
+                                        feeWrapper.transaction.referenceNumber,
+                                        feeWrapper.transaction.amount,
+                                        feeWrapper.transaction.amount
+                                      )
+                                    }
+                                  >
+                                    Pay Now
+                                  </button>
+                                ) : order[0].orderStatus === 'Cancelled' ? (
+                                  <button className="ml-auto px-3 py-2 text-white rounded bg-red-500 disabled:opacity-50">
+                                    Cancelled
+                                  </button>
+                                ) : (
+                                  <button
+                                    className="ml-auto px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
+                                    disabled
+                                  >
+                                    Pay Now
+                                  </button>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                   </div>
                 </Card.Footer>
               </Card>

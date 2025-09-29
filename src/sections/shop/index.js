@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ChevronDownIcon, XIcon } from '@heroicons/react/outline';
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  XIcon,
+} from '@heroicons/react/outline';
 import imageUrlBuilder from '@sanity/image-url';
 import crypto from 'crypto';
 import debounce from 'lodash.debounce';
@@ -13,7 +17,11 @@ import Modal from '@/components/Modal';
 import Item from '@/components/Shop/item';
 
 import sanityClient from '@/lib/server/sanity';
-import { SHOP_SHIPPING, useCartContext, SHOP_PAYMENT_TYPE } from '@/providers/cart';
+import {
+  SHOP_SHIPPING,
+  useCartContext,
+  SHOP_PAYMENT_TYPE,
+} from '@/providers/cart';
 import useUser from '@/hooks/data/useUser';
 import SignatureCanvas from 'react-signature-canvas';
 import api from '@/lib/common/api';
@@ -21,15 +29,15 @@ import api from '@/lib/common/api';
 const builder = imageUrlBuilder(sanityClient);
 
 const CebuLocations = {
-  'Liloan': 130,
+  Liloan: 130,
   'Mandaue City': 130,
-  'Consolation': 140,
+  Consolation: 140,
   'Lapu-Lapu City': 150,
   'Cebu City': 160,
   'Talisay City': 170,
-  'Minglanilia': 180,
+  Minglanilia: 180,
   'Naga City': 200,
-  'Compostela': 200,
+  Compostela: 200,
 };
 
 const Shop = ({ categories, items }) => {
@@ -51,6 +59,7 @@ const Shop = ({ categories, items }) => {
     signatureLink,
     sigCanvas,
     showSignCanvas,
+    paymentBreakdown,
     setShippingFee,
     setDeliveryAddress,
     setContactNumber,
@@ -71,15 +80,14 @@ const Shop = ({ categories, items }) => {
     clearSignature,
     toggleSignCanvasVisibility,
     saveSignature,
-    handleEndDrawing
+    handleEndDrawing,
   } = useCartContext();
 
-  console.log(shippingFee)
-
+  console.log(shippingFee);
   const [cebuLocation, setCebuLocation] = useState('');
   const [paymentProofFile, setPaymentProofFile] = useState(null);
   const [uploadingProof, setUploadingProof] = useState(false);
-
+  const [showBreakdown, setShowBreakdown] = useState(false);
   const handleShippingChange = (e) => {
     const selectedShipping = SHOP_SHIPPING[e.target.value];
 
@@ -100,15 +108,13 @@ const Shop = ({ categories, items }) => {
     }
   };
 
-
-  const isReviewDisabled =
-    !(
-      shippingFee?.value &&
-      (shippingFee?.value !== 'withInCebu' || cebuLocation) &&
-      SHOP_PAYMENT_TYPE[paymentType] &&
-      deliveryAddress &&
-      contactNumber
-    );
+  const isReviewDisabled = !(
+    shippingFee?.value &&
+    (shippingFee?.value !== 'withInCebu' || cebuLocation) &&
+    SHOP_PAYMENT_TYPE[paymentType] &&
+    deliveryAddress &&
+    contactNumber
+  );
 
   useEffect(() => {
     if (!deliveryAddress || !contactNumber) {
@@ -162,7 +168,6 @@ const Shop = ({ categories, items }) => {
 
     handleSort(sortBy);
   };
-
 
   const handleSort = (sortBy) => {
     let sort = (a, b) => {
@@ -221,12 +226,11 @@ const Shop = ({ categories, items }) => {
 
   const proceed = () => {
     if (paymentType === 'INSTALLMENT') {
-      toggleSignCanvasVisibility()
+      toggleSignCanvasVisibility();
+    } else {
+      checkoutCart();
     }
-    else {
-      checkoutCart()
-    }
-  }
+  };
 
   const handlePaymentProofUpload = async () => {
     if (!paymentProofFile) {
@@ -243,9 +247,9 @@ const Shop = ({ categories, items }) => {
     try {
       // Upload file to Firebase storage
       const fileName = `payment-proof-${transactionId}-${Date.now()}.jpg`;
-      console.log('Creating storage reference with fileName:', fileName);
+
       const storageRef = ref(storage, fileName);
-      console.log('Storage reference created:', storageRef);
+
       const uploadTask = uploadBytesResumable(storageRef, paymentProofFile);
 
       uploadTask.on(
@@ -266,8 +270,8 @@ const Shop = ({ categories, items }) => {
               method: 'PUT',
               body: {
                 transactionId: transactionId,
-                paymentProofLink: downloadURL
-              }
+                paymentProofLink: downloadURL,
+              },
             });
 
             if (response.errors) {
@@ -280,7 +284,9 @@ const Shop = ({ categories, items }) => {
               // setTransactionId(''); // No need to clear transactionId here, it's from context
             }
           } catch (apiError) {
-            toast.error('Failed to update transaction with payment proof. Please contact support.');
+            toast.error(
+              'Failed to update transaction with payment proof. Please contact support.'
+            );
           }
           setUploadingProof(false);
         }
@@ -301,16 +307,17 @@ const Shop = ({ categories, items }) => {
             width={550}
             height={420}
           />
-          <h1 className="text-4xl font-bold text-center text-primary-500">Shop Announcement</h1>
+          <h1 className="text-4xl font-bold text-center text-primary-500">
+            Shop Announcement
+          </h1>
           <p className="text-center">
             Our shop is closed today due to maintenance.
           </p>
           <p className="text-center">
-            We apologize for the inconvenience and appreciate your understanding.
+            We apologize for the inconvenience and appreciate your
+            understanding.
           </p>
-          <p className="text-center">
-            — The Living Pupil Homeschool Team
-          </p>
+          <p className="text-center">— The Living Pupil Homeschool Team</p>
         </div>
       ) : (
         <>
@@ -372,7 +379,8 @@ const Shop = ({ categories, items }) => {
                               height={30}
                               objectFit="cover"
                               src={
-                                image || '/images/livingpupil-homeschool-logo.png'
+                                image ||
+                                '/images/livingpupil-homeschool-logo.png'
                               }
                             />
                             <div className="flex flex-col">
@@ -380,9 +388,9 @@ const Shop = ({ categories, items }) => {
                               <p className="text-xs">
                                 {`(${quantity}x) @
                            ${new Intl.NumberFormat('en-US', {
-                                  style: 'currency',
-                                  currency: 'PHP',
-                                }).format(price)}`}
+                             style: 'currency',
+                             currency: 'PHP',
+                           }).format(price)}`}
                               </p>
                             </div>
                           </div>
@@ -429,11 +437,9 @@ const Shop = ({ categories, items }) => {
                 </div>
                 <div className="flex justify-between text-lg font-bold">
                   <div>Payment Type</div>
-                  <div>
-                    {SHOP_PAYMENT_TYPE[paymentType]}
-                  </div>
+                  <div>{SHOP_PAYMENT_TYPE[paymentType]}</div>
                 </div>
-                {paymentType === "INSTALLMENT" && (
+                {paymentType === 'INSTALLMENT' && (
                   <div className="text-sm font-normal mt-1 text-red-500">
                     {/* Replace with the actual detail you want to display */}
                     <div>Payable in 5 months with 2% monthly interest</div>
@@ -459,8 +465,8 @@ const Shop = ({ categories, items }) => {
                     </li>
                   </ul>
                   <p>
-                    The payment link will expire beyond the allocated transaction
-                    allowance.
+                    The payment link will expire beyond the allocated
+                    transaction allowance.
                   </p>
                   <p>
                     If the link is expired, you will be required to send another
@@ -476,7 +482,8 @@ const Shop = ({ categories, items }) => {
                     className="form-radio"
                   />
                   <label htmlFor="termsAccepted" className="text-sm">
-                    I agree to the <a
+                    I agree to the{' '}
+                    <a
                       href="/files/lp-shop-cancellation-policy.pdf" // Replace with the actual path to your PDF
                       target="_blank"
                       rel="noopener noreferrer"
@@ -519,30 +526,39 @@ const Shop = ({ categories, items }) => {
               >
                 <div className="flex flex-col  items-center mt-5">
                   <p className="text-center text-xs mb-3">
-                    By signing, you are agreeing to the <a
+                    By signing, you are agreeing to the{' '}
+                    <a
                       href="/files/lp-shop-cancellation-policy.pdf"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-500 hover:underline"
                     >
                       bookshop cancellation policy
-                    </a>.
+                    </a>
+                    .
                   </p>
                   <SignatureCanvas
                     ref={sigCanvas}
                     canvasProps={{
-                      className: `sigCanvas bg-gray-100 border ${signatureLink ? 'border-gray-400' : 'border-red-500'}`,
+                      className: `sigCanvas bg-gray-100 border ${
+                        signatureLink ? 'border-gray-400' : 'border-red-500'
+                      }`,
                       width: 350, // Set a fixed width, adjust according to your design
-                      height: 200 // Set a fixed height
-
+                      height: 200, // Set a fixed height
                     }}
                     onEnd={handleEndDrawing}
                   />
                   <div className="flex space-x-3 mt-3">
-                    <button onClick={clearSignature} className="bg-red-500 text-white px-3 py-1 rounded">
+                    <button
+                      onClick={clearSignature}
+                      className="bg-red-500 text-white px-3 py-1 rounded"
+                    >
                       Clear
                     </button>
-                    <button onClick={saveSignature} className="bg-blue-500 text-white px-3 py-1 rounded">
+                    <button
+                      onClick={saveSignature}
+                      className="bg-blue-500 text-white px-3 py-1 rounded"
+                    >
                       Save
                     </button>
                   </div>
@@ -594,7 +610,11 @@ const Shop = ({ categories, items }) => {
                 <div className="space-y-6">
                   <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
                     <h3 className="text-lg font-semibold text-green-800 mb-2">
-                      {(paymentType || 'FULL_PAYMENT') === 'INSTALLMENT' ? 'First Installment Amount' : 'Total Payment Amount'}
+                      {(paymentType || 'FULL_PAYMENT') === 'INSTALLMENT'
+                        ? paymentBreakdown.length > 5
+                          ? 'Shipping Fee'
+                          : 'First Installment Amount'
+                        : 'Total Payment Amount'}
                     </h3>
                     <div className="text-3xl font-bold text-green-600">
                       {new Intl.NumberFormat('en-US', {
@@ -602,12 +622,89 @@ const Shop = ({ categories, items }) => {
                         currency: 'PHP',
                       }).format(paymentAmount || total)}
                     </div>
-                    {(paymentType || 'FULL_PAYMENT') === 'INSTALLMENT' && totalPayment > 0 && (
-                      <div className="text-sm text-gray-600 mt-2">
-                        Total: {new Intl.NumberFormat('en-US', {
-                          style: 'currency',
-                          currency: 'PHP',
-                        }).format(totalPayment)} (5 installments)
+                    {(paymentType || 'FULL_PAYMENT') === 'INSTALLMENT' &&
+                      totalPayment > 0 && (
+                        <div className="text-sm text-gray-600 mt-2">
+                          Total:{' '}
+                          {new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'PHP',
+                          }).format(totalPayment)}{' '}
+                          (5 installments{' '}
+                          {paymentBreakdown.length > 5 && ' + shipping fee'})
+                        </div>
+                      )}
+                    {(paymentType || 'FULL_PAYMENT') === 'INSTALLMENT' &&
+                      totalPayment > 0 && (
+                        <span className="text-sm text-gray-600 mt-2 font-semibold">
+                          Note:
+                          <span className="font-medium">
+                            {' '}
+                            The first installment payment will be next month.
+                          </span>
+                        </span>
+                      )}
+                    {(paymentType || 'FULL_PAYMENT') === 'INSTALLMENT' && (
+                      <button
+                        onClick={() => setShowBreakdown(!showBreakdown)}
+                        className="mt-3 text-green-700 text-sm font-medium flex items-center mx-auto hover:underline"
+                      >
+                        {showBreakdown ? 'Hide Breakdown' : 'Show Breakdown'}
+                        {showBreakdown ? (
+                          <ChevronUpIcon className="ml-1 h-4 w-4" />
+                        ) : (
+                          <ChevronDownIcon className="ml-1 h-4 w-4" />
+                        )}
+                      </button>
+                    )}
+                    {showBreakdown && (
+                      <div className="mt-3 text-left bg-white border border-green-200 rounded-lg shadow-sm p-3">
+                        {paymentBreakdown.map((payment, index) => {
+                          let label = '';
+
+                          if (paymentBreakdown.length === 6) {
+                            // Case: Shipping + 5 payments
+                            label =
+                              index === 0
+                                ? 'Shipping Fee'
+                                : `Payment #${index}`;
+                          } else if (paymentBreakdown.length === 5) {
+                            // Case: 5 payments only
+                            label = `Payment #${index + 1}`;
+                          } else {
+                            // Fallback (in case length is different)
+                            label = `Payment #${index + 1}`;
+                          }
+
+                          return (
+                            <div
+                              key={`${label}-${index}`}
+                              className="flex justify-between text-sm text-gray-700 py-1"
+                            >
+                              <span>{label}</span>
+                              <span>
+                                {new Intl.NumberFormat('en-US', {
+                                  style: 'currency',
+                                  currency: 'PHP',
+                                }).format(payment)}
+                              </span>
+                            </div>
+                          );
+                        })}
+                        <div className="flex justify-between text-sm font-semibold text-gray-900 border-t border-green-200 mt-2 pt-2">
+                          <span>Total</span>
+                          <span>
+                            {new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: 'PHP',
+                            }).format(
+                              paymentBreakdown.reduce(
+                                (acc, curr) => acc + curr,
+                                0
+                              ) // sum all
+                            )}
+                          </span>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -617,14 +714,19 @@ const Shop = ({ categories, items }) => {
                     <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
                       <div className="text-center mb-4">
                         <div className="flex items-center justify-center mb-2">
-                          <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FF7F00' }}>
-                            <span className="text-white text-lg font-bold">UB</span>
+                          <div
+                            className="w-12 h-12 rounded-lg flex items-center justify-center"
+                            style={{ backgroundColor: '#FF7F00' }}
+                          >
+                            <span className="text-white text-lg font-bold">
+                              UB
+                            </span>
                           </div>
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-800">Union Bank</h3>
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          Union Bank
+                        </h3>
                       </div>
-
-
 
                       <div className="mt-4 text-center">
                         <img
@@ -653,14 +755,19 @@ const Shop = ({ categories, items }) => {
                     <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-green-500 transition-colors">
                       <div className="text-center mb-4">
                         <div className="flex items-center justify-center mb-2">
-                          <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#3B82F6' }}>
-                            <span className="text-white text-lg font-bold">GC</span>
+                          <div
+                            className="w-12 h-12 rounded-lg flex items-center justify-center"
+                            style={{ backgroundColor: '#3B82F6' }}
+                          >
+                            <span className="text-white text-lg font-bold">
+                              GC
+                            </span>
                           </div>
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-800">GCash</h3>
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          GCash
+                        </h3>
                       </div>
-
-
 
                       <div className="mt-4 text-center">
                         <img
@@ -686,11 +793,19 @@ const Shop = ({ categories, items }) => {
                   </div>
 
                   <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4 className="font-semibold text-blue-800 mb-2">Payment Instructions:</h4>
+                    <h4 className="font-semibold text-blue-800 mb-2">
+                      Payment Instructions:
+                    </h4>
                     <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
-                      <li>Choose your preferred payment method (Union Bank or GCash)</li>
+                      <li>
+                        Choose your preferred payment method (Union Bank or
+                        GCash)
+                      </li>
                       <li>Scan the QR code or transfer the exact amount</li>
-                      <li>Use your transaction reference number as payment description</li>
+                      <li>
+                        Use your transaction reference number as payment
+                        description
+                      </li>
                       <li>Keep your payment receipt for verification</li>
                       <li>Upload your proof of payment using the form below</li>
                       <li>Payment will be verified within 24-48 hours</li>
@@ -699,7 +814,9 @@ const Shop = ({ categories, items }) => {
 
                   {/* Payment Proof Upload */}
                   <div className="bg-yellow-50 p-4 rounded-lg">
-                    <h4 className="font-semibold text-yellow-800 mb-2">Upload Payment Proof</h4>
+                    <h4 className="font-semibold text-yellow-800 mb-2">
+                      Upload Payment Proof
+                    </h4>
                     <div className="space-y-3">
                       {transactionId ? (
                         <div className="bg-green-50 p-3 rounded-lg">
@@ -707,13 +824,15 @@ const Shop = ({ categories, items }) => {
                             <strong>Transaction ID:</strong> {transactionId}
                           </p>
                           <p className="text-xs text-green-600 mt-1">
-                            This transaction ID will be used for your payment proof upload.
+                            This transaction ID will be used for your payment
+                            proof upload.
                           </p>
                         </div>
                       ) : (
                         <div className="bg-yellow-50 p-3 rounded-lg">
                           <p className="text-sm text-yellow-700">
-                            Please complete checkout first to get your transaction ID.
+                            Please complete checkout first to get your
+                            transaction ID.
                           </p>
                         </div>
                       )}
@@ -724,7 +843,9 @@ const Shop = ({ categories, items }) => {
                         <input
                           type="file"
                           accept="image/*"
-                          onChange={(e) => setPaymentProofFile(e.target.files[0])}
+                          onChange={(e) =>
+                            setPaymentProofFile(e.target.files[0])
+                          }
                           className="w-full p-2 border border-gray-300 rounded text-sm"
                         />
                         {paymentProofFile && (
@@ -735,10 +856,14 @@ const Shop = ({ categories, items }) => {
                       </div>
                       <button
                         onClick={handlePaymentProofUpload}
-                        disabled={!paymentProofFile || uploadingProof || !transactionId}
+                        disabled={
+                          !paymentProofFile || uploadingProof || !transactionId
+                        }
                         className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
-                        {uploadingProof ? 'Uploading...' : 'Upload Payment Proof'}
+                        {uploadingProof
+                          ? 'Uploading...'
+                          : 'Upload Payment Proof'}
                       </button>
                     </div>
                   </div>
@@ -760,33 +885,37 @@ const Shop = ({ categories, items }) => {
                     <div className="relative inline-block w-full rounded border">
                       <select
                         className="w-full px-3 py-2 capitalize rounded appearance-none"
-                        onChange={(e) => setShippingFee(SHOP_SHIPPING[e.target.value])}
+                        onChange={(e) =>
+                          setShippingFee(SHOP_SHIPPING[e.target.value])
+                        }
                         value={shippingFee?.value || ''}
                       >
                         <option value="">-</option>
-                        {Object.entries(SHOP_SHIPPING).map(([value, { title, fee }]) => (
-                          <option key={value} value={value}>
-                            {title}
-                            {value !== 'withInCebu' &&
-                              ` ${typeof fee === 'function'
-                                ? new Intl.NumberFormat('en-US', {
-                                  style: 'currency',
-                                  currency: 'PHP',
-                                }).format(fee(itemCount))
-                                : new Intl.NumberFormat('en-US', {
-                                  style: 'currency',
-                                  currency: 'PHP',
-                                }).format(fee)
-                              }`}
-                          </option>
-                        ))}
+                        {Object.entries(SHOP_SHIPPING).map(
+                          ([value, { title, fee }]) => (
+                            <option key={value} value={value}>
+                              {title}
+                              {value !== 'withInCebu' &&
+                                ` ${
+                                  typeof fee === 'function'
+                                    ? new Intl.NumberFormat('en-US', {
+                                        style: 'currency',
+                                        currency: 'PHP',
+                                      }).format(fee(itemCount))
+                                    : new Intl.NumberFormat('en-US', {
+                                        style: 'currency',
+                                        currency: 'PHP',
+                                      }).format(fee)
+                                }`}
+                            </option>
+                          )
+                        )}
                       </select>
                       <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                         <ChevronDownIcon className="w-5 h-5" />
                       </div>
                     </div>
                   </div>
-
 
                   {/* Secondary Cebu Location Selection */}
                   {shippingFee?.value === 'withInCebu' && (
@@ -802,10 +931,10 @@ const Shop = ({ categories, items }) => {
                             <option value="">Select a location</option>
                             {Object.keys(CebuLocations).map((location) => (
                               <option key={location} value={location}>
-                                {location} -{" "}
-                                {new Intl.NumberFormat("en-US", {
-                                  style: "currency",
-                                  currency: "PHP",
+                                {location} -{' '}
+                                {new Intl.NumberFormat('en-US', {
+                                  style: 'currency',
+                                  currency: 'PHP',
                                 }).format(CebuLocations[location])}
                               </option>
                             ))}
@@ -828,11 +957,13 @@ const Shop = ({ categories, items }) => {
                         value={paymentType}
                       >
                         <option value="">-</option>
-                        {Object.entries(SHOP_PAYMENT_TYPE).map(([key, value]) => (
-                          <option key={key} value={key}>
-                            {value}
-                          </option>
-                        ))}
+                        {Object.entries(SHOP_PAYMENT_TYPE).map(
+                          ([key, value]) => (
+                            <option key={key} value={key}>
+                              {value}
+                            </option>
+                          )
+                        )}
                       </select>
                       <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                         <ChevronDownIcon className="w-5 h-5" />
@@ -865,8 +996,12 @@ const Shop = ({ categories, items }) => {
                       <option value="alphaDesc">
                         Sort Alphabetical: Z &rarr; A
                       </option>
-                      <option value="priceAsc">Sort Price: Low &rarr; High</option>
-                      <option value="priceDesc">Sort Price: High &rarr; Low</option>
+                      <option value="priceAsc">
+                        Sort Price: Low &rarr; High
+                      </option>
+                      <option value="priceDesc">
+                        Sort Price: High &rarr; Low
+                      </option>
                     </select>
                     <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                       <ChevronDownIcon className="w-5 h-5" />
@@ -901,7 +1036,16 @@ const Shop = ({ categories, items }) => {
                   {shopItems ? (
                     shopItems.map(
                       (
-                        { _id, code, image, name, price, categories, description, inventory },
+                        {
+                          _id,
+                          code,
+                          image,
+                          name,
+                          price,
+                          categories,
+                          description,
+                          inventory,
+                        },
                         index
                       ) => {
                         const imageAsset = builder.image(image?.asset);
@@ -920,10 +1064,14 @@ const Shop = ({ categories, items }) => {
                                 .substring(0, 6)
                                 .toUpperCase()}`
                             }
-                            count={cart.find((x) => x.id === _id)?.quantity || 0}
+                            count={
+                              cart.find((x) => x.id === _id)?.quantity || 0
+                            }
                             description={description}
                             image={
-                              imageAsset.options.source ? imageAsset?.url() : null
+                              imageAsset.options.source
+                                ? imageAsset?.url()
+                                : null
                             }
                             name={name}
                             price={price}
@@ -954,7 +1102,8 @@ const Shop = ({ categories, items }) => {
                                 height={30}
                                 objectFit="cover"
                                 src={
-                                  image || '/images/livingpupil-homeschool-logo.png'
+                                  image ||
+                                  '/images/livingpupil-homeschool-logo.png'
                                 }
                               />
                               <div className="flex flex-col">
@@ -962,9 +1111,9 @@ const Shop = ({ categories, items }) => {
                                 <p className="text-xs">
                                   {`(${quantity}x) @
                            ${new Intl.NumberFormat('en-US', {
-                                    style: 'currency',
-                                    currency: 'PHP',
-                                  }).format(price)}`}
+                             style: 'currency',
+                             currency: 'PHP',
+                           }).format(price)}`}
                                 </p>
                               </div>
                             </div>
@@ -996,26 +1145,31 @@ const Shop = ({ categories, items }) => {
                       <div className="relative inline-block w-full rounded border">
                         <select
                           className="w-full px-3 py-2 capitalize rounded appearance-none"
-                          onChange={(e) => setShippingFee(SHOP_SHIPPING[e.target.value])}
+                          onChange={(e) =>
+                            setShippingFee(SHOP_SHIPPING[e.target.value])
+                          }
                           value={shippingFee?.value || ''}
                         >
                           <option value="">-</option>
-                          {Object.entries(SHOP_SHIPPING).map(([value, { title, fee }]) => (
-                            <option key={value} value={value}>
-                              {title}
-                              {value !== 'withInCebu' &&
-                                ` ${typeof fee === 'function'
-                                  ? new Intl.NumberFormat('en-US', {
-                                    style: 'currency',
-                                    currency: 'PHP',
-                                  }).format(fee(itemCount))
-                                  : new Intl.NumberFormat('en-US', {
-                                    style: 'currency',
-                                    currency: 'PHP',
-                                  }).format(fee)
-                                }`}
-                            </option>
-                          ))}
+                          {Object.entries(SHOP_SHIPPING).map(
+                            ([value, { title, fee }]) => (
+                              <option key={value} value={value}>
+                                {title}
+                                {value !== 'withInCebu' &&
+                                  ` ${
+                                    typeof fee === 'function'
+                                      ? new Intl.NumberFormat('en-US', {
+                                          style: 'currency',
+                                          currency: 'PHP',
+                                        }).format(fee(itemCount))
+                                      : new Intl.NumberFormat('en-US', {
+                                          style: 'currency',
+                                          currency: 'PHP',
+                                        }).format(fee)
+                                  }`}
+                              </option>
+                            )
+                          )}
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                           <ChevronDownIcon className="w-5 h-5" />
@@ -1037,12 +1191,11 @@ const Shop = ({ categories, items }) => {
                               <option value="">Select a location</option>
                               {Object.keys(CebuLocations).map((location) => (
                                 <option key={location} value={location}>
-                                  {location} -{" "}
-                                  {new Intl.NumberFormat("en-US", {
-                                    style: "currency",
-                                    currency: "PHP",
+                                  {location} -{' '}
+                                  {new Intl.NumberFormat('en-US', {
+                                    style: 'currency',
+                                    currency: 'PHP',
                                   }).format(CebuLocations[location])}
-
                                 </option>
                               ))}
                             </select>
@@ -1064,11 +1217,13 @@ const Shop = ({ categories, items }) => {
                           value={paymentType}
                         >
                           <option value="">-</option>
-                          {Object.entries(SHOP_PAYMENT_TYPE).map(([key, value]) => (
-                            <option key={key} value={key}>
-                              {value}
-                            </option>
-                          ))}
+                          {Object.entries(SHOP_PAYMENT_TYPE).map(
+                            ([key, value]) => (
+                              <option key={key} value={key}>
+                                {value}
+                              </option>
+                            )
+                          )}
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                           <ChevronDownIcon className="w-5 h-5" />

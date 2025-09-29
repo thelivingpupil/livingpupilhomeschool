@@ -32,7 +32,7 @@ export const createSchoolFees = async (
   monthIndex,
   scholarshipCode = ''
 ) => {
-  console.log('Entering createSchoolFees function...');
+
   let gradeLevel = incomingGradeLevel;
   const miscellaneousFee = 500;
 
@@ -643,7 +643,7 @@ export const createPayAllFees = async (
   paymentMethod,
   amount
 ) => {
-  console.log('Entering createSchoolFees function...');
+
   let result = null;
 
   if (payment === PaymentType.PAY_ALL) {

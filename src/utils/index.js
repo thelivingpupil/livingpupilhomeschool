@@ -403,7 +403,13 @@ const deadlines2025 = {
   ],
 };
 
-export const getDeadline = (index, paymentType, downpaymentDate, schoolYear, paymentStatus) => {
+export const getDeadline = (
+  index,
+  paymentType,
+  downpaymentDate,
+  schoolYear,
+  paymentStatus
+) => {
   const date = new Date(downpaymentDate);
   const selectedYear =
     Number(schoolYear) < date.getFullYear() ? 'laterYear' : 'currentYear';
@@ -411,8 +417,7 @@ export const getDeadline = (index, paymentType, downpaymentDate, schoolYear, pay
   let monthsToAdd = 0; // Changed from const to let
   if (schoolYear === '2024-2025' || schoolYear === '2023') {
     if (paymentStatus !== 'S') {
-      monthsToAdd =
-        deadlines[selectedYear][date.getMonth()][paymentType][0];
+      monthsToAdd = deadlines[selectedYear][date.getMonth()][paymentType][0];
     } else if (paymentStatus === null) {
       monthsToAdd =
         deadlines[selectedYear][date.getMonth()][paymentType][index];
@@ -453,20 +458,19 @@ export const groupBy = (array, key) => {
   }, {});
 };
 
-
 export const getOrderFeeDeadline = (index, paymentType, dateOrdered) => {
   const monthsIteration = {
     FULL_PAYMENT: [0],
-    INSTALLMENT: [1, 2, 3, 4, 5],
+    INSTALLMENT: [1, 2, 3, 4, 5, 6],
   };
 
   // Check if the paymentType exists in monthsIteration
   if (!monthsIteration[paymentType]) {
-    throw new Error("Invalid payment type");
+    throw new Error('Invalid payment type');
   }
 
   // If paymentType is FULL_PAYMENT, set the deadline to the next day
-  if (paymentType === "FULL_PAYMENT") {
+  if (paymentType === 'FULL_PAYMENT') {
     const deadline = new Date(dateOrdered);
     deadline.setDate(deadline.getDate() + 1);
     return deadline;
@@ -476,7 +480,7 @@ export const getOrderFeeDeadline = (index, paymentType, dateOrdered) => {
   const monthsToAdd = monthsIteration[paymentType][index];
 
   if (monthsToAdd === undefined) {
-    throw new Error("Invalid index for the given payment type");
+    throw new Error('Invalid index for the given payment type');
   }
 
   // Create a new date object from dateOrdered and add the corresponding months
@@ -504,7 +508,7 @@ export const getParentFirstName = (fullName) => {
   if (!fullName) return ''; // Handle cases where the name is undefined or empty
   const nameParts = fullName.split(' ');
   return nameParts[0]; // Return the first part (first name)
-}
+};
 
 // Function to get email credentials for each sender
 export const getSenderCredentials = (sender) => {
@@ -512,38 +516,38 @@ export const getSenderCredentials = (sender) => {
 
   switch (sender) {
     case 'admin':
-      senderName = "LP Admin";
+      senderName = 'LP Admin';
       email = process.env.ADMIN_EMAIL;
       appPassword = process.env.ADMIN_APP_PASSWORD;
       break;
     case 'finance':
-      senderName = "LP Finance";
+      senderName = 'LP Finance';
       email = process.env.FINANCE_EMAIL;
       appPassword = process.env.FINANCE_APP_PASSWORD;
       break;
     case 'shop':
-      senderName = "LP Shop";
+      senderName = 'LP Shop';
       email = process.env.SHOP_EMAIL;
       appPassword = process.env.SHOP_APP_PASSWORD;
       break;
     case 'coo':
-      senderName = "LP COO";
+      senderName = 'LP COO';
       email = process.env.COO_EMAIL;
       appPassword = process.env.COO_APP_PASSWORD;
       break;
     case 'directress':
-      senderName = "LP Directress";
+      senderName = 'LP Directress';
       email = process.env.DIRECTRESS_EMAIL;
       appPassword = process.env.DIRECTRESS_APP_PASSWORD;
       break;
     case 'cottage':
-      senderName = "LP Cottage Coordinator";
+      senderName = 'LP Cottage Coordinator';
       email = process.env.COTTAGE_EMAIL;
       appPassword = process.env.COTTAGE_APP_PASSWORD;
       break;
     case 'international':
-      senderName = "LP International Coordinator";
-      email = "livingpupilinternational@gmail.com"
+      senderName = 'LP International Coordinator';
+      email = 'livingpupilinternational@gmail.com';
       appPassword = null;
       break;
     default:
@@ -559,32 +563,32 @@ export const getSenderDetails = (sender) => {
 
   switch (sender) {
     case 'admin':
-      senderRole = "Admin"
-      senderFullName = "Ameline Baran"
+      senderRole = 'Admin';
+      senderFullName = 'Ameline Baran';
       break;
     case 'finance':
-      senderRole = "Finance Officer"
-      senderFullName = "Karen Yap"
+      senderRole = 'Finance Officer';
+      senderFullName = 'Karen Yap';
       break;
     case 'shop':
-      senderRole = ""
-      senderFullName = "Living Pupil Homeschool Team"
+      senderRole = '';
+      senderFullName = 'Living Pupil Homeschool Team';
       break;
     case 'coo':
-      senderRole = "Chief Operations Officer"
-      senderFullName = "Arjeli Ricarte"
+      senderRole = 'Chief Operations Officer';
+      senderFullName = 'Arjeli Ricarte';
       break;
     case 'directress':
-      senderRole = "Directress"
-      senderFullName = "Azenith Jacalan"
+      senderRole = 'Directress';
+      senderFullName = 'Azenith Jacalan';
       break;
     case 'cottage':
-      senderRole = "Homeschool Cottage Coordinator"
-      senderFullName = "Joshua Jacalan"
+      senderRole = 'Homeschool Cottage Coordinator';
+      senderFullName = 'Joshua Jacalan';
       break;
     case 'international':
-      senderRole = "International Coordinator"
-      senderFullName = "Annie Simacas"
+      senderRole = 'International Coordinator';
+      senderFullName = 'Annie Simacas';
       break;
     default:
       throw new Error(`Unknown sender: ${sender}`);
@@ -695,13 +699,13 @@ export const calculateShippingFeeFromAddress = (address, itemCount) => {
   if (shippingType === ShippingType.WITHIN_CEBU) {
     const cebuRates = {
       'mandaue city': 130,
-      'consolacion': 140,
+      consolacion: 140,
       'lapu-lapu city': 150,
       'cebu city': 160,
       'talisay city': 170,
-      'minglanilia': 180,
+      minglanilia: 180,
       'naga city': 200,
-      'compostela': 200,
+      compostela: 200,
     };
 
     for (const city in cebuRates) {
@@ -729,8 +733,12 @@ export const hasUnpaidAugust2025Fees = (schoolFees, schoolYear) => {
   }
 
   // Find the initial payment (order 0)
-  const initialPayment = schoolFees.find(fee => fee.order === 0);
-  if (!initialPayment || !initialPayment.transaction || initialPayment.transaction.paymentStatus !== 'S') {
+  const initialPayment = schoolFees.find((fee) => fee.order === 0);
+  if (
+    !initialPayment ||
+    !initialPayment.transaction ||
+    initialPayment.transaction.paymentStatus !== 'S'
+  ) {
     return false; // Can't check deadlines if initial payment is unpaid
   }
 
@@ -753,7 +761,8 @@ export const hasUnpaidAugust2025Fees = (schoolFees, schoolYear) => {
       if (deadlineStr) {
         // Parse the deadline and check if it's August 2025
         const deadline = parse(deadlineStr, 'MMMM dd, yyyy', new Date());
-        if (deadline.getMonth() === 7 && deadline.getFullYear() === 2025) { // August is month 7 (0-indexed)
+        if (deadline.getMonth() === 7 && deadline.getFullYear() === 2025) {
+          // August is month 7 (0-indexed)
           return true; // Found an unpaid fee with August 2025 deadline
         }
       }

@@ -1,4 +1,4 @@
-import { TransactionSource } from '@prisma/client';
+import { TransactionSource, ShippingType } from '@prisma/client';
 import sanityClient from '@/lib/server/sanity';
 import prisma from '@/prisma/index';
 import crypto from 'crypto';
@@ -241,7 +241,7 @@ export const createOrderFee = async ({
   }));
 
   // Step 5: Create the transactions for each installment payment
-  const transactionIds = await Promise.all([
+  const histories = [
     prisma.purchaseHistory.create({
       data: {
         total: payments[0],
@@ -254,75 +254,65 @@ export const createOrderFee = async ({
       select: { id: true, transactionId: true },
     }),
     prisma.purchaseHistory.create({
-      data: { total: payments[1] }, // Removed +20 gateway fee
+      data: { total: payments[1] },
       select: { id: true, transactionId: true },
     }),
     prisma.purchaseHistory.create({
-      data: { total: payments[2] }, // Removed +20 gateway fee
+      data: { total: payments[2] },
       select: { id: true, transactionId: true },
     }),
     prisma.purchaseHistory.create({
-      data: { total: payments[3] }, // Removed +20 gateway fee
+      data: { total: payments[3] },
       select: { id: true, transactionId: true },
     }),
     prisma.purchaseHistory.create({
-      data: { total: payments[4] }, // Removed +20 gateway fee
+      data: { total: payments[4] },
       select: { id: true, transactionId: true },
     }),
-  ]);
-  const [response] = await Promise.all([
-    createTransaction(
-      userId,
-      email,
-      transactionIds[0].transactionId,
-      payments[0],
-      'STORE',
-      transactionIds[0].id,
-      TransactionSource.STORE,
-      'ONLINE'
-    ),
-    createTransaction(
-      userId,
-      email,
-      transactionIds[1].transactionId,
-      payments[1],
-      'STORE',
-      transactionIds[1].id,
-      TransactionSource.STORE,
-      'ONLINE'
-    ),
-    createTransaction(
-      userId,
-      email,
-      transactionIds[2].transactionId,
-      payments[2],
-      'STORE',
-      transactionIds[2].id,
-      TransactionSource.STORE,
-      'ONLINE'
-    ),
-    createTransaction(
-      userId,
-      email,
-      transactionIds[3].transactionId,
-      payments[3],
-      'STORE',
-      transactionIds[3].id,
-      TransactionSource.STORE,
-      'ONLINE'
-    ),
-    createTransaction(
-      userId,
-      email,
-      transactionIds[4].transactionId,
-      payments[4],
-      'STORE',
-      transactionIds[4].id,
-      TransactionSource.STORE,
-      'ONLINE'
-    ),
-  ]);
+  ];
 
+  // Add conditionally if PICK_UP
+  if (shippingFee?.key !== ShippingType.PICK_UP) {
+    histories.push(
+      prisma.purchaseHistory.create({
+        data: { total: payments[5] },
+        select: { id: true, transactionId: true },
+      })
+    );
+  }
+
+  const transactionIds = await Promise.all(histories);
+  const transactionPromises = transactionIds
+    .slice(0, 5)
+    .map((t, i) =>
+      createTransaction(
+        userId,
+        email,
+        t.transactionId,
+        payments[i],
+        'STORE',
+        t.id,
+        TransactionSource.STORE,
+        'ONLINE'
+      )
+    );
+
+  // Conditionally add the 6th transaction
+  if (shippingFee?.key !== ShippingType.PICK_UP && transactionIds[5]) {
+    transactionPromises.push(
+      createTransaction(
+        userId,
+        email,
+        transactionIds[5].transactionId,
+        payments[5],
+        'STORE',
+        transactionIds[5].id,
+        TransactionSource.STORE,
+        'ONLINE'
+      )
+    );
+  }
+  const [response] = await Promise.all(transactionPromises);
   // Function to generate a unique order code
   async function generateUniqueOrderCode(prisma) {
     let uniqueOrderCode;
@@ -354,17 +344,18 @@ export const createOrderFee = async ({
   // Generate the unique order code
   const uniqueOrderCode = await generateUniqueOrderCode(prisma);
 
-  await Promise.all([
+  // Base order fees for the first 5
+  const orderFeePromises = transactionIds.slice(0, 5).map((t, i) =>
     prisma.orderFee.create({
       data: {
-        order: 0,
+        order: i,
         paymentType,
         orderCode: uniqueOrderCode,
         orderStatus: 'Order_Placed',
-        signatureLink: signatureLink,
+        signatureLink,
         transaction: {
           connect: {
-            transactionId: transactionIds[0].transactionId,
+            transactionId: t.transactionId,
           },
         },
         user: {
@@ -373,89 +364,41 @@ export const createOrderFee = async ({
           },
         },
       },
-    }),
-    prisma.orderFee.create({
-      data: {
-        order: 1,
-        paymentType,
-        orderCode: uniqueOrderCode,
-        orderStatus: 'Order_Placed',
-        signatureLink: signatureLink,
-        transaction: {
-          connect: {
-            transactionId: transactionIds[1].transactionId,
-          },
-        },
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-      },
-    }),
-    prisma.orderFee.create({
-      data: {
-        order: 2,
-        paymentType,
-        orderCode: uniqueOrderCode,
-        orderStatus: 'Order_Placed',
-        signatureLink: signatureLink,
-        transaction: {
-          connect: {
-            transactionId: transactionIds[2].transactionId,
-          },
-        },
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-      },
-    }),
-    prisma.orderFee.create({
-      data: {
-        order: 3,
-        paymentType,
-        orderCode: uniqueOrderCode,
-        orderStatus: 'Order_Placed',
-        signatureLink: signatureLink,
-        transaction: {
-          connect: {
-            transactionId: transactionIds[3].transactionId,
-          },
-        },
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-      },
-    }),
-    prisma.orderFee.create({
-      data: {
-        order: 4,
-        paymentType,
-        orderCode: uniqueOrderCode,
-        orderStatus: 'Order_Placed',
-        signatureLink: signatureLink,
-        transaction: {
-          connect: {
-            transactionId: transactionIds[4].transactionId,
-          },
-        },
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-      },
-    }),
-  ]);
-  result = response;
+    })
+  );
 
+  // Conditionally add the extra one for PICK_UP
+  if (shippingFee?.key !== ShippingType.PICK_UP && transactionIds[5]) {
+    orderFeePromises.push(
+      prisma.orderFee.create({
+        data: {
+          order: 5,
+          paymentType,
+          orderCode: uniqueOrderCode,
+          orderStatus: 'Order_Placed',
+          signatureLink,
+          transaction: {
+            connect: {
+              transactionId: transactionIds[5].transactionId,
+            },
+          },
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+        },
+      })
+    );
+  }
+
+  await Promise.all(orderFeePromises);
+
+  result = response;
   return {
     paymentLink: result?.url,
     orderCode: uniqueOrderCode,
+    transactionId: result.transactionId, // For first payment only
   };
 };
 
