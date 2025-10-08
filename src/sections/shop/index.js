@@ -666,7 +666,7 @@ const Shop = ({ categories, items }) => {
                             // Case: Shipping + 5 payments
                             label =
                               index === 0
-                                ? 'Shipping Fee'
+                                ? 'Delivery Fee'
                                 : `Payment #${index}`;
                           } else if (paymentBreakdown.length === 5) {
                             // Case: 5 payments only

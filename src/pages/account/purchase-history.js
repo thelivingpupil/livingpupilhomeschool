@@ -414,13 +414,12 @@ const PurchaseHistory = () => {
                       .slice() // Create a copy of the array to avoid mutating the original array
                       .sort((a, b) => a.order - b.order) // Sort the array based on `order` property
                       .map((feeWrapper, feeIndex) => {
-                      
                         let label = '';
                         if (order.length === 6) {
                           // Case: Shipping + 5 payments
                           label =
                             feeIndex === 0
-                              ? 'Shipping Fee'
+                              ? 'Delivery Fee'
                               : `Payment #${feeIndex}`;
                         } else if (feeWrapper.length === 5) {
                           // Case: 5 payments only
@@ -491,7 +490,8 @@ const PurchaseHistory = () => {
                                 {order[0].orderStatus === 'Order_Placed' ||
                                 order[0].orderStatus === 'In_Transit' ||
                                 order[0].orderStatus === 'For_Delivery' ||
-                                order[0].orderStatus === 'For_Delivery' ? (
+                                order[0].orderStatus === 'For_Delivery' ||
+                                order[0].orderStatus === null ? (
                                   <button
                                     className="ml-auto px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
                                     disabled={isSubmitting}

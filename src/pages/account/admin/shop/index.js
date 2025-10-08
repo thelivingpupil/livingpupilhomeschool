@@ -630,75 +630,88 @@ const Shop = () => {
               {order
                 .slice() // Create a copy of the array to avoid mutating the original array
                 .sort((a, b) => a.order - b.order) // Sort the array based on `order` property
-                .map((feeWrapper, feeIndex) => (
-                  <>
-                    <div
-                      key={feeIndex}
-                      className="flex items-center justify-between w-full"
-                    >
-                      <div className="flex items-center justify-between w-full">
-                        <div className="flex flex-col items-center">
-                          {feeWrapper.paymentType === 'INSTALLMENT' && (
-                            <>
-                              <h6 className="font-bold text-sm text-center text-gray-400">
-                                Payment{' #'}
-                                {feeWrapper.order + 1}
-                              </h6>
-                              <h6 className="font-bold text-sm text-center text-green-600">
-                                {new Intl.NumberFormat('en-US', {
-                                  style: 'currency',
-                                  currency: 'PHP',
-                                }).format(feeWrapper.transaction.amount)}
-                              </h6>
-                            </>
-                          )}
-                          {feeWrapper.paymentType === 'FULL_PAYMENT' && (
-                            <>
-                              <h6 className="font-bold text-sm text-center text-green-600">
-                                {new Intl.NumberFormat('en-US', {
-                                  style: 'currency',
-                                  currency: 'PHP',
-                                }).format(feeWrapper.transaction.amount)}
-                              </h6>
-                            </>
-                          )}
+                .map((feeWrapper, feeIndex) => {
+                  let label = '';
+                  if (order.length === 6) {
+                    // Case: Shipping + 5 payments
+                    label =
+                      feeIndex === 0 ? 'Delivery Fee' : `Payment #${feeIndex}`;
+                  } else if (feeWrapper.length === 5) {
+                    // Case: 5 payments only
+                    label = `Payment #${feeIndex + 1}`;
+                  } else {
+                    // Fallback (in case length is different)
+                    label = `Payment #${feeIndex + 1}`;
+                  }
+                  return (
+                    <>
+                      <div
+                        key={feeIndex}
+                        className="flex items-center justify-between w-full"
+                      >
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex flex-col items-center">
+                            {feeWrapper.paymentType === 'INSTALLMENT' && (
+                              <>
+                                <h6 className="font-bold text-sm text-center text-gray-400">
+                                  {label}
+                                </h6>
+                                <h6 className="font-bold text-sm text-center text-green-600">
+                                  {new Intl.NumberFormat('en-US', {
+                                    style: 'currency',
+                                    currency: 'PHP',
+                                  }).format(feeWrapper.transaction.amount)}
+                                </h6>
+                              </>
+                            )}
+                            {feeWrapper.paymentType === 'FULL_PAYMENT' && (
+                              <>
+                                <h6 className="font-bold text-sm text-center text-green-600">
+                                  {new Intl.NumberFormat('en-US', {
+                                    style: 'currency',
+                                    currency: 'PHP',
+                                  }).format(feeWrapper.transaction.amount)}
+                                </h6>
+                              </>
+                            )}
 
-                          <h6 className="font-bold text-sm text-center text-gray-400">
-                            {getOrderFeeDeadline(
-                              feeWrapper.order,
-                              feeWrapper.paymentType,
-                              feeWrapper.createdAt
-                            ).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })}
-                          </h6>
+                            <h6 className="font-bold text-sm text-center text-gray-400">
+                              {getOrderFeeDeadline(
+                                feeWrapper.order,
+                                feeWrapper.paymentType,
+                                feeWrapper.createdAt
+                              ).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })}
+                            </h6>
+                          </div>
+
+                          {/* View Payment Details Button */}
+                          {order[0].orderStatus !== 'Cancelled' ? (
+                            <button
+                              onClick={() =>
+                                viewPaymentDetails(feeWrapper.transaction)
+                              }
+                              className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                            >
+                              View Payment Details
+                            </button>
+                          ) : (
+                            <button
+                              disabled
+                              className="px-3 py-1 text-xs bg-red-600 text-white rounded transition-colors"
+                            >
+                              Cancelled
+                            </button>
+                          )}
                         </div>
-
-                        {/* View Payment Details Button */}
-                        {order[0].orderStatus !== 'Cancelled' ? (
-                          <button
-                            onClick={() =>
-                              viewPaymentDetails(feeWrapper.transaction)
-                            }
-                            className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                          >
-                            View Payment Details
-                          </button>
-                        ) : (
-                          <button
-                            disabled
-                            className="px-3 py-1 text-xs bg-red-600 text-white rounded transition-colors"
-                          >
-                            Cancelled
-                          </button>
-                        )}
                       </div>
-                    </div>
-                    <hr className="border-1 border-dashed border-gray-600" />
-                  </>
-                ))}
+                      <hr className="border-1 border-dashed border-gray-600" />
+                    </>
+                  );
+                })}
               <div className="flex flex-col p-3 space-y-2">
                 <button
                   className="px-3 py-1 my-1 text-white rounded bg-primary-600 hover:bg-primary-400"
