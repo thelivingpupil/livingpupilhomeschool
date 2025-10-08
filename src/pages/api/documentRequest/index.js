@@ -121,7 +121,7 @@ const handler = async (req, res) => {
       }
 
       const requestCode = await generateUniqueRequestCode(prisma);
-
+      console.log('Generated Request Code:', requestCode);
       // Prepare the data object for createDocumentRequest
       const requestData = {
         requestCode: requestCode,
