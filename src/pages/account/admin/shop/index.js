@@ -643,6 +643,7 @@ const Shop = () => {
                     // Fallback (in case length is different)
                     label = `Payment #${feeIndex + 1}`;
                   }
+
                   return (
                     <>
                       <div
@@ -676,15 +677,17 @@ const Shop = () => {
                             )}
 
                             <h6 className="font-bold text-sm text-center text-gray-400">
-                              {getOrderFeeDeadline(
-                                feeWrapper.order,
-                                feeWrapper.paymentType,
-                                feeWrapper.createdAt
-                              ).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                              })}
+                              {label === 'Delivery Fee'
+                                ? ''
+                                : getOrderFeeDeadline(
+                                    feeWrapper.order,
+                                    feeWrapper.paymentType,
+                                    feeWrapper.createdAt
+                                  ).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                  })}
                             </h6>
                           </div>
 

@@ -428,6 +428,16 @@ const PurchaseHistory = () => {
                           // Fallback (in case length is different)
                           label = `Payment #${feeIndex + 1}`;
                         }
+                        const sortedOrders = order
+                          .slice()
+                          .sort((a, b) => a.order - b.order);
+                        const hasDeliveryFee = sortedOrders.length === 6;
+                        const deliveryFeeStatus = hasDeliveryFee
+                          ? sortedOrders[0]?.transaction?.paymentStatus
+                          : null;
+                        const isDeliveryFeeUnpaid =
+                          hasDeliveryFee && deliveryFeeStatus === 'U';
+
                         return (
                           <div
                             key={feeIndex}
@@ -476,36 +486,71 @@ const PurchaseHistory = () => {
                                   )}
 
                                   <h6 className="font-bold text-sm text-center text-gray-400">
-                                    {getOrderFeeDeadline(
-                                      feeWrapper.order,
-                                      feeWrapper.paymentType,
-                                      feeWrapper.createdAt
-                                    ).toLocaleDateString('en-US', {
-                                      year: 'numeric',
-                                      month: 'long',
-                                      day: 'numeric',
-                                    })}
+                                    {label === 'Delivery Fee'
+                                      ? ''
+                                      : getOrderFeeDeadline(
+                                          feeWrapper.order,
+                                          feeWrapper.paymentType,
+                                          feeWrapper.createdAt
+                                        ).toLocaleDateString('en-US', {
+                                          year: 'numeric',
+                                          month: 'long',
+                                          day: 'numeric',
+                                        })}
                                   </h6>
                                 </div>
                                 {order[0].orderStatus === 'Order_Placed' ||
                                 order[0].orderStatus === 'In_Transit' ||
                                 order[0].orderStatus === 'For_Delivery' ||
-                                order[0].orderStatus === 'For_Delivery' ||
+                                order[0].orderStatus === 'For_Pickup' ||
                                 order[0].orderStatus === null ? (
-                                  <button
-                                    className="ml-auto px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
-                                    disabled={isSubmitting}
-                                    onClick={() =>
-                                      showBankPaymentModal(
-                                        feeWrapper.transaction.transactionId,
-                                        feeWrapper.transaction.referenceNumber,
-                                        feeWrapper.transaction.amount,
-                                        feeWrapper.transaction.amount
-                                      )
-                                    }
-                                  >
-                                    Pay Now
-                                  </button>
+                                  // ✅ If there’s a delivery fee
+                                  order.length === 6 ? (
+                                    // If the delivery fee is unpaid AND this is NOT the delivery fee row
+                                    isDeliveryFeeUnpaid &&
+                                    label !== 'Delivery Fee' ? (
+                                      <button
+                                        className="ml-auto px-3 py-2 text-white rounded bg-gray-400 cursor-not-allowed"
+                                        disabled
+                                      >
+                                        Unpaid Delivery Fee
+                                      </button>
+                                    ) : (
+                                      <button
+                                        className="ml-auto px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
+                                        disabled={isSubmitting}
+                                        onClick={() =>
+                                          showBankPaymentModal(
+                                            feeWrapper.transaction
+                                              .transactionId,
+                                            feeWrapper.transaction
+                                              .referenceNumber,
+                                            feeWrapper.transaction.amount,
+                                            feeWrapper.transaction.amount
+                                          )
+                                        }
+                                      >
+                                        Pay Now
+                                      </button>
+                                    )
+                                  ) : (
+                                    // No delivery fee case
+                                    <button
+                                      className="ml-auto px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
+                                      disabled={isSubmitting}
+                                      onClick={() =>
+                                        showBankPaymentModal(
+                                          feeWrapper.transaction.transactionId,
+                                          feeWrapper.transaction
+                                            .referenceNumber,
+                                          feeWrapper.transaction.amount,
+                                          feeWrapper.transaction.amount
+                                        )
+                                      }
+                                    >
+                                      Pay Now
+                                    </button>
+                                  )
                                 ) : order[0].orderStatus === 'Cancelled' ? (
                                   <button className="ml-auto px-3 py-2 text-white rounded bg-red-500 disabled:opacity-50">
                                     Cancelled
