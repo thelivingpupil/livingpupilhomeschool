@@ -211,7 +211,7 @@ const deadlines2025 = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 5, 10], // June 5, Nov 5
       [PaymentType.QUARTERLY]: [0, 5, 8, 11], // June 5, Sep 5, Dec 5
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7], // Feb 5, Mar 5, Apr 5, May 5, Jun 5, Jul 5, Aug 5, Sep 5
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8], // Feb 5, Mar 5, Apr 5, May 5, Jun 5, Jul 5, Aug 5, Sep 5
       [PaymentType.PAY_ALL]: [0],
     },
     // February (Early Enrollment)
@@ -219,7 +219,7 @@ const deadlines2025 = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 4, 8], // June 5, Oct 5
       [PaymentType.QUARTERLY]: [0, 4, 7, 10], // June 5, Sep 5, Dec 5
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7], // Mar 5, Apr 5, May 5, Jun 5, Jul 5, Aug 5, Sep 5, Oct 5
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8], // Mar 5, Apr 5, May 5, Jun 5, Jul 5, Aug 5, Sep 5, Oct 5
       [PaymentType.PAY_ALL]: [0],
     },
     // March
@@ -227,7 +227,7 @@ const deadlines2025 = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 8], // June 5, Nov 5
       [PaymentType.QUARTERLY]: [0, 3, 6, 9], // June 5, Sep 5, Dec 5
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7], // Apr 5, May 5, Jun 5, Jul 5, Aug 5, Sep 5, Oct 5, Nov 5
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8], // Apr 5, May 5, Jun 5, Jul 5, Aug 5, Sep 5, Oct 5, Nov 5
       [PaymentType.PAY_ALL]: [0],
     },
     // April
@@ -235,7 +235,7 @@ const deadlines2025 = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 8], // July 5, Dec 5
       [PaymentType.QUARTERLY]: [0, 3, 6, 9], // July 5, Oct 5, Jan 5
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7], // May 5, Jun 5, Jul 5, Aug 5, Sep 5, Oct 5, Nov 5, Dec 5
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8], // May 5, Jun 5, Jul 5, Aug 5, Sep 5, Oct 5, Nov 5, Dec 5
       [PaymentType.PAY_ALL]: [0],
     },
     // May
@@ -243,7 +243,7 @@ const deadlines2025 = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 6], // Aug 5, Nov 5
       [PaymentType.QUARTERLY]: [0, 3, 6, 9], // Aug 5, Nov 5, Feb 5
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7], // Jun 5, Jul 5, Aug 5, Sep 5, Oct 5, Nov 5, Dec 5, Jan 5
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8], // Jun 5, Jul 5, Aug 5, Sep 5, Oct 5, Nov 5, Dec 5, Jan 5
       [PaymentType.PAY_ALL]: [0],
     },
     // June (Start of SY)
@@ -251,7 +251,7 @@ const deadlines2025 = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 6], // Sep 5, Dec 5
       [PaymentType.QUARTERLY]: [0, 3, 6, 8], // Sep 5, Dec 5, Feb 5
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7], // Jul 5, Aug 5, Sep 5, Oct 5, Nov 5, Dec 5, Jan 5, Feb 5
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8], // Jul 5, Aug 5, Sep 5, Oct 5, Nov 5, Dec 5, Jan 5, Feb 5
       [PaymentType.PAY_ALL]: [0],
     },
     // July
@@ -259,7 +259,7 @@ const deadlines2025 = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 6], // Oct 5, Jan 5
       [PaymentType.QUARTERLY]: [0, 3, 5, 7], // Oct 5, Dec 5, Feb 5
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6], // Aug 5, Sep 5, Oct 5, Nov 5, Dec 5, Jan 5, Feb 5
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7], // Aug 5, Sep 5, Oct 5, Nov 5, Dec 5, Jan 5, Feb 5
       [PaymentType.PAY_ALL]: [0],
     },
     // August
@@ -267,7 +267,7 @@ const deadlines2025 = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 6], // Nov 5, Feb 5
       [PaymentType.QUARTERLY]: [0, 3, 5, 6], // Nov 5, Jan 5, Feb 5
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5], // Sep 5, Oct 5, Nov 5, Dec 5, Jan 5, Feb 5
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6], // Sep 5, Oct 5, Nov 5, Dec 5, Jan 5, Feb 5
       [PaymentType.PAY_ALL]: [0],
     },
     // September
@@ -275,7 +275,7 @@ const deadlines2025 = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 2, 5], // Nov 5, Feb 5
       [PaymentType.QUARTERLY]: [0, 2, 4, 5], // Nov 5, Jan 5, Feb 5
-      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4], // Oct 5, Nov 5, Dec 5, Jan 5, Feb 5
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5], // Oct 5, Nov 5, Dec 5, Jan 5, Feb 5
       [PaymentType.PAY_ALL]: [0],
     },
     // October
@@ -461,7 +461,57 @@ export const groupBy = (array, key) => {
 export const getOrderFeeDeadline = (index, paymentType, dateOrdered) => {
   const monthsIteration = {
     FULL_PAYMENT: [0],
-    INSTALLMENT: [1, 2, 3, 4, 5, 6],
+    INSTALLMENT: [1, 2, 3, 4, 5],
+  };
+
+  // Check if the paymentType exists in monthsIteration
+  if (!monthsIteration[paymentType]) {
+    throw new Error('Invalid payment type');
+  }
+
+  // If paymentType is FULL_PAYMENT, set the deadline to the next day
+  if (paymentType === 'FULL_PAYMENT') {
+    const deadline = new Date(dateOrdered);
+    deadline.setDate(deadline.getDate() + 1);
+    return deadline;
+  }
+
+  // Get the number of months to add based on the index
+  const monthsToAdd = monthsIteration[paymentType][index];
+
+  if (monthsToAdd === undefined) {
+    throw new Error('Invalid index for the given payment type');
+  }
+
+  // Create a new date object from dateOrdered and add the corresponding months
+  const deadline = new Date(dateOrdered);
+  deadline.setMonth(deadline.getMonth() + monthsToAdd);
+
+  // Ensure the deadline is set to the 30th day of the month
+  // Handle February separately
+  const year = deadline.getFullYear();
+  const month = deadline.getMonth();
+  const lastDayOfMonth = new Date(year, month + 1, 0).getDate(); // Last day of the month
+
+  // If February has fewer than 30 days, set the deadline to the last day of February
+  if (month === 1 && lastDayOfMonth < 30) {
+    deadline.setDate(lastDayOfMonth);
+  } else {
+    // Otherwise, set to the 30th of the month or the last day if the month has fewer days
+    deadline.setDate(Math.min(30, lastDayOfMonth));
+  }
+
+  return deadline;
+};
+
+export const getOrderFeeDeadlineWithDelivery = (
+  index,
+  paymentType,
+  dateOrdered
+) => {
+  const monthsIteration = {
+    FULL_PAYMENT: [0],
+    INSTALLMENT: [0, 1, 2, 3, 4, 5],
   };
 
   // Check if the paymentType exists in monthsIteration

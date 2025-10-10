@@ -17,7 +17,10 @@ import Image from 'next/image';
 import { TransactionStatus } from '@prisma/client';
 import api from '@/lib/common/api';
 import toast from 'react-hot-toast';
-import { getOrderFeeDeadline } from '@/utils/index';
+import {
+  getOrderFeeDeadline,
+  getOrderFeeDeadlineWithDelivery,
+} from '@/utils/index';
 import { SHOP_PAYMENT_TYPE } from '@/providers/cart';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import Modal from '@/components/Modal';
@@ -486,8 +489,18 @@ const PurchaseHistory = () => {
                                   )}
 
                                   <h6 className="font-bold text-sm text-center text-gray-400">
-                                    {label === 'Delivery Fee'
-                                      ? ''
+                                    {order.length === 6
+                                      ? label === 'Delivery Fee'
+                                        ? ''
+                                        : getOrderFeeDeadlineWithDelivery(
+                                            feeWrapper.order,
+                                            feeWrapper.paymentType,
+                                            feeWrapper.createdAt
+                                          ).toLocaleDateString('en-US', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                          })
                                       : getOrderFeeDeadline(
                                           feeWrapper.order,
                                           feeWrapper.paymentType,

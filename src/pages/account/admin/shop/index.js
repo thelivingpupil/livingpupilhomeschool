@@ -17,7 +17,10 @@ import {
   ORDER_STATUS_BG_COLOR,
 } from '@/utils/constants';
 import Image from 'next/image';
-import { getOrderFeeDeadline } from '@/utils/index';
+import {
+  getOrderFeeDeadline,
+  getOrderFeeDeadlineWithDelivery,
+} from '@/utils/index';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import { SHOP_PAYMENT_TYPE } from '@/providers/cart';
 import { calculateShippingFeeFromAddress } from '@/utils/index';
@@ -643,7 +646,7 @@ const Shop = () => {
                     // Fallback (in case length is different)
                     label = `Payment #${feeIndex + 1}`;
                   }
-
+                  console.log('feeWrapper', feeWrapper);
                   return (
                     <>
                       <div
@@ -677,8 +680,18 @@ const Shop = () => {
                             )}
 
                             <h6 className="font-bold text-sm text-center text-gray-400">
-                              {label === 'Delivery Fee'
-                                ? ''
+                              {order.length === 6
+                                ? label === 'Delivery Fee'
+                                  ? ''
+                                  : getOrderFeeDeadlineWithDelivery(
+                                      feeWrapper.order,
+                                      feeWrapper.paymentType,
+                                      feeWrapper.createdAt
+                                    ).toLocaleDateString('en-US', {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric',
+                                    })
                                 : getOrderFeeDeadline(
                                     feeWrapper.order,
                                     feeWrapper.paymentType,
