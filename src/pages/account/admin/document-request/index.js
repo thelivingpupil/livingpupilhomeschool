@@ -347,17 +347,23 @@ const DocumentRequest = () => {
                               {DOCUMENT_DETAILS[doc.docName]?.label ||
                                 doc.docName}
                               <div className="ml-5">
-                                {doc.url.split(', ').map((url, index) => (
-                                  <a
-                                    key={index}
-                                    href={url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-500 underline block"
-                                  >
-                                    View Document {index + 1}
-                                  </a>
-                                ))}
+                                {doc.url &&
+                                  doc.url !== 'N/A' &&
+                                  doc.url.split(', ').map(
+                                    (url, index) =>
+                                      url &&
+                                      url !== 'N/A' && (
+                                        <a
+                                          key={index}
+                                          href={url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-blue-500 underline block"
+                                        >
+                                          View Document {index + 1}
+                                        </a>
+                                      )
+                                  )}
                               </div>
                             </li>
                           ))}

@@ -20,6 +20,7 @@ import { STATUS_CODES } from '@/lib/server/dragonpay';
 import ReCAPTCHA from 'react-google-recaptcha';
 import crypto from 'crypto';
 import format from 'date-fns/format';
+import { set } from 'date-fns';
 
 const PURPOSE_OPTIONS = [
   { value: '', label: 'Select Purpose' },
@@ -211,6 +212,7 @@ const RegistrarPortal = ({ page }) => {
   // Multi-student functions
   const saveCurrentStudent = () => {
     // Save the current form data as a student
+
     const currentStudent = {
       studentName: formData.studentName,
       lrn: formData.lrn,
@@ -219,6 +221,17 @@ const RegistrarPortal = ({ page }) => {
       gradesWithLP: formData.gradesWithLP,
       lastSchoolYear: formData.lastSchoolYear,
       selectedDocuments: selectedDocuments,
+      documentsData: selectedDocuments.map((docName) => ({
+        docName: docName,
+        url:
+          docName === 're_form_138'
+            ? affidavit
+            : docName === 'form_137'
+            ? letterRequest137
+            : docName === 'eccd'
+            ? `${letterRequestEccd}, ${eccdForm}`
+            : 'N/A', // Documents will be uploaded separately
+      })),
     };
 
     // Check if a student with the same name already exists
@@ -261,7 +274,14 @@ const RegistrarPortal = ({ page }) => {
       lastSchoolYear: '',
     });
     setSelectedDocuments([]);
-
+    setAffidavit('');
+    setAffidavitProgress(0);
+    setLetterRequest137('');
+    setLetterRequest137Progress(0);
+    setEccdForm('');
+    setEccdFormProgress(0);
+    setLetterRequestEccd('');
+    setLetterRequestEccdProgress(0);
     // Go back to Step 2 to add the next student
     setStep(1);
   };
@@ -443,7 +463,7 @@ const RegistrarPortal = ({ page }) => {
     let studentsData;
     let documentsData;
 
-    if (students.length > 0 && students[0].studentName) {
+    if (students.length > 1) {
       // Use saved students data
       studentsData = students.map((student) => ({
         studentFullName: student.studentName,
@@ -457,13 +477,11 @@ const RegistrarPortal = ({ page }) => {
       // Prepare documents data grouped by student
       documentsData = students.map((student, index) => ({
         studentIndex: index,
-        documents: student.selectedDocuments.map((docName) => ({
-          docName: docName,
-          url: 'N/A', // Documents will be uploaded separately
-        })),
+        documents: student.documentsData,
       }));
     } else {
       // Fallback to current form data (single student)
+
       studentsData = [
         {
           studentFullName: formData.studentName,
@@ -480,7 +498,14 @@ const RegistrarPortal = ({ page }) => {
           studentIndex: 0,
           documents: selectedDocuments.map((docName) => ({
             docName: docName,
-            url: 'N/A', // Documents will be uploaded separately
+            url:
+              docName === 're_form_138'
+                ? affidavit
+                : docName === 'form_137'
+                ? letterRequest137
+                : docName === 'eccd'
+                ? `${letterRequestEccd}, ${eccdForm}`
+                : 'N/A', // Documents will be uploaded separately
           })),
         },
       ];
@@ -655,6 +680,7 @@ const RegistrarPortal = ({ page }) => {
 
             if (response.success) {
               toast.success('Payment proof uploaded successfully!');
+              setPaymentLink(response.data);
               setPaymentProofFile(null);
               setShowPaymentModal(false);
             } else {
@@ -2121,7 +2147,7 @@ const RegistrarPortal = ({ page }) => {
 
           {paymentLink ? (
             <>
-              {paymentLink !== 'N/A' && (
+              {/* {paymentLink !== 'N/A' && (
                 <a
                   className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25 mb-4"
                   href={paymentLink}
@@ -2129,7 +2155,15 @@ const RegistrarPortal = ({ page }) => {
                 >
                   Pay Now
                 </a>
-              )}
+              )} */}
+              <button
+                className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25 mb-4"
+                onClick={() => {
+                  setShowPaymentModal(true);
+                }}
+              >
+                View Payment Proof
+              </button>
               <button
                 className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25 mb-4"
                 disabled={submittingState}
@@ -2297,7 +2331,7 @@ const RegistrarPortal = ({ page }) => {
             </h4>
 
             {/* Show existing payment proof if available */}
-            {documentRequest?.transaction?.paymentProofLink && (
+            {paymentLink && (
               <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-green-800">
@@ -2306,20 +2340,19 @@ const RegistrarPortal = ({ page }) => {
                   <span
                     className={`text-xs px-2 py-1 rounded ${
                       STATUS_BG_COLOR[
-                        documentRequest?.transaction?.paymentStatus
+                        paymentLink?.transaction?.paymentStatus
                       ] || 'bg-gray-200'
                     }`}
                   >
-                    {STATUS_CODES[
-                      documentRequest?.transaction?.paymentStatus
-                    ] || 'Unknown'}
+                    {STATUS_CODES[paymentLink?.transaction?.paymentStatus] ||
+                      'Unknown'}
                   </span>
                 </div>
                 <div className="flex items-center space-x-3 mb-3">
                   <button
                     onClick={() =>
                       window.open(
-                        documentRequest.transaction.paymentProofLink,
+                        paymentLink.transaction.paymentProofLink,
                         '_blank'
                       )
                     }
