@@ -40,6 +40,7 @@ const handler = async (req, res) => {
         accreditation,
         discountCode,
         scholarshipCode,
+        program,
         cottageType
       ),
       createSchoolFees(

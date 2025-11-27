@@ -5,11 +5,11 @@ export const countEnrolledStudentsByGradeLevel = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-        AND: [
-          { createdAt: { gte: new Date(startDate) } },
-          { createdAt: { lte: new Date(endDate) } },
-        ],
-      }
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
       : {};
   const result = await prisma.studentRecord.groupBy({
     by: ['incomingGradeLevel'],
@@ -59,11 +59,11 @@ export const countEnrolledStudentsByProgram = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-        AND: [
-          { createdAt: { gte: new Date(startDate) } },
-          { createdAt: { lte: new Date(endDate) } },
-        ],
-      }
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
       : {};
   const result = await prisma.studentRecord.groupBy({
     by: ['program'],
@@ -97,11 +97,11 @@ export const countEnrolledStudents = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-        AND: [
-          { createdAt: { gte: new Date(startDate) } },
-          { createdAt: { lte: new Date(endDate) } },
-        ],
-      }
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
       : {};
   return await prisma.studentRecord.count({
     where: {
@@ -125,11 +125,11 @@ export const countStudents = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-        AND: [
-          { createdAt: { gte: new Date(startDate) } },
-          { createdAt: { lte: new Date(endDate) } },
-        ],
-      }
+          AND: [
+            { createdAt: { gte: new Date(startDate) } },
+            { createdAt: { lte: new Date(endDate) } },
+          ],
+        }
       : {};
 
   return await prisma.studentRecord.count({
@@ -226,7 +226,7 @@ export const createStudentRecord = async (
       formerRegistrarEmail,
       formerRegistrarNumber,
       studentAddress1,
-      studentAddress2
+      studentAddress2,
     },
   });
 
@@ -449,10 +449,9 @@ export const getStudentRecord = async (id) =>
       idPictureBack: true,
       discount: true,
       scholarship: true,
-
     },
     where: {
-      studentId: id
+      studentId: id,
     },
   });
 
@@ -483,7 +482,7 @@ export const updateStudentRecord = async (studentId, studentNewData) =>
       idPictureFront: studentNewData.idPictureFront,
       idPictureBack: studentNewData.idPictureBack,
     },
-    where: { studentId }
+    where: { studentId },
   });
 
 export const updateStudentStatus = async (studentId, newStudentStatus) =>
@@ -491,10 +490,19 @@ export const updateStudentStatus = async (studentId, newStudentStatus) =>
     data: {
       studentStatus: newStudentStatus,
     },
-    where: { studentId }
+    where: { studentId },
   });
 
-export const updateStudentRecordForSchoolFees = async (studentId, newgradeLevel, newEnrollmentType, newAccreditation, newDiscountCode, newScholarshipCode, newCottageType) =>
+export const updateStudentRecordForSchoolFees = async (
+  studentId,
+  newgradeLevel,
+  newEnrollmentType,
+  newAccreditation,
+  newDiscountCode,
+  newScholarshipCode,
+  newProgram,
+  newCottageType
+) =>
   await prisma.studentRecord.update({
     data: {
       incomingGradeLevel: newgradeLevel,
@@ -503,7 +511,7 @@ export const updateStudentRecordForSchoolFees = async (studentId, newgradeLevel,
       discount: newDiscountCode,
       scholarship: newScholarshipCode,
       cottageType: newCottageType,
+      program: newProgram,
     },
-    where: { studentId }
+    where: { studentId },
   });
-

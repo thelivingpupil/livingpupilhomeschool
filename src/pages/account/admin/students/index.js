@@ -2550,6 +2550,7 @@ export const getServerSideProps = async () => {
     sanityClient.fetch(`*[_type == 'schoolFees']{...}`),
     sanityClient.fetch(`*[_type == 'programs']`),
   ]);
+
   return { props: { schoolFees, programs } };
 };
 
