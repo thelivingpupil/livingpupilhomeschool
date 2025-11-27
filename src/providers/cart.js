@@ -134,7 +134,7 @@ export const SHOP_SHIPPING = {
 
 export const SHOP_PAYMENT_TYPE = {
   FULL_PAYMENT: 'Full Payment',
-  // INSTALLMENT: 'Installment',
+  INSTALLMENT: 'Installment',
 };
 
 export const useCartContext = () => useContext(CartContext);

@@ -957,12 +957,19 @@ const Shop = ({ categories, items }) => {
                         value={paymentType}
                       >
                         <option value="">-</option>
-                        {Object.entries(SHOP_PAYMENT_TYPE).map(
+                        {/* {Object.entries(SHOP_PAYMENT_TYPE).map(
                           ([key, value]) => (
                             <option key={key} value={key}>
                               {value}
                             </option>
                           )
+                        )} */}
+                        {Object.entries(SHOP_PAYMENT_TYPE).map(([key, value]) =>
+                          key !== 'INSTALLMENT' ? (
+                            <option key={key} value={key}>
+                              {value}
+                            </option>
+                          ) : null
                         )}
                       </select>
                       <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -1217,12 +1224,21 @@ const Shop = ({ categories, items }) => {
                           value={paymentType}
                         >
                           <option value="">-</option>
-                          {Object.entries(SHOP_PAYMENT_TYPE).map(
+                          {/* {Object.entries(SHOP_PAYMENT_TYPE).map(
                             ([key, value]) => (
                               <option key={key} value={key}>
                                 {value}
                               </option>
                             )
+                          )} */}
+
+                          {Object.entries(SHOP_PAYMENT_TYPE).map(
+                            ([key, value]) =>
+                              key !== 'INSTALLMENT' ? (
+                                <option key={key} value={key}>
+                                  {value}
+                                </option>
+                              ) : null
                           )}
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
