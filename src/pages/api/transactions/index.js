@@ -10,9 +10,35 @@ const handler = async (req, res) => {
   const { method } = req;
 
   if (method === 'GET') {
-    await validateSession(req, res);
-    const transactions = await getTransactions();
-    res.status(200).json({ data: { transactions } });
+    try {
+      await validateSession(req, res);
+
+      // Extract query parameters
+      const page = parseInt(req.query.page) || 1;
+      const pageSize = parseInt(req.query.pageSize) || 10;
+      const filterBy = req.query.filterBy && req.query.filterBy !== 'null' ? req.query.filterBy : null;
+      const filterValue = req.query.filterValue && req.query.filterValue !== 'null' && req.query.filterValue !== '' ? req.query.filterValue : null;
+
+      const result = await getTransactions({
+        page,
+        pageSize,
+        filterBy,
+        filterValue,
+      });
+
+      res.status(200).json({
+        data: {
+          transactions: result.transactions || [],
+          pagination: result.pagination || { total: 0, page: 1, pageSize: 10, totalPages: 0 },
+        },
+      });
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+      res.status(500).json({
+        error: 'Failed to fetch transactions',
+        message: error.message,
+      });
+    }
   } else if (method === 'POST') {
     const {
       userId,

@@ -22,11 +22,11 @@ export const getTotalEnrollmentRevenuesByStatus = async (
   const filterDate =
     startDate && endDate
       ? {
-          AND: [
-            { createdAt: { gte: new Date(startDate) } },
-            { createdAt: { lte: new Date(endDate) } },
-          ],
-        }
+        AND: [
+          { createdAt: { gte: new Date(startDate) } },
+          { createdAt: { lte: new Date(endDate) } },
+        ],
+      }
       : {};
   const result = await prisma.transaction.groupBy({
     by: ['paymentStatus'],
@@ -99,13 +99,13 @@ export const getTotalEnrollmentRevenuesByStatusUsingWorkspaces = async (
         deadline:
           schoolFee.transaction.paymentStatus === TransactionStatus.U
             ? new Date(
-                getDeadline(
-                  schoolFee.order,
-                  schoolFee.paymentType,
-                  schoolFee.transaction.createdAt,
-                  workspace.studentRecord.schoolYear
-                ) || schoolFee.transaction.createdAt
-              )
+              getDeadline(
+                schoolFee.order,
+                schoolFee.paymentType,
+                schoolFee.transaction.createdAt,
+                workspace.studentRecord.schoolYear
+              ) || schoolFee.transaction.createdAt
+            )
             : schoolFee.transaction.createdAt,
       };
     })
@@ -152,11 +152,11 @@ export const getTotalStoreRevenuesByStatus = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-          AND: [
-            { createdAt: { gte: new Date(startDate) } },
-            { createdAt: { lte: new Date(endDate) } },
-          ],
-        }
+        AND: [
+          { createdAt: { gte: new Date(startDate) } },
+          { createdAt: { lte: new Date(endDate) } },
+        ],
+      }
       : {};
   const result = await prisma.transaction.groupBy({
     by: ['paymentStatus'],
@@ -187,11 +187,11 @@ export const getTotalSales = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-          AND: [
-            { createdAt: { gte: new Date(startDate) } },
-            { createdAt: { lte: new Date(endDate) } },
-          ],
-        }
+        AND: [
+          { createdAt: { gte: new Date(startDate) } },
+          { createdAt: { lte: new Date(endDate) } },
+        ],
+      }
       : {};
   const total = await prisma.transaction.aggregate({
     _sum: { amount: true },
@@ -208,11 +208,11 @@ export const getPendingSales = async (startDate, endDate) => {
   const filterDate =
     startDate && endDate
       ? {
-          AND: [
-            { createdAt: { gte: new Date(startDate) } },
-            { createdAt: { lte: new Date(endDate) } },
-          ],
-        }
+        AND: [
+          { createdAt: { gte: new Date(startDate) } },
+          { createdAt: { lte: new Date(endDate) } },
+        ],
+      }
       : {};
   const total = await prisma.transaction.aggregate({
     _sum: { amount: true },
@@ -316,9 +316,100 @@ export const getTransaction = async (transactionId, referenceNumber) =>
     },
   });
 
-export const getTransactions = async () =>
-  await prisma.transaction.findMany({
+export const getTransactions = async (options = {}) => {
+  const {
+    page = 1,
+    pageSize = 10,
+    filterBy = null,
+    filterValue = null,
+  } = options;
+
+  // Build base where clause
+  const baseWhere = {
+    NOT: {
+      schoolFee: null,
+    },
+    schoolFee: {
+      deletedAt: null,
+      student: {
+        deletedAt: null,
+      },
+    },
+    deletedAt: null,
+    source: TransactionSource.ENROLLMENT,
+  };
+
+  // Add filter conditions
+  const where = { ...baseWhere };
+  if (filterBy && filterValue) {
+    if (filterBy === 'paymentType') {
+      where.schoolFee = {
+        ...where.schoolFee,
+        paymentType: filterValue,
+      };
+    } else if (filterBy === 'paymentStatus') {
+      where.paymentStatus = filterValue;
+    } else if (filterBy === 'emailAccount') {
+      where.user = {
+        email: {
+          contains: filterValue,
+          mode: 'insensitive',
+        },
+      };
+    } else if (filterBy === 'firstName') {
+      where.schoolFee = {
+        ...where.schoolFee,
+        student: {
+          deletedAt: null,
+          studentRecord: {
+            firstName: {
+              contains: filterValue,
+              mode: 'insensitive',
+            },
+          },
+        },
+      };
+    } else if (filterBy === 'middleName') {
+      where.schoolFee = {
+        ...where.schoolFee,
+        student: {
+          deletedAt: null,
+          studentRecord: {
+            middleName: {
+              contains: filterValue,
+              mode: 'insensitive',
+            },
+          },
+        },
+      };
+    } else if (filterBy === 'lastName') {
+      where.schoolFee = {
+        ...where.schoolFee,
+        student: {
+          deletedAt: null,
+          studentRecord: {
+            lastName: {
+              contains: filterValue,
+              mode: 'insensitive',
+            },
+          },
+        },
+      };
+    }
+  }
+
+  // Calculate skip and take for pagination
+  const skip = (page - 1) * pageSize;
+  const take = pageSize;
+
+  // Get total count for pagination
+  const total = await prisma.transaction.count({ where });
+
+  // Get paginated transactions
+  const transactions = await prisma.transaction.findMany({
     orderBy: [{ updatedAt: 'desc' }, { schoolFee: { order: 'desc' } }],
+    skip,
+    take,
     select: {
       transactionId: true,
       amount: true,
@@ -368,20 +459,19 @@ export const getTransactions = async () =>
         },
       },
     },
-    where: {
-      NOT: {
-        schoolFee: null,
-      },
-      schoolFee: {
-        deletedAt: null,
-        student: {
-          deletedAt: null,
-        },
-      },
-      deletedAt: null,
-      source: TransactionSource.ENROLLMENT,
-    },
+    where,
   });
+
+  return {
+    transactions,
+    pagination: {
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
+    },
+  };
+};
 
 export const renewTransaction = async (
   email,
