@@ -70,7 +70,20 @@ export const getParentTrainings = async () =>
                     anotherEmail: true,
                     user: {
                         select: {
-                            email: true
+                            email: true,
+                            id: true,
+                            createdWorkspace: {
+                                select: {
+                                    slug: true
+                                },
+                                where: {
+                                    deletedAt: null
+                                },
+                                take: 1,
+                                orderBy: {
+                                    createdAt: 'desc'
+                                }
+                            }
                         }
                     }
                 }

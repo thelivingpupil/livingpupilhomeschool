@@ -470,12 +470,12 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     const evaluate =
       program === Program.HOMESCHOOL_COTTAGE
         ? programFee.programType === program &&
-          programFee.enrollmentType === enrollmentType &&
-          programFee.gradeLevel === gradeLevel &&
-          programFee.cottageType === cottageType
+        programFee.enrollmentType === enrollmentType &&
+        programFee.gradeLevel === gradeLevel &&
+        programFee.cottageType === cottageType
         : programFee.programType === program &&
-          programFee.enrollmentType === enrollmentType &&
-          programFee.gradeLevel === gradeLevel;
+        programFee.enrollmentType === enrollmentType &&
+        programFee.gradeLevel === gradeLevel;
 
     return evaluate;
   });
@@ -486,7 +486,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         return (
           selectedPProgram.programType === program &&
           selectedPProgram.gradeLevel ===
-            GRADE_TO_FORM_MAP[incomingGradeLevel] &&
+          GRADE_TO_FORM_MAP[incomingGradeLevel] &&
           selectedPProgram.enrollmentType === enrollmentType &&
           selectedPProgram.cottageType === cottageType
         );
@@ -610,9 +610,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -656,9 +656,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -703,9 +703,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -750,9 +750,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -797,9 +797,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -844,9 +844,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -902,9 +902,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       .update(dataUrl)
       .digest('hex')
       .substring(0, 12)}-${format(
-      new Date(),
-      'yyyy.MM.dd.kk.mm.ss'
-    )}.${extension}`;
+        new Date(),
+        'yyyy.MM.dd.kk.mm.ss'
+      )}.${extension}`;
 
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, blob);
@@ -1122,9 +1122,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
               <input
-                className={`px-3 py-2 rounded md:w-1/3 ${
-                  firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`px-3 py-2 rounded md:w-1/3 ${firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                  }`}
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder="Given Name"
                 value={firstName}
@@ -1136,9 +1135,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 value={middleName}
               />
               <input
-                className={`px-3 py-2 rounded md:w-1/3 ${
-                  lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`px-3 py-2 rounded md:w-1/3 ${lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                  }`}
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder="Last Name"
                 value={lastName}
@@ -1151,9 +1149,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 Birthday <span className="ml-1 text-red-600">*</span>
               </label>
               <div
-                className={`relative flex flex-row rounded ${
-                  !birthDate ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`relative flex flex-row rounded ${!birthDate ? 'border-red-500 border-2' : 'border'
+                  }`}
               >
                 <DatePicker
                   selected={birthDate}
@@ -1232,9 +1229,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="relative flex flex-row space-x-5">
               <textarea
-                className={`w-full px-3 py-2 rounded ${
-                  !reason ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`w-full px-3 py-2 rounded ${!reason ? 'border-red-500 border-2' : 'border'
+                  }`}
                 onChange={(e) => setReason(e.target.value)}
                 placeholder="Why did you choose to homeschool your child?"
                 rows={5}
@@ -1278,11 +1274,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               </label>
               <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
                 <input
-                  className={`px-3 py-2 rounded md:w-1/2 ${
-                    specialNeeds.length <= 0
+                  className={`px-3 py-2 rounded md:w-1/2 ${specialNeeds.length <= 0
                       ? 'border-red-500 border-2'
                       : 'border'
-                  }`}
+                    }`}
                   onChange={(e) => setSpecialNeeds(e.target.value)}
                   placeholder=""
                   value={specialNeeds}
@@ -1298,9 +1293,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="flex flex-col space-y-3 mt-3">
               <select
-                className={`px-3 py-2 rounded md:w-3/4 ${
-                  !selectedProvince ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`px-3 py-2 rounded md:w-3/4 ${!selectedProvince ? 'border-red-500 border-2' : 'border'
+                  }`}
                 value={selectedProvince}
                 onChange={handleProvinceChange}
               >
@@ -1312,9 +1306,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 ))}
               </select>
               <select
-                className={`px-3 py-2 rounded md:w-3/4 ${
-                  !selectedCity ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`px-3 py-2 rounded md:w-3/4 ${!selectedCity ? 'border-red-500 border-2' : 'border'
+                  }`}
                 value={selectedCity}
                 onChange={handleCityChange}
                 disabled={!selectedProvince}
@@ -1328,9 +1321,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               </select>
               {!isBarangay ? (
                 <select
-                  className={`px-3 py-2 rounded md:w-3/4 ${
-                    !selectedBarangay ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedBarangay ? 'border-red-500 border-2' : 'border'
+                    }`}
                   value={selectedBarangay}
                   onChange={handleBarangayChange}
                   disabled={!selectedCity}
@@ -1344,9 +1336,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 </select>
               ) : (
                 <input
-                  className={`px-3 py-2 rounded md:w-3/4 ${
-                    !selectedBarangay ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedBarangay ? 'border-red-500 border-2' : 'border'
+                    }`}
                   placeholder="Barangay"
                   onChange={handleBarangayChangeInput}
                   value={selectedBarangay}
@@ -1365,17 +1356,15 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           <div className="flex flex-col">
             <div className="flex flex-row space-x-5">
               <input
-                className={`px-3 py-2 rounded md:w-3/4 ${
-                  !address1 ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`px-3 py-2 rounded md:w-3/4 ${!address1 ? 'border-red-500 border-2' : 'border'
+                  }`}
                 placeholder="House No. St. Name, Village/Subdivision"
                 onChange={handleAddress1}
                 value={address1}
               />
               <input
-                className={`px-3 py-2 rounded md:w-1/4 ${
-                  !zipCode ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`px-3 py-2 rounded md:w-1/4 ${!zipCode ? 'border-red-500 border-2' : 'border'
+                  }`}
                 placeholder="ZIP Code"
                 onChange={handleZipCodeChange}
                 value={zipCode}
@@ -1487,9 +1476,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </tr>
             <tr>
               <td
-                className={`w-1/2 px-3 py-2 ${
-                  !birthCertificateLink ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`w-1/2 px-3 py-2 ${!birthCertificateLink ? 'border-red-500 border-2' : 'border'
+                  }`}
               >
                 <h3 className="text-xl font-medium">Birth Certificate</h3>
                 <p className="text-sm text-gray-400">
@@ -1593,9 +1581,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${
-              !enrollmentType ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`relative inline-block w-full rounded ${!enrollmentType ? 'border-red-500 border-2' : 'border'
+              }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1653,9 +1640,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="flex flex-row">
               <div
-                className={`relative inline-block w-full rounded ${
-                  !incomingGradeLevel ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`relative inline-block w-full rounded ${!incomingGradeLevel ? 'border-red-500 border-2' : 'border'
+                  }`}
               >
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1684,9 +1670,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </div>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${
-              !schoolYear ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`relative inline-block w-full rounded ${!schoolYear ? 'border-red-500 border-2' : 'border'
+              }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1723,9 +1708,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           <div className="flex flex-row space-x-5">
             <input
               disabled={enrollmentType === Enrollment.CONTINUING}
-              className={`px-3 py-2 rounded md:w-2/3 ${
-                !formerSchoolName ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-2/3 ${!formerSchoolName ? 'border-red-500 border-2' : 'border'
+                }`}
               onChange={(e) => setFormerSchoolName(e.target.value)}
               placeholder="Former School Name"
               value={formerSchoolName}
@@ -1739,9 +1723,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           <div className="relative flex flex-row space-x-5">
             <textarea
               disabled={enrollmentType === Enrollment.CONTINUING}
-              className={`w-full px-3 py-2 rounded ${
-                !formerSchoolAddress ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`w-full px-3 py-2 rounded ${!formerSchoolAddress ? 'border-red-500 border-2' : 'border'
+                }`}
               onChange={(e) => setFormerSchoolAddress(e.target.value)}
               placeholder="Former School Address"
               rows={3}
@@ -1758,9 +1741,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               </label>
               <div className="relative flex flex-row space-x-5">
                 <input
-                  className={`px-3 py-2 rounded md:w-2/3 ${
-                    !formerRegistrar ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-2/3 ${!formerRegistrar ? 'border-red-500 border-2' : 'border'
+                    }`}
                   onChange={handleFormerRegistrar}
                   placeholder="Former Registrar Full Name"
                   value={formerRegistrar}
@@ -1774,9 +1756,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               </label>
               <div className="relative flex flex-row space-x-5">
                 <input
-                  className={`px-3 py-2 rounded md:w-2/3 ${
-                    !formerRegistrarEmail ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-2/3 ${!formerRegistrarEmail ? 'border-red-500 border-2' : 'border'
+                    }`}
                   onChange={handleFormerRegistrarEmail}
                   placeholder="registrar@email.com"
                   value={formerRegistrarEmail}
@@ -1790,11 +1771,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               </label>
               <div className="relative flex flex-row space-x-5">
                 <input
-                  className={`px-3 py-2 rounded md:w-2/3 ${
-                    !formerRegistrarNumber
+                  className={`px-3 py-2 rounded md:w-2/3 ${!formerRegistrarNumber
                       ? 'border-red-500 border-2'
                       : 'border'
-                  }`}
+                    }`}
                   onChange={handleFormerRegistrarNumber}
                   placeholder="09XX-XXX-XXXX"
                   value={formerRegistrarNumber}
@@ -1816,27 +1796,24 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${
-                !primaryGuardianName ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${!primaryGuardianName ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="Primary Guardian's Full Name"
               onChange={handlePrimaryGuardianName}
               value={primaryGuardianName}
             />
             <input
-              className={`px-3 py-2 rounded md:w-1/4 ${
-                !primaryGuardianOccupation
+              className={`px-3 py-2 rounded md:w-1/4 ${!primaryGuardianOccupation
                   ? 'border-red-500 border-2'
                   : 'border'
-              }`}
+                }`}
               placeholder="Occupation"
               onChange={handlePrimaryGuardianOccupation}
               value={primaryGuardianOccupation}
             />
             <div
-              className={`relative inline-block rounded md:w-1/4 ${
-                !primaryGuardianType ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`relative inline-block rounded md:w-1/4 ${!primaryGuardianType ? 'border-red-500 border-2' : 'border'
+                }`}
             >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1857,9 +1834,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </div>
         <div className="flex flex-col">
           <input
-            className={`px-3 py-2 rounded ${
-              !primaryGuardianProfile ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`px-3 py-2 rounded ${!primaryGuardianProfile ? 'border-red-500 border-2' : 'border'
+              }`}
             placeholder="Primary Guardian's Facebook Profile Link"
             onChange={handlePrimaryGuardianProfile}
             value={primaryGuardianProfile}
@@ -1871,27 +1847,24 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${
-                !secondaryGuardianName ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${!secondaryGuardianName ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="Secondary Guardian's Full Name"
               onChange={handleSecondaryGuardianName}
               value={secondaryGuardianName}
             />
             <input
-              className={`px-3 py-2 rounded md:w-1/4 ${
-                !secondaryGuardianOccupation
+              className={`px-3 py-2 rounded md:w-1/4 ${!secondaryGuardianOccupation
                   ? 'border-red-500 border-2'
                   : 'border'
-              }`}
+                }`}
               placeholder="Occupation"
               onChange={handleSecondaryGuardianOccupation}
               value={secondaryGuardianOccupation}
             />
             <div
-              className={`relative inline-block rounded md:w-1/4 ${
-                !secondaryGuardianType ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`relative inline-block rounded md:w-1/4 ${!secondaryGuardianType ? 'border-red-500 border-2' : 'border'
+                }`}
             >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1912,9 +1885,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </div>
         <div className="flex flex-col">
           <input
-            className={`px-3 py-2 rounded ${
-              !secondaryGuardianProfile ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`px-3 py-2 rounded ${!secondaryGuardianProfile ? 'border-red-500 border-2' : 'border'
+              }`}
             placeholder="Secondary Guardian's Facebook Profile Link"
             onChange={handleSecondaryGuardianProfile}
             value={secondaryGuardianProfile}
@@ -1960,9 +1932,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-row md:w-1/2 flex-row space-x-5">
             <input
-              className={`px-3 py-2 rounded w-full ${
-                !telephoneNumber ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded w-full ${!telephoneNumber ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="Telephone Number"
               onChange={handleTelephoneNumber}
               value={telephoneNumber}
@@ -1975,9 +1946,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-row space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${
-                !anotherEmail ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${!anotherEmail ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="another@email.com"
               onChange={handleAnotherEmail}
               value={anotherEmail}
@@ -1998,27 +1968,24 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${
-                !primaryTeacherName ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${!primaryTeacherName ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="Guardian's Full Name"
               onChange={handlePrimaryTeacherName}
               value={primaryTeacherName}
             />
             <input
-              className={`px-3 py-2 rounded md:w-1/4 ${
-                !primaryTeacherAge ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/4 ${!primaryTeacherAge ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="Age"
               onChange={handlePrimaryTeacherAge}
               value={primaryTeacherAge}
             />
             <input
-              className={`px-3 py-2 rounded md:w-1/4 ${
-                !primaryTeacherRelationship
+              className={`px-3 py-2 rounded md:w-1/4 ${!primaryTeacherRelationship
                   ? 'border-red-500 border-2'
                   : 'border'
-              }`}
+                }`}
               placeholder="Relationship"
               onChange={handlePrimaryTeacherRelationship}
               value={primaryTeacherRelationship}
@@ -2028,9 +1995,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
 
         <div className="flex flex-col">
           <input
-            className={`px-3 py-2 rounded ${
-              !primaryTeacherProfile ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`px-3 py-2 rounded ${!primaryTeacherProfile ? 'border-red-500 border-2' : 'border'
+              }`}
             placeholder="Guardian's Facebook Profile Link"
             onChange={handlePrimaryTeacherProfile}
             value={primaryTeacherProfile}
@@ -2043,9 +2009,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${
-                !primaryTeacherEducation ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${!primaryTeacherEducation ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="ex: College Graduate"
               onChange={handlePrimaryTeacherEducation}
               value={primaryTeacherEducation}
@@ -2064,9 +2029,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${
-              !program ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`relative inline-block w-full rounded ${!program ? 'border-red-500 border-2' : 'border'
+              }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -2103,9 +2067,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="flex flex-row">
               <div
-                className={`relative inline-block w-full rounded ${
-                  !cottageType ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`relative inline-block w-full rounded ${!cottageType ? 'border-red-500 border-2' : 'border'
+                  }`}
               >
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -2206,9 +2169,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${
-              !accreditation ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`relative inline-block w-full rounded ${!accreditation ? 'border-red-500 border-2' : 'border'
+              }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -2562,9 +2524,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             Select Payment Type <span className="ml-1 text-red-600">*</span>
           </label>
           <div
-            className={`relative inline-block w-full rounded ${
-              !payment ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`relative inline-block w-full rounded ${!payment ? 'border-red-500 border-2' : 'border'
+              }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -2604,11 +2565,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           <hr />
           <div className="relative flex flex-row space-x-5">
             <div
-              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
-                payment === PaymentType.ANNUAL
+              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.ANNUAL
                   ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                   : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-              }`}
+                }`}
               onClick={() => {
                 setPayment(PaymentType.ANNUAL);
                 setFee(programFeeByAccreditation?.paymentTerms[0]);
@@ -2629,7 +2589,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                       currency: 'PHP',
                     }).format(
                       programFeeByAccreditation?.paymentTerms[0]?.fullPayment ||
-                        0
+                      0
                     )}
                   </span>
                 </div>
@@ -2648,11 +2608,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </div>
           <div className="relative flex flex-row space-x-5">
             <div
-              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
-                payment === PaymentType.SEMI_ANNUAL
+              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.SEMI_ANNUAL
                   ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                   : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-              }`}
+                }`}
               onClick={() => {
                 setPayment(PaymentType.SEMI_ANNUAL);
                 setFee(programFeeByAccreditation?.paymentTerms[1]);
@@ -2673,7 +2632,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                       currency: 'PHP',
                     }).format(
                       programFeeByAccreditation?.paymentTerms[1]?.downPayment ||
-                        0
+                      0
                     )}{' '}
                     +
                   </span>
@@ -2704,20 +2663,19 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   currency: 'PHP',
                 }).format(
                   programFeeByAccreditation?.paymentTerms[1]?.downPayment +
-                    programFeeByAccreditation?.paymentTerms[1]?.secondPayment +
-                    programFeeByAccreditation?.paymentTerms[1]?.thirdPayment ||
-                    0
+                  programFeeByAccreditation?.paymentTerms[1]?.secondPayment +
+                  programFeeByAccreditation?.paymentTerms[1]?.thirdPayment ||
+                  0
                 )}
               </h3>
             </div>
           </div>
           <div className="relative flex flex-row space-x-5">
             <div
-              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
-                payment === PaymentType.QUARTERLY
+              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.QUARTERLY
                   ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                   : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-              }`}
+                }`}
               onClick={() => {
                 setPayment(PaymentType.QUARTERLY);
                 setFee(programFeeByAccreditation?.paymentTerms[2]);
@@ -2738,7 +2696,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                       currency: 'PHP',
                     }).format(
                       programFeeByAccreditation?.paymentTerms[2]?.downPayment ||
-                        0
+                      0
                     )}{' '}
                     +
                   </span>
@@ -2777,10 +2735,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   currency: 'PHP',
                 }).format(
                   programFeeByAccreditation?.paymentTerms[2]?.downPayment +
-                    programFeeByAccreditation?.paymentTerms[2]?.secondPayment +
-                    programFeeByAccreditation?.paymentTerms[2]?.thirdPayment +
-                    programFeeByAccreditation?.paymentTerms[2]?.fourthPayment ||
-                    0
+                  programFeeByAccreditation?.paymentTerms[2]?.secondPayment +
+                  programFeeByAccreditation?.paymentTerms[2]?.thirdPayment +
+                  programFeeByAccreditation?.paymentTerms[2]?.fourthPayment ||
+                  0
                 )}
               </h3>
             </div>
@@ -2788,11 +2746,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           <div className="relative flex flex-row space-x-5">
             {programFeeByAccreditation?.paymentTerms[3] && (
               <div
-                className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
-                  payment === PaymentType.MONTHLY
+                className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.MONTHLY
                     ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                     : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-                }`}
+                  }`}
                 onClick={() => {
                   setPayment(PaymentType.MONTHLY);
                   setFee(programFeeByAccreditation?.paymentTerms[3]);
@@ -2889,19 +2846,19 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                     currency: 'PHP',
                   }).format(
                     programFeeByAccreditation?.paymentTerms[3]?.downPayment +
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.secondPayment +
-                      programFeeByAccreditation?.paymentTerms[3]?.thirdPayment +
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.fourthPayment +
-                      programFeeByAccreditation?.paymentTerms[3]?.fifthPayment +
-                      programFeeByAccreditation?.paymentTerms[3]?.sixthPayment +
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.seventhPayment +
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.eighthPayment +
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.ninthPayment || 0
+                    programFeeByAccreditation?.paymentTerms[3]
+                      ?.secondPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.thirdPayment +
+                    programFeeByAccreditation?.paymentTerms[3]
+                      ?.fourthPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.fifthPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.sixthPayment +
+                    programFeeByAccreditation?.paymentTerms[3]
+                      ?.seventhPayment +
+                    programFeeByAccreditation?.paymentTerms[3]
+                      ?.eighthPayment +
+                    programFeeByAccreditation?.paymentTerms[3]
+                      ?.ninthPayment || 0
                   )}
                 </h3>
               </div>
@@ -3162,13 +3119,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                         Based on applied discount code:{' '}
                         <span className="font-bold text-green-600">
                           {discountCode || '-'}{' '}
-                          {`${
-                            discount
-                              ? `(${Number(discount.value).toFixed(2)}${
-                                  discount.type === 'VALUE' ? 'Php' : '%'
-                                })`
+                          {`${discount
+                              ? `(${Number(discount.value).toFixed(2)}${discount.type === 'VALUE' ? 'Php' : '%'
+                              })`
                               : ''
-                          }`}
+                            }`}
                         </span>
                       </h6>
                       {fee && fee?._type !== 'fullTermPayment' && (
@@ -3187,38 +3142,38 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                           discount
                             ? discount.type === 'VALUE'
                               ? (discount?.code
-                                  ?.toLowerCase()
-                                  .includes('pastor')
-                                  ? Math.ceil(
-                                      fee?._type === 'fullTermPayment'
-                                        ? fee?.fullPayment
-                                        : fee?._type === 'threeTermPayment'
-                                        ? fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment
-                                        : fee?._type === 'fourTermPayment'
-                                        ? fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment +
-                                          fee?.fourthPayment
-                                        : fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment +
-                                          fee?.fourthPayment +
-                                          fee?.fifthPayment +
-                                          fee?.sixthPayment +
-                                          fee?.seventhPayment +
-                                          fee?.eighthPayment +
-                                          fee.ninthPayment
-                                    ) - discount.value
-                                  : Number(discount.value).toFixed(2)) * -1
-                              : Math.ceil(
+                                ?.toLowerCase()
+                                .includes('pastor')
+                                ? Math.ceil(
                                   fee?._type === 'fullTermPayment'
                                     ? fee?.fullPayment
-                                    : fee?.secondPayment
-                                ) *
-                                (discount.value / 100) *
-                                -1
+                                    : fee?._type === 'threeTermPayment'
+                                      ? fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment
+                                      : fee?._type === 'fourTermPayment'
+                                        ? fee?.downPayment +
+                                        fee?.secondPayment +
+                                        fee?.thirdPayment +
+                                        fee?.fourthPayment
+                                        : fee?.downPayment +
+                                        fee?.secondPayment +
+                                        fee?.thirdPayment +
+                                        fee?.fourthPayment +
+                                        fee?.fifthPayment +
+                                        fee?.sixthPayment +
+                                        fee?.seventhPayment +
+                                        fee?.eighthPayment +
+                                        fee.ninthPayment
+                                ) - discount.value
+                                : Number(discount.value).toFixed(2)) * -1
+                              : Math.ceil(
+                                fee?._type === 'fullTermPayment'
+                                  ? fee?.fullPayment
+                                  : fee?.secondPayment
+                              ) *
+                              (discount.value / 100) *
+                              -1
                             : 0
                         )}
                       </span>
@@ -3247,36 +3202,36 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                         }).format(
                           (fee?._type === 'fullTermPayment'
                             ? fee?.fullPayment -
-                              (discount
-                                ? discount?.type === 'VALUE'
-                                  ? discount?.code
-                                      ?.toLowerCase()
-                                      .includes('pastor')
-                                    ? Math.ceil(
-                                        fee?._type === 'fullTermPayment'
-                                          ? fee?.fullPayment
-                                          : fee?._type === 'threeTermPayment'
+                            (discount
+                              ? discount?.type === 'VALUE'
+                                ? discount?.code
+                                  ?.toLowerCase()
+                                  .includes('pastor')
+                                  ? Math.ceil(
+                                    fee?._type === 'fullTermPayment'
+                                      ? fee?.fullPayment
+                                      : fee?._type === 'threeTermPayment'
+                                        ? fee?.downPayment +
+                                        fee?.secondPayment +
+                                        fee?.thirdPayment
+                                        : fee?._type === 'fourTermPayment'
                                           ? fee?.downPayment +
-                                            fee?.secondPayment +
-                                            fee?.thirdPayment
-                                          : fee?._type === 'fourTermPayment'
-                                          ? fee?.downPayment +
-                                            fee?.secondPayment +
-                                            fee?.thirdPayment +
-                                            fee?.fourthPayment
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment +
+                                          fee?.fourthPayment
                                           : fee?.downPayment +
-                                            fee?.secondPayment +
-                                            fee?.thirdPayment +
-                                            fee?.fourthPayment +
-                                            fee?.fifthPayment +
-                                            fee?.sixthPayment +
-                                            fee?.seventhPayment +
-                                            fee?.eighthPayment +
-                                            fee.ninthPayment
-                                      ) - discount.value
-                                    : discount.value
-                                  : (discount.value / 100) * fee?.fullPayment
-                                : 0)
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment +
+                                          fee?.fourthPayment +
+                                          fee?.fifthPayment +
+                                          fee?.sixthPayment +
+                                          fee?.seventhPayment +
+                                          fee?.eighthPayment +
+                                          fee.ninthPayment
+                                  ) - discount.value
+                                  : discount.value
+                                : (discount.value / 100) * fee?.fullPayment
+                              : 0)
                             : fee?.downPayment) + FEES[paymentMethod] || 0
                         )}
                       </span>
@@ -3305,9 +3260,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 <SignatureCanvas
                   ref={sigCanvas}
                   canvasProps={{
-                    className: `sigCanvas bg-gray-100 border ${
-                      signatureLink ? 'border-gray-400' : 'border-red-500'
-                    } w-full h-40 sm:h-48 md:h-56 lg:h-64`,
+                    className: `sigCanvas bg-gray-100 border ${signatureLink ? 'border-gray-400' : 'border-red-500'
+                      } w-full h-40 sm:h-48 md:h-56 lg:h-64`,
                   }}
                 />
                 <div className="flex space-x-3 mt-3">
@@ -3375,9 +3329,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         .update(paymentProofFile.name + Date.now())
         .digest('hex')
         .substring(0, 12)}-${format(
-        new Date(),
-        'yyyy.MM.dd.kk.mm.ss'
-      )}.${extension}`;
+          new Date(),
+          'yyyy.MM.dd.kk.mm.ss'
+        )}.${extension}`;
       const storageRef = ref(storage, fileName);
       const uploadTask = uploadBytesResumable(storageRef, paymentProofFile);
       const downloadURL = await new Promise((resolve, reject) => {
@@ -3420,846 +3374,836 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   };
 
   return (
-    workspace && (
-      <AccountLayout>
-        <Meta title={`Living Pupil Homeschool - ${workspace.name} | Profile`} />
-        <Content.Title
-          title={workspace.name}
-          subtitle="This is the student record information"
-        />
-        <Content.Divider />
-        {!workspace.studentRecord ? (
-          <Content.Container>
-            <div className="flex justify-between w-full md:flex-wrap md:space-x-5">
-              {steps.map((name, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col items-center justify-center w-1/3 space-y-3 cursor-pointer md:w-auto"
-                  onClick={() => goToStep(index)}
-                >
+    <AccountLayout>
+      {workspace ? (
+        <>
+          <Meta title={`Living Pupil Homeschool - ${workspace.name} | Profile`} />
+          <Content.Title
+            title={workspace.name}
+            subtitle="This is the student record information"
+          />
+          <Content.Divider />
+          {!workspace.studentRecord ? (
+            <Content.Container>
+              <div className="flex justify-between w-full md:flex-wrap md:space-x-5">
+                {steps.map((name, index) => (
                   <div
-                    className={`w-8 h-8 flex items-center justify-center rounded-full ${
-                      step === index
-                        ? 'bg-secondary-400'
-                        : index < step
-                        ? 'bg-green-400'
-                        : 'bg-gray-200'
-                    }`}
+                    key={index}
+                    className="flex flex-col items-center justify-center w-1/3 space-y-3 cursor-pointer md:w-auto"
+                    onClick={() => goToStep(index)}
                   >
-                    {index < step ? (
-                      <CheckIcon className="w-5 h-5 text-white" />
-                    ) : (
-                      <div className="w-3 h-3 bg-white rounded-full" />
-                    )}
+                    <div
+                      className={`w-8 h-8 flex items-center justify-center rounded-full ${step === index
+                          ? 'bg-secondary-400'
+                          : index < step
+                            ? 'bg-green-400'
+                            : 'bg-gray-200'
+                        }`}
+                    >
+                      {index < step ? (
+                        <CheckIcon className="w-5 h-5 text-white" />
+                      ) : (
+                        <div className="w-3 h-3 bg-white rounded-full" />
+                      )}
+                    </div>
+                    <span className="text-xs text-center">{name}</span>
                   </div>
-                  <span className="text-xs text-center">{name}</span>
-                </div>
-              ))}
-            </div>
-            <div className="px-3 py-3 text-sm text-blue-500 border-2 border-blue-600 rounded bg-blue-50">
-              <p>
-                All fields marked with an{' '}
-                <span className="font-bold text-red-600">*</span> are{' '}
-                <strong>required</strong>
-              </p>
-            </div>
-            <Card>
-              <Card.Body title={steps[step]}>{renderTab()}</Card.Body>
-              <Card.Footer>
-                {step > 0 ? (
+                ))}
+              </div>
+              <div className="px-3 py-3 text-sm text-blue-500 border-2 border-blue-600 rounded bg-blue-50">
+                <p>
+                  All fields marked with an{' '}
+                  <span className="font-bold text-red-600">*</span> are{' '}
+                  <strong>required</strong>
+                </p>
+              </div>
+              <Card>
+                <Card.Body title={steps[step]}>{renderTab()}</Card.Body>
+                <Card.Footer>
+                  {step > 0 ? (
+                    <Button
+                      className="text-white bg-primary-600 hover:bg-primary-500"
+                      onClick={previous}
+                    >
+                      Previous
+                    </Button>
+                  ) : (
+                    <span />
+                  )}
                   <Button
                     className="text-white bg-primary-600 hover:bg-primary-500"
-                    onClick={previous}
+                    disabled={!validateNext}
+                    onClick={next}
                   >
-                    Previous
+                    {step === steps.length - 1 ? 'Proceed' : 'Next'}
                   </Button>
-                ) : (
-                  <span />
-                )}
-                <Button
-                  className="text-white bg-primary-600 hover:bg-primary-500"
-                  disabled={!validateNext}
-                  onClick={next}
+                </Card.Footer>
+              </Card>
+            </Content.Container>
+          ) : (
+            <Content.Container>
+              <div className="grid grid-cols-4 gap-5">
+                <div
+                  className={`flex flex-col justify-between rounded ${birthCertificateLink ||
+                      workspace.studentRecord.liveBirthCertificate
+                      ? 'border'
+                      : 'border-2 border-red-400 border-dashed'
+                    }`}
                 >
-                  {step === steps.length - 1 ? 'Proceed' : 'Next'}
-                </Button>
-              </Card.Footer>
-            </Card>
-          </Content.Container>
-        ) : (
-          <Content.Container>
-            <div className="grid grid-cols-4 gap-5">
-              <div
-                className={`flex flex-col justify-between rounded ${
-                  birthCertificateLink ||
-                  workspace.studentRecord.liveBirthCertificate
-                    ? 'border'
-                    : 'border-2 border-red-400 border-dashed'
-                }`}
-              >
-                <div className="flex flex-col p-5 space-y-3 overflow-auto">
-                  <div className="flex flex-col space-y-5">
-                    <div className="flex space-x-5">
-                      <div
-                        className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${
-                          birthCertificateLink ||
-                          workspace.studentRecord.liveBirthCertificate
-                            ? 'bg-primary-400'
-                            : 'bg-red-200'
-                        }`}
-                      >
-                        <DocumentIcon className="w-8 h-8" />
+                  <div className="flex flex-col p-5 space-y-3 overflow-auto">
+                    <div className="flex flex-col space-y-5">
+                      <div className="flex space-x-5">
+                        <div
+                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${birthCertificateLink ||
+                              workspace.studentRecord.liveBirthCertificate
+                              ? 'bg-primary-400'
+                              : 'bg-red-200'
+                            }`}
+                        >
+                          <DocumentIcon className="w-8 h-8" />
+                        </div>
+                        <div className="flex flex-col space-y-2">
+                          <h4 className="text-xl font-medium">
+                            Birth Certificate{' '}
+                            {!birthCertificateLink &&
+                              !workspace.studentRecord.liveBirthCertificate && (
+                                <span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">
+                                  Missing
+                                </span>
+                              )}
+                          </h4>
+                          <div>
+                            {birthCertificateLink ||
+                              workspace.studentRecord.liveBirthCertificate ? (
+                              <div className="flex items-center space-x-3">
+                                <Link
+                                  href={
+                                    birthCertificateLink ||
+                                    workspace.studentRecord.liveBirthCertificate
+                                  }
+                                >
+                                  <a
+                                    className="underline text-primary-500"
+                                    target="_blank"
+                                  >
+                                    Open
+                                  </a>
+                                </Link>
+                                <span>&bull;</span>
+                                <label
+                                  className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                  htmlFor="fileBirthCertificateReplace"
+                                >
+                                  Replace
+                                </label>
+                                <input
+                                  id="fileBirthCertificateReplace"
+                                  className="hidden text-xs"
+                                  accept=".gif,.jpeg,.jpg,.png,.pdf"
+                                  name="fileBirthCertificateReplace"
+                                  onChange={(e) =>
+                                    handleBirthCertificateUpload(
+                                      e,
+                                      true,
+                                      workspace.studentRecord.studentId
+                                    )
+                                  }
+                                  type="file"
+                                />
+                              </div>
+                            ) : (
+                              <>
+                                <label
+                                  className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                  htmlFor="fileBirthCertificate"
+                                >
+                                  Upload Document
+                                </label>
+                                <input
+                                  id="fileBirthCertificate"
+                                  className="hidden text-xs"
+                                  accept=".gif,.jpeg,.jpg,.png,.pdf"
+                                  name="fileBirthCertificate"
+                                  onChange={(e) =>
+                                    handleBirthCertificateUpload(
+                                      e,
+                                      true,
+                                      workspace.studentRecord.studentId
+                                    )
+                                  }
+                                  type="file"
+                                />
+                              </>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex flex-col space-y-2">
-                        <h4 className="text-xl font-medium">
-                          Birth Certificate{' '}
-                          {!birthCertificateLink &&
-                            !workspace.studentRecord.liveBirthCertificate && (
-                              <span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">
-                                Missing
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className={`flex flex-col justify-between rounded ${reportCardLink || workspace.studentRecord.reportCard
+                      ? 'border'
+                      : 'border-2 border-red-400 border-dashed'
+                    }`}
+                >
+                  <div className="flex flex-col p-5 space-y-3 overflow-auto">
+                    <div className="flex flex-col space-y-5">
+                      <div className="flex space-x-5">
+                        <div
+                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${reportCardLink || workspace.studentRecord.reportCard
+                              ? 'bg-primary-400'
+                              : 'bg-red-200'
+                            }`}
+                        >
+                          <DocumentIcon className="w-8 h-8" />
+                        </div>
+                        <div className="flex flex-col space-y-2">
+                          <h4 className="text-xl font-medium">
+                            Report Card{' '}
+                            {!reportCardLink &&
+                              !workspace.studentRecord.reportCard && (
+                                <span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">
+                                  Missing
+                                </span>
+                              )}
+                          </h4>
+                          <div className="flex items-center space-x-3">
+                            {reportCardLink ||
+                              workspace.studentRecord.reportCard ? (
+                              <>
+                                <Link
+                                  href={
+                                    reportCardLink ||
+                                    workspace.studentRecord.reportCard
+                                  }
+                                >
+                                  <a
+                                    className="underline text-primary-500"
+                                    target="_blank"
+                                  >
+                                    Open
+                                  </a>
+                                </Link>
+                                <span>&bull;</span>
+                                <label
+                                  className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                  htmlFor="fileReportCardReplace"
+                                >
+                                  Replace
+                                </label>
+                                <input
+                                  id="fileReportCardReplace"
+                                  className="hidden text-xs"
+                                  accept=".gif,.jpeg,.jpg,.png,.pdf"
+                                  name="fileReportCardReplace"
+                                  onChange={(e) =>
+                                    handleReportCardUpload(
+                                      e,
+                                      true,
+                                      workspace.studentRecord.studentId
+                                    )
+                                  }
+                                  type="file"
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <label
+                                  className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                  htmlFor="fileReportCard"
+                                >
+                                  Upload Document
+                                </label>
+                                <input
+                                  id="fileReportCard"
+                                  className="hidden text-xs"
+                                  accept=".gif,.jpeg,.jpg,.png,.pdf"
+                                  name="fileReportCard"
+                                  onChange={(e) =>
+                                    handleReportCardUpload(
+                                      e,
+                                      true,
+                                      workspace.studentRecord.studentId
+                                    )
+                                  }
+                                  type="file"
+                                />
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* ID Picture Front Card */}
+                <div
+                  className={`flex flex-col justify-between rounded ${idPictureFrontLink || workspace.studentRecord.idPictureFront
+                      ? 'border'
+                      : 'border-2 border-red-400 border-dashed'
+                    }`}
+                >
+                  <div className="flex flex-col p-5 space-y-3 overflow-auto">
+                    <div className="flex flex-col space-y-5">
+                      <div className="flex space-x-5">
+                        <div
+                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${idPictureFrontLink ||
+                              workspace.studentRecord.idPictureFront
+                              ? 'bg-primary-400'
+                              : 'bg-red-200'
+                            }`}
+                        >
+                          <DocumentIcon className="w-8 h-8" />
+                        </div>
+                        <div className="flex flex-col space-y-2">
+                          <h4 className="text-xl font-medium">
+                            ID Picture (Front){' '}
+                            {!idPictureFrontLink &&
+                              !workspace.studentRecord.idPictureFront && (
+                                <span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">
+                                  Missing
+                                </span>
+                              )}
+                          </h4>
+                          <div className="flex items-center space-x-3">
+                            {idPictureFrontLink ||
+                              workspace.studentRecord.idPictureFront ? (
+                              <>
+                                <Link
+                                  href={
+                                    idPictureFrontLink ||
+                                    workspace.studentRecord.idPictureFront
+                                  }
+                                >
+                                  <a
+                                    className="underline text-primary-500"
+                                    target="_blank"
+                                  >
+                                    Open
+                                  </a>
+                                </Link>
+                              </>
+                            ) : (
+                              <span className="text-sm text-gray-500">
+                                Admin upload only
                               </span>
                             )}
-                        </h4>
-                        <div>
-                          {birthCertificateLink ||
-                          workspace.studentRecord.liveBirthCertificate ? (
-                            <div className="flex items-center space-x-3">
-                              <Link
-                                href={
-                                  birthCertificateLink ||
-                                  workspace.studentRecord.liveBirthCertificate
-                                }
-                              >
-                                <a
-                                  className="underline text-primary-500"
-                                  target="_blank"
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* ID Picture Back Card */}
+                <div
+                  className={`flex flex-col justify-between rounded ${idPictureBackLink || workspace.studentRecord.idPictureBack
+                      ? 'border'
+                      : 'border-2 border-red-400 border-dashed'
+                    }`}
+                >
+                  <div className="flex flex-col p-5 space-y-3 overflow-auto">
+                    <div className="flex flex-col space-y-5">
+                      <div className="flex space-x-5">
+                        <div
+                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${idPictureBackLink ||
+                              workspace.studentRecord.idPictureBack
+                              ? 'bg-primary-400'
+                              : 'bg-red-200'
+                            }`}
+                        >
+                          <DocumentIcon className="w-8 h-8" />
+                        </div>
+                        <div className="flex flex-col space-y-2">
+                          <h4 className="text-xl font-medium">
+                            ID Picture (Back){' '}
+                            {!idPictureBackLink &&
+                              !workspace.studentRecord.idPictureBack && (
+                                <span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">
+                                  Missing
+                                </span>
+                              )}
+                          </h4>
+                          <div className="flex items-center space-x-3">
+                            {idPictureBackLink ||
+                              workspace.studentRecord.idPictureBack ? (
+                              <>
+                                <Link
+                                  href={
+                                    idPictureBackLink ||
+                                    workspace.studentRecord.idPictureBack
+                                  }
                                 >
-                                  Open
-                                </a>
-                              </Link>
-                              <span>&bull;</span>
-                              <label
-                                className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
-                                htmlFor="fileBirthCertificateReplace"
-                              >
-                                Replace
-                              </label>
-                              <input
-                                id="fileBirthCertificateReplace"
-                                className="hidden text-xs"
-                                accept=".gif,.jpeg,.jpg,.png,.pdf"
-                                name="fileBirthCertificateReplace"
-                                onChange={(e) =>
-                                  handleBirthCertificateUpload(
-                                    e,
-                                    true,
-                                    workspace.studentRecord.studentId
-                                  )
-                                }
-                                type="file"
+                                  <a
+                                    className="underline text-primary-500"
+                                    target="_blank"
+                                  >
+                                    Open
+                                  </a>
+                                </Link>
+                              </>
+                            ) : (
+                              <span className="text-sm text-gray-500">
+                                Admin upload only
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <Card>
+                <Card.Body
+                  title="Student Record Information"
+                // subtitle={`Last Updated: ${workspace.studentRecord.updatedAt}`}
+                >
+                  <div className="flex flex-row items-center py-5 space-x-10">
+                    <div className="relative flex items-center justify-center w-32 h-32 overflow-hidden text-center text-white bg-gray-400 rounded-full">
+                      <label
+                        className="text-center cursor-pointer group"
+                        htmlFor="filePicture"
+                      >
+                        {workspace.studentRecord.image ? (
+                          <Image
+                            alt={workspace.studentRecord.firstName}
+                            className="rounded-full group-hover:opacity-25"
+                            layout="fill"
+                            loading="lazy"
+                            objectFit="cover"
+                            objectPosition="top"
+                            src={pictureLink || workspace.studentRecord.image}
+                          />
+                        ) : (
+                          <UserIcon className="w-16 h-16" />
+                        )}
+                        <input
+                          id="filePicture"
+                          className="hidden text-xs"
+                          accept=".jpeg,.jpg,.png"
+                          name="filePicture"
+                          onChange={(e) =>
+                            handlePictureUpload(
+                              e,
+                              true,
+                              workspace.studentRecord.studentId
+                            )
+                          }
+                          type="file"
+                        />
+                        <span className="text-xs">Click to Upload</span>
+                      </label>
+                    </div>
+                    <div className="space-y-3">
+                      <h2 className="text-4xl font-medium">
+                        {workspace.studentRecord.firstName}{' '}
+                        {workspace.studentRecord.middleName}{' '}
+                        {workspace.studentRecord.lastName}
+                      </h2>
+                      <div>
+                        <h3 className="text-sm text-gray-400">
+                          <span className="font-bold">Student Record ID: </span>
+                          <span>
+                            {workspace.studentRecord.studentId.toUpperCase()}
+                          </span>
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
+                  <hr className="border-dashed" />
+                  <div className="flex flex-row space-x-10">
+                    <div className="w-1/2 space-y-10">
+                      <div>
+                        <h4 className="font-bold text-gray-600">
+                          Program and Accreditation
+                        </h4>
+                        <p className="text-2xl">
+                          {PROGRAM[workspace.studentRecord.program]} -{' '}
+                          {ACCREDITATION[workspace.studentRecord.accreditation]}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-600">Birth Date</h4>
+                        <p className="text-2xl">
+                          {format(
+                            new Date(workspace.studentRecord.birthDate),
+                            'MMMM dd, yyyy'
+                          )}{' '}
+                          (
+                          {differenceInYears(
+                            new Date(),
+                            new Date(workspace.studentRecord.birthDate)
+                          )}{' '}
+                          years old )
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-600">Former School</h4>
+                        <p className="text-2xl capitalize">
+                          {workspace.studentRecord.formerSchoolName}
+                        </p>
+                        <p className="text-lg">
+                          {workspace.studentRecord.formerSchoolAddress}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="w-1/2 space-y-10">
+                      <div>
+                        <h4 className="font-bold text-gray-600">Grade Level</h4>
+                        <p className="text-2xl">
+                          {
+                            GRADE_LEVEL[
+                            workspace.studentRecord.incomingGradeLevel
+                            ]
+                          }
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-600">Gender</h4>
+                        <p className="text-2xl capitalize">
+                          {workspace.studentRecord.gender.toLowerCase()}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-600">Religion</h4>
+                        <p className="text-2xl capitalize">
+                          {RELIGION[workspace.studentRecord.religion]}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ID Picture Download Section */}
+                  {(workspace.studentRecord.idPictureFront ||
+                    workspace.studentRecord.idPictureBack) && (
+                      <div className="mt-6 p-4 border rounded-lg bg-gray-50">
+                        <h4 className="font-bold text-gray-600 mb-3">ID Picture</h4>
+                        <div className="flex items-center space-x-4">
+                          {workspace.studentRecord.idPictureFront && (
+                            <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
+                              <Image
+                                alt="ID Picture Front"
+                                className="object-cover"
+                                layout="fill"
+                                loading="lazy"
+                                src={workspace.studentRecord.idPictureFront}
                               />
                             </div>
-                          ) : (
-                            <>
-                              <label
-                                className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
-                                htmlFor="fileBirthCertificate"
-                              >
-                                Upload Document
-                              </label>
-                              <input
-                                id="fileBirthCertificate"
-                                className="hidden text-xs"
-                                accept=".gif,.jpeg,.jpg,.png,.pdf"
-                                name="fileBirthCertificate"
-                                onChange={(e) =>
-                                  handleBirthCertificateUpload(
-                                    e,
-                                    true,
-                                    workspace.studentRecord.studentId
-                                  )
-                                }
-                                type="file"
-                              />
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                className={`flex flex-col justify-between rounded ${
-                  reportCardLink || workspace.studentRecord.reportCard
-                    ? 'border'
-                    : 'border-2 border-red-400 border-dashed'
-                }`}
-              >
-                <div className="flex flex-col p-5 space-y-3 overflow-auto">
-                  <div className="flex flex-col space-y-5">
-                    <div className="flex space-x-5">
-                      <div
-                        className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${
-                          reportCardLink || workspace.studentRecord.reportCard
-                            ? 'bg-primary-400'
-                            : 'bg-red-200'
-                        }`}
-                      >
-                        <DocumentIcon className="w-8 h-8" />
-                      </div>
-                      <div className="flex flex-col space-y-2">
-                        <h4 className="text-xl font-medium">
-                          Report Card{' '}
-                          {!reportCardLink &&
-                            !workspace.studentRecord.reportCard && (
-                              <span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">
-                                Missing
-                              </span>
-                            )}
-                        </h4>
-                        <div className="flex items-center space-x-3">
-                          {reportCardLink ||
-                          workspace.studentRecord.reportCard ? (
-                            <>
-                              <Link
-                                href={
-                                  reportCardLink ||
-                                  workspace.studentRecord.reportCard
-                                }
-                              >
-                                <a
-                                  className="underline text-primary-500"
-                                  target="_blank"
-                                >
-                                  Open
-                                </a>
-                              </Link>
-                              <span>&bull;</span>
-                              <label
-                                className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
-                                htmlFor="fileReportCardReplace"
-                              >
-                                Replace
-                              </label>
-                              <input
-                                id="fileReportCardReplace"
-                                className="hidden text-xs"
-                                accept=".gif,.jpeg,.jpg,.png,.pdf"
-                                name="fileReportCardReplace"
-                                onChange={(e) =>
-                                  handleReportCardUpload(
-                                    e,
-                                    true,
-                                    workspace.studentRecord.studentId
-                                  )
-                                }
-                                type="file"
-                              />
-                            </>
-                          ) : (
-                            <>
-                              <label
-                                className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
-                                htmlFor="fileReportCard"
-                              >
-                                Upload Document
-                              </label>
-                              <input
-                                id="fileReportCard"
-                                className="hidden text-xs"
-                                accept=".gif,.jpeg,.jpg,.png,.pdf"
-                                name="fileReportCard"
-                                onChange={(e) =>
-                                  handleReportCardUpload(
-                                    e,
-                                    true,
-                                    workspace.studentRecord.studentId
-                                  )
-                                }
-                                type="file"
-                              />
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* ID Picture Front Card */}
-              <div
-                className={`flex flex-col justify-between rounded ${
-                  idPictureFrontLink || workspace.studentRecord.idPictureFront
-                    ? 'border'
-                    : 'border-2 border-red-400 border-dashed'
-                }`}
-              >
-                <div className="flex flex-col p-5 space-y-3 overflow-auto">
-                  <div className="flex flex-col space-y-5">
-                    <div className="flex space-x-5">
-                      <div
-                        className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${
-                          idPictureFrontLink ||
-                          workspace.studentRecord.idPictureFront
-                            ? 'bg-primary-400'
-                            : 'bg-red-200'
-                        }`}
-                      >
-                        <DocumentIcon className="w-8 h-8" />
-                      </div>
-                      <div className="flex flex-col space-y-2">
-                        <h4 className="text-xl font-medium">
-                          ID Picture (Front){' '}
-                          {!idPictureFrontLink &&
-                            !workspace.studentRecord.idPictureFront && (
-                              <span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">
-                                Missing
-                              </span>
-                            )}
-                        </h4>
-                        <div className="flex items-center space-x-3">
-                          {idPictureFrontLink ||
-                          workspace.studentRecord.idPictureFront ? (
-                            <>
-                              <Link
-                                href={
-                                  idPictureFrontLink ||
-                                  workspace.studentRecord.idPictureFront
-                                }
-                              >
-                                <a
-                                  className="underline text-primary-500"
-                                  target="_blank"
-                                >
-                                  Open
-                                </a>
-                              </Link>
-                            </>
-                          ) : (
-                            <span className="text-sm text-gray-500">
-                              Admin upload only
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* ID Picture Back Card */}
-              <div
-                className={`flex flex-col justify-between rounded ${
-                  idPictureBackLink || workspace.studentRecord.idPictureBack
-                    ? 'border'
-                    : 'border-2 border-red-400 border-dashed'
-                }`}
-              >
-                <div className="flex flex-col p-5 space-y-3 overflow-auto">
-                  <div className="flex flex-col space-y-5">
-                    <div className="flex space-x-5">
-                      <div
-                        className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${
-                          idPictureBackLink ||
-                          workspace.studentRecord.idPictureBack
-                            ? 'bg-primary-400'
-                            : 'bg-red-200'
-                        }`}
-                      >
-                        <DocumentIcon className="w-8 h-8" />
-                      </div>
-                      <div className="flex flex-col space-y-2">
-                        <h4 className="text-xl font-medium">
-                          ID Picture (Back){' '}
-                          {!idPictureBackLink &&
-                            !workspace.studentRecord.idPictureBack && (
-                              <span className="px-3 text-sm text-red-600 bg-red-100 rounded-full">
-                                Missing
-                              </span>
-                            )}
-                        </h4>
-                        <div className="flex items-center space-x-3">
-                          {idPictureBackLink ||
-                          workspace.studentRecord.idPictureBack ? (
-                            <>
-                              <Link
-                                href={
-                                  idPictureBackLink ||
-                                  workspace.studentRecord.idPictureBack
-                                }
-                              >
-                                <a
-                                  className="underline text-primary-500"
-                                  target="_blank"
-                                >
-                                  Open
-                                </a>
-                              </Link>
-                            </>
-                          ) : (
-                            <span className="text-sm text-gray-500">
-                              Admin upload only
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <Card>
-              <Card.Body
-                title="Student Record Information"
-                // subtitle={`Last Updated: ${workspace.studentRecord.updatedAt}`}
-              >
-                <div className="flex flex-row items-center py-5 space-x-10">
-                  <div className="relative flex items-center justify-center w-32 h-32 overflow-hidden text-center text-white bg-gray-400 rounded-full">
-                    <label
-                      className="text-center cursor-pointer group"
-                      htmlFor="filePicture"
-                    >
-                      {workspace.studentRecord.image ? (
-                        <Image
-                          alt={workspace.studentRecord.firstName}
-                          className="rounded-full group-hover:opacity-25"
-                          layout="fill"
-                          loading="lazy"
-                          objectFit="cover"
-                          objectPosition="top"
-                          src={pictureLink || workspace.studentRecord.image}
-                        />
-                      ) : (
-                        <UserIcon className="w-16 h-16" />
-                      )}
-                      <input
-                        id="filePicture"
-                        className="hidden text-xs"
-                        accept=".jpeg,.jpg,.png"
-                        name="filePicture"
-                        onChange={(e) =>
-                          handlePictureUpload(
-                            e,
-                            true,
-                            workspace.studentRecord.studentId
-                          )
-                        }
-                        type="file"
-                      />
-                      <span className="text-xs">Click to Upload</span>
-                    </label>
-                  </div>
-                  <div className="space-y-3">
-                    <h2 className="text-4xl font-medium">
-                      {workspace.studentRecord.firstName}{' '}
-                      {workspace.studentRecord.middleName}{' '}
-                      {workspace.studentRecord.lastName}
-                    </h2>
-                    <div>
-                      <h3 className="text-sm text-gray-400">
-                        <span className="font-bold">Student Record ID: </span>
-                        <span>
-                          {workspace.studentRecord.studentId.toUpperCase()}
-                        </span>
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-                <hr className="border-dashed" />
-                <div className="flex flex-row space-x-10">
-                  <div className="w-1/2 space-y-10">
-                    <div>
-                      <h4 className="font-bold text-gray-600">
-                        Program and Accreditation
-                      </h4>
-                      <p className="text-2xl">
-                        {PROGRAM[workspace.studentRecord.program]} -{' '}
-                        {ACCREDITATION[workspace.studentRecord.accreditation]}
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-gray-600">Birth Date</h4>
-                      <p className="text-2xl">
-                        {format(
-                          new Date(workspace.studentRecord.birthDate),
-                          'MMMM dd, yyyy'
-                        )}{' '}
-                        (
-                        {differenceInYears(
-                          new Date(),
-                          new Date(workspace.studentRecord.birthDate)
-                        )}{' '}
-                        years old )
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-gray-600">Former School</h4>
-                      <p className="text-2xl capitalize">
-                        {workspace.studentRecord.formerSchoolName}
-                      </p>
-                      <p className="text-lg">
-                        {workspace.studentRecord.formerSchoolAddress}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="w-1/2 space-y-10">
-                    <div>
-                      <h4 className="font-bold text-gray-600">Grade Level</h4>
-                      <p className="text-2xl">
-                        {
-                          GRADE_LEVEL[
-                            workspace.studentRecord.incomingGradeLevel
-                          ]
-                        }
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-gray-600">Gender</h4>
-                      <p className="text-2xl capitalize">
-                        {workspace.studentRecord.gender.toLowerCase()}
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-gray-600">Religion</h4>
-                      <p className="text-2xl capitalize">
-                        {RELIGION[workspace.studentRecord.religion]}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ID Picture Download Section */}
-                {(workspace.studentRecord.idPictureFront ||
-                  workspace.studentRecord.idPictureBack) && (
-                  <div className="mt-6 p-4 border rounded-lg bg-gray-50">
-                    <h4 className="font-bold text-gray-600 mb-3">ID Picture</h4>
-                    <div className="flex items-center space-x-4">
-                      {workspace.studentRecord.idPictureFront && (
-                        <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
-                          <Image
-                            alt="ID Picture Front"
-                            className="object-cover"
-                            layout="fill"
-                            loading="lazy"
-                            src={workspace.studentRecord.idPictureFront}
-                          />
-                        </div>
-                      )}
-                      {workspace.studentRecord.idPictureBack && (
-                        <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
-                          <Image
-                            alt="ID Picture Back"
-                            className="object-cover"
-                            layout="fill"
-                            loading="lazy"
-                            src={workspace.studentRecord.idPictureBack}
-                          />
-                        </div>
-                      )}
-                      <div className="flex flex-col space-y-2">
-                        <p className="text-sm text-gray-600">
-                          Official ID pictures uploaded by admin
-                        </p>
-                        <div className="flex space-x-2">
-                          {workspace.studentRecord.idPictureFront && (
-                            <Link href={workspace.studentRecord.idPictureFront}>
-                              <a
-                                className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
-                                target="_blank"
-                              >
-                                View Front
-                              </a>
-                            </Link>
                           )}
                           {workspace.studentRecord.idPictureBack && (
-                            <Link href={workspace.studentRecord.idPictureBack}>
-                              <a
-                                className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
-                                target="_blank"
-                              >
-                                View Back
-                              </a>
-                            </Link>
+                            <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
+                              <Image
+                                alt="ID Picture Back"
+                                className="object-cover"
+                                layout="fill"
+                                loading="lazy"
+                                src={workspace.studentRecord.idPictureBack}
+                              />
+                            </div>
                           )}
-                          {workspace.studentRecord.idPictureFront && (
-                            <a
-                              className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
-                              download
-                              href={workspace.studentRecord.idPictureFront}
-                            >
-                              Download Front
-                            </a>
-                          )}
-                          {workspace.studentRecord.idPictureBack && (
-                            <a
-                              className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
-                              download
-                              href={workspace.studentRecord.idPictureBack}
-                            >
-                              Download Back
-                            </a>
-                          )}
+                          <div className="flex flex-col space-y-2">
+                            <p className="text-sm text-gray-600">
+                              Official ID pictures uploaded by admin
+                            </p>
+                            <div className="flex space-x-2">
+                              {workspace.studentRecord.idPictureFront && (
+                                <Link href={workspace.studentRecord.idPictureFront}>
+                                  <a
+                                    className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
+                                    target="_blank"
+                                  >
+                                    View Front
+                                  </a>
+                                </Link>
+                              )}
+                              {workspace.studentRecord.idPictureBack && (
+                                <Link href={workspace.studentRecord.idPictureBack}>
+                                  <a
+                                    className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
+                                    target="_blank"
+                                  >
+                                    View Back
+                                  </a>
+                                </Link>
+                              )}
+                              {workspace.studentRecord.idPictureFront && (
+                                <a
+                                  className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
+                                  download
+                                  href={workspace.studentRecord.idPictureFront}
+                                >
+                                  Download Front
+                                </a>
+                              )}
+                              {workspace.studentRecord.idPictureBack && (
+                                <a
+                                  className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
+                                  download
+                                  href={workspace.studentRecord.idPictureBack}
+                                >
+                                  Download Back
+                                </a>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                )}
-              </Card.Body>
-            </Card>
-          </Content.Container>
-        )}
-        <Modal
-          show={review}
-          toggle={toggleReview}
-          title="Review LPHS Enrollment Details"
-        >
-          <div className="modal-content space-y-2">
-            <div className="flex items-center px-3 py-3 space-x-3 text-sm text-red-500 border-2 border-red-600 rounded bg-red-50 scroll">
-              <div className="w-5 h-5">
-                <InformationCircleIcon />
+                    )}
+                </Card.Body>
+              </Card>
+            </Content.Container>
+          )}
+          <Modal
+            show={review}
+            toggle={toggleReview}
+            title="Review LPHS Enrollment Details"
+          >
+            <div className="modal-content space-y-2">
+              <div className="flex items-center px-3 py-3 space-x-3 text-sm text-red-500 border-2 border-red-600 rounded bg-red-50 scroll">
+                <div className="w-5 h-5">
+                  <InformationCircleIcon />
+                </div>
+                <p>
+                  Please make sure that all information and documents submitted
+                  are correct before proceeding to pay the application fee.
+                </p>
               </div>
-              <p>
-                Please make sure that all information and documents submitted
-                are correct before proceeding to pay the application fee.
-              </p>
-            </div>
-            <h3 className="text-lg font-bold">
-              Student Information -{' '}
-              <span className="text-primary-500">
-                {ENROLLMENT_TYPE[enrollmentType]}
-              </span>
-            </h3>
-            <div className="px-3 text-sm">
-              <p>
-                <strong>Name:</strong> {lastName}, {firstName} {middleName}
-              </p>
-              <p className="capitalize">
-                <strong>Incoming Grade Level:</strong>{' '}
-                {GRADE_LEVEL[incomingGradeLevel].toLowerCase()}
-              </p>
-              <p>
-                <strong>Birth Date:</strong> {birthDate?.toDateString() || 0} (
-                {age} years old)
-              </p>
-              <p className="capitalize">
-                <strong>Gender:</strong> {gender.toLowerCase()}
-              </p>
-              <p className="capitalize">
-                <strong>Religion:</strong> {RELIGION[religion].toLowerCase()}
-              </p>
-              <p className="capitalize">
-                <strong>Reason for homeschooling:</strong> {reason}
-              </p>
-              <p>
-                <strong>Former School:</strong> {formerSchoolName} (
-                {formerSchoolAddress})
-              </p>
-              <div>
-                <strong>ID Picture:</strong>{' '}
-                {pictureLink ? (
-                  <Link href={pictureLink}>
-                    <a className="text-blue-600 underline" target="_blank">
-                      Link Preview
-                    </a>
-                  </Link>
-                ) : (
-                  'N/A'
-                )}
-              </div>
-              <div>
-                <strong>Birth Certificate:</strong>{' '}
-                {birthCertificateLink ? (
-                  <Link href={birthCertificateLink}>
-                    <a className="text-blue-600 underline" target="_blank">
-                      Link Preview
-                    </a>
-                  </Link>
-                ) : (
-                  'N/A'
-                )}
-              </div>
-              <div>
-                <strong>Report Card:</strong>{' '}
-                {reportCardLink ? (
-                  <Link href={reportCardLink}>
-                    <a className="text-blue-600 underline" target="_blank">
-                      Link Preview
-                    </a>
-                  </Link>
-                ) : (
-                  'N/A'
-                )}
-              </div>
-            </div>
-            <h3 className="text-lg font-bold">
-              {PROGRAM[program]} for {GRADE_LEVEL[incomingGradeLevel]} -{' '}
-              {ACCREDITATION[accreditation]} Fees
-            </h3>
-            <div className="p-3 text-sm leading-relaxed">
-              <h3
-                className="text-sm font-bold flex items-center cursor-pointer"
-                onClick={() => setIsExpanded(!isExpanded)}
-              >
-                Inclusions:
-                <span className="text-primary-500 mx-5">
-                  {isExpanded ? 'Hide' : 'Show'}
+              <h3 className="text-lg font-bold">
+                Student Information -{' '}
+                <span className="text-primary-500">
+                  {ENROLLMENT_TYPE[enrollmentType]}
                 </span>
               </h3>
-              {isExpanded && (
-                <div className="flex flex-col py-5 w-full ">
-                  <div className="text-left space-y-3">
-                    <PortableText value={filteredProgram?.inclusions} />
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="px-3 text-sm">
-              <div>
+              <div className="px-3 text-sm">
                 <p>
-                  <strong>School Fees Breakdown</strong>
+                  <strong>Name:</strong> {lastName}, {firstName} {middleName}
                 </p>
-                <table className="w-full my-5 border ">
-                  <tbody>
-                    <tr>
-                      <td className="px-3 py-1 border">
-                        {fee?._type === 'fullTermPayment'
-                          ? 'Total Fee'
-                          : 'Initial Fee'}
-                      </td>
-                      <td className="px-3 py-1 text-right border">
-                        {new Intl.NumberFormat('en-US', {
-                          style: 'currency',
-                          currency: 'PHP',
-                        }).format(
+                <p className="capitalize">
+                  <strong>Incoming Grade Level:</strong>{' '}
+                  {GRADE_LEVEL[incomingGradeLevel].toLowerCase()}
+                </p>
+                <p>
+                  <strong>Birth Date:</strong> {birthDate?.toDateString() || 0} (
+                  {age} years old)
+                </p>
+                <p className="capitalize">
+                  <strong>Gender:</strong> {gender.toLowerCase()}
+                </p>
+                <p className="capitalize">
+                  <strong>Religion:</strong> {RELIGION[religion].toLowerCase()}
+                </p>
+                <p className="capitalize">
+                  <strong>Reason for homeschooling:</strong> {reason}
+                </p>
+                <p>
+                  <strong>Former School:</strong> {formerSchoolName} (
+                  {formerSchoolAddress})
+                </p>
+                <div>
+                  <strong>ID Picture:</strong>{' '}
+                  {pictureLink ? (
+                    <Link href={pictureLink}>
+                      <a className="text-blue-600 underline" target="_blank">
+                        Link Preview
+                      </a>
+                    </Link>
+                  ) : (
+                    'N/A'
+                  )}
+                </div>
+                <div>
+                  <strong>Birth Certificate:</strong>{' '}
+                  {birthCertificateLink ? (
+                    <Link href={birthCertificateLink}>
+                      <a className="text-blue-600 underline" target="_blank">
+                        Link Preview
+                      </a>
+                    </Link>
+                  ) : (
+                    'N/A'
+                  )}
+                </div>
+                <div>
+                  <strong>Report Card:</strong>{' '}
+                  {reportCardLink ? (
+                    <Link href={reportCardLink}>
+                      <a className="text-blue-600 underline" target="_blank">
+                        Link Preview
+                      </a>
+                    </Link>
+                  ) : (
+                    'N/A'
+                  )}
+                </div>
+              </div>
+              <h3 className="text-lg font-bold">
+                {PROGRAM[program]} for {GRADE_LEVEL[incomingGradeLevel]} -{' '}
+                {ACCREDITATION[accreditation]} Fees
+              </h3>
+              <div className="p-3 text-sm leading-relaxed">
+                <h3
+                  className="text-sm font-bold flex items-center cursor-pointer"
+                  onClick={() => setIsExpanded(!isExpanded)}
+                >
+                  Inclusions:
+                  <span className="text-primary-500 mx-5">
+                    {isExpanded ? 'Hide' : 'Show'}
+                  </span>
+                </h3>
+                {isExpanded && (
+                  <div className="flex flex-col py-5 w-full ">
+                    <div className="text-left space-y-3">
+                      <PortableText value={filteredProgram?.inclusions} />
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="px-3 text-sm">
+                <div>
+                  <p>
+                    <strong>School Fees Breakdown</strong>
+                  </p>
+                  <table className="w-full my-5 border ">
+                    <tbody>
+                      <tr>
+                        <td className="px-3 py-1 border">
+                          {fee?._type === 'fullTermPayment'
+                            ? 'Total Fee'
+                            : 'Initial Fee'}
+                        </td>
+                        <td className="px-3 py-1 text-right border">
+                          {new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'PHP',
+                          }).format(
+                            fee?._type === 'fullTermPayment'
+                              ? fee?.fullPayment
+                              : fee?.downPayment
+                          )}
+                        </td>
+                      </tr>
+                      {Array.from(
+                        Array(
                           fee?._type === 'fullTermPayment'
-                            ? fee?.fullPayment
-                            : fee?.downPayment
-                        )}
-                      </td>
-                    </tr>
-                    {Array.from(
-                      Array(
-                        fee?._type === 'fullTermPayment'
-                          ? 0
-                          : fee?._type === 'threeTermPayment'
-                          ? 2
-                          : fee?._type === 'fourTermPayment'
-                          ? 3
-                          : fee?._type === 'nineTermPayment'
-                          ? monthIndex
-                          : 0 // Default to 0 if none of the specified types match
-                      ),
-                      (_, index) => (
-                        <tr key={index}>
-                          <td className="px-3 py-1 border">
-                            {fee?._type === 'fullTermPayment'
-                              ? ''
-                              : fee?._type === 'threeTermPayment'
-                              ? `Three (3) Term Payment #${index + 1}`
+                            ? 0
+                            : fee?._type === 'threeTermPayment'
+                              ? 2
                               : fee?._type === 'fourTermPayment'
-                              ? `Four (4) Term Payment #${index + 1}`
-                              : fee?._type === 'nineTermPayment'
-                              ? `Monthly Term Payment #${index + 1}`
-                              : `Unknown Payment Type #${index + 1}`}
-                          </td>
-                          <td className="px-3 py-1 text-right border">
-                            {new Intl.NumberFormat('en-US', {
-                              style: 'currency',
-                              currency: 'PHP',
-                            }).format(
-                              fee?._type === 'fullTermPayment'
-                                ? 0
+                                ? 3
                                 : fee?._type === 'nineTermPayment'
-                                ? monthlyPayment // Render monthly payment for nineTermPayment
-                                : fee && fee[payments[index + 1]]
-                            )}{' '}
-                            {discount &&
-                            discount?.code?.toLowerCase().includes('pastor') ? (
-                              <span className="text-red-600">
-                                (-
-                                {new Intl.NumberFormat('en-US', {
-                                  style: 'currency',
-                                  currency: 'PHP',
-                                }).format(
-                                  fee?._type === 'nineTermPayment'
-                                    ? monthlyPayment -
-                                        (discount?.value - fee?.downPayment) / 9
-                                    : fee &&
-                                        fee[payments[index + 1]] -
-                                          (discount?.value - fee?.downPayment) /
-                                            3
-                                )}
-                                )
-                              </span>
-                            ) : (
-                              index === 0 &&
-                              discount && (
+                                  ? monthIndex
+                                  : 0 // Default to 0 if none of the specified types match
+                        ),
+                        (_, index) => (
+                          <tr key={index}>
+                            <td className="px-3 py-1 border">
+                              {fee?._type === 'fullTermPayment'
+                                ? ''
+                                : fee?._type === 'threeTermPayment'
+                                  ? `Three (3) Term Payment #${index + 1}`
+                                  : fee?._type === 'fourTermPayment'
+                                    ? `Four (4) Term Payment #${index + 1}`
+                                    : fee?._type === 'nineTermPayment'
+                                      ? `Monthly Term Payment #${index + 1}`
+                                      : `Unknown Payment Type #${index + 1}`}
+                            </td>
+                            <td className="px-3 py-1 text-right border">
+                              {new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'PHP',
+                              }).format(
+                                fee?._type === 'fullTermPayment'
+                                  ? 0
+                                  : fee?._type === 'nineTermPayment'
+                                    ? monthlyPayment // Render monthly payment for nineTermPayment
+                                    : fee && fee[payments[index + 1]]
+                              )}{' '}
+                              {discount &&
+                                discount?.code?.toLowerCase().includes('pastor') ? (
                                 <span className="text-red-600">
                                   (-
                                   {new Intl.NumberFormat('en-US', {
                                     style: 'currency',
                                     currency: 'PHP',
                                   }).format(
-                                    discount?.type === 'VALUE'
-                                      ? discount?.value
-                                      : (discount?.value / 100) *
-                                          Math.ceil(fee?.secondPayment)
+                                    fee?._type === 'nineTermPayment'
+                                      ? monthlyPayment -
+                                      (discount?.value - fee?.downPayment) / 9
+                                      : fee &&
+                                      fee[payments[index + 1]] -
+                                      (discount?.value - fee?.downPayment) /
+                                      3
                                   )}
                                   )
                                 </span>
-                              )
-                            )}
-                          </td>
-                        </tr>
-                      )
-                    )}
-                    <tr>
-                      <td className="px-3 py-1 border">Miscellaneous: </td>
-                      <td className="px-3 py-1 text-right text-primary-600 border">
-                        {new Intl.NumberFormat('en-US', {
-                          style: 'currency',
-                          currency: 'PHP',
-                        }).format(500)}
-                      </td>
-                    </tr>
-                    {discount && (
+                              ) : (
+                                index === 0 &&
+                                discount && (
+                                  <span className="text-red-600">
+                                    (-
+                                    {new Intl.NumberFormat('en-US', {
+                                      style: 'currency',
+                                      currency: 'PHP',
+                                    }).format(
+                                      discount?.type === 'VALUE'
+                                        ? discount?.value
+                                        : (discount?.value / 100) *
+                                        Math.ceil(fee?.secondPayment)
+                                    )}
+                                    )
+                                  </span>
+                                )
+                              )}
+                            </td>
+                          </tr>
+                        )
+                      )}
                       <tr>
-                        <td className="px-3 py-1 border">
-                          Total Discounts:{' '}
-                          <strong className="text-green-600">
-                            {discountCode || '-'}{' '}
-                            {`${
-                              discount
-                                ? `(${Number(discount.value).toFixed(2)}${
-                                    discount.type === 'VALUE' ? 'Php' : '%'
-                                  })`
-                                : ''
-                            }`}
-                          </strong>
-                        </td>
-                        <td className="px-3 py-1 text-right text-red-600 border">
+                        <td className="px-3 py-1 border">Miscellaneous: </td>
+                        <td className="px-3 py-1 text-right text-primary-600 border">
                           {new Intl.NumberFormat('en-US', {
                             style: 'currency',
                             currency: 'PHP',
-                          }).format(
-                            discount
-                              ? discount.type === 'VALUE'
-                                ? (discount?.code
+                          }).format(500)}
+                        </td>
+                      </tr>
+                      {discount && (
+                        <tr>
+                          <td className="px-3 py-1 border">
+                            Total Discounts:{' '}
+                            <strong className="text-green-600">
+                              {discountCode || '-'}{' '}
+                              {`${discount
+                                  ? `(${Number(discount.value).toFixed(2)}${discount.type === 'VALUE' ? 'Php' : '%'
+                                  })`
+                                  : ''
+                                }`}
+                            </strong>
+                          </td>
+                          <td className="px-3 py-1 text-right text-red-600 border">
+                            {new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: 'PHP',
+                            }).format(
+                              discount
+                                ? discount.type === 'VALUE'
+                                  ? (discount?.code
                                     ?.toLowerCase()
                                     .includes('pastor')
                                     ? Math.ceil(
-                                        fee?._type === 'fullTermPayment'
-                                          ? fee?.fullPayment
-                                          : fee?._type === 'threeTermPayment'
+                                      fee?._type === 'fullTermPayment'
+                                        ? fee?.fullPayment
+                                        : fee?._type === 'threeTermPayment'
                                           ? fee?.downPayment +
-                                            fee?.secondPayment +
-                                            fee?.thirdPayment
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment
                                           : fee?._type === 'fourTermPayment'
-                                          ? fee?.downPayment +
+                                            ? fee?.downPayment +
                                             fee?.secondPayment +
                                             fee?.thirdPayment +
                                             fee?.fourthPayment
-                                          : fee?.downPayment +
+                                            : fee?.downPayment +
                                             fee?.secondPayment +
                                             fee?.thirdPayment +
                                             fee?.fourthPayment +
@@ -4268,69 +4212,69 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                             fee?.seventhPayment +
                                             fee?.eighthPayment +
                                             fee?.ninthPayment
-                                      ) - discount.value
+                                    ) - discount.value
                                     : Number(discount.value).toFixed(2)) * -1
-                                : Math.ceil(
+                                  : Math.ceil(
                                     fee?._type === 'fullTermPayment'
                                       ? fee?.fullPayment
                                       : fee?.secondPayment
                                   ) *
                                   (discount.value / 100) *
                                   -1
-                              : 0
-                          )}
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-              <h4 className="text-lg font-bold">
-                Total School Fees:{' '}
-                <span className="text-primary-500">
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(
-                    Math.ceil(
-                      fee?._type === 'fullTermPayment'
-                        ? fee?.fullPayment
-                        : fee?._type === 'threeTermPayment'
-                        ? fee?.downPayment +
-                          fee?.secondPayment +
-                          fee?.thirdPayment
-                        : fee?._type === 'fourTermPayment'
-                        ? fee?.downPayment +
-                          fee?.secondPayment +
-                          fee?.thirdPayment +
-                          fee?.fourthPayment
-                        : fee?.downPayment +
-                          fee?.secondPayment +
-                          fee?.thirdPayment +
-                          fee?.fourthPayment +
-                          fee?.fifthPayment +
-                          fee?.sixthPayment +
-                          fee?.seventhPayment +
-                          fee?.eighthPayment +
-                          fee?.ninthPayment
-                    ) +
+                                : 0
+                            )}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                <h4 className="text-lg font-bold">
+                  Total School Fees:{' '}
+                  <span className="text-primary-500">
+                    {new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'PHP',
+                    }).format(
+                      Math.ceil(
+                        fee?._type === 'fullTermPayment'
+                          ? fee?.fullPayment
+                          : fee?._type === 'threeTermPayment'
+                            ? fee?.downPayment +
+                            fee?.secondPayment +
+                            fee?.thirdPayment
+                            : fee?._type === 'fourTermPayment'
+                              ? fee?.downPayment +
+                              fee?.secondPayment +
+                              fee?.thirdPayment +
+                              fee?.fourthPayment
+                              : fee?.downPayment +
+                              fee?.secondPayment +
+                              fee?.thirdPayment +
+                              fee?.fourthPayment +
+                              fee?.fifthPayment +
+                              fee?.sixthPayment +
+                              fee?.seventhPayment +
+                              fee?.eighthPayment +
+                              fee?.ninthPayment
+                      ) +
                       500 -
                       (discount
                         ? discount?.type === 'VALUE'
                           ? discount?.code?.toLowerCase().includes('pastor')
                             ? Math.ceil(
-                                fee?._type === 'fullTermPayment'
-                                  ? fee?.fullPayment
-                                  : fee?._type === 'threeTermPayment'
+                              fee?._type === 'fullTermPayment'
+                                ? fee?.fullPayment
+                                : fee?._type === 'threeTermPayment'
                                   ? fee?.downPayment +
-                                    fee?.secondPayment +
-                                    fee?.thirdPayment
+                                  fee?.secondPayment +
+                                  fee?.thirdPayment
                                   : fee?._type === 'fourTermPayment'
-                                  ? fee?.downPayment +
+                                    ? fee?.downPayment +
                                     fee?.secondPayment +
                                     fee?.thirdPayment +
                                     fee?.fourthPayment
-                                  : fee?.downPayment +
+                                    : fee?.downPayment +
                                     fee?.secondPayment +
                                     fee?.thirdPayment +
                                     fee?.fourthPayment +
@@ -4339,212 +4283,213 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                     fee?.seventhPayment +
                                     fee?.eighthPayment +
                                     fee?.ninthPayment
-                              ) - discount.value
+                            ) - discount.value
                             : discount.value
                           : (discount.value / 100) *
-                            (fee?._type === 'fullTermPayment'
-                              ? fee?.fullPayment
-                              : fee?.secondPayment)
+                          (fee?._type === 'fullTermPayment'
+                            ? fee?.fullPayment
+                            : fee?.secondPayment)
                         : 0) || 0
-                  )}
-                </span>
-              </h4>
-            </div>
-            <div className="flex items-center px-3 py-3 space-x-3 text-sm text-blue-500 border-2 border-blue-600 rounded bg-blue-50">
-              <div className="w-5 h-5">
-                <InformationCircleIcon />
+                    )}
+                  </span>
+                </h4>
               </div>
-              <p>
-                <strong>NOTE</strong>: Succeeding payments will always incur
-                payment gateway fees per transaction.
-              </p>
-            </div>
-            {viewFees ? (
-              <>
-                <div className="space-y-3">
-                  {paymentLink && (
-                    <a
-                      className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-                      href={paymentLink}
-                      target="_blank"
+              <div className="flex items-center px-3 py-3 space-x-3 text-sm text-blue-500 border-2 border-blue-600 rounded bg-blue-50">
+                <div className="w-5 h-5">
+                  <InformationCircleIcon />
+                </div>
+                <p>
+                  <strong>NOTE</strong>: Succeeding payments will always incur
+                  payment gateway fees per transaction.
+                </p>
+              </div>
+              {viewFees ? (
+                <>
+                  <div className="space-y-3">
+                    {paymentLink && (
+                      <a
+                        className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+                        href={paymentLink}
+                        target="_blank"
+                      >
+                        Pay via Dragon Pay
+                      </a>
+                    )}
+                    <button
+                      className="inline-block w-full py-2 text-center rounded bg-blue-500 hover:bg-blue-400 disabled:opacity-25"
+                      onClick={toggleBankTransferModal}
                     >
-                      Pay via Dragon Pay
-                    </a>
+                      Pay via Bank Transfer
+                    </button>
+                    <Link href={`/account`}>
+                      <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25">
+                        View Dashboard
+                      </a>
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <button
+                  className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
+                  disabled={isSubmitting}
+                  onClick={submit}
+                >
+                  {isSubmitting ? 'Processing...' : 'Submit Record'}
+                </button>
+              )}
+            </div>
+          </Modal>
+
+          {/* Bank Transfer Payment Modal */}
+          <Modal
+            show={showBankTransferModal}
+            title="Bank Transfer Payment"
+            toggle={toggleBankTransferModal}
+          >
+            <div className="space-y-6">
+              <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                <h3 className="text-lg font-semibold text-green-800 mb-2">
+                  Total Payment Amount
+                </h3>
+                <div className="text-3xl font-bold text-green-600">
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(paymentAmount)}
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Union Bank Option */}
+                <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
+                  <div className="text-center mb-4">
+                    <div className="flex items-center justify-center mb-2">
+                      <div
+                        className="w-12 h-12 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: '#FF7F00' }}
+                      >
+                        <span className="text-white text-lg font-bold">UB</span>
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      Union Bank
+                    </h3>
+                  </div>
+                  <div className="text-center">
+                    <Image
+                      src="/files/qr/ub_qr.jpg"
+                      alt="Union Bank QR Code"
+                      width={200}
+                      height={200}
+                      className="mx-auto border border-gray-300 rounded-lg"
+                    />
+                    <p className="text-xs text-gray-500 mt-2">
+                      Scan to pay via Union Bank
+                    </p>
+                    <div className="mt-2">
+                      <button
+                        onClick={() => {
+                          const link = document.createElement('a');
+                          link.href = '/files/qr/ub_qr.jpg';
+                          link.download = 'union-bank-qr.jpg';
+                          link.click();
+                        }}
+                        className="w-full py-2 px-3 text-white rounded hover:bg-orange-600 transition-colors text-sm"
+                        style={{ backgroundColor: '#FF7F00' }}
+                      >
+                        Download QR Code
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* GCash Option */}
+                <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
+                  <div className="text-center mb-4">
+                    <div className="flex items-center justify-center mb-2">
+                      <div
+                        className="w-12 h-12 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: '#3B82F6' }}
+                      >
+                        <span className="text-white text-lg font-bold">GC</span>
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800">GCash</h3>
+                  </div>
+                  <div className="text-center">
+                    <Image
+                      src="/files/qr/gcash_qr.png"
+                      alt="GCash QR Code"
+                      width={200}
+                      height={200}
+                      className="mx-auto border border-gray-300 rounded-lg"
+                    />
+                    <p className="text-xs text-gray-500 mt-2">
+                      Scan to pay via GCash
+                    </p>
+                    <div className="mt-2">
+                      <button
+                        onClick={() => {
+                          const link = document.createElement('a');
+                          link.href = '/files/qr/gcash_qr.png';
+                          link.download = 'gcash-qr.png';
+                          link.click();
+                        }}
+                        className="w-full py-2 px-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
+                      >
+                        Download QR Code
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-blue-800 mb-2">
+                  Payment Instructions:
+                </h4>
+                <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
+                  <li>
+                    Choose your preferred payment method (Union Bank or GCash)
+                  </li>
+                  <li>Transfer the exact amount shown above</li>
+                  <li>Use your student name as payment description</li>
+                  <li>Keep your payment receipt for verification</li>
+                  <li>Upload your proof of payment using the form below</li>
+                  <li>Payment will be verified within 24-48 hours</li>
+                </ol>
+              </div>
+
+              {/* Payment Proof Upload */}
+              <div className="bg-yellow-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-yellow-800 mb-2">
+                  Upload Payment Proof
+                </h4>
+                <div className="space-y-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setPaymentProofFile(e.target.files[0])}
+                    className="w-full p-2 border border-gray-300 rounded text-sm"
+                  />
+                  {paymentProofFile && (
+                    <div className="text-sm text-green-600">
+                      ✓ {paymentProofFile.name} selected
+                    </div>
                   )}
                   <button
-                    className="inline-block w-full py-2 text-center rounded bg-blue-500 hover:bg-blue-400 disabled:opacity-25"
-                    onClick={toggleBankTransferModal}
+                    onClick={handlePaymentProofUpload}
+                    disabled={!paymentProofFile || uploadingProof}
+                    className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    Pay via Bank Transfer
+                    {uploadingProof ? 'Uploading...' : 'Upload Payment Proof'}
                   </button>
-                  <Link href={`/account`}>
-                    <a className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25">
-                      View Dashboard
-                    </a>
-                  </Link>
-                </div>
-              </>
-            ) : (
-              <button
-                className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-                disabled={isSubmitting}
-                onClick={submit}
-              >
-                {isSubmitting ? 'Processing...' : 'Submit Record'}
-              </button>
-            )}
-          </div>
-        </Modal>
-
-        {/* Bank Transfer Payment Modal */}
-        <Modal
-          show={showBankTransferModal}
-          title="Bank Transfer Payment"
-          toggle={toggleBankTransferModal}
-        >
-          <div className="space-y-6">
-            <div className="text-center bg-green-50 p-4 rounded-lg border-2 border-green-200">
-              <h3 className="text-lg font-semibold text-green-800 mb-2">
-                Total Payment Amount
-              </h3>
-              <div className="text-3xl font-bold text-green-600">
-                {new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }).format(paymentAmount)}
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Union Bank Option */}
-              <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
-                <div className="text-center mb-4">
-                  <div className="flex items-center justify-center mb-2">
-                    <div
-                      className="w-12 h-12 rounded-lg flex items-center justify-center"
-                      style={{ backgroundColor: '#FF7F00' }}
-                    >
-                      <span className="text-white text-lg font-bold">UB</span>
-                    </div>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Union Bank
-                  </h3>
-                </div>
-                <div className="text-center">
-                  <Image
-                    src="/files/qr/ub_qr.jpg"
-                    alt="Union Bank QR Code"
-                    width={200}
-                    height={200}
-                    className="mx-auto border border-gray-300 rounded-lg"
-                  />
-                  <p className="text-xs text-gray-500 mt-2">
-                    Scan to pay via Union Bank
-                  </p>
-                  <div className="mt-2">
-                    <button
-                      onClick={() => {
-                        const link = document.createElement('a');
-                        link.href = '/files/qr/ub_qr.jpg';
-                        link.download = 'union-bank-qr.jpg';
-                        link.click();
-                      }}
-                      className="w-full py-2 px-3 text-white rounded hover:bg-orange-600 transition-colors text-sm"
-                      style={{ backgroundColor: '#FF7F00' }}
-                    >
-                      Download QR Code
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* GCash Option */}
-              <div className="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 transition-colors">
-                <div className="text-center mb-4">
-                  <div className="flex items-center justify-center mb-2">
-                    <div
-                      className="w-12 h-12 rounded-lg flex items-center justify-center"
-                      style={{ backgroundColor: '#3B82F6' }}
-                    >
-                      <span className="text-white text-lg font-bold">GC</span>
-                    </div>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-800">GCash</h3>
-                </div>
-                <div className="text-center">
-                  <Image
-                    src="/files/qr/gcash_qr.png"
-                    alt="GCash QR Code"
-                    width={200}
-                    height={200}
-                    className="mx-auto border border-gray-300 rounded-lg"
-                  />
-                  <p className="text-xs text-gray-500 mt-2">
-                    Scan to pay via GCash
-                  </p>
-                  <div className="mt-2">
-                    <button
-                      onClick={() => {
-                        const link = document.createElement('a');
-                        link.href = '/files/qr/gcash_qr.png';
-                        link.download = 'gcash-qr.png';
-                        link.click();
-                      }}
-                      className="w-full py-2 px-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
-                    >
-                      Download QR Code
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
-
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-blue-800 mb-2">
-                Payment Instructions:
-              </h4>
-              <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
-                <li>
-                  Choose your preferred payment method (Union Bank or GCash)
-                </li>
-                <li>Transfer the exact amount shown above</li>
-                <li>Use your student name as payment description</li>
-                <li>Keep your payment receipt for verification</li>
-                <li>Upload your proof of payment using the form below</li>
-                <li>Payment will be verified within 24-48 hours</li>
-              </ol>
-            </div>
-
-            {/* Payment Proof Upload */}
-            <div className="bg-yellow-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-yellow-800 mb-2">
-                Upload Payment Proof
-              </h4>
-              <div className="space-y-3">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setPaymentProofFile(e.target.files[0])}
-                  className="w-full p-2 border border-gray-300 rounded text-sm"
-                />
-                {paymentProofFile && (
-                  <div className="text-sm text-green-600">
-                    ✓ {paymentProofFile.name} selected
-                  </div>
-                )}
-                <button
-                  onClick={handlePaymentProofUpload}
-                  disabled={!paymentProofFile || uploadingProof}
-                  className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {uploadingProof ? 'Uploading...' : 'Upload Payment Proof'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </Modal>
-      </AccountLayout>
-    )
+          </Modal>
+        </>
+      ) : null}
+    </AccountLayout>
   );
 };
 

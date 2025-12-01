@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { getProviders, signIn, useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import isEmail from 'validator/lib/isEmail';
@@ -9,6 +10,7 @@ import Meta from '@/components/Meta/index';
 import { AuthLayout } from '@/layouts/index';
 
 const Login = () => {
+  const router = useRouter();
   const { status } = useSession();
   const [email, setEmail] = useState('');
   const [isSubmitting, setSubmittingState] = useState(false);
@@ -17,12 +19,22 @@ const Login = () => {
 
   const disableLogin = false;
 
+  // Get callbackUrl from query params to preserve redirect after login
+  const callbackUrl = router.query.callbackUrl;
+
   const handleEmailChange = (event) => setEmail(event.target.value);
 
   const signInWithEmail = async (event) => {
     event.preventDefault();
     setSubmittingState(true);
-    const response = await signIn('email', { email, redirect: false });
+
+    // Include callbackUrl in signIn options
+    const signInOptions = { email, redirect: false };
+    if (callbackUrl) {
+      signInOptions.callbackUrl = decodeURIComponent(callbackUrl);
+    }
+
+    const response = await signIn('email', signInOptions);
 
     if (response.error === null) {
       toast.success(`Please check your email (${email}) for the login link.`, {
@@ -35,7 +47,12 @@ const Login = () => {
   };
 
   const signInWithSocial = (socialId) => {
-    signIn(socialId);
+    // Include callbackUrl for social sign-in
+    const signInOptions = {};
+    if (callbackUrl) {
+      signInOptions.callbackUrl = decodeURIComponent(callbackUrl);
+    }
+    signIn(socialId, signInOptions);
   };
 
   useEffect(async () => {

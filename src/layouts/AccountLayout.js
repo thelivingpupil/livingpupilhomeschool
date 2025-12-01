@@ -3,6 +3,7 @@ import Joyride, { EVENTS } from 'react-joyride';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { Toaster } from 'react-hot-toast';
+import useSWR from 'swr';
 
 import Content from '@/components/Content/index';
 import Header from '@/components/Header/index';
@@ -13,6 +14,7 @@ import { XIcon } from '@heroicons/react/outline';
 import { ChatAltIcon, InformationCircleIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
 import Script from 'next/script';
+import WorkspaceNotFound from '@/components/WorkspaceNotFound';
 
 const HAS_JOURNEYED = 'has-journeyed';
 const steps = [
@@ -103,10 +105,34 @@ const steps = [
 const AccountLayout = ({ children }) => {
   const { data, status } = useSession();
   const router = useRouter();
-  const { workspace } = useWorkspace();
+  const { workspace, setWorkspace } = useWorkspace();
   const [showJourney, setJourneyVisibility] = useState(true);
   const [showHelp, setHelpVisibility] = useState(false);
   const [showModal, setModalVisibility] = useState(false);
+
+  // Check if we're on a workspace route (has [workspaceSlug] in the path)
+  const isWorkspaceRoute = router.route?.includes('[workspaceSlug]') || router.pathname?.includes('/account/') && router.pathname !== '/account/enrollment';
+  
+  // Extract workspaceSlug from route - wait for router to be ready
+  const workspaceSlug = router.isReady ? router.query.workspaceSlug : null;
+
+  // Fetch workspace if not available and we have a workspaceSlug
+  const shouldFetchWorkspace = !workspace && workspaceSlug && status === 'authenticated' && router.isReady;
+  const { data: workspaceData, error: workspaceError, isLoading: isLoadingWorkspace } = useSWR(
+    shouldFetchWorkspace ? `/api/workspace/${workspaceSlug}` : null
+  );
+
+  // Set workspace when data is fetched
+  useEffect(() => {
+    if (workspaceData?.data?.workspace && !workspace) {
+      setWorkspace(workspaceData.data.workspace);
+    }
+  }, [workspaceData, workspace, setWorkspace]);
+
+  // Show loading state while fetching workspace on direct access
+  // Show loading if: we're on a workspace route, workspace is not loaded, and either fetching or waiting for router
+  // BUT don't show loading if there's an error (let error page show instead)
+  const isWaitingForWorkspace = isWorkspaceRoute && !workspace && status === 'authenticated' && !workspaceError && (isLoadingWorkspace || !router.isReady || shouldFetchWorkspace);
 
   const handleCallback = (data) => {
     const { type } = data;
@@ -127,7 +153,9 @@ const AccountLayout = ({ children }) => {
 
   useEffect(() => {
     if (status === 'unauthenticated') {
-      router.replace('/auth/login');
+      // Preserve the current URL as callbackUrl for redirect after login
+      const callbackUrl = encodeURIComponent(router.asPath);
+      router.replace(`/auth/login?callbackUrl=${callbackUrl}`);
     } else {
       const hasJourneyed = localStorage.getItem(HAS_JOURNEYED);
 
@@ -136,6 +164,51 @@ const AccountLayout = ({ children }) => {
       }
     }
   }, [status, router]);
+
+  // Show workspace not found page for 404 errors (check BEFORE loading state)
+  if (workspaceError && !workspace && !isLoadingWorkspace) {
+    // Check for 404 status or "not found" in error message
+    // SWR error might have status directly or in response
+    const errorStatus = workspaceError.status || workspaceError?.response?.status;
+    const errorMessage = workspaceError?.message || workspaceError?.data?.errors?.error?.msg || '';
+    const errorString = JSON.stringify(workspaceError).toLowerCase();
+    const isNotFound = 
+      errorStatus === 404 || 
+      errorMessage.toLowerCase().includes('not found') ||
+      errorString.includes('not found') ||
+      errorString.includes('404');
+    
+    if (isNotFound) {
+      return <WorkspaceNotFound workspaceSlug={workspaceSlug} />;
+    }
+    
+    // Show generic error for other errors (500, network, etc.)
+    return (
+      <main className="relative flex flex-col items-center justify-center w-screen h-screen text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-800">
+        <div className="text-center">
+          <p className="text-red-600">Error loading workspace. Please try again.</p>
+          <button
+            onClick={() => router.push('/account')}
+            className="mt-4 px-4 py-2 text-white rounded bg-primary-500 hover:bg-primary-600"
+          >
+            Go to My Workspaces
+          </button>
+        </div>
+      </main>
+    );
+  }
+
+  // Show loading state while workspace is being fetched
+  if (isWaitingForWorkspace) {
+    return (
+      <main className="relative flex flex-col items-center justify-center w-screen h-screen text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-800">
+        <div className="text-center">
+          <div className="inline-block w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-600">Loading workspace...</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="relative flex flex-col w-screen h-screen space-x-0 text-gray-800 dark:text-gray-200 md:space-x-5 md:flex-row bg-gray-50 dark:bg-gray-800">

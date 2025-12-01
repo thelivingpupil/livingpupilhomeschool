@@ -6,6 +6,7 @@ import Meta from "@/components/Meta";
 import { PARENT_TRAINING_CODES, PARENT_TRAINING_STATUS_BG_COLOR } from "@/utils/constants";
 import { useParentTrainings } from "@/hooks/data";
 import format from 'date-fns/format';
+import toast from 'react-hot-toast';
 
 const ParentTraining = () => {
     const { data, isLoading } = useParentTrainings();
@@ -26,11 +27,29 @@ const ParentTraining = () => {
         primaryGuardianName: row?.guardian?.primaryGuardianName || '',
         email: row?.guardian?.user?.email || '',
         courseName: PARENT_TRAINING_CODES[row?.courseCode]?.name || 'Unknown',
+        workspaceSlug: row?.guardian?.user?.createdWorkspace?.[0]?.slug || null,
         dateFinished:
             row?.updatedAt && row?.status === 'FINISHED'
                 ? format(new Date(row.updatedAt), 'MMMM dd, yyyy')
                 : '-'
     })) || [];
+
+    const handleCopyLink = async (workspaceSlug, courseCode) => {
+        if (!workspaceSlug) {
+            toast.error('Workspace not found for this guardian');
+            return;
+        }
+
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'https://livingpupilhomeschool.com';
+        const link = `${appUrl}/account/${workspaceSlug}/training/${courseCode}`;
+
+        try {
+            await navigator.clipboard.writeText(link);
+            toast.success('Link copied to clipboard!');
+        } catch (error) {
+            toast.error('Failed to copy link');
+        }
+    };
 
 
 
@@ -112,6 +131,25 @@ const ParentTraining = () => {
                                         ? format(new Date(params.row.updatedAt), 'MMMM dd, yyyy')
                                         : '-'}
                                 </span>
+                            )
+                        },
+                        {
+                            field: "action",
+                            headerName: "Action",
+                            width: 150,
+                            headerAlign: 'center',
+                            align: 'center',
+                            sortable: false,
+                            filterable: false,
+                            renderCell: (params) => (
+                                <button
+                                    className="px-3 py-1 text-xs text-white rounded-md bg-primary-500 hover:bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    onClick={() => handleCopyLink(params.row.workspaceSlug, params.row.courseCode)}
+                                    disabled={!params.row.workspaceSlug}
+                                    title={params.row.workspaceSlug ? 'Copy training link' : 'No workspace available'}
+                                >
+                                    Copy Link
+                                </button>
                             )
                         },
                     ]}

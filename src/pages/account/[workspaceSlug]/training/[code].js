@@ -59,103 +59,105 @@ const Course = ({ course }) => {
   };
 
   return (
-    workspace && (
-      <AccountLayout>
-        <Meta
-          title={`Living Pupil Homeschool - ${workspace.name} | ${course.title}`}
-        />
-        <Content.Title title={course.title} subtitle={course.description} />
-        <Content.Divider />
-        {workspace.studentRecord ? (
-          <Content.Container>
-            <Card>
-              <Card.Body title="Watch This Training Video">
-                <div className="mb-5 space-y-5">
-                  {course.video && course.video.includes(',')
-                    ? course.video.split(',').map((videoUrl, index) => (
-                      <div key={index} className="aspect-w-16 aspect-h-9 rounded-xl overflow-clip">
-                        <iframe
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          frameBorder="0"
-                          src={videoUrl.trim()}
-                        ></iframe>
-                      </div>
-                    ))
-                    : course.video ? (
-                      <div className="aspect-w-16 aspect-h-9 rounded-xl overflow-clip">
-                        <iframe
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          frameBorder="0"
-                          src={course.video.trim()}
-                        ></iframe>
-                      </div>
-                    ) : null
-                  }
-                </div>
-              </Card.Body>
-            </Card>
-            <Card>
-              <Card.Body title="Course Lessons">
-                {course.lessons?.map((lesson, index) => (
-                  <div
-                    key={index}
-                    className="px-5 py-3 border rounded border-primary-500"
-                  >
-                    <div>
-                      <h2 className="flex flex-col text-3xl font-bold text-primary-500">
-                        {lesson.name}
-                      </h2>
-                    </div>
-                    <div className="flex flex-col px-5 space-y-3 text-gray-600">
-                      <PortableText value={lesson.lesson} />
-                    </div>
+    <AccountLayout>
+      {workspace ? (
+        <>
+          <Meta
+            title={`Living Pupil Homeschool - ${workspace.name} | ${course.title}`}
+          />
+          <Content.Title title={course.title} subtitle={course.description} />
+          <Content.Divider />
+          {workspace.studentRecord ? (
+            <Content.Container>
+              <Card>
+                <Card.Body title="Watch This Training Video">
+                  <div className="mb-5 space-y-5">
+                    {course.video && course.video.includes(',')
+                      ? course.video.split(',').map((videoUrl, index) => (
+                        <div key={index} className="aspect-w-16 aspect-h-9 rounded-xl overflow-clip">
+                          <iframe
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            frameBorder="0"
+                            src={videoUrl.trim()}
+                          ></iframe>
+                        </div>
+                      ))
+                      : course.video ? (
+                        <div className="aspect-w-16 aspect-h-9 rounded-xl overflow-clip">
+                          <iframe
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            frameBorder="0"
+                            src={course.video.trim()}
+                          ></iframe>
+                        </div>
+                      ) : null
+                    }
                   </div>
-                ))}
-              </Card.Body>
-            </Card>
-
-            {parentCourses.includes(course.code) ? (
-              filteredTraining?.status !== 'FINISHED' ? (
-                <Card>
-                  <Card.Body title="Course Assessment">
-                    <JotFormEmbed
-                      src={`https://form.jotform.com/${PARENT_TRAINING_CODES[course.code].code}`}
-                      scrolling={true}
-                      style={{ height: '100%' }}
-                    />
-                    <div className="flex justify-center space-x-3 mt-3">
-                      <button
-                        onClick={courseComplete}
-                        className="bg-blue-500 text-white px-3 py-1 rounded h-12"
-                        disabled={isSubmitting}
-                      >
-                        Mark Course as Complete
-                      </button>
+                </Card.Body>
+              </Card>
+              <Card>
+                <Card.Body title="Course Lessons">
+                  {course.lessons?.map((lesson, index) => (
+                    <div
+                      key={index}
+                      className="px-5 py-3 border rounded border-primary-500"
+                    >
+                      <div>
+                        <h2 className="flex flex-col text-3xl font-bold text-primary-500">
+                          {lesson.name}
+                        </h2>
+                      </div>
+                      <div className="flex flex-col px-5 space-y-3 text-gray-600">
+                        <PortableText value={lesson.lesson} />
+                      </div>
                     </div>
-                  </Card.Body>
-                </Card>
-              ) : (
-                <div className="flex justify-center mt-3">
-                  <span className="bg-green-500 text-white px-3 py-1 rounded-full">
-                    COURSE {filteredTraining?.status}
-                  </span>
-                </div>
-              )
-            ) : null}
+                  ))}
+                </Card.Body>
+              </Card>
 
-          </Content.Container>
-        ) : (
-          <div className="px-3 py-3 text-sm text-red-500 border-2 border-red-600 rounded bg-red-50">
-            <p>
-              You will need to enroll your student first prior to viewing the
-              student courses and parent training videos.
-            </p>
-          </div>
-        )}
-      </AccountLayout>
-    )
+              {parentCourses.includes(course.code) ? (
+                filteredTraining?.status !== 'FINISHED' ? (
+                  <Card>
+                    <Card.Body title="Course Assessment">
+                      <JotFormEmbed
+                        src={`https://form.jotform.com/${PARENT_TRAINING_CODES[course.code].code}`}
+                        scrolling={true}
+                        style={{ height: '100%' }}
+                      />
+                      <div className="flex justify-center space-x-3 mt-3">
+                        <button
+                          onClick={courseComplete}
+                          className="bg-blue-500 text-white px-3 py-1 rounded h-12"
+                          disabled={isSubmitting}
+                        >
+                          Mark Course as Complete
+                        </button>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                ) : (
+                  <div className="flex justify-center mt-3">
+                    <span className="bg-green-500 text-white px-3 py-1 rounded-full">
+                      COURSE {filteredTraining?.status}
+                    </span>
+                  </div>
+                )
+              ) : null}
+
+            </Content.Container>
+          ) : (
+            <div className="px-3 py-3 text-sm text-red-500 border-2 border-red-600 rounded bg-red-50">
+              <p>
+                You will need to enroll your student first prior to viewing the
+                student courses and parent training videos.
+              </p>
+            </div>
+          )}
+        </>
+      ) : null}
+    </AccountLayout>
   );
 };
 

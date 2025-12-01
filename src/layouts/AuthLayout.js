@@ -14,15 +14,25 @@ const AuthLayout = ({ children }) => {
     setTheme('light');
 
     if (status === 'authenticated') {
-      let path = '/account';
+      // Check if there's a callbackUrl in query params
+      const callbackUrl = router.query.callbackUrl;
+      
+      if (callbackUrl && typeof callbackUrl === 'string') {
+        // Decode and redirect to the original URL
+        const decodedUrl = decodeURIComponent(callbackUrl);
+        router.push(decodedUrl);
+      } else {
+        // Default redirect behavior
+        let path = '/account';
 
-      if (data.user.studentRecords === 0) {
-        path = `${path}/enrollment`;
+        if (data.user.studentRecords === 0) {
+          path = `${path}/enrollment`;
+        }
+
+        router.push(path);
       }
-
-      router.push(path);
     }
-  }, [status, router]);
+  }, [status, router, data]);
 
   return (
     <main className="relative flex flex-col items-center justify-center h-screen p-10 space-y-10">
