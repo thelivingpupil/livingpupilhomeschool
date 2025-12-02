@@ -84,16 +84,48 @@ export const updateStatus = async (id, status) =>
     where: { id },
   });
 
-export const joinMembership = async (workspaceCode, status, email) =>
-  await prisma.member.update({
-    data: {
+export const joinMembership = async (workspaceId, status, email) => {
+  // Get workspace to find creator email for inviter field
+  const workspace = await prisma.workspace.findFirst({
+    select: {
+      creator: {
+        select: {
+          email: true,
+        },
+      },
+    },
+    where: {
+      id: workspaceId,
+      deletedAt: null,
+    },
+  });
+
+  if (!workspace || !workspace.creator?.email) {
+    throw new Error('Unable to find workspace');
+  }
+
+  // Use upsert to create member if it doesn't exist, or update if it does
+  const joinedAt = new Date();
+  await prisma.member.upsert({
+    create: {
+      workspaceId: workspaceId,
+      email: email,
+      inviter: workspace.creator.email,
       status: status,
-      joinedAt: new Date(), // Update the joinedAt field with the current date and time
+      joinedAt: joinedAt,
+    },
+    update: {
+      status: status,
+      joinedAt: joinedAt,
+      // Don't update inviter if member already exists - preserve original inviter
     },
     where: {
       workspaceId_email: {
-        workspaceId: workspaceCode,
+        workspaceId: workspaceId,
         email: email,
       },
     },
   });
+
+  return joinedAt;
+};

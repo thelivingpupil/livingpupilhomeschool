@@ -343,9 +343,93 @@ export const getServerSideProps = async (context) => {
 
     if (workspace) {
       isTeamOwner = isWorkspaceOwner(session.user.email, workspace);
-      workspace.inviteLink = `${
-        process.env.APP_URL
-      }/teams/invite?code=${encodeURI(workspace.inviteCode)}`;
+      
+      // Construct the invite link from request context or environment variable
+      let baseUrl = process.env.APP_URL?.trim();
+      
+      // Validate that APP_URL is a proper URL, otherwise construct from request
+      if (!baseUrl || !baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
+        const protocol = context.req.headers['x-forwarded-proto'] || 
+                         (context.req.connection?.encrypted ? 'https' : 'http');
+        const host = context.req.headers.host || 'localhost:3000';
+        baseUrl = `${protocol}://${host}`;
+      }
+      
+      // Ensure baseUrl doesn't have trailing slash
+      baseUrl = baseUrl.replace(/\/$/, '');
+      
+      workspace.inviteLink = `${baseUrl}/teams/invite?code=${encodeURI(workspace.inviteCode)}`;
+
+      // Serialize Date objects to JSON-compatible strings
+      if (workspace.creator?.guardianInformation) {
+        const gi = workspace.creator.guardianInformation;
+        if (gi.createdAt) {
+          gi.createdAt = gi.createdAt.toISOString();
+        }
+        if (gi.updatedAt) {
+          gi.updatedAt = gi.updatedAt.toISOString();
+        }
+        if (gi.deletedAt) {
+          gi.deletedAt = gi.deletedAt.toISOString();
+        }
+      }
+
+      if (workspace.studentRecord) {
+        if (workspace.studentRecord.birthDate) {
+          workspace.studentRecord.birthDate =
+            workspace.studentRecord.birthDate.toISOString();
+        }
+        if (workspace.studentRecord.createdAt) {
+          workspace.studentRecord.createdAt =
+            workspace.studentRecord.createdAt.toISOString();
+        }
+      }
+
+      if (workspace.schoolFees && workspace.schoolFees.length > 0) {
+        workspace.schoolFees = workspace.schoolFees.map((item) => {
+          const serializedItem = { ...item };
+          
+          // Serialize Date fields
+          if (serializedItem.createdAt) {
+            serializedItem.createdAt = serializedItem.createdAt.toISOString();
+          }
+          if (serializedItem.deletedAt) {
+            serializedItem.deletedAt = serializedItem.deletedAt.toISOString();
+          }
+
+          // Serialize transaction Decimal and Date fields
+          if (serializedItem.transaction) {
+            serializedItem.transaction = { ...serializedItem.transaction };
+            if (
+              serializedItem.transaction.amount &&
+              typeof serializedItem.transaction.amount.toNumber === 'function'
+            ) {
+              serializedItem.transaction.amount =
+                serializedItem.transaction.amount.toNumber();
+            }
+            if (
+              serializedItem.transaction.balance &&
+              typeof serializedItem.transaction.balance.toNumber === 'function'
+            ) {
+              serializedItem.transaction.balance =
+                serializedItem.transaction.balance.toNumber();
+            }
+            if (
+              serializedItem.transaction.payment &&
+              typeof serializedItem.transaction.payment.toNumber === 'function'
+            ) {
+              serializedItem.transaction.payment =
+                serializedItem.transaction.payment.toNumber();
+            }
+            if (serializedItem.transaction.createdAt) {
+              serializedItem.transaction.createdAt =
+                serializedItem.transaction.createdAt.toISOString();
+            }
+          }
+
+          return serializedItem;
+        });
+      }
     }
   }
 
