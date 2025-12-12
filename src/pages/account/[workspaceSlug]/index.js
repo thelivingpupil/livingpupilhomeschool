@@ -139,6 +139,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedBarangay, setSelectedBarangay] = useState('');
   const [isBarangay, setIsBarangay] = useState(false);
+  const [isCity, setIsCity] = useState(false);
   const [cities, setCities] = useState([]);
   const [barangays, setBarangays] = useState([]);
   const [zipCode, setZipCode] = useState('');
@@ -271,9 +272,12 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const handleIsBarangay = () => {
     setIsBarangay((prev) => !prev);
   };
+  const handleIsCity = () => {
+    setIsCity((prev) => !prev);
+  };
   const handleBarangayChangeInput = (event) =>
     setSelectedBarangay(event.target.value);
-
+  const handleCityChangeInput = (event) => setSelectedCity(event.target.value);
   const handleCaptchaChange = (value) => setCaptchaValue(value);
 
   const updateAddress = (zip, province, city, barangay) => {
@@ -320,6 +324,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   };
 
   const getCityMunByCode = (code) => {
+    if (isNaN(code)) {
+      return code;
+    }
     if (code) {
       let city_mun = cities.find((loc) => loc.mun_code === code);
       let city = city_mun.name;
@@ -367,6 +374,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
 
   //set the zipcode
   useEffect(() => {
+    console.log('selectedCity', selectedCity);
     let city = getCityMunByCode(selectedCity);
 
     if (city) {
@@ -470,12 +478,12 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     const evaluate =
       program === Program.HOMESCHOOL_COTTAGE
         ? programFee.programType === program &&
-        programFee.enrollmentType === enrollmentType &&
-        programFee.gradeLevel === gradeLevel &&
-        programFee.cottageType === cottageType
+          programFee.enrollmentType === enrollmentType &&
+          programFee.gradeLevel === gradeLevel &&
+          programFee.cottageType === cottageType
         : programFee.programType === program &&
-        programFee.enrollmentType === enrollmentType &&
-        programFee.gradeLevel === gradeLevel;
+          programFee.enrollmentType === enrollmentType &&
+          programFee.gradeLevel === gradeLevel;
 
     return evaluate;
   });
@@ -486,7 +494,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         return (
           selectedPProgram.programType === program &&
           selectedPProgram.gradeLevel ===
-          GRADE_TO_FORM_MAP[incomingGradeLevel] &&
+            GRADE_TO_FORM_MAP[incomingGradeLevel] &&
           selectedPProgram.enrollmentType === enrollmentType &&
           selectedPProgram.cottageType === cottageType
         );
@@ -610,9 +618,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-              new Date(),
-              'yyyy.MM.dd.kk.mm.ss'
-            )}.${extension}`
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss'
+          )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -656,9 +664,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-              new Date(),
-              'yyyy.MM.dd.kk.mm.ss'
-            )}.${extension}`
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss'
+          )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -703,9 +711,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-              new Date(),
-              'yyyy.MM.dd.kk.mm.ss'
-            )}.${extension}`
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss'
+          )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -750,9 +758,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-              new Date(),
-              'yyyy.MM.dd.kk.mm.ss'
-            )}.${extension}`
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss'
+          )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -797,9 +805,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-              new Date(),
-              'yyyy.MM.dd.kk.mm.ss'
-            )}.${extension}`
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss'
+          )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -844,9 +852,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-              new Date(),
-              'yyyy.MM.dd.kk.mm.ss'
-            )}.${extension}`
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss'
+          )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -902,9 +910,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       .update(dataUrl)
       .digest('hex')
       .substring(0, 12)}-${format(
-        new Date(),
-        'yyyy.MM.dd.kk.mm.ss'
-      )}.${extension}`;
+      new Date(),
+      'yyyy.MM.dd.kk.mm.ss'
+    )}.${extension}`;
 
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, blob);
@@ -1122,8 +1130,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
               <input
-                className={`px-3 py-2 rounded md:w-1/3 ${firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
-                  }`}
+                className={`px-3 py-2 rounded md:w-1/3 ${
+                  firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                }`}
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder="Given Name"
                 value={firstName}
@@ -1135,8 +1144,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 value={middleName}
               />
               <input
-                className={`px-3 py-2 rounded md:w-1/3 ${lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
-                  }`}
+                className={`px-3 py-2 rounded md:w-1/3 ${
+                  lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                }`}
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder="Last Name"
                 value={lastName}
@@ -1149,8 +1159,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 Birthday <span className="ml-1 text-red-600">*</span>
               </label>
               <div
-                className={`relative flex flex-row rounded ${!birthDate ? 'border-red-500 border-2' : 'border'
-                  }`}
+                className={`relative flex flex-row rounded ${
+                  !birthDate ? 'border-red-500 border-2' : 'border'
+                }`}
               >
                 <DatePicker
                   selected={birthDate}
@@ -1229,8 +1240,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="relative flex flex-row space-x-5">
               <textarea
-                className={`w-full px-3 py-2 rounded ${!reason ? 'border-red-500 border-2' : 'border'
-                  }`}
+                className={`w-full px-3 py-2 rounded ${
+                  !reason ? 'border-red-500 border-2' : 'border'
+                }`}
                 onChange={(e) => setReason(e.target.value)}
                 placeholder="Why did you choose to homeschool your child?"
                 rows={5}
@@ -1274,10 +1286,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               </label>
               <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
                 <input
-                  className={`px-3 py-2 rounded md:w-1/2 ${specialNeeds.length <= 0
+                  className={`px-3 py-2 rounded md:w-1/2 ${
+                    specialNeeds.length <= 0
                       ? 'border-red-500 border-2'
                       : 'border'
-                    }`}
+                  }`}
                   onChange={(e) => setSpecialNeeds(e.target.value)}
                   placeholder=""
                   value={specialNeeds}
@@ -1293,8 +1306,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="flex flex-col space-y-3 mt-3">
               <select
-                className={`px-3 py-2 rounded md:w-3/4 ${!selectedProvince ? 'border-red-500 border-2' : 'border'
-                  }`}
+                className={`px-3 py-2 rounded md:w-3/4 ${
+                  !selectedProvince ? 'border-red-500 border-2' : 'border'
+                }`}
                 value={selectedProvince}
                 onChange={handleProvinceChange}
               >
@@ -1305,24 +1319,45 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   </option>
                 ))}
               </select>
-              <select
-                className={`px-3 py-2 rounded md:w-3/4 ${!selectedCity ? 'border-red-500 border-2' : 'border'
+              {!isCity ? (
+                <select
+                  className={`px-3 py-2 rounded md:w-3/4 ${
+                    !selectedCity ? 'border-red-500 border-2' : 'border'
                   }`}
-                value={selectedCity}
-                onChange={handleCityChange}
-                disabled={!selectedProvince}
-              >
-                <option value="">Select City/Municipality</option>
-                {cities.map((city) => (
-                  <option key={city.mun_code} value={city.mun_code}>
-                    {city.name}
-                  </option>
-                ))}
-              </select>
+                  value={selectedCity}
+                  onChange={handleCityChange}
+                  disabled={!selectedProvince}
+                >
+                  <option value="">Select City/Municipality</option>
+                  {cities.map((city) => (
+                    <option key={city.mun_code} value={city.mun_code}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  className={`px-3 py-2 rounded md:w-3/4 ${
+                    !selectedCity ? 'border-red-500 border-2' : 'border'
+                  }`}
+                  placeholder="City"
+                  onChange={handleCityChangeInput}
+                  value={selectedCity}
+                />
+              )}
+              <div>
+                <Button
+                  onClick={handleIsCity}
+                  className="w-1/4 rounded-r text-white bg-gray-500 hover:bg-gray-400"
+                >
+                  {isCity ? 'Select City' : 'Input City Manually'}
+                </Button>
+              </div>
               {!isBarangay ? (
                 <select
-                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedBarangay ? 'border-red-500 border-2' : 'border'
-                    }`}
+                  className={`px-3 py-2 rounded md:w-3/4 ${
+                    !selectedBarangay ? 'border-red-500 border-2' : 'border'
+                  }`}
                   value={selectedBarangay}
                   onChange={handleBarangayChange}
                   disabled={!selectedCity}
@@ -1336,8 +1371,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 </select>
               ) : (
                 <input
-                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedBarangay ? 'border-red-500 border-2' : 'border'
-                    }`}
+                  className={`px-3 py-2 rounded md:w-3/4 ${
+                    !selectedBarangay ? 'border-red-500 border-2' : 'border'
+                  }`}
                   placeholder="Barangay"
                   onChange={handleBarangayChangeInput}
                   value={selectedBarangay}
@@ -1356,15 +1392,17 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           <div className="flex flex-col">
             <div className="flex flex-row space-x-5">
               <input
-                className={`px-3 py-2 rounded md:w-3/4 ${!address1 ? 'border-red-500 border-2' : 'border'
-                  }`}
+                className={`px-3 py-2 rounded md:w-3/4 ${
+                  !address1 ? 'border-red-500 border-2' : 'border'
+                }`}
                 placeholder="House No. St. Name, Village/Subdivision"
                 onChange={handleAddress1}
                 value={address1}
               />
               <input
-                className={`px-3 py-2 rounded md:w-1/4 ${!zipCode ? 'border-red-500 border-2' : 'border'
-                  }`}
+                className={`px-3 py-2 rounded md:w-1/4 ${
+                  !zipCode ? 'border-red-500 border-2' : 'border'
+                }`}
                 placeholder="ZIP Code"
                 onChange={handleZipCodeChange}
                 value={zipCode}
@@ -1476,8 +1514,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </tr>
             <tr>
               <td
-                className={`w-1/2 px-3 py-2 ${!birthCertificateLink ? 'border-red-500 border-2' : 'border'
-                  }`}
+                className={`w-1/2 px-3 py-2 ${
+                  !birthCertificateLink ? 'border-red-500 border-2' : 'border'
+                }`}
               >
                 <h3 className="text-xl font-medium">Birth Certificate</h3>
                 <p className="text-sm text-gray-400">
@@ -1581,8 +1620,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${!enrollmentType ? 'border-red-500 border-2' : 'border'
-              }`}
+            className={`relative inline-block w-full rounded ${
+              !enrollmentType ? 'border-red-500 border-2' : 'border'
+            }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1640,8 +1680,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="flex flex-row">
               <div
-                className={`relative inline-block w-full rounded ${!incomingGradeLevel ? 'border-red-500 border-2' : 'border'
-                  }`}
+                className={`relative inline-block w-full rounded ${
+                  !incomingGradeLevel ? 'border-red-500 border-2' : 'border'
+                }`}
               >
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1670,8 +1711,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </div>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${!schoolYear ? 'border-red-500 border-2' : 'border'
-              }`}
+            className={`relative inline-block w-full rounded ${
+              !schoolYear ? 'border-red-500 border-2' : 'border'
+            }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1708,8 +1750,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           <div className="flex flex-row space-x-5">
             <input
               disabled={enrollmentType === Enrollment.CONTINUING}
-              className={`px-3 py-2 rounded md:w-2/3 ${!formerSchoolName ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`px-3 py-2 rounded md:w-2/3 ${
+                !formerSchoolName ? 'border-red-500 border-2' : 'border'
+              }`}
               onChange={(e) => setFormerSchoolName(e.target.value)}
               placeholder="Former School Name"
               value={formerSchoolName}
@@ -1723,8 +1766,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           <div className="relative flex flex-row space-x-5">
             <textarea
               disabled={enrollmentType === Enrollment.CONTINUING}
-              className={`w-full px-3 py-2 rounded ${!formerSchoolAddress ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`w-full px-3 py-2 rounded ${
+                !formerSchoolAddress ? 'border-red-500 border-2' : 'border'
+              }`}
               onChange={(e) => setFormerSchoolAddress(e.target.value)}
               placeholder="Former School Address"
               rows={3}
@@ -1741,8 +1785,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               </label>
               <div className="relative flex flex-row space-x-5">
                 <input
-                  className={`px-3 py-2 rounded md:w-2/3 ${!formerRegistrar ? 'border-red-500 border-2' : 'border'
-                    }`}
+                  className={`px-3 py-2 rounded md:w-2/3 ${
+                    !formerRegistrar ? 'border-red-500 border-2' : 'border'
+                  }`}
                   onChange={handleFormerRegistrar}
                   placeholder="Former Registrar Full Name"
                   value={formerRegistrar}
@@ -1756,8 +1801,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               </label>
               <div className="relative flex flex-row space-x-5">
                 <input
-                  className={`px-3 py-2 rounded md:w-2/3 ${!formerRegistrarEmail ? 'border-red-500 border-2' : 'border'
-                    }`}
+                  className={`px-3 py-2 rounded md:w-2/3 ${
+                    !formerRegistrarEmail ? 'border-red-500 border-2' : 'border'
+                  }`}
                   onChange={handleFormerRegistrarEmail}
                   placeholder="registrar@email.com"
                   value={formerRegistrarEmail}
@@ -1771,10 +1817,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               </label>
               <div className="relative flex flex-row space-x-5">
                 <input
-                  className={`px-3 py-2 rounded md:w-2/3 ${!formerRegistrarNumber
+                  className={`px-3 py-2 rounded md:w-2/3 ${
+                    !formerRegistrarNumber
                       ? 'border-red-500 border-2'
                       : 'border'
-                    }`}
+                  }`}
                   onChange={handleFormerRegistrarNumber}
                   placeholder="09XX-XXX-XXXX"
                   value={formerRegistrarNumber}
@@ -1796,24 +1843,27 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${!primaryGuardianName ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !primaryGuardianName ? 'border-red-500 border-2' : 'border'
+              }`}
               placeholder="Primary Guardian's Full Name"
               onChange={handlePrimaryGuardianName}
               value={primaryGuardianName}
             />
             <input
-              className={`px-3 py-2 rounded md:w-1/4 ${!primaryGuardianOccupation
+              className={`px-3 py-2 rounded md:w-1/4 ${
+                !primaryGuardianOccupation
                   ? 'border-red-500 border-2'
                   : 'border'
-                }`}
+              }`}
               placeholder="Occupation"
               onChange={handlePrimaryGuardianOccupation}
               value={primaryGuardianOccupation}
             />
             <div
-              className={`relative inline-block rounded md:w-1/4 ${!primaryGuardianType ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`relative inline-block rounded md:w-1/4 ${
+                !primaryGuardianType ? 'border-red-500 border-2' : 'border'
+              }`}
             >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1834,8 +1884,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </div>
         <div className="flex flex-col">
           <input
-            className={`px-3 py-2 rounded ${!primaryGuardianProfile ? 'border-red-500 border-2' : 'border'
-              }`}
+            className={`px-3 py-2 rounded ${
+              !primaryGuardianProfile ? 'border-red-500 border-2' : 'border'
+            }`}
             placeholder="Primary Guardian's Facebook Profile Link"
             onChange={handlePrimaryGuardianProfile}
             value={primaryGuardianProfile}
@@ -1847,24 +1898,27 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${!secondaryGuardianName ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !secondaryGuardianName ? 'border-red-500 border-2' : 'border'
+              }`}
               placeholder="Secondary Guardian's Full Name"
               onChange={handleSecondaryGuardianName}
               value={secondaryGuardianName}
             />
             <input
-              className={`px-3 py-2 rounded md:w-1/4 ${!secondaryGuardianOccupation
+              className={`px-3 py-2 rounded md:w-1/4 ${
+                !secondaryGuardianOccupation
                   ? 'border-red-500 border-2'
                   : 'border'
-                }`}
+              }`}
               placeholder="Occupation"
               onChange={handleSecondaryGuardianOccupation}
               value={secondaryGuardianOccupation}
             />
             <div
-              className={`relative inline-block rounded md:w-1/4 ${!secondaryGuardianType ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`relative inline-block rounded md:w-1/4 ${
+                !secondaryGuardianType ? 'border-red-500 border-2' : 'border'
+              }`}
             >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1885,8 +1939,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </div>
         <div className="flex flex-col">
           <input
-            className={`px-3 py-2 rounded ${!secondaryGuardianProfile ? 'border-red-500 border-2' : 'border'
-              }`}
+            className={`px-3 py-2 rounded ${
+              !secondaryGuardianProfile ? 'border-red-500 border-2' : 'border'
+            }`}
             placeholder="Secondary Guardian's Facebook Profile Link"
             onChange={handleSecondaryGuardianProfile}
             value={secondaryGuardianProfile}
@@ -1932,8 +1987,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-row md:w-1/2 flex-row space-x-5">
             <input
-              className={`px-3 py-2 rounded w-full ${!telephoneNumber ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`px-3 py-2 rounded w-full ${
+                !telephoneNumber ? 'border-red-500 border-2' : 'border'
+              }`}
               placeholder="Telephone Number"
               onChange={handleTelephoneNumber}
               value={telephoneNumber}
@@ -1946,8 +2002,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-row space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${!anotherEmail ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !anotherEmail ? 'border-red-500 border-2' : 'border'
+              }`}
               placeholder="another@email.com"
               onChange={handleAnotherEmail}
               value={anotherEmail}
@@ -1968,24 +2025,27 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${!primaryTeacherName ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !primaryTeacherName ? 'border-red-500 border-2' : 'border'
+              }`}
               placeholder="Guardian's Full Name"
               onChange={handlePrimaryTeacherName}
               value={primaryTeacherName}
             />
             <input
-              className={`px-3 py-2 rounded md:w-1/4 ${!primaryTeacherAge ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`px-3 py-2 rounded md:w-1/4 ${
+                !primaryTeacherAge ? 'border-red-500 border-2' : 'border'
+              }`}
               placeholder="Age"
               onChange={handlePrimaryTeacherAge}
               value={primaryTeacherAge}
             />
             <input
-              className={`px-3 py-2 rounded md:w-1/4 ${!primaryTeacherRelationship
+              className={`px-3 py-2 rounded md:w-1/4 ${
+                !primaryTeacherRelationship
                   ? 'border-red-500 border-2'
                   : 'border'
-                }`}
+              }`}
               placeholder="Relationship"
               onChange={handlePrimaryTeacherRelationship}
               value={primaryTeacherRelationship}
@@ -1995,8 +2055,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
 
         <div className="flex flex-col">
           <input
-            className={`px-3 py-2 rounded ${!primaryTeacherProfile ? 'border-red-500 border-2' : 'border'
-              }`}
+            className={`px-3 py-2 rounded ${
+              !primaryTeacherProfile ? 'border-red-500 border-2' : 'border'
+            }`}
             placeholder="Guardian's Facebook Profile Link"
             onChange={handlePrimaryTeacherProfile}
             value={primaryTeacherProfile}
@@ -2009,8 +2070,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${!primaryTeacherEducation ? 'border-red-500 border-2' : 'border'
-                }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${
+                !primaryTeacherEducation ? 'border-red-500 border-2' : 'border'
+              }`}
               placeholder="ex: College Graduate"
               onChange={handlePrimaryTeacherEducation}
               value={primaryTeacherEducation}
@@ -2029,8 +2091,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${!program ? 'border-red-500 border-2' : 'border'
-              }`}
+            className={`relative inline-block w-full rounded ${
+              !program ? 'border-red-500 border-2' : 'border'
+            }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -2067,8 +2130,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </label>
             <div className="flex flex-row">
               <div
-                className={`relative inline-block w-full rounded ${!cottageType ? 'border-red-500 border-2' : 'border'
-                  }`}
+                className={`relative inline-block w-full rounded ${
+                  !cottageType ? 'border-red-500 border-2' : 'border'
+                }`}
               >
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -2169,8 +2233,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${!accreditation ? 'border-red-500 border-2' : 'border'
-              }`}
+            className={`relative inline-block w-full rounded ${
+              !accreditation ? 'border-red-500 border-2' : 'border'
+            }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -2524,8 +2589,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             Select Payment Type <span className="ml-1 text-red-600">*</span>
           </label>
           <div
-            className={`relative inline-block w-full rounded ${!payment ? 'border-red-500 border-2' : 'border'
-              }`}
+            className={`relative inline-block w-full rounded ${
+              !payment ? 'border-red-500 border-2' : 'border'
+            }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -2565,10 +2631,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           <hr />
           <div className="relative flex flex-row space-x-5">
             <div
-              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.ANNUAL
+              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
+                payment === PaymentType.ANNUAL
                   ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                   : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-                }`}
+              }`}
               onClick={() => {
                 setPayment(PaymentType.ANNUAL);
                 setFee(programFeeByAccreditation?.paymentTerms[0]);
@@ -2589,7 +2656,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                       currency: 'PHP',
                     }).format(
                       programFeeByAccreditation?.paymentTerms[0]?.fullPayment ||
-                      0
+                        0
                     )}
                   </span>
                 </div>
@@ -2608,10 +2675,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           </div>
           <div className="relative flex flex-row space-x-5">
             <div
-              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.SEMI_ANNUAL
+              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
+                payment === PaymentType.SEMI_ANNUAL
                   ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                   : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-                }`}
+              }`}
               onClick={() => {
                 setPayment(PaymentType.SEMI_ANNUAL);
                 setFee(programFeeByAccreditation?.paymentTerms[1]);
@@ -2632,7 +2700,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                       currency: 'PHP',
                     }).format(
                       programFeeByAccreditation?.paymentTerms[1]?.downPayment ||
-                      0
+                        0
                     )}{' '}
                     +
                   </span>
@@ -2663,19 +2731,20 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   currency: 'PHP',
                 }).format(
                   programFeeByAccreditation?.paymentTerms[1]?.downPayment +
-                  programFeeByAccreditation?.paymentTerms[1]?.secondPayment +
-                  programFeeByAccreditation?.paymentTerms[1]?.thirdPayment ||
-                  0
+                    programFeeByAccreditation?.paymentTerms[1]?.secondPayment +
+                    programFeeByAccreditation?.paymentTerms[1]?.thirdPayment ||
+                    0
                 )}
               </h3>
             </div>
           </div>
           <div className="relative flex flex-row space-x-5">
             <div
-              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.QUARTERLY
+              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
+                payment === PaymentType.QUARTERLY
                   ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                   : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-                }`}
+              }`}
               onClick={() => {
                 setPayment(PaymentType.QUARTERLY);
                 setFee(programFeeByAccreditation?.paymentTerms[2]);
@@ -2696,7 +2765,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                       currency: 'PHP',
                     }).format(
                       programFeeByAccreditation?.paymentTerms[2]?.downPayment ||
-                      0
+                        0
                     )}{' '}
                     +
                   </span>
@@ -2735,10 +2804,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   currency: 'PHP',
                 }).format(
                   programFeeByAccreditation?.paymentTerms[2]?.downPayment +
-                  programFeeByAccreditation?.paymentTerms[2]?.secondPayment +
-                  programFeeByAccreditation?.paymentTerms[2]?.thirdPayment +
-                  programFeeByAccreditation?.paymentTerms[2]?.fourthPayment ||
-                  0
+                    programFeeByAccreditation?.paymentTerms[2]?.secondPayment +
+                    programFeeByAccreditation?.paymentTerms[2]?.thirdPayment +
+                    programFeeByAccreditation?.paymentTerms[2]?.fourthPayment ||
+                    0
                 )}
               </h3>
             </div>
@@ -2746,10 +2815,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           <div className="relative flex flex-row space-x-5">
             {programFeeByAccreditation?.paymentTerms[3] && (
               <div
-                className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.MONTHLY
+                className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
+                  payment === PaymentType.MONTHLY
                     ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
                     : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-                  }`}
+                }`}
                 onClick={() => {
                   setPayment(PaymentType.MONTHLY);
                   setFee(programFeeByAccreditation?.paymentTerms[3]);
@@ -2846,19 +2916,19 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                     currency: 'PHP',
                   }).format(
                     programFeeByAccreditation?.paymentTerms[3]?.downPayment +
-                    programFeeByAccreditation?.paymentTerms[3]
-                      ?.secondPayment +
-                    programFeeByAccreditation?.paymentTerms[3]?.thirdPayment +
-                    programFeeByAccreditation?.paymentTerms[3]
-                      ?.fourthPayment +
-                    programFeeByAccreditation?.paymentTerms[3]?.fifthPayment +
-                    programFeeByAccreditation?.paymentTerms[3]?.sixthPayment +
-                    programFeeByAccreditation?.paymentTerms[3]
-                      ?.seventhPayment +
-                    programFeeByAccreditation?.paymentTerms[3]
-                      ?.eighthPayment +
-                    programFeeByAccreditation?.paymentTerms[3]
-                      ?.ninthPayment || 0
+                      programFeeByAccreditation?.paymentTerms[3]
+                        ?.secondPayment +
+                      programFeeByAccreditation?.paymentTerms[3]?.thirdPayment +
+                      programFeeByAccreditation?.paymentTerms[3]
+                        ?.fourthPayment +
+                      programFeeByAccreditation?.paymentTerms[3]?.fifthPayment +
+                      programFeeByAccreditation?.paymentTerms[3]?.sixthPayment +
+                      programFeeByAccreditation?.paymentTerms[3]
+                        ?.seventhPayment +
+                      programFeeByAccreditation?.paymentTerms[3]
+                        ?.eighthPayment +
+                      programFeeByAccreditation?.paymentTerms[3]
+                        ?.ninthPayment || 0
                   )}
                 </h3>
               </div>
@@ -3119,11 +3189,13 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                         Based on applied discount code:{' '}
                         <span className="font-bold text-green-600">
                           {discountCode || '-'}{' '}
-                          {`${discount
-                              ? `(${Number(discount.value).toFixed(2)}${discount.type === 'VALUE' ? 'Php' : '%'
-                              })`
+                          {`${
+                            discount
+                              ? `(${Number(discount.value).toFixed(2)}${
+                                  discount.type === 'VALUE' ? 'Php' : '%'
+                                })`
                               : ''
-                            }`}
+                          }`}
                         </span>
                       </h6>
                       {fee && fee?._type !== 'fullTermPayment' && (
@@ -3142,38 +3214,38 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                           discount
                             ? discount.type === 'VALUE'
                               ? (discount?.code
-                                ?.toLowerCase()
-                                .includes('pastor')
-                                ? Math.ceil(
+                                  ?.toLowerCase()
+                                  .includes('pastor')
+                                  ? Math.ceil(
+                                      fee?._type === 'fullTermPayment'
+                                        ? fee?.fullPayment
+                                        : fee?._type === 'threeTermPayment'
+                                        ? fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment
+                                        : fee?._type === 'fourTermPayment'
+                                        ? fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment +
+                                          fee?.fourthPayment
+                                        : fee?.downPayment +
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment +
+                                          fee?.fourthPayment +
+                                          fee?.fifthPayment +
+                                          fee?.sixthPayment +
+                                          fee?.seventhPayment +
+                                          fee?.eighthPayment +
+                                          fee.ninthPayment
+                                    ) - discount.value
+                                  : Number(discount.value).toFixed(2)) * -1
+                              : Math.ceil(
                                   fee?._type === 'fullTermPayment'
                                     ? fee?.fullPayment
-                                    : fee?._type === 'threeTermPayment'
-                                      ? fee?.downPayment +
-                                      fee?.secondPayment +
-                                      fee?.thirdPayment
-                                      : fee?._type === 'fourTermPayment'
-                                        ? fee?.downPayment +
-                                        fee?.secondPayment +
-                                        fee?.thirdPayment +
-                                        fee?.fourthPayment
-                                        : fee?.downPayment +
-                                        fee?.secondPayment +
-                                        fee?.thirdPayment +
-                                        fee?.fourthPayment +
-                                        fee?.fifthPayment +
-                                        fee?.sixthPayment +
-                                        fee?.seventhPayment +
-                                        fee?.eighthPayment +
-                                        fee.ninthPayment
-                                ) - discount.value
-                                : Number(discount.value).toFixed(2)) * -1
-                              : Math.ceil(
-                                fee?._type === 'fullTermPayment'
-                                  ? fee?.fullPayment
-                                  : fee?.secondPayment
-                              ) *
-                              (discount.value / 100) *
-                              -1
+                                    : fee?.secondPayment
+                                ) *
+                                (discount.value / 100) *
+                                -1
                             : 0
                         )}
                       </span>
@@ -3202,36 +3274,36 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                         }).format(
                           (fee?._type === 'fullTermPayment'
                             ? fee?.fullPayment -
-                            (discount
-                              ? discount?.type === 'VALUE'
-                                ? discount?.code
-                                  ?.toLowerCase()
-                                  .includes('pastor')
-                                  ? Math.ceil(
-                                    fee?._type === 'fullTermPayment'
-                                      ? fee?.fullPayment
-                                      : fee?._type === 'threeTermPayment'
-                                        ? fee?.downPayment +
-                                        fee?.secondPayment +
-                                        fee?.thirdPayment
-                                        : fee?._type === 'fourTermPayment'
+                              (discount
+                                ? discount?.type === 'VALUE'
+                                  ? discount?.code
+                                      ?.toLowerCase()
+                                      .includes('pastor')
+                                    ? Math.ceil(
+                                        fee?._type === 'fullTermPayment'
+                                          ? fee?.fullPayment
+                                          : fee?._type === 'threeTermPayment'
                                           ? fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment +
-                                          fee?.fourthPayment
+                                            fee?.secondPayment +
+                                            fee?.thirdPayment
+                                          : fee?._type === 'fourTermPayment'
+                                          ? fee?.downPayment +
+                                            fee?.secondPayment +
+                                            fee?.thirdPayment +
+                                            fee?.fourthPayment
                                           : fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment +
-                                          fee?.fourthPayment +
-                                          fee?.fifthPayment +
-                                          fee?.sixthPayment +
-                                          fee?.seventhPayment +
-                                          fee?.eighthPayment +
-                                          fee.ninthPayment
-                                  ) - discount.value
-                                  : discount.value
-                                : (discount.value / 100) * fee?.fullPayment
-                              : 0)
+                                            fee?.secondPayment +
+                                            fee?.thirdPayment +
+                                            fee?.fourthPayment +
+                                            fee?.fifthPayment +
+                                            fee?.sixthPayment +
+                                            fee?.seventhPayment +
+                                            fee?.eighthPayment +
+                                            fee.ninthPayment
+                                      ) - discount.value
+                                    : discount.value
+                                  : (discount.value / 100) * fee?.fullPayment
+                                : 0)
                             : fee?.downPayment) + FEES[paymentMethod] || 0
                         )}
                       </span>
@@ -3260,8 +3332,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 <SignatureCanvas
                   ref={sigCanvas}
                   canvasProps={{
-                    className: `sigCanvas bg-gray-100 border ${signatureLink ? 'border-gray-400' : 'border-red-500'
-                      } w-full h-40 sm:h-48 md:h-56 lg:h-64`,
+                    className: `sigCanvas bg-gray-100 border ${
+                      signatureLink ? 'border-gray-400' : 'border-red-500'
+                    } w-full h-40 sm:h-48 md:h-56 lg:h-64`,
                   }}
                 />
                 <div className="flex space-x-3 mt-3">
@@ -3329,9 +3402,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         .update(paymentProofFile.name + Date.now())
         .digest('hex')
         .substring(0, 12)}-${format(
-          new Date(),
-          'yyyy.MM.dd.kk.mm.ss'
-        )}.${extension}`;
+        new Date(),
+        'yyyy.MM.dd.kk.mm.ss'
+      )}.${extension}`;
       const storageRef = ref(storage, fileName);
       const uploadTask = uploadBytesResumable(storageRef, paymentProofFile);
       const downloadURL = await new Promise((resolve, reject) => {
@@ -3377,7 +3450,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     <AccountLayout>
       {workspace ? (
         <>
-          <Meta title={`Living Pupil Homeschool - ${workspace.name} | Profile`} />
+          <Meta
+            title={`Living Pupil Homeschool - ${workspace.name} | Profile`}
+          />
           <Content.Title
             title={workspace.name}
             subtitle="This is the student record information"
@@ -3393,12 +3468,13 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                     onClick={() => goToStep(index)}
                   >
                     <div
-                      className={`w-8 h-8 flex items-center justify-center rounded-full ${step === index
+                      className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                        step === index
                           ? 'bg-secondary-400'
                           : index < step
-                            ? 'bg-green-400'
-                            : 'bg-gray-200'
-                        }`}
+                          ? 'bg-green-400'
+                          : 'bg-gray-200'
+                      }`}
                     >
                       {index < step ? (
                         <CheckIcon className="w-5 h-5 text-white" />
@@ -3444,21 +3520,23 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             <Content.Container>
               <div className="grid grid-cols-4 gap-5">
                 <div
-                  className={`flex flex-col justify-between rounded ${birthCertificateLink ||
-                      workspace.studentRecord.liveBirthCertificate
+                  className={`flex flex-col justify-between rounded ${
+                    birthCertificateLink ||
+                    workspace.studentRecord.liveBirthCertificate
                       ? 'border'
                       : 'border-2 border-red-400 border-dashed'
-                    }`}
+                  }`}
                 >
                   <div className="flex flex-col p-5 space-y-3 overflow-auto">
                     <div className="flex flex-col space-y-5">
                       <div className="flex space-x-5">
                         <div
-                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${birthCertificateLink ||
-                              workspace.studentRecord.liveBirthCertificate
+                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${
+                            birthCertificateLink ||
+                            workspace.studentRecord.liveBirthCertificate
                               ? 'bg-primary-400'
                               : 'bg-red-200'
-                            }`}
+                          }`}
                         >
                           <DocumentIcon className="w-8 h-8" />
                         </div>
@@ -3474,7 +3552,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                           </h4>
                           <div>
                             {birthCertificateLink ||
-                              workspace.studentRecord.liveBirthCertificate ? (
+                            workspace.studentRecord.liveBirthCertificate ? (
                               <div className="flex items-center space-x-3">
                                 <Link
                                   href={
@@ -3542,19 +3620,21 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   </div>
                 </div>
                 <div
-                  className={`flex flex-col justify-between rounded ${reportCardLink || workspace.studentRecord.reportCard
+                  className={`flex flex-col justify-between rounded ${
+                    reportCardLink || workspace.studentRecord.reportCard
                       ? 'border'
                       : 'border-2 border-red-400 border-dashed'
-                    }`}
+                  }`}
                 >
                   <div className="flex flex-col p-5 space-y-3 overflow-auto">
                     <div className="flex flex-col space-y-5">
                       <div className="flex space-x-5">
                         <div
-                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${reportCardLink || workspace.studentRecord.reportCard
+                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${
+                            reportCardLink || workspace.studentRecord.reportCard
                               ? 'bg-primary-400'
                               : 'bg-red-200'
-                            }`}
+                          }`}
                         >
                           <DocumentIcon className="w-8 h-8" />
                         </div>
@@ -3570,7 +3650,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                           </h4>
                           <div className="flex items-center space-x-3">
                             {reportCardLink ||
-                              workspace.studentRecord.reportCard ? (
+                            workspace.studentRecord.reportCard ? (
                               <>
                                 <Link
                                   href={
@@ -3639,20 +3719,22 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 </div>
                 {/* ID Picture Front Card */}
                 <div
-                  className={`flex flex-col justify-between rounded ${idPictureFrontLink || workspace.studentRecord.idPictureFront
+                  className={`flex flex-col justify-between rounded ${
+                    idPictureFrontLink || workspace.studentRecord.idPictureFront
                       ? 'border'
                       : 'border-2 border-red-400 border-dashed'
-                    }`}
+                  }`}
                 >
                   <div className="flex flex-col p-5 space-y-3 overflow-auto">
                     <div className="flex flex-col space-y-5">
                       <div className="flex space-x-5">
                         <div
-                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${idPictureFrontLink ||
-                              workspace.studentRecord.idPictureFront
+                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${
+                            idPictureFrontLink ||
+                            workspace.studentRecord.idPictureFront
                               ? 'bg-primary-400'
                               : 'bg-red-200'
-                            }`}
+                          }`}
                         >
                           <DocumentIcon className="w-8 h-8" />
                         </div>
@@ -3668,7 +3750,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                           </h4>
                           <div className="flex items-center space-x-3">
                             {idPictureFrontLink ||
-                              workspace.studentRecord.idPictureFront ? (
+                            workspace.studentRecord.idPictureFront ? (
                               <>
                                 <Link
                                   href={
@@ -3697,20 +3779,22 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 </div>
                 {/* ID Picture Back Card */}
                 <div
-                  className={`flex flex-col justify-between rounded ${idPictureBackLink || workspace.studentRecord.idPictureBack
+                  className={`flex flex-col justify-between rounded ${
+                    idPictureBackLink || workspace.studentRecord.idPictureBack
                       ? 'border'
                       : 'border-2 border-red-400 border-dashed'
-                    }`}
+                  }`}
                 >
                   <div className="flex flex-col p-5 space-y-3 overflow-auto">
                     <div className="flex flex-col space-y-5">
                       <div className="flex space-x-5">
                         <div
-                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${idPictureBackLink ||
-                              workspace.studentRecord.idPictureBack
+                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${
+                            idPictureBackLink ||
+                            workspace.studentRecord.idPictureBack
                               ? 'bg-primary-400'
                               : 'bg-red-200'
-                            }`}
+                          }`}
                         >
                           <DocumentIcon className="w-8 h-8" />
                         </div>
@@ -3726,7 +3810,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                           </h4>
                           <div className="flex items-center space-x-3">
                             {idPictureBackLink ||
-                              workspace.studentRecord.idPictureBack ? (
+                            workspace.studentRecord.idPictureBack ? (
                               <>
                                 <Link
                                   href={
@@ -3757,7 +3841,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               <Card>
                 <Card.Body
                   title="Student Record Information"
-                // subtitle={`Last Updated: ${workspace.studentRecord.updatedAt}`}
+                  // subtitle={`Last Updated: ${workspace.studentRecord.updatedAt}`}
                 >
                   <div className="flex flex-row items-center py-5 space-x-10">
                     <div className="relative flex items-center justify-center w-32 h-32 overflow-hidden text-center text-white bg-gray-400 rounded-full">
@@ -3839,7 +3923,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                         </p>
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-600">Former School</h4>
+                        <h4 className="font-bold text-gray-600">
+                          Former School
+                        </h4>
                         <p className="text-2xl capitalize">
                           {workspace.studentRecord.formerSchoolName}
                         </p>
@@ -3854,7 +3940,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                         <p className="text-2xl">
                           {
                             GRADE_LEVEL[
-                            workspace.studentRecord.incomingGradeLevel
+                              workspace.studentRecord.incomingGradeLevel
                             ]
                           }
                         </p>
@@ -3877,79 +3963,85 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   {/* ID Picture Download Section */}
                   {(workspace.studentRecord.idPictureFront ||
                     workspace.studentRecord.idPictureBack) && (
-                      <div className="mt-6 p-4 border rounded-lg bg-gray-50">
-                        <h4 className="font-bold text-gray-600 mb-3">ID Picture</h4>
-                        <div className="flex items-center space-x-4">
-                          {workspace.studentRecord.idPictureFront && (
-                            <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
-                              <Image
-                                alt="ID Picture Front"
-                                className="object-cover"
-                                layout="fill"
-                                loading="lazy"
-                                src={workspace.studentRecord.idPictureFront}
-                              />
-                            </div>
-                          )}
-                          {workspace.studentRecord.idPictureBack && (
-                            <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
-                              <Image
-                                alt="ID Picture Back"
-                                className="object-cover"
-                                layout="fill"
-                                loading="lazy"
-                                src={workspace.studentRecord.idPictureBack}
-                              />
-                            </div>
-                          )}
-                          <div className="flex flex-col space-y-2">
-                            <p className="text-sm text-gray-600">
-                              Official ID pictures uploaded by admin
-                            </p>
-                            <div className="flex space-x-2">
-                              {workspace.studentRecord.idPictureFront && (
-                                <Link href={workspace.studentRecord.idPictureFront}>
-                                  <a
-                                    className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
-                                    target="_blank"
-                                  >
-                                    View Front
-                                  </a>
-                                </Link>
-                              )}
-                              {workspace.studentRecord.idPictureBack && (
-                                <Link href={workspace.studentRecord.idPictureBack}>
-                                  <a
-                                    className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
-                                    target="_blank"
-                                  >
-                                    View Back
-                                  </a>
-                                </Link>
-                              )}
-                              {workspace.studentRecord.idPictureFront && (
+                    <div className="mt-6 p-4 border rounded-lg bg-gray-50">
+                      <h4 className="font-bold text-gray-600 mb-3">
+                        ID Picture
+                      </h4>
+                      <div className="flex items-center space-x-4">
+                        {workspace.studentRecord.idPictureFront && (
+                          <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
+                            <Image
+                              alt="ID Picture Front"
+                              className="object-cover"
+                              layout="fill"
+                              loading="lazy"
+                              src={workspace.studentRecord.idPictureFront}
+                            />
+                          </div>
+                        )}
+                        {workspace.studentRecord.idPictureBack && (
+                          <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
+                            <Image
+                              alt="ID Picture Back"
+                              className="object-cover"
+                              layout="fill"
+                              loading="lazy"
+                              src={workspace.studentRecord.idPictureBack}
+                            />
+                          </div>
+                        )}
+                        <div className="flex flex-col space-y-2">
+                          <p className="text-sm text-gray-600">
+                            Official ID pictures uploaded by admin
+                          </p>
+                          <div className="flex space-x-2">
+                            {workspace.studentRecord.idPictureFront && (
+                              <Link
+                                href={workspace.studentRecord.idPictureFront}
+                              >
                                 <a
-                                  className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
-                                  download
-                                  href={workspace.studentRecord.idPictureFront}
+                                  className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
+                                  target="_blank"
                                 >
-                                  Download Front
+                                  View Front
                                 </a>
-                              )}
-                              {workspace.studentRecord.idPictureBack && (
+                              </Link>
+                            )}
+                            {workspace.studentRecord.idPictureBack && (
+                              <Link
+                                href={workspace.studentRecord.idPictureBack}
+                              >
                                 <a
-                                  className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
-                                  download
-                                  href={workspace.studentRecord.idPictureBack}
+                                  className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
+                                  target="_blank"
                                 >
-                                  Download Back
+                                  View Back
                                 </a>
-                              )}
-                            </div>
+                              </Link>
+                            )}
+                            {workspace.studentRecord.idPictureFront && (
+                              <a
+                                className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
+                                download
+                                href={workspace.studentRecord.idPictureFront}
+                              >
+                                Download Front
+                              </a>
+                            )}
+                            {workspace.studentRecord.idPictureBack && (
+                              <a
+                                className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
+                                download
+                                href={workspace.studentRecord.idPictureBack}
+                              >
+                                Download Back
+                              </a>
+                            )}
                           </div>
                         </div>
                       </div>
-                    )}
+                    </div>
+                  )}
                 </Card.Body>
               </Card>
             </Content.Container>
@@ -3984,8 +4076,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   {GRADE_LEVEL[incomingGradeLevel].toLowerCase()}
                 </p>
                 <p>
-                  <strong>Birth Date:</strong> {birthDate?.toDateString() || 0} (
-                  {age} years old)
+                  <strong>Birth Date:</strong> {birthDate?.toDateString() || 0}{' '}
+                  ({age} years old)
                 </p>
                 <p className="capitalize">
                   <strong>Gender:</strong> {gender.toLowerCase()}
@@ -4088,12 +4180,12 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                           fee?._type === 'fullTermPayment'
                             ? 0
                             : fee?._type === 'threeTermPayment'
-                              ? 2
-                              : fee?._type === 'fourTermPayment'
-                                ? 3
-                                : fee?._type === 'nineTermPayment'
-                                  ? monthIndex
-                                  : 0 // Default to 0 if none of the specified types match
+                            ? 2
+                            : fee?._type === 'fourTermPayment'
+                            ? 3
+                            : fee?._type === 'nineTermPayment'
+                            ? monthIndex
+                            : 0 // Default to 0 if none of the specified types match
                         ),
                         (_, index) => (
                           <tr key={index}>
@@ -4101,12 +4193,12 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                               {fee?._type === 'fullTermPayment'
                                 ? ''
                                 : fee?._type === 'threeTermPayment'
-                                  ? `Three (3) Term Payment #${index + 1}`
-                                  : fee?._type === 'fourTermPayment'
-                                    ? `Four (4) Term Payment #${index + 1}`
-                                    : fee?._type === 'nineTermPayment'
-                                      ? `Monthly Term Payment #${index + 1}`
-                                      : `Unknown Payment Type #${index + 1}`}
+                                ? `Three (3) Term Payment #${index + 1}`
+                                : fee?._type === 'fourTermPayment'
+                                ? `Four (4) Term Payment #${index + 1}`
+                                : fee?._type === 'nineTermPayment'
+                                ? `Monthly Term Payment #${index + 1}`
+                                : `Unknown Payment Type #${index + 1}`}
                             </td>
                             <td className="px-3 py-1 text-right border">
                               {new Intl.NumberFormat('en-US', {
@@ -4116,11 +4208,13 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                 fee?._type === 'fullTermPayment'
                                   ? 0
                                   : fee?._type === 'nineTermPayment'
-                                    ? monthlyPayment // Render monthly payment for nineTermPayment
-                                    : fee && fee[payments[index + 1]]
+                                  ? monthlyPayment // Render monthly payment for nineTermPayment
+                                  : fee && fee[payments[index + 1]]
                               )}{' '}
                               {discount &&
-                                discount?.code?.toLowerCase().includes('pastor') ? (
+                              discount?.code
+                                ?.toLowerCase()
+                                .includes('pastor') ? (
                                 <span className="text-red-600">
                                   (-
                                   {new Intl.NumberFormat('en-US', {
@@ -4129,11 +4223,13 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                   }).format(
                                     fee?._type === 'nineTermPayment'
                                       ? monthlyPayment -
-                                      (discount?.value - fee?.downPayment) / 9
+                                          (discount?.value - fee?.downPayment) /
+                                            9
                                       : fee &&
-                                      fee[payments[index + 1]] -
-                                      (discount?.value - fee?.downPayment) /
-                                      3
+                                          fee[payments[index + 1]] -
+                                            (discount?.value -
+                                              fee?.downPayment) /
+                                              3
                                   )}
                                   )
                                 </span>
@@ -4149,7 +4245,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                       discount?.type === 'VALUE'
                                         ? discount?.value
                                         : (discount?.value / 100) *
-                                        Math.ceil(fee?.secondPayment)
+                                            Math.ceil(fee?.secondPayment)
                                     )}
                                     )
                                   </span>
@@ -4174,11 +4270,13 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                             Total Discounts:{' '}
                             <strong className="text-green-600">
                               {discountCode || '-'}{' '}
-                              {`${discount
-                                  ? `(${Number(discount.value).toFixed(2)}${discount.type === 'VALUE' ? 'Php' : '%'
-                                  })`
+                              {`${
+                                discount
+                                  ? `(${Number(discount.value).toFixed(2)}${
+                                      discount.type === 'VALUE' ? 'Php' : '%'
+                                    })`
                                   : ''
-                                }`}
+                              }`}
                             </strong>
                           </td>
                           <td className="px-3 py-1 text-right text-red-600 border">
@@ -4189,38 +4287,38 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                               discount
                                 ? discount.type === 'VALUE'
                                   ? (discount?.code
-                                    ?.toLowerCase()
-                                    .includes('pastor')
-                                    ? Math.ceil(
+                                      ?.toLowerCase()
+                                      .includes('pastor')
+                                      ? Math.ceil(
+                                          fee?._type === 'fullTermPayment'
+                                            ? fee?.fullPayment
+                                            : fee?._type === 'threeTermPayment'
+                                            ? fee?.downPayment +
+                                              fee?.secondPayment +
+                                              fee?.thirdPayment
+                                            : fee?._type === 'fourTermPayment'
+                                            ? fee?.downPayment +
+                                              fee?.secondPayment +
+                                              fee?.thirdPayment +
+                                              fee?.fourthPayment
+                                            : fee?.downPayment +
+                                              fee?.secondPayment +
+                                              fee?.thirdPayment +
+                                              fee?.fourthPayment +
+                                              fee?.fifthPayment +
+                                              fee?.sixthPayment +
+                                              fee?.seventhPayment +
+                                              fee?.eighthPayment +
+                                              fee?.ninthPayment
+                                        ) - discount.value
+                                      : Number(discount.value).toFixed(2)) * -1
+                                  : Math.ceil(
                                       fee?._type === 'fullTermPayment'
                                         ? fee?.fullPayment
-                                        : fee?._type === 'threeTermPayment'
-                                          ? fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment
-                                          : fee?._type === 'fourTermPayment'
-                                            ? fee?.downPayment +
-                                            fee?.secondPayment +
-                                            fee?.thirdPayment +
-                                            fee?.fourthPayment
-                                            : fee?.downPayment +
-                                            fee?.secondPayment +
-                                            fee?.thirdPayment +
-                                            fee?.fourthPayment +
-                                            fee?.fifthPayment +
-                                            fee?.sixthPayment +
-                                            fee?.seventhPayment +
-                                            fee?.eighthPayment +
-                                            fee?.ninthPayment
-                                    ) - discount.value
-                                    : Number(discount.value).toFixed(2)) * -1
-                                  : Math.ceil(
-                                    fee?._type === 'fullTermPayment'
-                                      ? fee?.fullPayment
-                                      : fee?.secondPayment
-                                  ) *
-                                  (discount.value / 100) *
-                                  -1
+                                        : fee?.secondPayment
+                                    ) *
+                                    (discount.value / 100) *
+                                    -1
                                 : 0
                             )}
                           </td>
@@ -4240,56 +4338,56 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                         fee?._type === 'fullTermPayment'
                           ? fee?.fullPayment
                           : fee?._type === 'threeTermPayment'
-                            ? fee?.downPayment +
+                          ? fee?.downPayment +
                             fee?.secondPayment +
                             fee?.thirdPayment
-                            : fee?._type === 'fourTermPayment'
-                              ? fee?.downPayment +
-                              fee?.secondPayment +
-                              fee?.thirdPayment +
-                              fee?.fourthPayment
-                              : fee?.downPayment +
-                              fee?.secondPayment +
-                              fee?.thirdPayment +
-                              fee?.fourthPayment +
-                              fee?.fifthPayment +
-                              fee?.sixthPayment +
-                              fee?.seventhPayment +
-                              fee?.eighthPayment +
-                              fee?.ninthPayment
+                          : fee?._type === 'fourTermPayment'
+                          ? fee?.downPayment +
+                            fee?.secondPayment +
+                            fee?.thirdPayment +
+                            fee?.fourthPayment
+                          : fee?.downPayment +
+                            fee?.secondPayment +
+                            fee?.thirdPayment +
+                            fee?.fourthPayment +
+                            fee?.fifthPayment +
+                            fee?.sixthPayment +
+                            fee?.seventhPayment +
+                            fee?.eighthPayment +
+                            fee?.ninthPayment
                       ) +
-                      500 -
-                      (discount
-                        ? discount?.type === 'VALUE'
-                          ? discount?.code?.toLowerCase().includes('pastor')
-                            ? Math.ceil(
-                              fee?._type === 'fullTermPayment'
-                                ? fee?.fullPayment
-                                : fee?._type === 'threeTermPayment'
-                                  ? fee?.downPayment +
-                                  fee?.secondPayment +
-                                  fee?.thirdPayment
-                                  : fee?._type === 'fourTermPayment'
+                        500 -
+                        (discount
+                          ? discount?.type === 'VALUE'
+                            ? discount?.code?.toLowerCase().includes('pastor')
+                              ? Math.ceil(
+                                  fee?._type === 'fullTermPayment'
+                                    ? fee?.fullPayment
+                                    : fee?._type === 'threeTermPayment'
                                     ? fee?.downPayment +
-                                    fee?.secondPayment +
-                                    fee?.thirdPayment +
-                                    fee?.fourthPayment
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment
+                                    : fee?._type === 'fourTermPayment'
+                                    ? fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment +
+                                      fee?.fourthPayment
                                     : fee?.downPayment +
-                                    fee?.secondPayment +
-                                    fee?.thirdPayment +
-                                    fee?.fourthPayment +
-                                    fee?.fifthPayment +
-                                    fee?.sixthPayment +
-                                    fee?.seventhPayment +
-                                    fee?.eighthPayment +
-                                    fee?.ninthPayment
-                            ) - discount.value
-                            : discount.value
-                          : (discount.value / 100) *
-                          (fee?._type === 'fullTermPayment'
-                            ? fee?.fullPayment
-                            : fee?.secondPayment)
-                        : 0) || 0
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment +
+                                      fee?.fourthPayment +
+                                      fee?.fifthPayment +
+                                      fee?.sixthPayment +
+                                      fee?.seventhPayment +
+                                      fee?.eighthPayment +
+                                      fee?.ninthPayment
+                                ) - discount.value
+                              : discount.value
+                            : (discount.value / 100) *
+                              (fee?._type === 'fullTermPayment'
+                                ? fee?.fullPayment
+                                : fee?.secondPayment)
+                          : 0) || 0
                     )}
                   </span>
                 </h4>
@@ -4413,7 +4511,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                         <span className="text-white text-lg font-bold">GC</span>
                       </div>
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-800">GCash</h3>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      GCash
+                    </h3>
                   </div>
                   <div className="text-center">
                     <Image
