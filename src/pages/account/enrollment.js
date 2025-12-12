@@ -200,6 +200,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const [formerRegistrarNumber, setFormerRegistrarNumber] = useState('');
   const [filteredProgram, setFilteredProgram] = useState(null);
   const [isBarangay, setIsBarangay] = useState(false);
+  const [isCity, setIsCity] = useState(false);
   const [showBankTransferModal, setShowBankTransferModal] = useState(false);
   const [paymentProofFile, setPaymentProofFile] = useState(null);
   const [uploadingProof, setUploadingProof] = useState(false);
@@ -207,9 +208,12 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const handleIsBarangay = () => {
     setIsBarangay((prev) => !prev);
   };
+  const handleIsCity = () => {
+    setIsCity((prev) => !prev);
+  };
   const handleBarangayChangeInput = (event) =>
     setSelectedBarangay(event.target.value);
-
+  const handleCityChangeInput = (event) => setSelectedCity(event.target.value);
   const handlePrimaryGuardianName = (event) =>
     setPrimaryGuardianName(event.target.value);
   const handlePrimaryGuardianOccupation = (event) =>
@@ -343,6 +347,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   };
 
   const getCityMunByCode = (code) => {
+    if (isNaN(code)) {
+      return code;
+    }
     if (code) {
       let city_mun = cities.find((loc) => loc.mun_code === code);
       let city = city_mun.name;
@@ -1292,21 +1299,40 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                   </option>
                 ))}
               </select>
-              <select
-                className={`px-3 py-2 rounded md:w-3/4 ${
-                  !selectedCity ? 'border-red-500 border-2' : 'border'
-                }`}
-                value={selectedCity}
-                onChange={handleCityChange}
-                disabled={!selectedProvince}
-              >
-                <option value="">Select City/Municipality</option>
-                {cities.map((city) => (
-                  <option key={city.mun_code} value={city.mun_code}>
-                    {city.name}
-                  </option>
-                ))}
-              </select>
+              {!isCity ? (
+                <select
+                  className={`px-3 py-2 rounded md:w-3/4 ${
+                    !selectedCity ? 'border-red-500 border-2' : 'border'
+                  }`}
+                  value={selectedCity}
+                  onChange={handleCityChange}
+                  disabled={!selectedProvince}
+                >
+                  <option value="">Select City/Municipality</option>
+                  {cities.map((city) => (
+                    <option key={city.mun_code} value={city.mun_code}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  className={`px-3 py-2 rounded md:w-3/4 ${
+                    !selectedCity ? 'border-red-500 border-2' : 'border'
+                  }`}
+                  placeholder="City"
+                  onChange={handleCityChangeInput}
+                  value={selectedCity}
+                />
+              )}
+              <div>
+                <Button
+                  onClick={handleIsCity}
+                  className="w-1/4 rounded-r text-white bg-gray-500 hover:bg-gray-400"
+                >
+                  {isCity ? 'Select City' : 'Input City Manually'}
+                </Button>
+              </div>
               {!isBarangay ? (
                 <select
                   className={`px-3 py-2 rounded md:w-3/4 ${
