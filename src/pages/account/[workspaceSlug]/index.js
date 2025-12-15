@@ -1275,8 +1275,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
                 <input
                   className={`px-3 py-2 rounded md:w-1/2 ${specialNeeds.length <= 0
-                      ? 'border-red-500 border-2'
-                      : 'border'
+                    ? 'border-red-500 border-2'
+                    : 'border'
                     }`}
                   onChange={(e) => setSpecialNeeds(e.target.value)}
                   placeholder=""
@@ -1772,8 +1772,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               <div className="relative flex flex-row space-x-5">
                 <input
                   className={`px-3 py-2 rounded md:w-2/3 ${!formerRegistrarNumber
-                      ? 'border-red-500 border-2'
-                      : 'border'
+                    ? 'border-red-500 border-2'
+                    : 'border'
                     }`}
                   onChange={handleFormerRegistrarNumber}
                   placeholder="09XX-XXX-XXXX"
@@ -1804,8 +1804,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             />
             <input
               className={`px-3 py-2 rounded md:w-1/4 ${!primaryGuardianOccupation
-                  ? 'border-red-500 border-2'
-                  : 'border'
+                ? 'border-red-500 border-2'
+                : 'border'
                 }`}
               placeholder="Occupation"
               onChange={handlePrimaryGuardianOccupation}
@@ -1855,8 +1855,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             />
             <input
               className={`px-3 py-2 rounded md:w-1/4 ${!secondaryGuardianOccupation
-                  ? 'border-red-500 border-2'
-                  : 'border'
+                ? 'border-red-500 border-2'
+                : 'border'
                 }`}
               placeholder="Occupation"
               onChange={handleSecondaryGuardianOccupation}
@@ -1983,8 +1983,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             />
             <input
               className={`px-3 py-2 rounded md:w-1/4 ${!primaryTeacherRelationship
-                  ? 'border-red-500 border-2'
-                  : 'border'
+                ? 'border-red-500 border-2'
+                : 'border'
                 }`}
               placeholder="Relationship"
               onChange={handlePrimaryTeacherRelationship}
@@ -2566,8 +2566,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           <div className="relative flex flex-row space-x-5">
             <div
               className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.ANNUAL
-                  ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                  : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
                 }`}
               onClick={() => {
                 setPayment(PaymentType.ANNUAL);
@@ -2609,8 +2609,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           <div className="relative flex flex-row space-x-5">
             <div
               className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.SEMI_ANNUAL
-                  ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                  : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
                 }`}
               onClick={() => {
                 setPayment(PaymentType.SEMI_ANNUAL);
@@ -2673,8 +2673,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           <div className="relative flex flex-row space-x-5">
             <div
               className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.QUARTERLY
-                  ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                  : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
                 }`}
               onClick={() => {
                 setPayment(PaymentType.QUARTERLY);
@@ -2747,8 +2747,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             {programFeeByAccreditation?.paymentTerms[3] && (
               <div
                 className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.MONTHLY
-                    ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                    : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                  ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                  : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
                   }`}
                 onClick={() => {
                   setPayment(PaymentType.MONTHLY);
@@ -3120,9 +3120,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                         <span className="font-bold text-green-600">
                           {discountCode || '-'}{' '}
                           {`${discount
-                              ? `(${Number(discount.value).toFixed(2)}${discount.type === 'VALUE' ? 'Php' : '%'
-                              })`
-                              : ''
+                            ? `(${Number(discount.value).toFixed(2)}${discount.type === 'VALUE' ? 'Php' : '%'
+                            })`
+                            : ''
                             }`}
                         </span>
                       </h6>
@@ -3394,10 +3394,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   >
                     <div
                       className={`w-8 h-8 flex items-center justify-center rounded-full ${step === index
-                          ? 'bg-secondary-400'
-                          : index < step
-                            ? 'bg-green-400'
-                            : 'bg-gray-200'
+                        ? 'bg-secondary-400'
+                        : index < step
+                          ? 'bg-green-400'
+                          : 'bg-gray-200'
                         }`}
                     >
                       {index < step ? (
@@ -3442,22 +3442,22 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </Content.Container>
           ) : (
             <Content.Container>
-              <div className="grid grid-cols-4 gap-5">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 <div
                   className={`flex flex-col justify-between rounded ${birthCertificateLink ||
-                      workspace.studentRecord.liveBirthCertificate
-                      ? 'border'
-                      : 'border-2 border-red-400 border-dashed'
+                    workspace.studentRecord.liveBirthCertificate
+                    ? 'border'
+                    : 'border-2 border-red-400 border-dashed'
                     }`}
                 >
                   <div className="flex flex-col p-5 space-y-3 overflow-auto">
                     <div className="flex flex-col space-y-5">
-                      <div className="flex space-x-5">
+                      <div className="flex flex-col space-y-4 lg:flex-row lg:space-x-5 lg:space-y-0">
                         <div
-                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${birthCertificateLink ||
-                              workspace.studentRecord.liveBirthCertificate
-                              ? 'bg-primary-400'
-                              : 'bg-red-200'
+                          className={`hidden lg:flex items-center justify-center w-20 h-20 text-white rounded-lg ${birthCertificateLink ||
+                            workspace.studentRecord.liveBirthCertificate
+                            ? 'bg-primary-400'
+                            : 'bg-red-200'
                             }`}
                         >
                           <DocumentIcon className="w-8 h-8" />
@@ -3475,7 +3475,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                           <div>
                             {birthCertificateLink ||
                               workspace.studentRecord.liveBirthCertificate ? (
-                              <div className="flex items-center space-x-3">
+                              <div className="flex flex-col space-y-2 2xl:flex-row 2xl:items-center 2xl:space-x-3 2xl:space-y-0">
                                 <Link
                                   href={
                                     birthCertificateLink ||
@@ -3489,7 +3489,6 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                     Open
                                   </a>
                                 </Link>
-                                <span>&bull;</span>
                                 <label
                                   className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
                                   htmlFor="fileBirthCertificateReplace"
@@ -3543,17 +3542,17 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 </div>
                 <div
                   className={`flex flex-col justify-between rounded ${reportCardLink || workspace.studentRecord.reportCard
-                      ? 'border'
-                      : 'border-2 border-red-400 border-dashed'
+                    ? 'border'
+                    : 'border-2 border-red-400 border-dashed'
                     }`}
                 >
                   <div className="flex flex-col p-5 space-y-3 overflow-auto">
                     <div className="flex flex-col space-y-5">
-                      <div className="flex space-x-5">
+                      <div className="flex flex-col space-y-4 lg:flex-row lg:space-x-5 lg:space-y-0">
                         <div
-                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${reportCardLink || workspace.studentRecord.reportCard
-                              ? 'bg-primary-400'
-                              : 'bg-red-200'
+                          className={`hidden lg:flex items-center justify-center w-20 h-20 text-white rounded-lg ${reportCardLink || workspace.studentRecord.reportCard
+                            ? 'bg-primary-400'
+                            : 'bg-red-200'
                             }`}
                         >
                           <DocumentIcon className="w-8 h-8" />
@@ -3640,18 +3639,18 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 {/* ID Picture Front Card */}
                 <div
                   className={`flex flex-col justify-between rounded ${idPictureFrontLink || workspace.studentRecord.idPictureFront
-                      ? 'border'
-                      : 'border-2 border-red-400 border-dashed'
+                    ? 'border'
+                    : 'border-2 border-red-400 border-dashed'
                     }`}
                 >
                   <div className="flex flex-col p-5 space-y-3 overflow-auto">
                     <div className="flex flex-col space-y-5">
-                      <div className="flex space-x-5">
+                      <div className="flex flex-col space-y-4 lg:flex-row lg:space-x-5 lg:space-y-0">
                         <div
-                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${idPictureFrontLink ||
-                              workspace.studentRecord.idPictureFront
-                              ? 'bg-primary-400'
-                              : 'bg-red-200'
+                          className={`hidden lg:flex items-center justify-center w-20 h-20 text-white rounded-lg ${idPictureFrontLink ||
+                            workspace.studentRecord.idPictureFront
+                            ? 'bg-primary-400'
+                            : 'bg-red-200'
                             }`}
                         >
                           <DocumentIcon className="w-8 h-8" />
@@ -3698,18 +3697,18 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 {/* ID Picture Back Card */}
                 <div
                   className={`flex flex-col justify-between rounded ${idPictureBackLink || workspace.studentRecord.idPictureBack
-                      ? 'border'
-                      : 'border-2 border-red-400 border-dashed'
+                    ? 'border'
+                    : 'border-2 border-red-400 border-dashed'
                     }`}
                 >
                   <div className="flex flex-col p-5 space-y-3 overflow-auto">
                     <div className="flex flex-col space-y-5">
-                      <div className="flex space-x-5">
+                      <div className="flex flex-col space-y-4 lg:flex-row lg:space-x-5 lg:space-y-0">
                         <div
-                          className={`flex items-center justify-center w-20 h-20 text-white rounded-lg ${idPictureBackLink ||
-                              workspace.studentRecord.idPictureBack
-                              ? 'bg-primary-400'
-                              : 'bg-red-200'
+                          className={`hidden lg:flex items-center justify-center w-20 h-20 text-white rounded-lg ${idPictureBackLink ||
+                            workspace.studentRecord.idPictureBack
+                            ? 'bg-primary-400'
+                            : 'bg-red-200'
                             }`}
                         >
                           <DocumentIcon className="w-8 h-8" />
@@ -4175,9 +4174,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                             <strong className="text-green-600">
                               {discountCode || '-'}{' '}
                               {`${discount
-                                  ? `(${Number(discount.value).toFixed(2)}${discount.type === 'VALUE' ? 'Php' : '%'
-                                  })`
-                                  : ''
+                                ? `(${Number(discount.value).toFixed(2)}${discount.type === 'VALUE' ? 'Php' : '%'
+                                })`
+                                : ''
                                 }`}
                             </strong>
                           </td>

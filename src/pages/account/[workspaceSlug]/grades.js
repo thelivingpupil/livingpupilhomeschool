@@ -42,11 +42,9 @@ const Grades = () => {
           />
           <Content.Divider />
           <Content.Container>
-            <div
-              className={`relative inline-block w-1/3 border-none`}
-            >
+            <div className="relative inline-block w-full sm:w-1/2 md:w-1/3 border-none">
               <select
-                className="w-full px-3 py-2 capitalize rounded appearance-none border"
+                className="w-full px-3 py-1.5 text-xs sm:text-sm capitalize rounded appearance-none border leading-tight"
                 onChange={handleSelectChange}
                 value={formPage}
               >
@@ -87,7 +85,7 @@ const Grades = () => {
 // Force server-side rendering to ensure router.query is available
 export const getServerSideProps = async (context) => {
   const session = await getSession(context);
-  
+
   // Redirect to login if not authenticated, preserving the original URL
   if (!session) {
     const callbackUrl = encodeURIComponent(context.resolvedUrl || context.req.url);
