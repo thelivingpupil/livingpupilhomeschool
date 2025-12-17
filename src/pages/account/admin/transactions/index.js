@@ -86,6 +86,8 @@ const Transactions = () => {
   const [uploadCount, setUploadCount] = useState(0);
   const [totalUpload, setTotalUpload] = useState(0);
   const [newAmount, setNewAmount] = useState(0.0);
+  const [newBalance, setNewBalance] = useState(0.0);
+  const [newTotalPaid, setNewTotalPaid] = useState(0.0);
   const [newPaymentStatus, setNewPaymentStatus] = useState('');
   const [action, setAction] = useState('UPDATE');
 
@@ -115,6 +117,9 @@ const Transactions = () => {
   const toggleModal = () => {
     if (showModal) {
       setNewPaymentStatus('');
+      setNewAmount(0.0);
+      setNewBalance(0.0);
+      setNewTotalPaid(0.0);
     }
     setModalVisibility((state) => !state);
   };
@@ -169,6 +174,9 @@ const Transactions = () => {
     });
 
     setNewPaymentStatus('');
+    setNewAmount(Number(transaction.amount).toFixed(2));
+    setNewBalance(Number(balance).toFixed(2));
+    setNewTotalPaid(Number(transaction.payment).toFixed(2));
     setModalVisibility(true);
   };
 
@@ -220,6 +228,14 @@ const Transactions = () => {
 
   const handleNewAmount = (e) => {
     setNewAmount(Number(e.target.value).toFixed(2));
+  };
+
+  const handleNewBalance = (e) => {
+    setNewBalance(Number(e.target.value).toFixed(2));
+  };
+
+  const handleNewTotalPaid = (e) => {
+    setNewTotalPaid(Number(e.target.value).toFixed(2));
   };
 
   const handleUpdateStatus = () => {
@@ -302,11 +318,11 @@ const Transactions = () => {
 
   const changeAmount = () => {
     setUpdatingTransaction(true);
-    const payment = updateTransaction.payment;
     api(`/api/transactions/${updateTransaction.transactionId}`, {
       body: {
         newAmount,
-        payment,
+        balance: newBalance,
+        payment: newTotalPaid,
       },
       method: 'PATCH',
     })
@@ -323,6 +339,8 @@ const Transactions = () => {
         );
       });
     setNewAmount(0.0);
+    setNewBalance(0.0);
+    setNewTotalPaid(0.0);
     toggleModal();
   };
 
@@ -640,21 +658,31 @@ const Transactions = () => {
                 <div className="flex">
                   <input
                     className="px-3 py-2 border rounded truncate w-full"
-                    type="text"
-                    value={Number(updateTransaction.amount).toFixed(2)}
-                    disabled
-                  // onChange={handleUpdatePaymentTransaction}
+                    type="number"
+                    value={Number(newAmount).toFixed(2)}
+                    onChange={handleNewAmount}
                   />
                 </div>
-                <div className="flex items-center py-2 capitalize font-semibold text-lg">
-                  New Amount:
+                <div className="flex py-2 capitalize font-semibold text-lg">
+                  Balance:
                 </div>
                 <div className="flex">
                   <input
                     className="px-3 py-2 border rounded truncate w-full"
                     type="number"
-                    value={Number(newAmount).toFixed(2)}
-                    onChange={handleNewAmount}
+                    value={Number(newBalance).toFixed(2)}
+                    onChange={handleNewBalance}
+                  />
+                </div>
+                <div className="flex py-2 capitalize font-semibold text-lg">
+                  Total Paid:
+                </div>
+                <div className="flex">
+                  <input
+                    className="px-3 py-2 border rounded truncate w-full"
+                    type="number"
+                    value={Number(newTotalPaid).toFixed(2)}
+                    onChange={handleNewTotalPaid}
                   />
                 </div>
               </div>
@@ -721,18 +749,24 @@ const Transactions = () => {
       >
         <div>
           <p className="py-1">
-            You are about to change the amount <b>{updateTransaction.name}'s</b>{' '}
-            school fee.
+            You are about to change <b>{updateTransaction.name}'s</b>{' '}
+            school fee transaction.
           </p>
           <p>
             <b>Transaction ID: {updateTransaction.transactionId}</b>
           </p>
-          <p>
-            <b>Amount: ₱{updateTransaction.amount}</b>
-          </p>
-          <p>
-            <b>New Amount:₱{newAmount} </b>
-          </p>
+          <div className="mt-3">
+            <p><b>Current Values:</b></p>
+            <p>Amount: ₱{updateTransaction.amount}</p>
+            <p>Balance: ₱{updateTransaction.balance}</p>
+            <p>Total Paid: ₱{updateTransaction.payment}</p>
+          </div>
+          <div className="mt-3">
+            <p><b>New Values:</b></p>
+            <p>Amount: ₱{newAmount}</p>
+            <p>Balance: ₱{newBalance}</p>
+            <p>Total Paid: ₱{newTotalPaid}</p>
+          </div>
           <p className="mt-5">
             Please note that the changes may not be undone.
           </p>

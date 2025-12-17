@@ -22,10 +22,9 @@ const handler = async (req, res) => {
   } else if (method === 'PATCH') {
     await validateSession(req, res);
     const { transactionId } = query;
-    const { newAmount, payment } = body;
-    const balance = newAmount - payment;
+    const { newAmount, balance, payment } = body;
 
-    const transaction = await changeTransactionAmount(transactionId, newAmount, balance);
+    const transaction = await changeTransactionAmount(transactionId, newAmount, balance, payment);
     res.status(200).json({ data: { transaction } });
   } else {
     res

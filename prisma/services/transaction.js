@@ -615,17 +615,21 @@ export const updateTransaction = async (
 export const changeTransactionAmount = async (
   transactionId,
   amount,
-  balance
+  balance,
+  payment
 ) => {
   const transaction = await prisma.transaction.update({
     data: {
       ...(typeof amount !== 'undefined' && { amount }), // Check for undefined
       ...(typeof balance !== 'undefined' && { balance }), // Check for undefined
+      ...(typeof payment !== 'undefined' && { payment }), // Check for undefined
     },
     select: {
       transactionId: true,
       referenceNumber: true,
       amount: true,
+      balance: true,
+      payment: true,
       currency: true,
       transactionStatus: true,
       paymentStatus: true,
@@ -641,6 +645,8 @@ export const changeTransactionAmount = async (
   return {
     ...transaction,
     amount: transaction?.amount?.toNumber() || 0,
+    balance: transaction?.balance?.toNumber() || 0,
+    payment: transaction?.payment?.toNumber() || 0,
     createdAt: transaction?.createdAt?.toDateString(),
   };
 };
