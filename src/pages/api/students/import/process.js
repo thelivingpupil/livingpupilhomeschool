@@ -15,7 +15,8 @@ import {
 import { getUserWithGuardianInfo, createGuardianUser, createGuardianInformation } from '@/prisma/services/user';
 import { createStudentRecord } from '@/prisma/services/student-record';
 import { createWorkspaceWithSlug } from '@/prisma/services/workspace';
-import { STUDENT_STATUS } from '@/utils/constants';
+import { createSchoolFees } from '@/prisma/services/school-fee';
+import { STUDENT_STATUS, getMonthIndex, getMonthIndexCurrent } from '@/utils/constants';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -102,10 +103,16 @@ const handler = async (req, res) => {
           }
 
           // Process student import in a transaction
+          let user;
+          let workspace;
+          let isNewAccount = false;
+          const firstName = row['First Name'].trim();
+          const lastName = row['Last Name'].trim();
+          const schoolYear = row['School Year']?.trim();
+
           await prisma.$transaction(async (tx) => {
             // Check if user exists
-            let user = await getUserWithGuardianInfo(row['Account Email'].trim());
-            let isNewAccount = false;
+            user = await getUserWithGuardianInfo(row['Account Email'].trim());
 
             if (!user) {
               // Create new user account
@@ -134,10 +141,6 @@ const handler = async (req, res) => {
             }
 
             // Create workspace (student record container)
-            const firstName = row['First Name'].trim();
-            const lastName = row['Last Name'].trim();
-            const schoolYear = row['School Year']?.trim();
-
             const slug = slugify(
               `${firstName.toLowerCase()} ${lastName.toLowerCase()} ${schoolYear} ${crypto
                 .createHash('md5')
@@ -147,7 +150,7 @@ const handler = async (req, res) => {
               { lower: true, strict: true }
             );
 
-            const workspace = await createWorkspaceWithSlug(
+            workspace = await createWorkspaceWithSlug(
               user.id,
               user.email,
               `${firstName} ${lastName} ${schoolYear}`,
@@ -191,52 +194,104 @@ const handler = async (req, res) => {
               row['Student Address 1']?.trim() || row['Address Line 1']?.trim(),
               row['Student Address 2']?.trim() || row['Address Line 2']?.trim()
             );
+          });
 
-            // Send emails
-            if (isNewAccount) {
-              await sendMail({
-                html: accountHtml({
-                  guardianName: row['Primary Guardian Name']?.trim() || 'Guardian',
-                  studentName: `${firstName} ${lastName}`,
-                }),
-                subject: `[Living Pupil Homeschool] Welcome! Your Account Has Been Created`,
-                text: accountText({
-                  guardianName: row['Primary Guardian Name']?.trim() || 'Guardian',
-                  studentName: `${firstName} ${lastName}`,
-                }),
-                to: [user.email],
-              });
+          // Create school fees OUTSIDE of transaction (createSchoolFees manages its own transactions)
+          // Map payment type display names to enum values expected by createSchoolFees
+          const paymentTypeMapping = {
+            'Full Payment': 'ANNUAL',
+            'Three (3) Term Payment': 'SEMI_ANNUAL',
+            'Four (4) Term Payment': 'QUARTERLY',
+            'Nine (9) Term Payment': 'MONTHLY',
+            'Pay All Fees': 'PAY_ALL',
+          };
+
+          const paymentMethodMapping = {
+            'Online Banking': 'ONLINE',
+            'Over-the-Counter Banking': 'OTC',
+            'Payment Centers': 'PAYMENT_CENTERS',
+          };
+
+          const paymentTypeInput = row['Payment Type']?.trim() || 'Full Payment';
+          const paymentMethodInput = row['Payment Method']?.trim() || 'Online Banking';
+
+          // Convert display names to enum values
+          const paymentType = paymentTypeMapping[paymentTypeInput] || 'ANNUAL';
+          const paymentMethod = paymentMethodMapping[paymentMethodInput] || 'ONLINE';
+          const discountCode = row['Discount Code']?.trim() || '';
+
+          // Calculate month index for monthly payments
+          let monthIndex = row['Month Index']?.trim() ? parseInt(row['Month Index'].trim()) : undefined;
+
+          // If payment is monthly and monthIndex is not provided, calculate it based on school year and current date
+          if (paymentType === 'MONTHLY' && !monthIndex) {
+            const currentDate = new Date();
+            if (schoolYear === '2024-2025') {
+              monthIndex = getMonthIndex(currentDate);
+            } else {
+              monthIndex = getMonthIndexCurrent(currentDate);
             }
+          }
 
-            // Send enrollment confirmation
-            const getParentName = (str) => {
-              str = str?.trim() || '';
-              if (str === '') return '';
-              const words = str.split(/\s+/);
-              const lastWord = words[words.length - 1];
-              return lastWord.replace(/[.,?!;:]$/, '');
-            };
+          await createSchoolFees(
+            user.id,
+            user.email,
+            workspace.id,
+            paymentType,
+            row['Enrollment Type']?.toUpperCase(),
+            row['Grade Level']?.toUpperCase(),
+            row['Program']?.toUpperCase(),
+            row['Cottage Type']?.toUpperCase() || null,
+            row['Accreditation']?.toUpperCase(),
+            paymentMethod,
+            discountCode,
+            monthIndex
+          );
 
+          // Send emails
+          if (isNewAccount) {
             await sendMail({
-              html: enrollmentHtml({
-                parentName: getParentName(row['Primary Guardian Name']),
-                firstName: firstName,
+              html: accountHtml({
+                guardianName: row['Primary Guardian Name']?.trim() || 'Guardian',
+                studentName: `${firstName} ${lastName}`,
               }),
-              subject: `Enrollment Form Received - Verification in Progress!`,
-              text: enrollmentText({
-                parentName: getParentName(row['Primary Guardian Name']),
-                firstName: firstName,
+              subject: `[Living Pupil Homeschool] Welcome! Your Account Has Been Created`,
+              text: accountText({
+                guardianName: row['Primary Guardian Name']?.trim() || 'Guardian',
+                studentName: `${firstName} ${lastName}`,
               }),
               to: [user.email],
             });
+          }
 
-            results.imported++;
-            details.push({
-              row: rowNumber,
-              status: 'success',
-              email: user.email,
-              studentName: `${firstName} ${lastName}`,
-            });
+          // Send enrollment confirmation
+          const getParentName = (str) => {
+            str = str?.trim() || '';
+            if (str === '') return '';
+            const words = str.split(/\s+/);
+            const lastWord = words[words.length - 1];
+            return lastWord.replace(/[.,?!;:]$/, '');
+          };
+
+          await sendMail({
+            html: enrollmentHtml({
+              parentName: getParentName(row['Primary Guardian Name']),
+              firstName: firstName,
+            }),
+            subject: `Enrollment Form Received - Verification in Progress!`,
+            text: enrollmentText({
+              parentName: getParentName(row['Primary Guardian Name']),
+              firstName: firstName,
+            }),
+            to: [user.email],
+          });
+
+          results.imported++;
+          details.push({
+            row: rowNumber,
+            status: 'success',
+            email: user.email,
+            studentName: `${firstName} ${lastName}`,
           });
         } catch (error) {
           console.error(`Error processing row ${rowNumber}:`, error);

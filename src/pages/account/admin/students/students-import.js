@@ -146,6 +146,10 @@ const StudentsImport = () => {
       'Program',
       'Cottage Type',
       'Accreditation',
+      'Payment Type',
+      'Payment Method',
+      'Discount Code',
+      'Month Index',
       'Account Email',
       'Primary Guardian Name',
       'Primary Guardian Occupation',
@@ -190,6 +194,10 @@ const StudentsImport = () => {
       'HOMESCHOOL_PROGRAM',
       '',
       'LOCAL',
+      'Full Payment',
+      'Online Banking',
+      '',
+      '',
       'parent@example.com',
       'Maria Dela Cruz',
       'Teacher',
@@ -477,6 +485,64 @@ const StudentsImport = () => {
                 </li>
               </ul>
 
+              <p className="font-semibold mt-4">Optional Fields:</p>
+              <ul className="text-sm text-gray-600">
+                <li>
+                  <strong>Payment:</strong> Payment Type, Payment Method, Discount Code, Month Index
+                  <br />
+                  <span className="text-xs text-gray-500">
+                    If not specified, defaults to Full Payment via Online Banking
+                  </span>
+                </li>
+              </ul>
+
+              <p className="font-semibold mt-4">Month Index Guide (for Nine (9) Term Payment):</p>
+              <div className="text-sm text-gray-600 space-y-2">
+                <p>
+                  Month Index determines the number of remaining monthly payments for Nine (9) Term Payment option.
+                </p>
+                <div className="bg-blue-50 border border-blue-200 rounded p-3 mt-2">
+                  <p className="font-semibold text-blue-900 mb-2">How it works:</p>
+                  <ul className="text-xs space-y-1 text-blue-800">
+                    <li>• <strong>Auto-calculated:</strong> If left empty for monthly payments, it's automatically calculated based on the current month</li>
+                    <li>• <strong>Manual override:</strong> You can specify a custom value (1-9) to set the number of remaining monthly payments</li>
+                    <li>• <strong>Example:</strong> If enrolling in August and school year is 2025-2026, Month Index = 6 (Aug, Sep, Oct, Nov, Dec, Jan)</li>
+                  </ul>
+                </div>
+                <div className="mt-2">
+                  <p className="text-xs font-semibold">Month Index Reference for 2024-2025 School Year:</p>
+                  <div className="grid grid-cols-2 gap-2 mt-1 text-xs">
+                    <div className="bg-gray-50 p-2 rounded">
+                      <span className="font-semibold">Jan-Jun 2025:</span> 8 months
+                    </div>
+                    <div className="bg-gray-50 p-2 rounded">
+                      <span className="font-semibold">July 2025:</span> 7 months
+                    </div>
+                    <div className="bg-gray-50 p-2 rounded">
+                      <span className="font-semibold">August 2025:</span> 6 months
+                    </div>
+                    <div className="bg-gray-50 p-2 rounded">
+                      <span className="font-semibold">September 2025:</span> 5 months
+                    </div>
+                    <div className="bg-gray-50 p-2 rounded">
+                      <span className="font-semibold">October 2025:</span> 4 months
+                    </div>
+                    <div className="bg-gray-50 p-2 rounded">
+                      <span className="font-semibold">November 2025:</span> 3 months
+                    </div>
+                    <div className="bg-gray-50 p-2 rounded">
+                      <span className="font-semibold">December 2025:</span> 3 months
+                    </div>
+                    <div className="bg-gray-50 p-2 rounded">
+                      <span className="font-semibold">January 2026:</span> 1 month
+                    </div>
+                  </div>
+                </div>
+                <p className="text-xs italic text-gray-500 mt-2">
+                  💡 Tip: Leave Month Index empty to use automatic calculation, or specify a number (1-9) to override.
+                </p>
+              </div>
+
               <p className="font-semibold mt-4">Valid Values:</p>
               <ul className="text-sm text-gray-600">
                 <li><strong>Gender:</strong> MALE, FEMALE</li>
@@ -485,6 +551,8 @@ const StudentsImport = () => {
                 <li><strong>Program:</strong> HOMESCHOOL_PROGRAM, HOMESCHOOL_COTTAGE</li>
                 <li><strong>Accreditation:</strong> LOCAL, INTERNATIONAL, DUAL</li>
                 <li><strong>Special Needs:</strong> YES, NO</li>
+                <li><strong>Payment Type:</strong> Full Payment, Three (3) Term Payment, Four (4) Term Payment, Nine (9) Term Payment</li>
+                <li><strong>Payment Method:</strong> Online Banking, Over-the-Counter Banking, Payment Centers</li>
               </ul>
 
               <p className="font-semibold mt-4">Notes:</p>
@@ -493,6 +561,8 @@ const StudentsImport = () => {
                 <li>Duplicates are detected by: First Name + Middle Name + Last Name + School Year + Grade Level</li>
                 <li>New accounts will be created automatically for emails that don't exist</li>
                 <li>File uploads (pictures, certificates) must be added separately after import</li>
+                <li>School fees will be automatically created based on Payment Type (defaults to Full Payment)</li>
+                <li>Month Index is auto-calculated for Nine (9) Term Payment if not specified in CSV</li>
               </ul>
             </div>
           </Card.Body>
