@@ -278,3 +278,53 @@ export const getAffiliateDataPerYear = async (year) => {
   // 4. Only return affiliates with at least one successful invite
   return Object.values(affiliateMap).filter(a => a.invitedUsers.length > 0);
 };
+
+// Student Import Service Functions
+
+export const getUserWithGuardianInfo = async (email) =>
+  await prisma.user.findUnique({
+    where: { email },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      userCode: true,
+      emailVerified: true,
+      guardianInformation: true,
+    },
+  });
+
+export const createGuardianUser = async (email, name) =>
+  await prisma.user.create({
+    data: {
+      email,
+      name,
+      emailVerified: null,
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      userCode: true,
+    },
+  });
+
+export const createGuardianInformation = async (userId, guardianData) =>
+  await prisma.guardianInformation.create({
+    data: {
+      userId,
+      primaryGuardianName: guardianData.primaryGuardianName || null,
+      primaryGuardianOccupation: guardianData.primaryGuardianOccupation || null,
+      primaryGuardianType: guardianData.primaryGuardianType || null,
+      primaryGuardianProfile: guardianData.primaryGuardianProfile || null,
+      secondaryGuardianName: guardianData.secondaryGuardianName || null,
+      secondaryGuardianOccupation: guardianData.secondaryGuardianOccupation || null,
+      secondaryGuardianType: guardianData.secondaryGuardianType || null,
+      secondaryGuardianProfile: guardianData.secondaryGuardianProfile || null,
+      mobileNumber: guardianData.mobileNumber || null,
+      telephoneNumber: guardianData.telephoneNumber || null,
+      anotherEmail: guardianData.anotherEmail || null,
+      address1: guardianData.address1 || null,
+      address2: guardianData.address2 || null,
+    },
+  });

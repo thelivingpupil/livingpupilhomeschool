@@ -2016,10 +2016,15 @@ const Students = ({ schoolFees, programs }) => {
       <Content.Divider />
       <Card>
         <Card.Body title="List of Enrolled Students">
-          <div>
+          <div className="flex flex-wrap gap-3 mb-4">
             <Link href="/account/admin/students/students-export">
               <a className="items-center px-3 py-2 space-x-2 text-sm text-white rounded bg-primary-500 hover:bg-primary-600">
                 Generate Students Master List
+              </a>
+            </Link>
+            <Link href="/account/admin/students/students-import">
+              <a className="items-center px-3 py-2 space-x-2 text-sm text-white rounded bg-secondary-500 hover:bg-secondary-600">
+                Import Students
               </a>
             </Link>
           </div>
