@@ -139,6 +139,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedBarangay, setSelectedBarangay] = useState('');
   const [isBarangay, setIsBarangay] = useState(false);
+  const [isCity, setIsCity] = useState(false);
   const [cities, setCities] = useState([]);
   const [barangays, setBarangays] = useState([]);
   const [zipCode, setZipCode] = useState('');
@@ -271,9 +272,12 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const handleIsBarangay = () => {
     setIsBarangay((prev) => !prev);
   };
+  const handleIsCity = () => {
+    setIsCity((prev) => !prev);
+  };
   const handleBarangayChangeInput = (event) =>
     setSelectedBarangay(event.target.value);
-
+  const handleCityChangeInput = (event) => setSelectedCity(event.target.value);
   const handleCaptchaChange = (value) => setCaptchaValue(value);
 
   const updateAddress = (zip, province, city, barangay) => {
@@ -320,6 +324,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   };
 
   const getCityMunByCode = (code) => {
+    if (isNaN(code)) {
+      return code;
+    }
     if (code) {
       let city_mun = cities.find((loc) => loc.mun_code === code);
       let city = city_mun.name;
@@ -367,6 +374,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
 
   //set the zipcode
   useEffect(() => {
+    console.log('selectedCity', selectedCity);
     let city = getCityMunByCode(selectedCity);
 
     if (city) {
@@ -1305,20 +1313,38 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   </option>
                 ))}
               </select>
-              <select
-                className={`px-3 py-2 rounded md:w-3/4 ${!selectedCity ? 'border-red-500 border-2' : 'border'
-                  }`}
-                value={selectedCity}
-                onChange={handleCityChange}
-                disabled={!selectedProvince}
-              >
-                <option value="">Select City/Municipality</option>
-                {cities.map((city) => (
-                  <option key={city.mun_code} value={city.mun_code}>
-                    {city.name}
-                  </option>
-                ))}
-              </select>
+              {!isCity ? (
+                <select
+                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedCity ? 'border-red-500 border-2' : 'border'
+                    }`}
+                  value={selectedCity}
+                  onChange={handleCityChange}
+                  disabled={!selectedProvince}
+                >
+                  <option value="">Select City/Municipality</option>
+                  {cities.map((city) => (
+                    <option key={city.mun_code} value={city.mun_code}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedCity ? 'border-red-500 border-2' : 'border'
+                    }`}
+                  placeholder="City"
+                  onChange={handleCityChangeInput}
+                  value={selectedCity}
+                />
+              )}
+              <div>
+                <Button
+                  onClick={handleIsCity}
+                  className="w-1/4 rounded-r text-white bg-gray-500 hover:bg-gray-400"
+                >
+                  {isCity ? 'Select City' : 'Input City Manually'}
+                </Button>
+              </div>
               {!isBarangay ? (
                 <select
                   className={`px-3 py-2 rounded md:w-3/4 ${!selectedBarangay ? 'border-red-500 border-2' : 'border'
@@ -3377,7 +3403,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     <AccountLayout>
       {workspace ? (
         <>
-          <Meta title={`Living Pupil Homeschool - ${workspace.name} | Profile`} />
+          <Meta
+            title={`Living Pupil Homeschool - ${workspace.name} | Profile`}
+          />
           <Content.Title
             title={workspace.name}
             subtitle="This is the student record information"
@@ -3526,7 +3554,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                   onChange={(e) =>
                                     handleBirthCertificateUpload(
                                       e,
-                                      true,
+                                      false,
                                       workspace.studentRecord.studentId
                                     )
                                   }
@@ -3838,7 +3866,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                         </p>
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-600">Former School</h4>
+                        <h4 className="font-bold text-gray-600">
+                          Former School
+                        </h4>
                         <p className="text-2xl capitalize">
                           {workspace.studentRecord.formerSchoolName}
                         </p>
@@ -3877,7 +3907,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   {(workspace.studentRecord.idPictureFront ||
                     workspace.studentRecord.idPictureBack) && (
                       <div className="mt-6 p-4 border rounded-lg bg-gray-50">
-                        <h4 className="font-bold text-gray-600 mb-3">ID Picture</h4>
+                        <h4 className="font-bold text-gray-600 mb-3">
+                          ID Picture
+                        </h4>
                         <div className="flex items-center space-x-4">
                           {workspace.studentRecord.idPictureFront && (
                             <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
@@ -3907,7 +3939,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                             </p>
                             <div className="flex space-x-2">
                               {workspace.studentRecord.idPictureFront && (
-                                <Link href={workspace.studentRecord.idPictureFront}>
+                                <Link
+                                  href={workspace.studentRecord.idPictureFront}
+                                >
                                   <a
                                     className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
                                     target="_blank"
@@ -3917,7 +3951,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                 </Link>
                               )}
                               {workspace.studentRecord.idPictureBack && (
-                                <Link href={workspace.studentRecord.idPictureBack}>
+                                <Link
+                                  href={workspace.studentRecord.idPictureBack}
+                                >
                                   <a
                                     className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
                                     target="_blank"
@@ -3983,8 +4019,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   {GRADE_LEVEL[incomingGradeLevel].toLowerCase()}
                 </p>
                 <p>
-                  <strong>Birth Date:</strong> {birthDate?.toDateString() || 0} (
-                  {age} years old)
+                  <strong>Birth Date:</strong> {birthDate?.toDateString() || 0}{' '}
+                  ({age} years old)
                 </p>
                 <p className="capitalize">
                   <strong>Gender:</strong> {gender.toLowerCase()}
@@ -4119,7 +4155,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                     : fee && fee[payments[index + 1]]
                               )}{' '}
                               {discount &&
-                                discount?.code?.toLowerCase().includes('pastor') ? (
+                                discount?.code
+                                  ?.toLowerCase()
+                                  .includes('pastor') ? (
                                 <span className="text-red-600">
                                   (-
                                   {new Intl.NumberFormat('en-US', {
@@ -4128,10 +4166,12 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                   }).format(
                                     fee?._type === 'nineTermPayment'
                                       ? monthlyPayment -
-                                      (discount?.value - fee?.downPayment) / 9
+                                      (discount?.value - fee?.downPayment) /
+                                      9
                                       : fee &&
                                       fee[payments[index + 1]] -
-                                      (discount?.value - fee?.downPayment) /
+                                      (discount?.value -
+                                        fee?.downPayment) /
                                       3
                                   )}
                                   )
@@ -4412,7 +4452,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                         <span className="text-white text-lg font-bold">GC</span>
                       </div>
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-800">GCash</h3>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      GCash
+                    </h3>
                   </div>
                   <div className="text-center">
                     <Image

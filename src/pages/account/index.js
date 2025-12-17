@@ -93,7 +93,11 @@ const Welcome = () => {
   const handleNameChange = (event) => setName(event.target.value);
 
   const navigate = (workspace) => {
-    if (workspace?.studentRecord?.schoolYear === '2024-2025' || workspace?.studentRecord?.schoolYear === '2025-2026' || workspace?.studentRecord === null) {
+    if (
+      workspace?.studentRecord?.schoolYear === '2024-2025' ||
+      workspace?.studentRecord?.schoolYear === '2025-2026' ||
+      workspace?.studentRecord === null
+    ) {
       setWorkspace(workspace);
       router.replace(`/account/${workspace.slug}`);
     } else {
@@ -156,76 +160,85 @@ const Welcome = () => {
               <Card.Footer />
             </Card>
           ) : workspacesData?.workspaces.length > 0 ? (
-            workspacesData.workspaces.map((workspace, index) => (
-              workspace.deletedAt !== null && (
-                <Card key={index}>
-                  <Card.Body title={workspace.name}>
-                    {!workspace.studentRecord ? (
-                      <div className="flex items-center px-2 py-1 space-x-3 text-sm border-2 rounded-full text-amber-500 border-amber-600 bg-amber-50">
-                        <div className="w-5 h-5">
-                          <ExclamationIcon />
-                        </div>
-                        <p>Unenrolled student</p>
-                      </div>
-                    ) : workspace.schoolFees.length > 0 &&
-                      workspace.schoolFees.filter(
-                        (fee) => fee.transaction.paymentStatus === TransactionStatus.S
-                      )?.length > 0 ? (
-                      workspace.studentRecord.studentStatus === 'ENROLLED' ? (
-                        <div className="flex items-center px-2 py-1 space-x-3 text-sm text-green-500 border-2 border-green-600 rounded-full bg-green-50">
+            workspacesData.workspaces.map(
+              (workspace, index) =>
+                workspace.deletedAt !== null && (
+                  <Card key={index}>
+                    <Card.Body title={workspace.name}>
+                      {!workspace.studentRecord ? (
+                        <div className="flex items-center px-2 py-1 space-x-3 text-sm border-2 rounded-full text-amber-500 border-amber-600 bg-amber-50">
                           <div className="w-5 h-5">
-                            <BadgeCheckIcon />
+                            <ExclamationIcon />
                           </div>
-                          <p>Student enrolled</p>
+                          <p>Unenrolled student</p>
                         </div>
-                      ) : workspace.studentRecord.studentStatus === 'INITIALLY_ENROLLED' ? (
-                        <div className="flex items-center px-2 py-1 space-x-3 text-sm text-blue-500 border-2 border-blue-600 rounded-full bg-blue-50">
+                      ) : workspace.schoolFees.length > 0 &&
+                        workspace.schoolFees.filter(
+                          (fee) =>
+                            fee.transaction.paymentStatus ===
+                            TransactionStatus.S
+                        )?.length > 0 ? (
+                        workspace.studentRecord.studentStatus === 'ENROLLED' ? (
+                          <div className="flex items-center px-2 py-1 space-x-3 text-sm text-green-500 border-2 border-green-600 rounded-full bg-green-50">
+                            <div className="w-5 h-5">
+                              <BadgeCheckIcon />
+                            </div>
+                            <p>Student enrolled</p>
+                          </div>
+                        ) : workspace.studentRecord.studentStatus ===
+                          'INITIALLY_ENROLLED' ? (
+                          <div className="flex items-center px-2 py-1 space-x-3 text-sm text-blue-500 border-2 border-blue-600 rounded-full bg-blue-50">
+                            <div className="w-5 h-5">
+                              <BadgeCheckIcon />
+                            </div>
+                            <p>Initially enrolled</p>
+                          </div>
+                        ) : workspace.studentRecord.studentStatus ===
+                          'PENDING' ? (
+                          <div className="flex items-center px-2 py-1 space-x-3 text-sm text-yellow-500 border-2 border-yellow-600 rounded-full bg-yellow-50">
+                            <div className="w-5 h-5">
+                              <BadgeCheckIcon />
+                            </div>
+                            <p>Pending enrollment</p>
+                          </div>
+                        ) : null
+                      ) : (
+                        <div className="flex items-center px-2 py-1 space-x-3 text-sm text-red-500 border-2 border-red-600 rounded-full bg-red-50">
                           <div className="w-5 h-5">
-                            <BadgeCheckIcon />
+                            <MinusCircleIcon />
                           </div>
-                          <p>Initially enrolled</p>
+                          <p>Unpaid school fees</p>
                         </div>
-                      ) : workspace.studentRecord.studentStatus === 'PENDING' ? (
-                        <div className="flex items-center px-2 py-1 space-x-3 text-sm text-yellow-500 border-2 border-yellow-600 rounded-full bg-yellow-50">
-                          <div className="w-5 h-5">
-                            <BadgeCheckIcon />
-                          </div>
-                          <p>Pending enrollment</p>
-                        </div>
-                      ) : null
-                    ) : (
-                      <div className="flex items-center px-2 py-1 space-x-3 text-sm text-red-500 border-2 border-red-600 rounded-full bg-red-50">
-                        <div className="w-5 h-5">
-                          <MinusCircleIcon />
-                        </div>
-                        <p>Unpaid school fees</p>
-                      </div>
-                    )}
-                  </Card.Body>
-                  <Card.Footer>
-                    <button
-                      className="text-primary-600"
-                      onClick={() => navigate(workspace)}
-                    >
-                      {workspace.studentRecord
-                        ? 'View record '
-                        : 'Create record '}{' '}
-                      &rarr;
-                    </button>
-                  </Card.Footer>
-
-                  {workspace.studentRecord != null && workspace.studentRecord.schoolYear !== '2025-2026' && (
+                      )}
+                    </Card.Body>
                     <Card.Footer>
                       <button
                         className="text-primary-600"
-                        onClick={() => navigateEnroll(workspace.studentRecord.studentId)}
+                        onClick={() => navigate(workspace)}
                       >
-                        Enroll for SY 2025-2026 &rarr;
+                        {workspace.studentRecord
+                          ? 'View record '
+                          : 'Create record '}{' '}
+                        &rarr;
                       </button>
                     </Card.Footer>
-                  )}
-                </Card>
-              )))
+
+                    {workspace.studentRecord != null &&
+                      workspace.studentRecord.schoolYear !== '2025-2026' && (
+                        <Card.Footer>
+                          <button
+                            className="text-primary-600"
+                            onClick={() =>
+                              navigateEnroll(workspace.studentRecord.studentId)
+                            }
+                          >
+                            Enroll for SY 2025-2026 &rarr;
+                          </button>
+                        </Card.Footer>
+                      )}
+                  </Card>
+                )
+            )
           ) : (
             <Card.Empty>
               <div className="mb-3">Start creating a student record</div>
@@ -258,8 +271,9 @@ const Welcome = () => {
               <Card key={index}>
                 <Card.Body
                   title={invitation.workspace.name}
-                  subtitle={`You have been invited by ${invitation.invitedBy.name || invitation.invitedBy.email
-                    }`}
+                  subtitle={`You have been invited by ${
+                    invitation.invitedBy.name || invitation.invitedBy.email
+                  }`}
                 />
                 <Card.Footer>
                   <Button
@@ -292,9 +306,10 @@ const Welcome = () => {
         toggle={() => setIsModalOpen(false)}
       >
         <p>
-          Thank you for your support during the 2023-2024 school year.
-          We greatly appreciate your involvement and commitment to your child's education.
-          We look forward to partnering with you for the upcoming 2024-2025 academic year.
+          Thank you for your support during the 2023-2024 school year. We
+          greatly appreciate your involvement and commitment to your child's
+          education. We look forward to partnering with you for the upcoming
+          2024-2025 academic year.
         </p>
       </PopUp>
     </AccountLayout>
