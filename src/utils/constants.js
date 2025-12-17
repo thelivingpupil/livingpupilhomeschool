@@ -288,21 +288,19 @@ export const STUDENT_STATUS = {
 
 //this is used for the monthly iteration in createSchoolFees()
 export const MONTHLY_INDEX = {
-  FEBRUARY_2024: 8,
-  MARCH_2024: 8,
-  APRIL_2024: 8,
-  MAY_2024: 8,
-  JUNE_2024: 8,
-  JULY_2024: 8,
-  AUGUST_2024: 8,
-  SEPTEMBER_2024: 8,
-  OCTOBER_2024: 7,
-  NOVEMBER_2024: 6,
-  DECEMBER_2024: 5,
-  JANUARY_2025: 4,
-  FEBRUARY_2025: 3,
-  MARCH_2025: 3,
-  APRIL_2025: 1,
+  JANUARY_2025: 8,
+  FEBRUARY_2025: 8,
+  MARCH_2025: 8,
+  APRIL_2025: 8,
+  MAY_2025: 8,
+  JUNE_2025: 8,
+  JULY_2025: 7,
+  AUGUST_2025: 6,
+  SEPTEMBER_2025: 5,
+  OCTOBER_2025: 4,
+  NOVEMBER_2025: 3,
+  DECEMBER_2025: 3,
+  JANUARY_2026: 1,
 };
 
 //function to get the current month and year with format with the format of MONTHLY_INDEX
@@ -341,10 +339,9 @@ export const MONTHLY_INDEX_CURRENT = {
   SEPTEMBER_2025: 5,
   OCTOBER_2025: 4,
   NOVEMBER_2025: 3,
-  DECEMBER_2025: 2,
+  DECEMBER_2025: 3,
   JANUARY_2026: 1,
 };
-
 //function to get the current month and year with format with the format of MONTHLY_INDEX
 export const getMonthIndexCurrent = (date) => {
   const monthNames = [
