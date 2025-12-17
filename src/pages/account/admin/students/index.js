@@ -164,13 +164,34 @@ const Students = ({ schoolFees, programs }) => {
   const [showConfirmChange, setShowConfirmChange] = useState(false);
   const [isUpdatingRecord, setUpdatingRecord] = useState(false);
 
-  const filterStudents = useMemo(() => {
-    if (!filterBy || !filterValue) return data?.students;
+  const processedStudents = useMemo(() => {
+    if (!data?.students) return [];
 
-    return data?.students?.filter(
+    return data.students.map((student) => ({
+      ...student,
+      gradeLevelDisplay: GRADE_LEVEL[student.incomingGradeLevel] || student.incomingGradeLevel,
+      primaryGuardianName: student.student.creator?.guardianInformation?.primaryGuardianName || '',
+      primaryGuardianProfile: student.student.creator?.guardianInformation?.primaryGuardianProfile || '',
+      secondaryGuardianName: student.student.creator?.guardianInformation?.secondaryGuardianName || '',
+      secondaryGuardianProfile: student.student.creator?.guardianInformation?.secondaryGuardianProfile || '',
+      homeAddress: `${student.student.creator?.guardianInformation?.address1 || ''} ${student.student.creator?.guardianInformation?.address2 || ''}`.trim(),
+      island: student.student.creator?.guardianInformation?.address2 || '',
+      email: student.student.creator?.email || '',
+      secondaryEmail: student.student.creator?.guardianInformation?.anotherEmail || '',
+      telNumber: student.student.creator?.guardianInformation?.telephoneNumber || '',
+      mobileNumber: student.student.creator?.guardianInformation?.mobileNumber || '',
+      studentStatusDisplay: student.studentStatus || '',
+      paymentStatusDisplay: student.studentStatus || '',
+    }));
+  }, [data]);
+
+  const filterStudents = useMemo(() => {
+    if (!filterBy || !filterValue) return processedStudents;
+
+    return processedStudents?.filter(
       (student) => student[filterBy] === filterValue
     );
-  }, [data, filterBy, filterValue]);
+  }, [processedStudents, filterBy, filterValue]);
 
   const toggleModal = () => setModalVisibility(!showModal);
   const toggleModal2 = () => setModalVisibility2(!showModal2);
@@ -217,12 +238,12 @@ const Students = ({ schoolFees, programs }) => {
     const evaluate =
       program === Program.HOMESCHOOL_COTTAGE
         ? programFee.programType === program &&
-          programFee.enrollmentType === enrollmentType &&
-          programFee.gradeLevel === gradeLevel &&
-          programFee.cottageType === cottageType
+        programFee.enrollmentType === enrollmentType &&
+        programFee.gradeLevel === gradeLevel &&
+        programFee.cottageType === cottageType
         : programFee.programType === program &&
-          programFee.enrollmentType === enrollmentType &&
-          programFee.gradeLevel === gradeLevel;
+        programFee.enrollmentType === enrollmentType &&
+        programFee.gradeLevel === gradeLevel;
 
     return evaluate;
   });
@@ -533,9 +554,9 @@ const Students = ({ schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -580,9 +601,9 @@ const Students = ({ schoolFees, programs }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -832,9 +853,8 @@ const Students = ({ schoolFees, programs }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${
-              !enrollmentType ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`relative inline-block w-full rounded ${!enrollmentType ? 'border-red-500 border-2' : 'border'
+              }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -860,9 +880,8 @@ const Students = ({ schoolFees, programs }) => {
             </label>
             <div className="flex flex-row">
               <div
-                className={`relative inline-block w-full rounded ${
-                  !incomingGradeLevel ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`relative inline-block w-full rounded ${!incomingGradeLevel ? 'border-red-500 border-2' : 'border'
+                  }`}
               >
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -891,9 +910,8 @@ const Students = ({ schoolFees, programs }) => {
         </div>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${
-              !schoolYear ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`relative inline-block w-full rounded ${!schoolYear ? 'border-red-500 border-2' : 'border'
+              }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -936,9 +954,8 @@ const Students = ({ schoolFees, programs }) => {
           </label>
           <div className="flex flex-row">
             <div
-              className={`relative inline-block w-full rounded ${
-                !program ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`relative inline-block w-full rounded ${!program ? 'border-red-500 border-2' : 'border'
+                }`}
             >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -975,9 +992,8 @@ const Students = ({ schoolFees, programs }) => {
               </label>
               <div className="flex flex-row">
                 <div
-                  className={`relative inline-block w-full rounded ${
-                    !cottageType ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`relative inline-block w-full rounded ${!cottageType ? 'border-red-500 border-2' : 'border'
+                    }`}
                 >
                   <select
                     className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1009,9 +1025,8 @@ const Students = ({ schoolFees, programs }) => {
           </label>
           <div className="flex flex-row">
             <div
-              className={`relative inline-block w-full rounded ${
-                !accreditation ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`relative inline-block w-full rounded ${!accreditation ? 'border-red-500 border-2' : 'border'
+                }`}
             >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1055,9 +1070,8 @@ const Students = ({ schoolFees, programs }) => {
               Select Payment Type <span className="ml-1 text-red-600">*</span>
             </label>
             <div
-              className={`relative inline-block w-full rounded ${
-                !payment ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`relative inline-block w-full rounded ${!payment ? 'border-red-500 border-2' : 'border'
+                }`}
             >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1182,12 +1196,12 @@ const Students = ({ schoolFees, programs }) => {
                       fee?._type === 'fullTermPayment'
                         ? 0
                         : fee?._type === 'threeTermPayment'
-                        ? 2
-                        : fee?._type === 'fourTermPayment'
-                        ? 3
-                        : fee?._type === 'nineTermPayment'
-                        ? monthIndex
-                        : 0 // Default to 0 if none of the specified types match
+                          ? 2
+                          : fee?._type === 'fourTermPayment'
+                            ? 3
+                            : fee?._type === 'nineTermPayment'
+                              ? monthIndex
+                              : 0 // Default to 0 if none of the specified types match
                     ),
                     (_, index) => (
                       <tr key={index}>
@@ -1195,12 +1209,12 @@ const Students = ({ schoolFees, programs }) => {
                           {fee?._type === 'fullTermPayment'
                             ? ''
                             : fee?._type === 'threeTermPayment'
-                            ? `Three (3) Term Payment #${index + 1}`
-                            : fee?._type === 'fourTermPayment'
-                            ? `Four (4) Term Payment #${index + 1}`
-                            : fee?._type === 'nineTermPayment'
-                            ? `Monthly Term Payment #${index + 1}`
-                            : `Unknown Payment Type #${index + 1}`}
+                              ? `Three (3) Term Payment #${index + 1}`
+                              : fee?._type === 'fourTermPayment'
+                                ? `Four (4) Term Payment #${index + 1}`
+                                : fee?._type === 'nineTermPayment'
+                                  ? `Monthly Term Payment #${index + 1}`
+                                  : `Unknown Payment Type #${index + 1}`}
                         </td>
                         <td className="px-3 py-1 text-right border">
                           {new Intl.NumberFormat('en-US', {
@@ -1210,11 +1224,11 @@ const Students = ({ schoolFees, programs }) => {
                             fee?._type === 'fullTermPayment'
                               ? 0
                               : fee?._type === 'nineTermPayment'
-                              ? monthlyPayment // Render monthly payment for nineTermPayment
-                              : fee && fee[payments[index + 1]]
+                                ? monthlyPayment // Render monthly payment for nineTermPayment
+                                : fee && fee[payments[index + 1]]
                           )}{' '}
                           {discount &&
-                          discount?.code?.toLowerCase().includes('pastor') ? (
+                            discount?.code?.toLowerCase().includes('pastor') ? (
                             <span className="text-red-600">
                               (-
                               {new Intl.NumberFormat('en-US', {
@@ -1223,10 +1237,10 @@ const Students = ({ schoolFees, programs }) => {
                               }).format(
                                 fee?._type === 'nineTermPayment'
                                   ? monthlyPayment -
-                                      (discount?.value - fee?.downPayment) / 9
+                                  (discount?.value - fee?.downPayment) / 9
                                   : fee &&
-                                      fee[payments[index + 1]] -
-                                        (discount?.value - fee?.downPayment) / 3
+                                  fee[payments[index + 1]] -
+                                  (discount?.value - fee?.downPayment) / 3
                               )}
                               )
                             </span>
@@ -1242,7 +1256,7 @@ const Students = ({ schoolFees, programs }) => {
                                   discount?.type === 'VALUE'
                                     ? discount?.value
                                     : (discount?.value / 100) *
-                                        Math.ceil(fee?.secondPayment)
+                                    Math.ceil(fee?.secondPayment)
                                 )}
                                 )
                               </span>
@@ -1257,23 +1271,23 @@ const Students = ({ schoolFees, programs }) => {
                               }).format(
                                 scholarship &&
                                   index <
+                                  (fee?._type === 'threeTermPayment'
+                                    ? 2
+                                    : fee?._type === 'fourTermPayment'
+                                      ? 3
+                                      : fee?._type === 'nineTermPayment'
+                                        ? 9
+                                        : 0)
+                                  ? Math.ceil(
+                                    scholarship.value /
                                     (fee?._type === 'threeTermPayment'
                                       ? 2
                                       : fee?._type === 'fourTermPayment'
-                                      ? 3
-                                      : fee?._type === 'nineTermPayment'
-                                      ? 9
-                                      : 0)
-                                  ? Math.ceil(
-                                      scholarship.value /
-                                        (fee?._type === 'threeTermPayment'
-                                          ? 2
-                                          : fee?._type === 'fourTermPayment'
-                                          ? 3
-                                          : fee?._type === 'nineTermPayment'
+                                        ? 3
+                                        : fee?._type === 'nineTermPayment'
                                           ? 9
                                           : 1)
-                                    )
+                                  )
                                   : 0
                               )}
                               )
@@ -1290,13 +1304,11 @@ const Students = ({ schoolFees, programs }) => {
                         Total Discounts:{' '}
                         <strong className="text-green-600">
                           {discountCode || '-'}{' '}
-                          {`${
-                            discount
-                              ? `(${Number(discount.value).toFixed(2)}${
-                                  discount.type === 'VALUE' ? 'Php' : '%'
-                                })`
-                              : ''
-                          }`}
+                          {`${discount
+                            ? `(${Number(discount.value).toFixed(2)}${discount.type === 'VALUE' ? 'Php' : '%'
+                            })`
+                            : ''
+                            }`}
                         </strong>
                       </td>
                       <td className="px-3 py-1 text-right text-red-600 border">
@@ -1307,28 +1319,28 @@ const Students = ({ schoolFees, programs }) => {
                           discount
                             ? discount.type === 'VALUE'
                               ? (discount?.code
-                                  ?.toLowerCase()
-                                  .includes('pastor')
-                                  ? Math.ceil(
-                                      fee?._type === 'fullTermPayment'
-                                        ? fee?.fullPayment
-                                        : fee?._type === 'threeTermPayment'
-                                        ? fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment
-                                        : fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment +
-                                          fee?.fourthPayment
-                                    ) - discount.value
-                                  : Number(discount.value).toFixed(2)) * -1
-                              : Math.ceil(
+                                ?.toLowerCase()
+                                .includes('pastor')
+                                ? Math.ceil(
                                   fee?._type === 'fullTermPayment'
                                     ? fee?.fullPayment
-                                    : fee?.secondPayment
-                                ) *
-                                (discount.value / 100) *
-                                -1
+                                    : fee?._type === 'threeTermPayment'
+                                      ? fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment
+                                      : fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment +
+                                      fee?.fourthPayment
+                                ) - discount.value
+                                : Number(discount.value).toFixed(2)) * -1
+                              : Math.ceil(
+                                fee?._type === 'fullTermPayment'
+                                  ? fee?.fullPayment
+                                  : fee?.secondPayment
+                              ) *
+                              (discount.value / 100) *
+                              -1
                             : 0
                         )}
                       </td>
@@ -1341,13 +1353,11 @@ const Students = ({ schoolFees, programs }) => {
                         Total Scholarships:{' '}
                         <strong className="text-blue-600">
                           {scholarshipCode || '-'}{' '}
-                          {`${
-                            scholarship
-                              ? `(${Number(scholarship.value).toFixed(2)}${
-                                  scholarship.type === 'VALUE' ? 'Php' : '%'
-                                })`
-                              : ''
-                          }`}
+                          {`${scholarship
+                            ? `(${Number(scholarship.value).toFixed(2)}${scholarship.type === 'VALUE' ? 'Php' : '%'
+                            })`
+                            : ''
+                            }`}
                         </strong>
                       </td>
                       <td className="px-3 py-1 text-right text-blue-600 border">
@@ -1358,28 +1368,28 @@ const Students = ({ schoolFees, programs }) => {
                           scholarship
                             ? scholarship.type === 'VALUE'
                               ? (scholarship?.code
-                                  ?.toLowerCase()
-                                  .includes('merit')
-                                  ? Math.ceil(
-                                      fee?._type === 'fullTermPayment'
-                                        ? fee?.fullPayment
-                                        : fee?._type === 'threeTermPayment'
-                                        ? fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment
-                                        : fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment +
-                                          fee?.fourthPayment
-                                    ) - scholarship.value
-                                  : Number(scholarship.value).toFixed(2)) * -1
-                              : Math.ceil(
+                                ?.toLowerCase()
+                                .includes('merit')
+                                ? Math.ceil(
                                   fee?._type === 'fullTermPayment'
                                     ? fee?.fullPayment
-                                    : fee?.secondPayment
-                                ) *
-                                (scholarship.value / 100) *
-                                -1
+                                    : fee?._type === 'threeTermPayment'
+                                      ? fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment
+                                      : fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment +
+                                      fee?.fourthPayment
+                                ) - scholarship.value
+                                : Number(scholarship.value).toFixed(2)) * -1
+                              : Math.ceil(
+                                fee?._type === 'fullTermPayment'
+                                  ? fee?.fullPayment
+                                  : fee?.secondPayment
+                              ) *
+                              (scholarship.value / 100) *
+                              -1
                             : 0
                         )}
                       </td>
@@ -1399,40 +1409,71 @@ const Students = ({ schoolFees, programs }) => {
                     fee?._type === 'fullTermPayment'
                       ? fee?.fullPayment
                       : fee?._type === 'threeTermPayment'
-                      ? fee?.downPayment +
+                        ? fee?.downPayment +
                         fee?.secondPayment +
                         fee?.thirdPayment
-                      : fee?._type === 'fourTermPayment'
-                      ? fee?.downPayment +
-                        fee?.secondPayment +
-                        fee?.thirdPayment +
-                        fee?.fourthPayment
-                      : fee?.downPayment +
-                        fee?.secondPayment +
-                        fee?.thirdPayment +
-                        fee?.fourthPayment +
-                        fee?.fifthPayment +
-                        fee?.sixthPayment +
-                        fee?.seventhPayment +
-                        fee?.eighthPayment +
-                        fee?.ninthPayment
+                        : fee?._type === 'fourTermPayment'
+                          ? fee?.downPayment +
+                          fee?.secondPayment +
+                          fee?.thirdPayment +
+                          fee?.fourthPayment
+                          : fee?.downPayment +
+                          fee?.secondPayment +
+                          fee?.thirdPayment +
+                          fee?.fourthPayment +
+                          fee?.fifthPayment +
+                          fee?.sixthPayment +
+                          fee?.seventhPayment +
+                          fee?.eighthPayment +
+                          fee?.ninthPayment
                   ) -
-                    ((discount
-                      ? discount?.type === 'VALUE'
-                        ? discount?.code?.toLowerCase().includes('pastor')
+                  ((discount
+                    ? discount?.type === 'VALUE'
+                      ? discount?.code?.toLowerCase().includes('pastor')
+                        ? Math.ceil(
+                          fee?._type === 'fullTermPayment'
+                            ? fee?.fullPayment
+                            : fee?._type === 'threeTermPayment'
+                              ? fee?.downPayment +
+                              fee?.secondPayment +
+                              fee?.thirdPayment
+                              : fee?._type === 'fourTermPayment'
+                                ? fee?.downPayment +
+                                fee?.secondPayment +
+                                fee?.thirdPayment +
+                                fee?.fourthPayment
+                                : fee?.downPayment +
+                                fee?.secondPayment +
+                                fee?.thirdPayment +
+                                fee?.fourthPayment +
+                                fee?.fifthPayment +
+                                fee?.sixthPayment +
+                                fee?.seventhPayment +
+                                fee?.eighthPayment +
+                                fee?.ninthPayment
+                        ) - discount.value
+                        : discount.value
+                      : (discount.value / 100) *
+                      (fee?._type === 'fullTermPayment'
+                        ? fee?.fullPayment
+                        : fee?.secondPayment)
+                    : 0) +
+                    (scholarship
+                      ? scholarship?.type === 'VALUE'
+                        ? scholarship?.code?.toLowerCase().includes('merit')
                           ? Math.ceil(
-                              fee?._type === 'fullTermPayment'
-                                ? fee?.fullPayment
-                                : fee?._type === 'threeTermPayment'
+                            fee?._type === 'fullTermPayment'
+                              ? fee?.fullPayment
+                              : fee?._type === 'threeTermPayment'
                                 ? fee?.downPayment +
-                                  fee?.secondPayment +
-                                  fee?.thirdPayment
+                                fee?.secondPayment +
+                                fee?.thirdPayment
                                 : fee?._type === 'fourTermPayment'
-                                ? fee?.downPayment +
+                                  ? fee?.downPayment +
                                   fee?.secondPayment +
                                   fee?.thirdPayment +
                                   fee?.fourthPayment
-                                : fee?.downPayment +
+                                  : fee?.downPayment +
                                   fee?.secondPayment +
                                   fee?.thirdPayment +
                                   fee?.fourthPayment +
@@ -1441,44 +1482,13 @@ const Students = ({ schoolFees, programs }) => {
                                   fee?.seventhPayment +
                                   fee?.eighthPayment +
                                   fee?.ninthPayment
-                            ) - discount.value
-                          : discount.value
-                        : (discount.value / 100) *
-                          (fee?._type === 'fullTermPayment'
-                            ? fee?.fullPayment
-                            : fee?.secondPayment)
-                      : 0) +
-                      (scholarship
-                        ? scholarship?.type === 'VALUE'
-                          ? scholarship?.code?.toLowerCase().includes('merit')
-                            ? Math.ceil(
-                                fee?._type === 'fullTermPayment'
-                                  ? fee?.fullPayment
-                                  : fee?._type === 'threeTermPayment'
-                                  ? fee?.downPayment +
-                                    fee?.secondPayment +
-                                    fee?.thirdPayment
-                                  : fee?._type === 'fourTermPayment'
-                                  ? fee?.downPayment +
-                                    fee?.secondPayment +
-                                    fee?.thirdPayment +
-                                    fee?.fourthPayment
-                                  : fee?.downPayment +
-                                    fee?.secondPayment +
-                                    fee?.thirdPayment +
-                                    fee?.fourthPayment +
-                                    fee?.fifthPayment +
-                                    fee?.sixthPayment +
-                                    fee?.seventhPayment +
-                                    fee?.eighthPayment +
-                                    fee?.ninthPayment
-                              ) - scholarship.value
-                            : scholarship.value
-                          : (scholarship.value / 100) *
-                            (fee?._type === 'fullTermPayment'
-                              ? fee?.fullPayment
-                              : fee?.secondPayment)
-                        : 0))
+                          ) - scholarship.value
+                          : scholarship.value
+                        : (scholarship.value / 100) *
+                        (fee?._type === 'fullTermPayment'
+                          ? fee?.fullPayment
+                          : fee?.secondPayment)
+                      : 0))
                 )}
               </span>
             </h4>
@@ -1788,9 +1798,8 @@ const Students = ({ schoolFees, programs }) => {
               </label>
               <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
                 <input
-                  className={`px-3 py-2 rounded md:w-1/3 ${
-                    firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-1/3 ${firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                    }`}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="Given Name"
                   value={firstName}
@@ -1802,9 +1811,8 @@ const Students = ({ schoolFees, programs }) => {
                   value={middleName}
                 />
                 <input
-                  className={`px-3 py-2 rounded md:w-1/3 ${
-                    lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-1/3 ${lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                    }`}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="Last Name"
                   value={lastName}
@@ -1817,9 +1825,8 @@ const Students = ({ schoolFees, programs }) => {
                   Birthday <span className="ml-1 text-red-600">*</span>
                 </label>
                 <div
-                  className={`relative flex flex-row rounded ${
-                    !birthDate ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`relative flex flex-row rounded ${!birthDate ? 'border-red-500 border-2' : 'border'
+                    }`}
                 >
                   <DatePicker
                     selected={birthDate}
@@ -2067,7 +2074,7 @@ const Students = ({ schoolFees, programs }) => {
           <div style={{ height: 680, width: '100%' }}>
             <DataGrid
               loading={isLoading}
-              rows={data ? data.students : []}
+              rows={processedStudents}
               slots={{
                 toolbar: CustomToolbar,
               }}
@@ -2115,7 +2122,7 @@ const Students = ({ schoolFees, programs }) => {
                   align: 'left',
                   renderCell: (params) => (
                     <span>
-                      {params.row.middleName} {}
+                      {params.row.middleName} { }
                     </span>
                   ),
                 },
@@ -2127,12 +2134,12 @@ const Students = ({ schoolFees, programs }) => {
                   renderCell: (params) => <span>{params.row.lastName}</span>,
                 },
                 {
-                  field: 'incomingGradeLevel',
+                  field: 'gradeLevelDisplay',
                   headerName: 'Grade Level',
                   headerAlign: 'center',
                   align: 'center',
                   renderCell: (params) => (
-                    <span>{GRADE_LEVEL[params.row.incomingGradeLevel]}</span>
+                    <span>{params.row.gradeLevelDisplay}</span>
                   ),
                 },
                 {
@@ -2192,12 +2199,9 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Primary Guardian',
                   headerAlign: 'center',
                   align: 'center',
-                  valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation
-                      ?.primaryGuardianName || '',
                   renderCell: (params) => (
                     <div>
-                      <p className="font-medium capitalize">{params.value}</p>
+                      <p className="font-medium capitalize">{params.row.primaryGuardianName}</p>
                       <p className="text-sm text-gray-400 capitalize">
                         {params.row.student.creator?.guardianInformation?.primaryGuardianType?.toLowerCase()}
                       </p>
@@ -2209,12 +2213,9 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Primary Guardian Profile',
                   headerAlign: 'center',
                   align: 'center',
-                  valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation
-                      ?.primaryGuardianProfile || '',
                   renderCell: (params) => (
                     <div>
-                      <p className="font-medium capitalize">{params.value}</p>
+                      <p className="font-medium capitalize">{params.row.primaryGuardianProfile}</p>
                     </div>
                   ),
                 },
@@ -2223,14 +2224,11 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Secondary Guardian',
                   headerAlign: 'center',
                   align: 'center',
-                  valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation
-                      ?.secondaryGuardianName || '',
                   renderCell: (params) => (
                     <div>
-                      <p className="font-medium capitalize">{params.value}</p>
+                      <p className="font-medium capitalize">{params.row.secondaryGuardianName}</p>
                       <p className="text-sm text-gray-400 capitalize">
-                        {params.row.student.creator?.guardianInformation?.primaryGuardianType?.toLowerCase()}
+                        {params.row.student.creator?.guardianInformation?.secondaryGuardianType?.toLowerCase()}
                       </p>
                     </div>
                   ),
@@ -2240,12 +2238,9 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Secondary Guardian Profile',
                   headerAlign: 'center',
                   align: 'center',
-                  valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation
-                      ?.secondaryGuardianProfile || '',
                   renderCell: (params) => (
                     <div>
-                      <p className="font-medium capitalize">{params.value}</p>
+                      <p className="font-medium capitalize">{params.row.secondaryGuardianProfile}</p>
                     </div>
                   ),
                 },
@@ -2254,15 +2249,9 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Home Address',
                   headerAlign: 'center',
                   align: 'center',
-                  valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation?.address2 ||
-                    '',
                   renderCell: (params) => (
                     <span>
-                      {
-                        params.row.student.creator?.guardianInformation
-                          ?.address1
-                      }
+                      {params.row.homeAddress}
                     </span>
                   ),
                 },
@@ -2271,15 +2260,9 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Island',
                   headerAlign: 'center',
                   align: 'center',
-                  valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation?.address2 ||
-                    '',
                   renderCell: (params) => (
                     <span>
-                      {
-                        params.row.student.creator?.guardianInformation
-                          ?.address2
-                      }
+                      {params.row.island}
                     </span>
                   ),
                 },
@@ -2289,11 +2272,9 @@ const Students = ({ schoolFees, programs }) => {
                   headerAlign: 'center',
                   align: 'center',
                   width: 250, // Set your desired width here
-                  valueGetter: (params) =>
-                    params?.row?.student.creator?.email || '',
                   renderCell: (params) => (
                     <div>
-                      <span>{params?.row?.student?.creator?.email}</span>
+                      <span>{params.row.email}</span>
                     </div>
                   ),
                 },
@@ -2302,16 +2283,10 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Secondary Email',
                   headerAlign: 'center',
                   align: 'center',
-                  valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation
-                      ?.anotherEmail || '',
                   renderCell: (params) => (
                     <div>
                       <p className="font-small">
-                        {
-                          params.row.student.creator?.guardianInformation
-                            ?.anotherEmail
-                        }
+                        {params.row.secondaryEmail}
                       </p>
                     </div>
                   ),
@@ -2321,15 +2296,9 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Tel Number',
                   headerAlign: 'center',
                   align: 'center',
-                  valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation
-                      ?.telephoneNumber || '',
                   renderCell: (params) => (
                     <span>
-                      {
-                        params.row.student.creator?.guardianInformation
-                          ?.telephoneNumber
-                      }
+                      {params.row.telNumber}
                     </span>
                   ),
                 },
@@ -2338,31 +2307,23 @@ const Students = ({ schoolFees, programs }) => {
                   headerName: 'Mobile Number',
                   headerAlign: 'center',
                   align: 'center',
-                  valueGetter: (params) =>
-                    params.row.student.creator?.guardianInformation
-                      ?.mobileNumber || '',
                   renderCell: (params) => (
                     <span>
-                      {
-                        params.row.student.creator?.guardianInformation
-                          ?.mobileNumber
-                      }
+                      {params.row.mobileNumber}
                     </span>
                   ),
                 },
                 {
-                  field: 'status',
+                  field: 'studentStatusDisplay',
                   headerName: 'Status',
                   headerAlign: 'center',
                   align: 'center',
-                  valueGetter: (params) => params?.row?.studentStatus || '',
                   renderCell: (params) => (
                     <div className="inline-flex items-center justify-center">
                       <h4 className="flex space-x-3">
                         <span
-                          className={`rounded-full py-0.5 text-xs px-2 ${
-                            ENROLLMENT_STATUS_BG_COLOR[params.row.studentStatus]
-                          }`}
+                          className={`rounded-full py-0.5 text-xs px-2 ${ENROLLMENT_STATUS_BG_COLOR[params.row.studentStatus]
+                            }`}
                         >
                           {STUDENT_STATUS[params.row?.studentStatus]}
                         </span>
@@ -2371,11 +2332,10 @@ const Students = ({ schoolFees, programs }) => {
                   ),
                 },
                 {
-                  field: 'paymentStatus',
+                  field: 'paymentStatusDisplay',
                   headerName: 'Payment Status',
                   headerAlign: 'center',
                   align: 'center',
-                  valueGetter: (params) => params?.row?.studentStatus || '',
                   renderCell: (params) => {
                     const paymentStatus =
                       params?.row?.student?.schoolFees?.[0]?.transaction
