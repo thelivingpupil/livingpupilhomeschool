@@ -266,7 +266,7 @@ const deadlines2025 = {
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 6], // Nov 5, Feb 5
-      [PaymentType.QUARTERLY]: [0, 3, 5, 6], // Nov 5, Jan 5, Feb 5
+      [PaymentType.QUARTERLY]: [0, 2, 4, 6], // Nov 5, Jan 5, Feb 5
       [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6], // Sep 5, Oct 5, Nov 5, Dec 5, Jan 5, Feb 5
       [PaymentType.PAY_ALL]: [0],
     },
