@@ -22,9 +22,9 @@ export const sendMail = async ({ from, html, subject, text, to, cc = [], attachm
     cc: cc.length > 0 ? cc : undefined, // Include CC only if there are any addresses
   };
 
-  process.env.NODE_ENV === 'production'
-    ? await transporter.sendMail(data)
-    : console.log(data);
+  if (process.env.NODE_ENV === 'production') {
+    await transporter.sendMail(data);
+  }
 };
 
 export default transporter;
