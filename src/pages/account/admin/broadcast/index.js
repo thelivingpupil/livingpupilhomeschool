@@ -120,8 +120,6 @@ const Broadcast = () => {
     useEffect(() => {
         if (studentsData && (filterValues.length > 0 || program.length > 0 || accreditation.length > 0)) {
             let filtered = filterEnrolledStudents(studentsData, schoolYear);
-            // Log the initial list of students
-            //console.log('Initial students list:', filtered);
 
             // Common status filter for all cases
             const statusFilter = (student) =>
@@ -132,43 +130,33 @@ const Broadcast = () => {
                 filtered = filtered.filter((student) =>
                     filterValues.includes(student.incomingGradeLevel) && statusFilter(student)
                 );
-                //console.log('Filtered by grade levels:', filtered);
             } else if (filterBy === 'gradeGroups') {
                 // Filter by Grade Groups
                 const selectedGroups = GRADE_LEVEL_GROUPS.filter((g) => filterValues.includes(g.name));
                 filtered = filtered.filter((student) =>
                     selectedGroups.some((group) => group.levels.includes(student.incomingGradeLevel)) && statusFilter(student)
                 );
-                //console.log('Filtered by grade groups:', filtered);
             } else if (filterBy === 'gradeForms') {
                 // Filter by Grade Forms
                 const selectedForms = filterValues.flatMap((form) => GRADE_LEVEL_FORMS[form]);
                 filtered = filtered.filter((student) =>
                     selectedForms.includes(student.incomingGradeLevel) && statusFilter(student)
                 );
-                //console.log('Filtered by grade forms:', filtered);
             }
 
             // Apply Program filter (if multiple are selected)
             if (program.length > 0) {
-                //console.log('Program selected:', program);
                 filtered = filtered.filter((student) => program.includes(student.program));
-                //console.log('Filtered by program:', filtered);
             }
 
             // Apply Accreditation filter (if multiple are selected)
             if (accreditation.length > 0) {
-                //console.log('Accreditation selected:', accreditation);
                 filtered = filtered.filter((student) => accreditation.includes(student.accreditation));
-                //console.log('Filtered by accreditation:', filtered);
             }
 
-            // Log final filtered students
-            //console.log('Final filtered students:', filtered);
             setFilteredStudents(filtered);
         } else {
             setFilteredStudents(studentsData?.students || []);
-            //console.log('No filters applied, showing all students.');
         }
     }, [filterValues, filterBy, program, accreditation, studentsData, schoolYear]);
 

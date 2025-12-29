@@ -19,6 +19,25 @@ const handler = async (req, res) => {
         });
       }
 
+      // Verify the transaction belongs to the user
+      const transaction = await prisma.transaction.findUnique({
+        where: { transactionId },
+        select: { userId: true },
+      });
+
+      if (!transaction) {
+        return res.status(404).json({
+          errors: { error: { msg: 'Transaction not found' } },
+        });
+      }
+
+      // Check ownership - user must own the transaction
+      if (!transaction.userId || transaction.userId !== session.user.userId) {
+        return res.status(403).json({
+          errors: { error: { msg: 'Forbidden: You can only upload proof for your own transactions' } },
+        });
+      }
+
       // Update the transaction with the payment proof link
       const updatedTransaction = await prisma.transaction.update({
         where: { transactionId },

@@ -30,10 +30,6 @@ const Users = () => {
   const [isSubmitting, setSubmittingState] = useState(false);
   const toggleModal = () => setModalVisibility(!showModal);
 
-  const myFunction = () => console.log(data);
-
-  myFunction();
-
   function CustomToolbar() {
     return (
       <GridToolbarContainer>

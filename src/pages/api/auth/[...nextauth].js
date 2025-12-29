@@ -50,7 +50,6 @@ export default NextAuth({
     createUser: async (message) => {
       const { user } = message;
       const email = user.email;
-      console.log('createUser event triggered for:', email); // Debug log
 
       // Send onboarding email
       try {
@@ -60,9 +59,8 @@ export default NextAuth({
           text: onboardText({ email }),
           to: email,
         });
-        console.log('Onboarding email sent to:', email); // Debug log
       } catch (error) {
-        console.error('Error sending onboarding email:', error); // Debug log for errors
+        console.error('Error sending onboarding email:', error);
       }
     },
   },

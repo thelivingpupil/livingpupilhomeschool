@@ -184,7 +184,6 @@ const CartProvider = ({ children }) => {
   };
 
   const uploadSignature = (dataUrl) => {
-    console.log(dataUrl);
     const blob = dataURLToBlob(dataUrl);
     const extension = 'png';
     const fileName = `signature-${crypto
@@ -234,7 +233,6 @@ const CartProvider = ({ children }) => {
     if (showSignCanvas && sigCanvas.current) {
       sigCanvas.current.clear(); // Ensure the canvas is clear on show
       setIsEmptyCanvas(true); // Reset the empty status when modal opens
-      console.log(isEmptyCanvas);
     }
   }, [showSignCanvas]);
 
@@ -312,7 +310,6 @@ const CartProvider = ({ children }) => {
         setTotalPayment(response.data.totalPayment || 0);
         setTransactionId(response.data.transactionId);
         setPaymentBreakdown(response.data.payments || []); // Store payment breakdown
-        console.log('Response: ', { response }); // Store transactionId
         togglePaymentLinkVisibility();
         setCart([]);
         localStorage.setItem(LPH_CART_KEY, JSON.stringify([]));

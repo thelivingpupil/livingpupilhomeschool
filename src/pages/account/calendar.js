@@ -21,7 +21,6 @@ const types = {
 const Calendar = ({ events }) => {
   const [expandedImage, setExpandedImage] = useState(null);
   const [expandedEventId, setExpandedEventId] = useState(null);
-  console.log(events)
 
   const handleImageClick = (imageUrl) => {
     setExpandedImage(imageUrl);

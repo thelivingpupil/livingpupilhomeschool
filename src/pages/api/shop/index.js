@@ -82,7 +82,6 @@ const handler = async (req, res) => {
           payments,
           signatureLink,
         });
-        console.log('Create Order Fee Result:', result);
         await sendMail({
           from: process.env.EMAIL_FROM,
           html: installmentHtml({
@@ -239,7 +238,6 @@ const handler = async (req, res) => {
         res.status(400).json(result);
         return;
       }
-      console.log('Order Result:', result);
       // For successful INSTALLMENT processing
       res.status(200).json({
         data: {

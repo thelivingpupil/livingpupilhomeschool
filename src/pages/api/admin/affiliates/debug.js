@@ -1,5 +1,6 @@
 import { getAffiliateDataPerYear } from '@/prisma/services/user.js';
 import prisma from '@/prisma/index';
+import { getSession } from 'next-auth/react';
 
 export default async function handler(req, res) {
     if (req.method !== 'GET') {
@@ -7,13 +8,19 @@ export default async function handler(req, res) {
     }
 
     try {
-        console.log('=== DEBUGGING AFFILIATE DATA ===');
+        // Authenticate and authorize - only ADMIN users can access debug endpoint
+        const session = await getSession({ req });
+
+        if (!session || session.user?.userType !== 'ADMIN') {
+            return res.status(403).json({
+                errors: { error: { msg: 'Forbidden: Admin access required' } }
+            });
+        }
 
         // 1. Check total users
         const totalUsers = await prisma.user.count({
             where: { deletedAt: null }
         });
-        console.log(`Total users: ${totalUsers}`);
 
         // 2. Check users with userCode
         const allUsers = await prisma.user.findMany({
@@ -21,7 +28,6 @@ export default async function handler(req, res) {
             select: { userCode: true }
         });
         const usersWithUserCode = allUsers.filter(user => user.userCode).length;
-        console.log(`Users with userCode: ${usersWithUserCode}`);
 
         // 3. Check users with inviteCode
         const allUsersWithInviteCode = await prisma.user.findMany({
@@ -29,7 +35,6 @@ export default async function handler(req, res) {
             select: { inviteCode: true }
         });
         const usersWithInviteCode = allUsersWithInviteCode.filter(user => user.inviteCode).length;
-        console.log(`Users with inviteCode: ${usersWithInviteCode}`);
 
         // 4. Get sample of users with userCode
         const allUsersForAffiliates = await prisma.user.findMany({
@@ -43,7 +48,6 @@ export default async function handler(req, res) {
             }
         });
         const sampleAffiliates = allUsersForAffiliates.filter(user => user.userCode).slice(0, 5);
-        console.log('Sample affiliates:', sampleAffiliates);
 
         // 5. Get sample of users with inviteCode
         const allUsersForInvitees = await prisma.user.findMany({
@@ -57,7 +61,6 @@ export default async function handler(req, res) {
             }
         });
         const sampleInvitees = allUsersForInvitees.filter(user => user.inviteCode).slice(0, 5);
-        console.log('Sample invitees:', sampleInvitees);
 
         // 6. Check workspaces with student records
         const workspacesWithStudents = await prisma.workspace.count({
@@ -65,7 +68,6 @@ export default async function handler(req, res) {
                 studentRecord: { not: null }
             }
         });
-        console.log(`Workspaces with student records: ${workspacesWithStudents}`);
 
         // 7. Check for any affiliate relationships that exist
         const allUsersForRelationships = await prisma.user.findMany({
@@ -89,12 +91,8 @@ export default async function handler(req, res) {
         });
         const affiliateRelationships = allUsersForRelationships.filter(user => user.inviteCode).slice(0, 10);
 
-        console.log('Affiliate relationships found:', affiliateRelationships.length);
-        console.log('Sample relationships:', affiliateRelationships);
-
         // 8. Test the actual affiliate function for 2024
         const affiliateData = await getAffiliateDataPerYear(2024);
-        console.log(`Affiliate data for 2024: ${affiliateData.length} affiliates`);
 
         return res.status(200).json({
             success: true,

@@ -178,8 +178,6 @@ const handler = async (req, res) => {
                 courier
             } = req.body;
 
-            console.log(requestCode)
-
             if (requestCode === null) {
                 return res.status(400).json({ error: 'Request code required' });
             }
@@ -202,7 +200,6 @@ const handler = async (req, res) => {
                         to: [email],
                         replyTo: process.env.ADMIN_EMAIL,
                     });
-                    console.log('Email sent for status Received');
                     break;
 
                 case 'In_Progress': // Case for 'In Progress'
@@ -222,7 +219,6 @@ const handler = async (req, res) => {
                         to: [email],
                         replyTo: process.env.ADMIN_EMAIL,
                     });
-                    console.log('Email sent for status In Progress');
                     break;
 
                 case 'For_Delivery': // Case for 'For Delivery'
@@ -244,7 +240,6 @@ const handler = async (req, res) => {
                             to: [email],
                             replyTo: process.env.ADMIN_EMAIL,
                         });
-                        console.log('Email sent for outside Cebu delivery');
                     } else if (region === 'within-cebu') {
                         await sendMail({
                             from: process.env.EMAIL_FROM,
@@ -258,7 +253,6 @@ const handler = async (req, res) => {
                             to: [email],
                             replyTo: process.env.ADMIN_EMAIL,
                         });
-                        console.log('Email sent for within Cebu delivery');
                     } else {
                         console.error('Invalid region for delivery');
                     }
@@ -279,7 +273,6 @@ const handler = async (req, res) => {
                         to: [email],
                         replyTo: process.env.ADMIN_EMAIL,
                     });
-                    console.log('Email sent ready for pickup');
                     break;
 
                 case 'For_Document_Receipt': // Case for 'For Document Receipt'
@@ -297,7 +290,6 @@ const handler = async (req, res) => {
                         to: [email],
                         replyTo: process.env.ADMIN_EMAIL,
                     });
-                    console.log('Email sent ready for for Document Receipt');
                     break;
 
                 case 'For_Document_Received': // Case for 'For Document Receipt'
@@ -314,7 +306,6 @@ const handler = async (req, res) => {
                         to: [email],
                         replyTo: process.env.ADMIN_EMAIL,
                     });
-                    console.log('Email sent ready for for Document Received');
                     break;
 
                 case 'Completed': // Case for 'For Document Receipt'

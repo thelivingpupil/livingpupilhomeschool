@@ -99,7 +99,6 @@ export default async function handler(req, res) {
                             });
 
                             emailCounter++;
-                            console.log(`Email sent to ${studentRecord.student?.creator?.email} for deadline ${deadlineStr}`);
                         }
                     }
                 }
@@ -107,7 +106,6 @@ export default async function handler(req, res) {
                 console.warn(`No school fee with order 0 found for student ${studentRecord.id}`);
             }
         }
-        console.log(`Total emails sent: ${emailCounter}`);
         res.status(200).json({ message: 'Payment reminders sent if deadlines were within 7 days.' });
     } catch (error) {
         console.error('Error sending payment reminders:', error);

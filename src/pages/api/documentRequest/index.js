@@ -58,7 +58,6 @@ const handler = async (req, res) => {
         formData2, // For requestor information
         totalFee,
       } = req.body;
-      console.log({ letterRequestEccd, letterRequest137, eccdForm, affidavit });
       // Map requestor information from formData2
       const requestorInformation = {
         requestorFullName: formData2.requestorName,
@@ -78,7 +77,6 @@ const handler = async (req, res) => {
         gradeLevelsWithLp: student.gradeLevelsWithLp,
         lastSchoolYearWithLp: student.lastSchoolYearWithLp,
       }));
-      console.log('Document Request - Students Data:', documents);
       // Map documents for each student
       const documentsData = documents.map((studentDoc) => ({
         studentIndex: studentDoc.studentIndex,
@@ -87,9 +85,6 @@ const handler = async (req, res) => {
           url: doc.url,
         })),
       }));
-      documentsData.forEach((studentData, index) => {
-        console.log(`Student ${index} documents:`, studentData.documents);
-      });
       // Map transaction details
       const transaction = {
         email: formData2.email,
@@ -123,7 +118,6 @@ const handler = async (req, res) => {
       }
 
       const requestCode = await generateUniqueRequestCode(prisma);
-      console.log('Generated Request Code:', requestCode);
       // Prepare the data object for createDocumentRequest
       const requestData = {
         requestCode: requestCode,
@@ -146,7 +140,6 @@ const handler = async (req, res) => {
         transactionId,
         referenceNumber,
       } = result;
-      console.log('Document request created with code:', result);
       res.status(201).json({
         success: true,
         message: 'Document request created successfully.',

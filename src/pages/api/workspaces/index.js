@@ -13,7 +13,6 @@ const handler = async (req, res) => {
         session.user.email
       );
     } catch (e) {
-      console.log(e);
       throw e;
     }
 

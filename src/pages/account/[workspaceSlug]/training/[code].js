@@ -29,8 +29,6 @@ const Course = ({ course }) => {
     )
     : null;
 
-  console.log(parentCourses)
-
   const courseComplete = () => {
     setSubmittingState(true);
     api('/api/parent-training', {

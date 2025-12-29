@@ -20,8 +20,6 @@ const handler = async (req, res) => {
             description,
             source)
 
-        console.log(transaction)
-
         res.status(200).json({
             message: 'School fees renewed successfully',
             data: {

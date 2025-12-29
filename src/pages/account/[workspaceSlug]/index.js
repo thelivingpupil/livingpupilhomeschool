@@ -374,7 +374,6 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
 
   //set the zipcode
   useEffect(() => {
-    console.log('selectedCity', selectedCity);
     let city = getCityMunByCode(selectedCity);
 
     if (city) {
@@ -581,7 +580,6 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       method: 'POST',
     }).then((response) => {
       setSubmittingCodeState(false);
-      console.log('errors', response.errors);
       if (response.errors) {
         setDiscount(null);
         Object.keys(response.errors).forEach((error) =>
@@ -942,7 +940,6 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       document.getElementById('scroller').scroll(0, 0);
     } else {
       toggleReview();
-      console.log('discount' + fee.value);
     }
   };
 
@@ -1097,8 +1094,6 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       setMonthlyPayment(
         calculateMonthlyPayment(monthIndex, programFeeByAccreditation)
       );
-    } else {
-      console.log('Accreditation Empty');
     }
   }, [accreditation, programFee, monthIndex, calculateMonthlyPayment]);
 

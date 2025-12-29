@@ -588,8 +588,6 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       method: 'POST',
     }).then((response) => {
       setSubmittingCodeState(false);
-      console.log('errors', response.errors);
-      console.log('data', response.data);
       if (response.errors) {
         setDiscount(null);
         Object.keys(response.errors).forEach((error) =>
@@ -948,7 +946,6 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       toast.error('No transactionId');
       return;
     }
-    console.log('Transaction ID:', transactionId);
     setUploadingProof(true);
     try {
       const extension = paymentProofFile.name.split('.').pop();
@@ -1017,12 +1014,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       const programFeeByAccreditation = programFee?.tuitionFees.find(
         (tuition) => tuition.type === accreditation
       );
-      console.log('Payment Terms: ' + programFeeByAccreditation);
       setMonthlyPayment(
         calculateMonthlyPayment(monthIndex, programFeeByAccreditation)
       );
-    } else {
-      console.log('Accreditation Empty');
     }
   }, [accreditation, programFee, monthIndex, calculateMonthlyPayment]);
 

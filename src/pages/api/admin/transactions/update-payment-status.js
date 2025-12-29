@@ -7,6 +7,14 @@ const handler = async (req, res) => {
     if (method === 'PUT') {
         try {
             const session = await validateSession(req, res);
+
+            // Require ADMIN role to update payment status
+            if (!session || session.user?.userType !== 'ADMIN') {
+                return res.status(403).json({
+                    errors: { error: { msg: 'Forbidden: Admin access required' } }
+                });
+            }
+
             const { transactionId, paymentStatus } = req.body;
 
             if (!transactionId || !paymentStatus) {

@@ -103,7 +103,6 @@ const ShopItem = ({ item }) => {
             const progress = Math.round(
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100
             );
-            console.log('Upload progress:', progress + '%');
           },
           (error) => reject(error),
           async () => {

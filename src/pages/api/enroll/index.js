@@ -25,7 +25,6 @@ const handler = async (req, res) => {
   if (method === 'POST') {
     const session = await validateSession(req, res);
     const studentStatus = STUDENT_STATUS.PENDING.toString();
-    console.log(studentStatus);
     const {
       firstName,
       middleName,
@@ -166,7 +165,6 @@ const handler = async (req, res) => {
       schoolYear,
       'UNFINISHED'
     ); //create parent training
-    console.log('sCHOOL FEE', schoolFee);
     const url = schoolFee.url;
     await sendMail({
       html: html({

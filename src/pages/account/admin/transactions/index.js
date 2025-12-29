@@ -130,7 +130,6 @@ const Transactions = () => {
     const initialPayment = getStudentInitialFee(
       transaction.schoolFee.student.studentRecord.studentId
     );
-    console.log('Trasanction:', transaction);
     const deadline =
       initialPayment?.transaction?.paymentStatus === 'S'
         ? getDeadline(
@@ -445,19 +444,10 @@ const Transactions = () => {
             body: JSON.stringify(data),
           })
             .then((response) => {
-              console.log(response);
               setUploadCount(uploadCount++);
               setSubmittingState(uploadCount !== results.data.length);
-              if (response.errors) {
-                Object.keys(response.errors).forEach((error) =>
-                  console.log(response.errors[error].msg)
-                );
-              } else {
-                console.log('Student information successfully submitted!');
-              }
             })
             .catch((error) => {
-              console.log(error);
               setUploadCount(uploadCount++);
               setSubmittingState(uploadCount !== results.data.length);
             });
@@ -509,7 +499,7 @@ const Transactions = () => {
             <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${GRADE_LEVEL[updateTransaction.gradeLevel]
               }`}</span>
             <span
-              className={`px-2 py-0.5 text-xs rounded-full ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
+              className={`px-2 py-0.5 text-xs rounded-full flex items-center justify-center ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
                 }`}
             >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
           </h4>
@@ -572,7 +562,7 @@ const Transactions = () => {
                 </div>
                 <div className="flex">
                   <span
-                    className={`px-6 py-0.5 rounded-full flex items-center ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
+                    className={`px-6 py-0.5 rounded-full flex items-center justify-center ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
                       }`}
                   >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
                 </div>
@@ -615,7 +605,6 @@ const Transactions = () => {
                 {/* <button
               className="px-3 py-1 text-white text-base text-center rounded bg-gray-500 hover:bg-gray-400 disabled:opacity-25"
               disabled={isUpdatingTransaction}
-              //onClick={console.log(updateTransaction.studentId)}
               onClick={handleUndo}
             >
               Undo
@@ -648,7 +637,7 @@ const Transactions = () => {
                 </div>
                 <div className="flex">
                   <span
-                    className={`px-6 py-0.5 rounded-full flex items-center ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
+                    className={`px-6 py-0.5 rounded-full flex items-center justify-center ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
                       }`}
                   >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
                 </div>
@@ -707,7 +696,7 @@ const Transactions = () => {
                 </div>
                 <div className="flex">
                   <span
-                    className={`px-6 py-0.5 rounded-full flex items-center  ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
+                    className={`px-6 py-0.5 rounded-full flex items-center justify-center ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
                       }`}
                   >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
                 </div>
@@ -1065,7 +1054,7 @@ const Transactions = () => {
                                   </span>
                                 )}
                                 <span
-                                  className={`rounded-full py-0.5 text-xs px-2 ${STATUS_BG_COLOR[transaction.paymentStatus]
+                                  className={`rounded-full py-0.5 text-xs px-2 flex items-center justify-center ${STATUS_BG_COLOR[transaction.paymentStatus]
                                     }`}
                                 >
                                   {STATUS_CODES[transaction.paymentStatus]}

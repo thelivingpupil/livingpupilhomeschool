@@ -9,8 +9,6 @@ import prisma from '@/prisma/index';
 import Card from '@/components/Card';
 
 const RequestsExport = ({ data }) => {
-    console.log('data export', data);
-
     // const headers = [
     //     { key: 'createdAt', label: 'Request Date' },
     //     { key: 'requestCode', label: 'Request Code' },

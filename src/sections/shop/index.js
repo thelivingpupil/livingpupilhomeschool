@@ -83,7 +83,6 @@ const Shop = ({ categories, items }) => {
     handleEndDrawing,
   } = useCartContext();
 
-  console.log(shippingFee);
   const [cebuLocation, setCebuLocation] = useState('');
   const [paymentProofFile, setPaymentProofFile] = useState(null);
   const [uploadingProof, setUploadingProof] = useState(false);

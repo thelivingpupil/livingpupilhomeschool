@@ -646,7 +646,6 @@ const Shop = () => {
                     // Fallback (in case length is different)
                     label = `Payment #${feeIndex + 1}`;
                   }
-                  console.log('feeWrapper', feeWrapper);
                   return (
                     <>
                       <div

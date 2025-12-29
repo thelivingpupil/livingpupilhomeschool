@@ -199,7 +199,6 @@ const Students = ({ schoolFees, programs }) => {
   const toggleUpdateStudentStatusModal = () =>
     setUpdateStudentStatusModalVisibility(!showUpdateStudentStatusModal);
   const toggleConfirmChangeModal = () => {
-    console.log('empty');
     setShowConfirmChange(!showConfirmChange);
   };
 
@@ -255,8 +254,6 @@ const Students = ({ schoolFees, programs }) => {
       method: 'POST',
     }).then((response) => {
       setSubmittingCodeState(false);
-      console.log('errors', response.errors);
-      console.log('data', response.data);
       if (response.errors) {
         setDiscount(null);
         Object.keys(response.errors).forEach((error) =>
@@ -276,8 +273,6 @@ const Students = ({ schoolFees, programs }) => {
       method: 'POST',
     }).then((response) => {
       setSubmittingCodeState(false);
-      console.log('errors', response.errors);
-      console.log('data', response.data);
       if (response.errors) {
         setScholarship(null);
         Object.keys(response.errors).forEach((error) =>
@@ -363,23 +358,11 @@ const Students = ({ schoolFees, programs }) => {
     setPictureLink(student.image);
     setReportCardLink(student.reportCard);
     setAccreditation(student.accreditation);
-    const paymentType = student.student.schoolFees[0].paymentType;
-    setPayment(paymentType);
+    setPayment(student.student.schoolFees[0].paymentType);
     setScholarship(student.scholarship);
     setUserId(student.student.creator.guardianInformation.userId);
     setPaymentMethod('ONLINE');
     setEmail(student.student.creator.email);
-    
-    // Initialize month index for monthly payments
-    if (paymentType === PaymentType.MONTHLY) {
-      if (student.schoolYear === '2024-2025') {
-        setMonthIndex(getMonthIndex(new Date()));
-      } else {
-        setMonthIndex(getMonthIndexCurrent(new Date()));
-      }
-    } else {
-      setMonthIndex(null);
-    }
   };
 
   const viewUpdateStudentStatus = (student) => {
@@ -446,17 +429,6 @@ const Students = ({ schoolFees, programs }) => {
 
   const generateNewSchoolFees = (studentId) => {
     setSubmittingState(true);
-    
-    // Calculate month index automatically if not provided and payment is monthly
-    let finalMonthIndex = monthIndex;
-    if (payment === PaymentType.MONTHLY && !monthIndex) {
-      if (schoolYear === '2024-2025') {
-        finalMonthIndex = getMonthIndex(new Date());
-      } else {
-        finalMonthIndex = getMonthIndexCurrent(new Date());
-      }
-    }
-    
     api('/api/transactions', {
       body: {
         userId,
@@ -472,7 +444,7 @@ const Students = ({ schoolFees, programs }) => {
         discountCode,
         scholarshipCode,
         studentId,
-        monthIndex: finalMonthIndex,
+        monthIndex,
       },
       method: 'POST',
     })
@@ -1100,21 +1072,6 @@ const Students = ({ schoolFees, programs }) => {
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
                 onChange={(e) => {
                   setPayment(e.target.value ? e.target.value : null);
-                  
-                  // Reset or recalculate month index when changing to/from monthly payment
-                  if (e.target.value === PaymentType.MONTHLY) {
-                    // Auto-calculate month index for monthly payment if not already set
-                    if (!monthIndex) {
-                      if (schoolYear === '2024-2025') {
-                        setMonthIndex(getMonthIndex(new Date()));
-                      } else {
-                        setMonthIndex(getMonthIndexCurrent(new Date()));
-                      }
-                    }
-                  } else {
-                    // Clear month index for non-monthly payments
-                    setMonthIndex(null);
-                  }
 
                   //  if (e.target.value === PaymentType.ANNUAL) {
                   //    setFee(programFeeByAccreditation?.paymentTerms[0]);
@@ -1143,38 +1100,6 @@ const Students = ({ schoolFees, programs }) => {
               </div>
             </div>
           </div>
-          {payment === PaymentType.MONTHLY && (
-            <div className="mt-3">
-              <label className="text-lg font-bold" htmlFor="txtMonthIndex">
-                Month Index (optional)
-              </label>
-              <input
-                className="px-3 py-2 w-full rounded border-2"
-                type="number"
-                min="1"
-                max="8"
-                onChange={(e) => {
-                  const value = e.target.value ? parseInt(e.target.value) : null;
-                  // Ensure value doesn't exceed 8
-                  if (value && value > 8) {
-                    setMonthIndex(8);
-                  } else if (value && value < 1) {
-                    setMonthIndex(1);
-                  } else {
-                    setMonthIndex(value);
-                  }
-                }}
-                placeholder="Leave empty for automatic calculation"
-                value={monthIndex || ''}
-              />
-              <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded">
-                <p className="text-xs text-blue-900">
-                  <strong>Note:</strong> The Month Index determines how many monthly payments will be generated (1-8). 
-                  If left empty, the system will automatically calculate based on the current month and school year.
-                </p>
-              </div>
-            </div>
-          )}
           <div>
             <label className="text-lg font-bold" htmlFor="txtMother">
               Scholarship (optional)
