@@ -415,6 +415,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       firstName.length > 0 &&
       lastName.length > 0 &&
       reason.length > 0 &&
+      gender.length > 0 &&
       specialRadio.length > 0 &&
       schoolYear.length > 0 &&
       formerSchoolName.length > 0 &&
@@ -485,12 +486,12 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
     const evaluate =
       program === Program.HOMESCHOOL_COTTAGE
         ? programFee.programType === program &&
-          programFee.enrollmentType === enrollmentType &&
-          programFee.gradeLevel === gradeLevel &&
-          programFee.cottageType === cottageType
+        programFee.enrollmentType === enrollmentType &&
+        programFee.gradeLevel === gradeLevel &&
+        programFee.cottageType === cottageType
         : programFee.programType === program &&
-          programFee.enrollmentType === enrollmentType &&
-          programFee.gradeLevel === gradeLevel;
+        programFee.enrollmentType === enrollmentType &&
+        programFee.gradeLevel === gradeLevel;
 
     return evaluate;
   });
@@ -501,7 +502,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         return (
           selectedPProgram.programType === program &&
           selectedPProgram.gradeLevel ===
-            GRADE_TO_FORM_MAP[incomingGradeLevel] &&
+          GRADE_TO_FORM_MAP[incomingGradeLevel] &&
           selectedPProgram.enrollmentType === enrollmentType &&
           selectedPProgram.cottageType === cottageType
         );
@@ -624,9 +625,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -669,9 +670,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -716,9 +717,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -774,9 +775,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       .update(dataUrl)
       .digest('hex')
       .substring(0, 12)}-${format(
-      new Date(),
-      'yyyy.MM.dd.kk.mm.ss'
-    )}.${extension}`;
+        new Date(),
+        'yyyy.MM.dd.kk.mm.ss'
+      )}.${extension}`;
 
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, blob);
@@ -954,9 +955,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         .update(paymentProofFile.name + Date.now())
         .digest('hex')
         .substring(0, 12)}-${format(
-        new Date(),
-        'yyyy.MM.dd.kk.mm.ss'
-      )}.${extension}`;
+          new Date(),
+          'yyyy.MM.dd.kk.mm.ss'
+        )}.${extension}`;
       const storageRef = ref(storage, fileName);
       const uploadTask = uploadBytesResumable(storageRef, paymentProofFile);
       const downloadURL = await new Promise((resolve, reject) => {
@@ -1068,9 +1069,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             </label>
             <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
               <input
-                className={`px-3 py-2 rounded md:w-1/3 ${
-                  firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`px-3 py-2 rounded md:w-1/3 ${firstName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                  }`}
                 onChange={(e) => {
                   let firstName = e.target.value;
                   setFirstName(firstName);
@@ -1096,9 +1096,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                 disabled={!!student?.middleName}
               />
               <input
-                className={`px-3 py-2 rounded md:w-1/3 ${
-                  lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`px-3 py-2 rounded md:w-1/3 ${lastName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                  }`}
                 onChange={(e) => {
                   let lastName = e.target.value;
                   setLastName(lastName);
@@ -1124,9 +1123,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                 Birthday <span className="ml-1 text-red-600">*</span>
               </label>
               <div
-                className={`relative flex flex-row rounded ${
-                  !birthDate ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`relative flex flex-row rounded ${!birthDate ? 'border-red-500 border-2' : 'border'
+                  }`}
               >
                 <DatePicker
                   selected={birthDate}
@@ -1160,9 +1158,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               </label>
               <div className="flex flex-row">
                 <div
-                  className={`relative inline-block w-full rounded ${
-                    !gender ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`relative inline-block w-full rounded ${!gender ? 'border-red-500 border-2' : 'border'
+                    }`}
                 >
                   <select
                     className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1213,9 +1210,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             </label>
             <div className="relative flex flex-row space-x-5">
               <textarea
-                className={`w-full px-3 py-2 rounded ${
-                  !reason ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`w-full px-3 py-2 rounded ${!reason ? 'border-red-500 border-2' : 'border'
+                  }`}
                 onChange={(e) => setReason(e.target.value)}
                 placeholder="Why did you choose to homeschool your child?"
                 rows={5}
@@ -1260,11 +1256,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               </label>
               <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
                 <input
-                  className={`px-3 py-2 rounded md:w-1/2 ${
-                    specialNeeds.length <= 0
-                      ? 'border-red-500 border-2'
-                      : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-1/2 ${specialNeeds.length <= 0
+                    ? 'border-red-500 border-2'
+                    : 'border'
+                    }`}
                   onChange={(e) => setSpecialNeeds(e.target.value)}
                   placeholder=""
                   value={specialNeeds}
@@ -1280,9 +1275,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             </label>
             <div className="flex flex-col space-y-3 mt-3">
               <select
-                className={`px-3 py-2 rounded md:w-3/4 ${
-                  !selectedProvince ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`px-3 py-2 rounded md:w-3/4 ${!selectedProvince ? 'border-red-500 border-2' : 'border'
+                  }`}
                 value={selectedProvince}
                 onChange={handleProvinceChange}
               >
@@ -1295,9 +1289,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               </select>
               {!isCity ? (
                 <select
-                  className={`px-3 py-2 rounded md:w-3/4 ${
-                    !selectedCity ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedCity ? 'border-red-500 border-2' : 'border'
+                    }`}
                   value={selectedCity}
                   onChange={handleCityChange}
                   disabled={!selectedProvince}
@@ -1311,9 +1304,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                 </select>
               ) : (
                 <input
-                  className={`px-3 py-2 rounded md:w-3/4 ${
-                    !selectedCity ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedCity ? 'border-red-500 border-2' : 'border'
+                    }`}
                   placeholder="City"
                   onChange={handleCityChangeInput}
                   value={selectedCity}
@@ -1329,9 +1321,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               </div>
               {!isBarangay ? (
                 <select
-                  className={`px-3 py-2 rounded md:w-3/4 ${
-                    !selectedBarangay ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedBarangay ? 'border-red-500 border-2' : 'border'
+                    }`}
                   value={selectedBarangay}
                   onChange={handleBarangayChange}
                   disabled={!selectedCity}
@@ -1345,9 +1336,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                 </select>
               ) : (
                 <input
-                  className={`px-3 py-2 rounded md:w-3/4 ${
-                    !selectedBarangay ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-3/4 ${!selectedBarangay ? 'border-red-500 border-2' : 'border'
+                    }`}
                   placeholder="Barangay"
                   onChange={handleBarangayChangeInput}
                   value={selectedBarangay}
@@ -1366,17 +1356,15 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           <div className="flex flex-col">
             <div className="flex flex-row space-x-5">
               <input
-                className={`px-3 py-2 rounded md:w-3/4 ${
-                  !address1 ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`px-3 py-2 rounded md:w-3/4 ${!address1 ? 'border-red-500 border-2' : 'border'
+                  }`}
                 placeholder="House No. St. Name, Village/Subdivision"
                 onChange={handleAddress1}
                 value={address1}
               />
               <input
-                className={`px-3 py-2 rounded md:w-1/4 ${
-                  !zipCode ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`px-3 py-2 rounded md:w-1/4 ${!zipCode ? 'border-red-500 border-2' : 'border'
+                  }`}
                 placeholder="ZIP Code"
                 onChange={handleZipCodeChange}
                 value={zipCode}
@@ -1479,9 +1467,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             </tr>
             <tr>
               <td
-                className={`w-1/2 px-3 py-2 ${
-                  !birthCertificateLink ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`w-1/2 px-3 py-2 ${!birthCertificateLink ? 'border-red-500 border-2' : 'border'
+                  }`}
               >
                 <h3 className="text-xl font-medium">Birth Certificate</h3>
                 <p className="text-sm text-gray-400">
@@ -1583,9 +1570,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${
-              !enrollmentType ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`relative inline-block w-full rounded ${!enrollmentType ? 'border-red-500 border-2' : 'border'
+              }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1643,9 +1629,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             </label>
             <div className="flex flex-row">
               <div
-                className={`relative inline-block w-full rounded ${
-                  !incomingGradeLevel ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`relative inline-block w-full rounded ${!incomingGradeLevel ? 'border-red-500 border-2' : 'border'
+                  }`}
               >
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1679,9 +1664,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             </label>
             <div className="flex flex-row">
               <div
-                className={`relative inline-block w-full rounded ${
-                  !schoolYear ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`relative inline-block w-full rounded ${!schoolYear ? 'border-red-500 border-2' : 'border'
+                  }`}
               >
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1718,9 +1702,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           </label>
           <div className="flex flex-row space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-2/3 ${
-                !formerSchoolName ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-2/3 ${!formerSchoolName ? 'border-red-500 border-2' : 'border'
+                }`}
               onChange={(e) => setFormerSchoolName(e.target.value)}
               placeholder="Former School Name"
               value={formerSchoolName}
@@ -1734,9 +1717,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           </label>
           <div className="relative flex flex-row space-x-5">
             <textarea
-              className={`w-full px-3 py-2 rounded ${
-                !formerSchoolAddress ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`w-full px-3 py-2 rounded ${!formerSchoolAddress ? 'border-red-500 border-2' : 'border'
+                }`}
               onChange={(e) => setFormerSchoolAddress(e.target.value)}
               placeholder="Former School Address"
               rows={3}
@@ -1754,9 +1736,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               </label>
               <div className="relative flex flex-row space-x-5">
                 <input
-                  className={`px-3 py-2 rounded md:w-2/3 ${
-                    !formerRegistrar ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-2/3 ${!formerRegistrar ? 'border-red-500 border-2' : 'border'
+                    }`}
                   onChange={handleFormerRegistrar}
                   placeholder="Former Registrar Full Name"
                   value={formerRegistrar}
@@ -1770,9 +1751,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               </label>
               <div className="relative flex flex-row space-x-5">
                 <input
-                  className={`px-3 py-2 rounded md:w-2/3 ${
-                    !formerRegistrarEmail ? 'border-red-500 border-2' : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-2/3 ${!formerRegistrarEmail ? 'border-red-500 border-2' : 'border'
+                    }`}
                   onChange={handleFormerRegistrarEmail}
                   placeholder="registrar@email.com"
                   value={formerRegistrarEmail}
@@ -1786,11 +1766,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               </label>
               <div className="relative flex flex-row space-x-5">
                 <input
-                  className={`px-3 py-2 rounded md:w-2/3 ${
-                    !formerRegistrarNumber
-                      ? 'border-red-500 border-2'
-                      : 'border'
-                  }`}
+                  className={`px-3 py-2 rounded md:w-2/3 ${!formerRegistrarNumber
+                    ? 'border-red-500 border-2'
+                    : 'border'
+                    }`}
                   onChange={handleFormerRegistrarNumber}
                   placeholder="09XX-XXX-XXXX"
                   value={formerRegistrarNumber}
@@ -1812,29 +1791,26 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${
-                !primaryGuardianName ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${!primaryGuardianName ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="Primary Guardian's Full Name"
               onChange={handlePrimaryGuardianName}
               value={primaryGuardianName}
               disabled={!!guardian?.primaryGuardianName}
             />
             <input
-              className={`px-3 py-2 rounded md:w-1/4 ${
-                !primaryGuardianOccupation
-                  ? 'border-red-500 border-2'
-                  : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/4 ${!primaryGuardianOccupation
+                ? 'border-red-500 border-2'
+                : 'border'
+                }`}
               placeholder="Occupation"
               onChange={handlePrimaryGuardianOccupation}
               value={primaryGuardianOccupation}
               disabled={!!guardian?.primaryGuardianOccupation}
             />
             <div
-              className={`relative inline-block rounded md:w-1/4 ${
-                !primaryGuardianType ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`relative inline-block rounded md:w-1/4 ${!primaryGuardianType ? 'border-red-500 border-2' : 'border'
+                }`}
             >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1856,9 +1832,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         </div>
         <div className="flex flex-col">
           <input
-            className={`px-3 py-2 rounded ${
-              !primaryGuardianProfile ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`px-3 py-2 rounded ${!primaryGuardianProfile ? 'border-red-500 border-2' : 'border'
+              }`}
             placeholder="Primary Guardian's Facebook Profile Link"
             onChange={handlePrimaryGuardianProfile}
             value={primaryGuardianProfile}
@@ -1871,29 +1846,26 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${
-                !secondaryGuardianName ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${!secondaryGuardianName ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="Secondary Guardian's Full Name"
               onChange={handleSecondaryGuardianName}
               value={secondaryGuardianName}
               disabled={!!guardian?.secondaryGuardianName}
             />
             <input
-              className={`px-3 py-2 rounded md:w-1/4 ${
-                !secondaryGuardianOccupation
-                  ? 'border-red-500 border-2'
-                  : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/4 ${!secondaryGuardianOccupation
+                ? 'border-red-500 border-2'
+                : 'border'
+                }`}
               placeholder="Occupation"
               onChange={handleSecondaryGuardianOccupation}
               value={secondaryGuardianOccupation}
               disabled={!!guardian?.secondaryGuardianOccupation}
             />
             <div
-              className={`relative inline-block rounded md:w-1/4 ${
-                !secondaryGuardianType ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`relative inline-block rounded md:w-1/4 ${!secondaryGuardianType ? 'border-red-500 border-2' : 'border'
+                }`}
             >
               <select
                 className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -1915,9 +1887,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         </div>
         <div className="flex flex-col">
           <input
-            className={`px-3 py-2 rounded ${
-              !secondaryGuardianProfile ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`px-3 py-2 rounded ${!secondaryGuardianProfile ? 'border-red-500 border-2' : 'border'
+              }`}
             placeholder="Secondary Guardian's Facebook Profile Link"
             onChange={handleSecondaryGuardianProfile}
             value={secondaryGuardianProfile}
@@ -1961,9 +1932,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         <div className="flex flex-col">
           <div className="flex flex-row md:w-1/2 flex-row space-x-5">
             <input
-              className={`px-3 py-2 rounded w-full ${
-                !telephoneNumber ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded w-full ${!telephoneNumber ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="Telephone Number"
               onChange={handleTelephoneNumber}
               value={telephoneNumber}
@@ -1976,9 +1946,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           </label>
           <div className="flex flex-row space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${
-                !anotherEmail ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${!anotherEmail ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="another@email.com"
               onChange={handleAnotherEmail}
               value={anotherEmail}
@@ -1999,27 +1968,24 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${
-                !primaryTeacherName ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${!primaryTeacherName ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="Guardian's Full Name"
               onChange={handlePrimaryTeacherName}
               value={primaryTeacherName}
             />
             <input
-              className={`px-3 py-2 rounded md:w-1/4 ${
-                !primaryTeacherAge ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/4 ${!primaryTeacherAge ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="Age"
               onChange={handlePrimaryTeacherAge}
               value={primaryTeacherAge}
             />
             <input
-              className={`px-3 py-2 rounded md:w-1/4 ${
-                !primaryTeacherRelationship
-                  ? 'border-red-500 border-2'
-                  : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/4 ${!primaryTeacherRelationship
+                ? 'border-red-500 border-2'
+                : 'border'
+                }`}
               placeholder="Relationship"
               onChange={handlePrimaryTeacherRelationship}
               value={primaryTeacherRelationship}
@@ -2029,9 +1995,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
 
         <div className="flex flex-col">
           <input
-            className={`px-3 py-2 rounded ${
-              !primaryTeacherProfile ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`px-3 py-2 rounded ${!primaryTeacherProfile ? 'border-red-500 border-2' : 'border'
+              }`}
             placeholder="Guardian's Facebook Profile Link"
             onChange={handlePrimaryTeacherProfile}
             value={primaryTeacherProfile}
@@ -2044,9 +2009,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           </label>
           <div className="flex flex-col space-x-0 space-y-5 md:space-y-0 md:flex-row md:space-x-5">
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${
-                !primaryTeacherEducation ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${!primaryTeacherEducation ? 'border-red-500 border-2' : 'border'
+                }`}
               placeholder="ex: College Graduate"
               onChange={handlePrimaryTeacherEducation}
               value={primaryTeacherEducation}
@@ -2065,9 +2029,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${
-              !program ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`relative inline-block w-full rounded ${!program ? 'border-red-500 border-2' : 'border'
+              }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -2104,9 +2067,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             </label>
             <div className="flex flex-row">
               <div
-                className={`relative inline-block w-full rounded ${
-                  !cottageType ? 'border-red-500 border-2' : 'border'
-                }`}
+                className={`relative inline-block w-full rounded ${!cottageType ? 'border-red-500 border-2' : 'border'
+                  }`}
               >
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -2207,9 +2169,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         </label>
         <div className="flex flex-row">
           <div
-            className={`relative inline-block w-full rounded ${
-              !accreditation ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`relative inline-block w-full rounded ${!accreditation ? 'border-red-500 border-2' : 'border'
+              }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -2563,9 +2524,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             Select Payment Type <span className="ml-1 text-red-600">*</span>
           </label>
           <div
-            className={`relative inline-block w-full rounded ${
-              !payment ? 'border-red-500 border-2' : 'border'
-            }`}
+            className={`relative inline-block w-full rounded ${!payment ? 'border-red-500 border-2' : 'border'
+              }`}
           >
             <select
               className="w-full px-3 py-2 capitalize rounded appearance-none"
@@ -2605,11 +2565,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           <hr />
           <div className="relative flex flex-row space-x-5">
             <div
-              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
-                payment === PaymentType.ANNUAL
-                  ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                  : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-              }`}
+              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.ANNUAL
+                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                }`}
               onClick={() => {
                 setPayment(PaymentType.ANNUAL);
                 setFee(programFeeByAccreditation?.paymentTerms[0]);
@@ -2630,7 +2589,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                       currency: 'PHP',
                     }).format(
                       programFeeByAccreditation?.paymentTerms[0]?.fullPayment ||
-                        0
+                      0
                     )}
                   </span>
                 </div>
@@ -2649,11 +2608,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           </div>
           <div className="relative flex flex-row space-x-5">
             <div
-              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
-                payment === PaymentType.SEMI_ANNUAL
-                  ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                  : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-              }`}
+              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.SEMI_ANNUAL
+                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                }`}
               onClick={() => {
                 setPayment(PaymentType.SEMI_ANNUAL);
                 setFee(programFeeByAccreditation?.paymentTerms[1]);
@@ -2674,7 +2632,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                       currency: 'PHP',
                     }).format(
                       programFeeByAccreditation?.paymentTerms[1]?.downPayment ||
-                        0
+                      0
                     )}{' '}
                     +
                   </span>
@@ -2705,20 +2663,19 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                   currency: 'PHP',
                 }).format(
                   programFeeByAccreditation?.paymentTerms[1]?.downPayment +
-                    programFeeByAccreditation?.paymentTerms[1]?.secondPayment +
-                    programFeeByAccreditation?.paymentTerms[1]?.thirdPayment ||
-                    0
+                  programFeeByAccreditation?.paymentTerms[1]?.secondPayment +
+                  programFeeByAccreditation?.paymentTerms[1]?.thirdPayment ||
+                  0
                 )}
               </h3>
             </div>
           </div>
           <div className="relative flex flex-row space-x-5">
             <div
-              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
-                payment === PaymentType.QUARTERLY
-                  ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                  : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-              }`}
+              className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.QUARTERLY
+                ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                }`}
               onClick={() => {
                 setPayment(PaymentType.QUARTERLY);
                 setFee(programFeeByAccreditation?.paymentTerms[2]);
@@ -2739,7 +2696,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                       currency: 'PHP',
                     }).format(
                       programFeeByAccreditation?.paymentTerms[2]?.downPayment ||
-                        0
+                      0
                     )}{' '}
                     +
                   </span>
@@ -2778,10 +2735,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                   currency: 'PHP',
                 }).format(
                   programFeeByAccreditation?.paymentTerms[2]?.downPayment +
-                    programFeeByAccreditation?.paymentTerms[2]?.secondPayment +
-                    programFeeByAccreditation?.paymentTerms[2]?.thirdPayment +
-                    programFeeByAccreditation?.paymentTerms[2]?.fourthPayment ||
-                    0
+                  programFeeByAccreditation?.paymentTerms[2]?.secondPayment +
+                  programFeeByAccreditation?.paymentTerms[2]?.thirdPayment +
+                  programFeeByAccreditation?.paymentTerms[2]?.fourthPayment ||
+                  0
                 )}
               </h3>
             </div>
@@ -2789,11 +2746,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           <div className="relative flex flex-row space-x-5">
             {programFeeByAccreditation?.paymentTerms?.[3] && (
               <div
-                className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${
-                  payment === PaymentType.MONTHLY
-                    ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
-                    : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
-                }`}
+                className={`flex flex-col md:flex-row space-y-5 md:space-y-0 md:items-center md:justify-between w-full px-5 py-3 hover:shadow-lg border-2 border-primary-200 ${payment === PaymentType.MONTHLY
+                  ? 'border-4 cursor-pointer rounded-xl border-primary-400 bg-primary-50'
+                  : 'border border-dashed rounded cursor-pointer hover:border-primary-400 hover:bg-primary-50/25'
+                  }`}
                 onClick={() => {
                   setPayment(PaymentType.MONTHLY);
                   setFee(programFeeByAccreditation?.paymentTerms[3]);
@@ -2890,19 +2846,19 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                     currency: 'PHP',
                   }).format(
                     programFeeByAccreditation?.paymentTerms[3]?.downPayment +
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.secondPayment +
-                      programFeeByAccreditation?.paymentTerms[3]?.thirdPayment +
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.fourthPayment +
-                      programFeeByAccreditation?.paymentTerms[3]?.fifthPayment +
-                      programFeeByAccreditation?.paymentTerms[3]?.sixthPayment +
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.seventhPayment +
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.eighthPayment +
-                      programFeeByAccreditation?.paymentTerms[3]
-                        ?.ninthPayment || 0
+                    programFeeByAccreditation?.paymentTerms[3]
+                      ?.secondPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.thirdPayment +
+                    programFeeByAccreditation?.paymentTerms[3]
+                      ?.fourthPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.fifthPayment +
+                    programFeeByAccreditation?.paymentTerms[3]?.sixthPayment +
+                    programFeeByAccreditation?.paymentTerms[3]
+                      ?.seventhPayment +
+                    programFeeByAccreditation?.paymentTerms[3]
+                      ?.eighthPayment +
+                    programFeeByAccreditation?.paymentTerms[3]
+                      ?.ninthPayment || 0
                   )}
                 </h3>
               </div>
@@ -3163,13 +3119,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                         Based on applied discount code:{' '}
                         <span className="font-bold text-green-600">
                           {discountCode || '-'}{' '}
-                          {`${
-                            discount
-                              ? `(${Number(discount.value).toFixed(2)}${
-                                  discount.type === 'VALUE' ? 'Php' : '%'
-                                })`
-                              : ''
-                          }`}
+                          {`${discount
+                            ? `(${Number(discount.value).toFixed(2)}${discount.type === 'VALUE' ? 'Php' : '%'
+                            })`
+                            : ''
+                            }`}
                         </span>
                       </h6>
                       {fee && fee?._type !== 'fullTermPayment' && (
@@ -3188,38 +3142,38 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                           discount
                             ? discount.type === 'VALUE'
                               ? (discount?.code
-                                  ?.toLowerCase()
-                                  .includes('pastor')
-                                  ? Math.ceil(
-                                      fee?._type === 'fullTermPayment'
-                                        ? fee?.fullPayment
-                                        : fee?._type === 'threeTermPayment'
-                                        ? fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment
-                                        : fee?._type === 'fourTermPayment'
-                                        ? fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment +
-                                          fee?.fourthPayment
-                                        : fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment +
-                                          fee?.fourthPayment +
-                                          fee?.fifthPayment +
-                                          fee?.sixthPayment +
-                                          fee?.seventhPayment +
-                                          fee?.eighthPayment +
-                                          fee.ninthPayment
-                                    ) - discount.value
-                                  : Number(discount.value).toFixed(2)) * -1
-                              : Math.ceil(
+                                ?.toLowerCase()
+                                .includes('pastor')
+                                ? Math.ceil(
                                   fee?._type === 'fullTermPayment'
                                     ? fee?.fullPayment
-                                    : fee?.secondPayment
-                                ) *
-                                (discount.value / 100) *
-                                -1
+                                    : fee?._type === 'threeTermPayment'
+                                      ? fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment
+                                      : fee?._type === 'fourTermPayment'
+                                        ? fee?.downPayment +
+                                        fee?.secondPayment +
+                                        fee?.thirdPayment +
+                                        fee?.fourthPayment
+                                        : fee?.downPayment +
+                                        fee?.secondPayment +
+                                        fee?.thirdPayment +
+                                        fee?.fourthPayment +
+                                        fee?.fifthPayment +
+                                        fee?.sixthPayment +
+                                        fee?.seventhPayment +
+                                        fee?.eighthPayment +
+                                        fee.ninthPayment
+                                ) - discount.value
+                                : Number(discount.value).toFixed(2)) * -1
+                              : Math.ceil(
+                                fee?._type === 'fullTermPayment'
+                                  ? fee?.fullPayment
+                                  : fee?.secondPayment
+                              ) *
+                              (discount.value / 100) *
+                              -1
                             : 0
                         )}
                       </span>
@@ -3248,36 +3202,36 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                         }).format(
                           (fee?._type === 'fullTermPayment'
                             ? fee?.fullPayment -
-                              (discount
-                                ? discount?.type === 'VALUE'
-                                  ? discount?.code
-                                      ?.toLowerCase()
-                                      .includes('pastor')
-                                    ? Math.ceil(
-                                        fee?._type === 'fullTermPayment'
-                                          ? fee?.fullPayment
-                                          : fee?._type === 'threeTermPayment'
+                            (discount
+                              ? discount?.type === 'VALUE'
+                                ? discount?.code
+                                  ?.toLowerCase()
+                                  .includes('pastor')
+                                  ? Math.ceil(
+                                    fee?._type === 'fullTermPayment'
+                                      ? fee?.fullPayment
+                                      : fee?._type === 'threeTermPayment'
+                                        ? fee?.downPayment +
+                                        fee?.secondPayment +
+                                        fee?.thirdPayment
+                                        : fee?._type === 'fourTermPayment'
                                           ? fee?.downPayment +
-                                            fee?.secondPayment +
-                                            fee?.thirdPayment
-                                          : fee?._type === 'fourTermPayment'
-                                          ? fee?.downPayment +
-                                            fee?.secondPayment +
-                                            fee?.thirdPayment +
-                                            fee?.fourthPayment
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment +
+                                          fee?.fourthPayment
                                           : fee?.downPayment +
-                                            fee?.secondPayment +
-                                            fee?.thirdPayment +
-                                            fee?.fourthPayment +
-                                            fee?.fifthPayment +
-                                            fee?.sixthPayment +
-                                            fee?.seventhPayment +
-                                            fee?.eighthPayment +
-                                            fee.ninthPayment
-                                      ) - discount.value
-                                    : discount.value
-                                  : (discount.value / 100) * fee?.fullPayment
-                                : 0)
+                                          fee?.secondPayment +
+                                          fee?.thirdPayment +
+                                          fee?.fourthPayment +
+                                          fee?.fifthPayment +
+                                          fee?.sixthPayment +
+                                          fee?.seventhPayment +
+                                          fee?.eighthPayment +
+                                          fee.ninthPayment
+                                  ) - discount.value
+                                  : discount.value
+                                : (discount.value / 100) * fee?.fullPayment
+                              : 0)
                             : fee?.downPayment) + FEES[paymentMethod] || 0
                         )}
                       </span>
@@ -3305,9 +3259,8 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               <SignatureCanvas
                 ref={sigCanvas}
                 canvasProps={{
-                  className: `sigCanvas bg-gray-100 border ${
-                    signatureLink ? 'border-gray-400' : 'border-red-500'
-                  } w-full h-40 sm:h-48 md:h-56 lg:h-64`, // Conditional border color
+                  className: `sigCanvas bg-gray-100 border ${signatureLink ? 'border-gray-400' : 'border-red-500'
+                    } w-full h-40 sm:h-48 md:h-56 lg:h-64`, // Conditional border color
                 }}
               />
               <div className="flex space-x-3 mt-3">
@@ -3370,13 +3323,12 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               onClick={() => goToStep(index)}
             >
               <div
-                className={`w-8 h-8 flex items-center justify-center rounded-full ${
-                  step === index
-                    ? 'bg-secondary-400'
-                    : index < step
+                className={`w-8 h-8 flex items-center justify-center rounded-full ${step === index
+                  ? 'bg-secondary-400'
+                  : index < step
                     ? 'bg-green-400'
                     : 'bg-gray-200'
-                }`}
+                  }`}
               >
                 {index < step ? (
                   <CheckIcon className="w-5 h-5 text-white" />
@@ -3552,12 +3504,12 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                       fee?._type === 'fullTermPayment'
                         ? 0
                         : fee?._type === 'threeTermPayment'
-                        ? 2
-                        : fee?._type === 'fourTermPayment'
-                        ? 3
-                        : fee?._type === 'nineTermPayment'
-                        ? monthIndex
-                        : 0 // Default to 0 if none of the specified types match
+                          ? 2
+                          : fee?._type === 'fourTermPayment'
+                            ? 3
+                            : fee?._type === 'nineTermPayment'
+                              ? monthIndex
+                              : 0 // Default to 0 if none of the specified types match
                     ),
                     (_, index) => (
                       <tr key={index}>
@@ -3565,12 +3517,12 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                           {fee?._type === 'fullTermPayment'
                             ? ''
                             : fee?._type === 'threeTermPayment'
-                            ? `Three (3) Term Payment #${index + 1}`
-                            : fee?._type === 'fourTermPayment'
-                            ? `Four (4) Term Payment #${index + 1}`
-                            : fee?._type === 'nineTermPayment'
-                            ? `Monthly Term Payment #${index + 1}`
-                            : `Unknown Payment Type #${index + 1}`}
+                              ? `Three (3) Term Payment #${index + 1}`
+                              : fee?._type === 'fourTermPayment'
+                                ? `Four (4) Term Payment #${index + 1}`
+                                : fee?._type === 'nineTermPayment'
+                                  ? `Monthly Term Payment #${index + 1}`
+                                  : `Unknown Payment Type #${index + 1}`}
                         </td>
                         <td className="px-3 py-1 text-right border">
                           {new Intl.NumberFormat('en-US', {
@@ -3580,11 +3532,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                             fee?._type === 'fullTermPayment'
                               ? 0
                               : fee?._type === 'nineTermPayment'
-                              ? monthlyPayment // Render monthly payment for nineTermPayment
-                              : fee && fee[payments[index + 1]]
+                                ? monthlyPayment // Render monthly payment for nineTermPayment
+                                : fee && fee[payments[index + 1]]
                           )}{' '}
                           {discount &&
-                          discount?.code?.toLowerCase().includes('pastor') ? (
+                            discount?.code?.toLowerCase().includes('pastor') ? (
                             <span className="text-red-600">
                               (-
                               {new Intl.NumberFormat('en-US', {
@@ -3593,10 +3545,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                               }).format(
                                 fee?._type === 'nineTermPayment'
                                   ? monthlyPayment -
-                                      (discount?.value - fee?.downPayment) / 9
+                                  (discount?.value - fee?.downPayment) / 9
                                   : fee &&
-                                      fee[payments[index + 1]] -
-                                        (discount?.value - fee?.downPayment) / 3
+                                  fee[payments[index + 1]] -
+                                  (discount?.value - fee?.downPayment) / 3
                               )}
                               )
                             </span>
@@ -3612,7 +3564,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                                   discount?.type === 'VALUE'
                                     ? discount?.value
                                     : (discount?.value / 100) *
-                                        Math.ceil(fee?.secondPayment)
+                                    Math.ceil(fee?.secondPayment)
                                 )}
                                 )
                               </span>
@@ -3637,13 +3589,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                         Total Discounts:{' '}
                         <strong className="text-green-600">
                           {discountCode || '-'}{' '}
-                          {`${
-                            discount
-                              ? `(${Number(discount.value).toFixed(2)}${
-                                  discount.type === 'VALUE' ? 'Php' : '%'
-                                })`
-                              : ''
-                          }`}
+                          {`${discount
+                            ? `(${Number(discount.value).toFixed(2)}${discount.type === 'VALUE' ? 'Php' : '%'
+                            })`
+                            : ''
+                            }`}
                         </strong>
                       </td>
                       <td className="px-3 py-1 text-right text-red-600 border">
@@ -3654,38 +3604,38 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                           discount
                             ? discount.type === 'VALUE'
                               ? (discount?.code
-                                  ?.toLowerCase()
-                                  .includes('pastor')
-                                  ? Math.ceil(
-                                      fee?._type === 'fullTermPayment'
-                                        ? fee?.fullPayment
-                                        : fee?._type === 'threeTermPayment'
-                                        ? fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment
-                                        : fee?._type === 'fourTermPayment'
-                                        ? fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment +
-                                          fee?.fourthPayment
-                                        : fee?.downPayment +
-                                          fee?.secondPayment +
-                                          fee?.thirdPayment +
-                                          fee?.fourthPayment +
-                                          fee?.fifthPayment +
-                                          fee?.sixthPayment +
-                                          fee?.seventhPayment +
-                                          fee?.eighthPayment +
-                                          fee?.ninthPayment
-                                    ) - discount.value
-                                  : Number(discount.value).toFixed(2)) * -1
-                              : Math.ceil(
+                                ?.toLowerCase()
+                                .includes('pastor')
+                                ? Math.ceil(
                                   fee?._type === 'fullTermPayment'
                                     ? fee?.fullPayment
-                                    : fee?.secondPayment
-                                ) *
-                                (discount.value / 100) *
-                                -1
+                                    : fee?._type === 'threeTermPayment'
+                                      ? fee?.downPayment +
+                                      fee?.secondPayment +
+                                      fee?.thirdPayment
+                                      : fee?._type === 'fourTermPayment'
+                                        ? fee?.downPayment +
+                                        fee?.secondPayment +
+                                        fee?.thirdPayment +
+                                        fee?.fourthPayment
+                                        : fee?.downPayment +
+                                        fee?.secondPayment +
+                                        fee?.thirdPayment +
+                                        fee?.fourthPayment +
+                                        fee?.fifthPayment +
+                                        fee?.sixthPayment +
+                                        fee?.seventhPayment +
+                                        fee?.eighthPayment +
+                                        fee?.ninthPayment
+                                ) - discount.value
+                                : Number(discount.value).toFixed(2)) * -1
+                              : Math.ceil(
+                                fee?._type === 'fullTermPayment'
+                                  ? fee?.fullPayment
+                                  : fee?.secondPayment
+                              ) *
+                              (discount.value / 100) *
+                              -1
                             : 0
                         )}
                       </td>
@@ -3705,56 +3655,56 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                     fee?._type === 'fullTermPayment'
                       ? fee?.fullPayment
                       : fee?._type === 'threeTermPayment'
-                      ? fee?.downPayment +
+                        ? fee?.downPayment +
                         fee?.secondPayment +
                         fee?.thirdPayment
-                      : fee?._type === 'fourTermPayment'
-                      ? fee?.downPayment +
-                        fee?.secondPayment +
-                        fee?.thirdPayment +
-                        fee?.fourthPayment
-                      : fee?.downPayment +
-                        fee?.secondPayment +
-                        fee?.thirdPayment +
-                        fee?.fourthPayment +
-                        fee?.fifthPayment +
-                        fee?.sixthPayment +
-                        fee?.seventhPayment +
-                        fee?.eighthPayment +
-                        fee?.ninthPayment
+                        : fee?._type === 'fourTermPayment'
+                          ? fee?.downPayment +
+                          fee?.secondPayment +
+                          fee?.thirdPayment +
+                          fee?.fourthPayment
+                          : fee?.downPayment +
+                          fee?.secondPayment +
+                          fee?.thirdPayment +
+                          fee?.fourthPayment +
+                          fee?.fifthPayment +
+                          fee?.sixthPayment +
+                          fee?.seventhPayment +
+                          fee?.eighthPayment +
+                          fee?.ninthPayment
                   ) +
-                    500 -
-                    (discount
-                      ? discount?.type === 'VALUE'
-                        ? discount?.code?.toLowerCase().includes('pastor')
-                          ? Math.ceil(
-                              fee?._type === 'fullTermPayment'
-                                ? fee?.fullPayment
-                                : fee?._type === 'threeTermPayment'
-                                ? fee?.downPayment +
-                                  fee?.secondPayment +
-                                  fee?.thirdPayment
-                                : fee?._type === 'fourTermPayment'
-                                ? fee?.downPayment +
-                                  fee?.secondPayment +
-                                  fee?.thirdPayment +
-                                  fee?.fourthPayment
-                                : fee?.downPayment +
-                                  fee?.secondPayment +
-                                  fee?.thirdPayment +
-                                  fee?.fourthPayment +
-                                  fee?.fifthPayment +
-                                  fee?.sixthPayment +
-                                  fee?.seventhPayment +
-                                  fee?.eighthPayment +
-                                  fee?.ninthPayment
-                            ) - discount.value
-                          : discount.value
-                        : (discount.value / 100) *
-                          (fee?._type === 'fullTermPayment'
+                  500 -
+                  (discount
+                    ? discount?.type === 'VALUE'
+                      ? discount?.code?.toLowerCase().includes('pastor')
+                        ? Math.ceil(
+                          fee?._type === 'fullTermPayment'
                             ? fee?.fullPayment
-                            : fee?.secondPayment)
-                      : 0) || 0
+                            : fee?._type === 'threeTermPayment'
+                              ? fee?.downPayment +
+                              fee?.secondPayment +
+                              fee?.thirdPayment
+                              : fee?._type === 'fourTermPayment'
+                                ? fee?.downPayment +
+                                fee?.secondPayment +
+                                fee?.thirdPayment +
+                                fee?.fourthPayment
+                                : fee?.downPayment +
+                                fee?.secondPayment +
+                                fee?.thirdPayment +
+                                fee?.fourthPayment +
+                                fee?.fifthPayment +
+                                fee?.sixthPayment +
+                                fee?.seventhPayment +
+                                fee?.eighthPayment +
+                                fee?.ninthPayment
+                        ) - discount.value
+                        : discount.value
+                      : (discount.value / 100) *
+                      (fee?._type === 'fullTermPayment'
+                        ? fee?.fullPayment
+                        : fee?.secondPayment)
+                    : 0) || 0
                 )}
               </span>
             </h4>
