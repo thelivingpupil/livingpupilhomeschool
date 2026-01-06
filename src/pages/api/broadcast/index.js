@@ -4,6 +4,8 @@ import { html as announcementHtml, text as announcementText } from '@/config/ema
 import { getParentFirstName } from '@/utils/index';
 import { sendMail } from '@/lib/server/mail';
 import { validateSession } from '@/config/api-validation';
+import https from 'https';
+import http from 'http';
 
 export default async function handler(req, res) {
     const { method } = req;
@@ -21,6 +23,127 @@ export default async function handler(req, res) {
 
             const { emailContent, sender, subject, guardianEmails, ccEmails, attachmentUrls } = req.body;
 
+            // Function to download image from URL and return buffer
+            const downloadImage = (url) => {
+                return new Promise((resolve, reject) => {
+                    const protocol = url.startsWith('https') ? https : http;
+                    protocol.get(url, (response) => {
+                        if (response.statusCode !== 200) {
+                            reject(new Error(`Failed to download image: ${response.statusCode}`));
+                            return;
+                        }
+                        const chunks = [];
+                        response.on('data', (chunk) => chunks.push(chunk));
+                        response.on('end', () => resolve(Buffer.concat(chunks)));
+                        response.on('error', reject);
+                    }).on('error', reject);
+                });
+            };
+
+            // Extract image URLs from emailContent and create cid attachments
+            const extractImageUrls = (html) => {
+                const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
+                const imageUrls = [];
+                let match;
+                while ((match = imgRegex.exec(html)) !== null) {
+                    const url = match[1];
+                    // Only process Firebase Storage URLs (not data URIs or other sources)
+                    if (url.startsWith('http') && !url.startsWith('data:')) {
+                        imageUrls.push(url);
+                    }
+                }
+                return [...new Set(imageUrls)]; // Remove duplicates
+            };
+
+            // Replace image URLs with cid references in HTML
+            const replaceImagesWithCid = (html, imageMap) => {
+                let processedHtml = html;
+                Object.entries(imageMap).forEach(([url, cid]) => {
+                    // Replace all occurrences of the image URL with cid
+                    processedHtml = processedHtml.replace(
+                        new RegExp(url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+                        `cid:${cid}`
+                    );
+                });
+                return processedHtml;
+            };
+
+            // Convert ReactQuill indentation classes to inline styles for email compatibility
+            const convertIndentationToInlineStyles = (html) => {
+                let processedHtml = html;
+                // Map of indentation levels to padding values
+                const indentMap = {
+                    1: '3em',
+                    2: '6em',
+                    3: '9em',
+                    4: '12em',
+                    5: '15em',
+                    6: '18em',
+                    7: '21em',
+                    8: '24em'
+                };
+
+                // Replace ql-indent classes with inline styles
+                Object.entries(indentMap).forEach(([level, padding]) => {
+                    // Match elements with ql-indent class
+                    const regex = new RegExp(`<([^>]+)\\s+class="([^"]*\\s)?ql-indent-${level}(\\s[^"]*)?"([^>]*)>`, 'gi');
+                    processedHtml = processedHtml.replace(regex, (match, tagName, beforeClass, afterClass, rest) => {
+                        // Extract existing style if any
+                        const styleMatch = match.match(/style="([^"]*)"/);
+                        let existingStyle = styleMatch ? styleMatch[1] : '';
+                        
+                        // Add padding-left if not already present
+                        if (!existingStyle.includes('padding-left')) {
+                            existingStyle = existingStyle 
+                                ? `${existingStyle}; padding-left: ${padding};`
+                                : `padding-left: ${padding};`;
+                        }
+                        
+                        // Remove ql-indent class
+                        const classParts = (beforeClass || '') + (afterClass || '');
+                        const cleanedClass = classParts.replace(new RegExp(`\\s*ql-indent-${level}\\s*`, 'gi'), ' ').trim();
+                        
+                        // Reconstruct the tag
+                        const classAttr = cleanedClass ? `class="${cleanedClass}"` : '';
+                        const styleAttr = existingStyle ? `style="${existingStyle}"` : '';
+                        const attrs = [classAttr, styleAttr].filter(Boolean).join(' ');
+                        
+                        return `<${tagName} ${attrs}${rest}>`;
+                    });
+                });
+
+                return processedHtml;
+            };
+
+            // Process images: download and create attachments with cid
+            const imageUrls = extractImageUrls(emailContent);
+            const imageAttachments = [];
+            const imageCidMap = {};
+
+            for (let i = 0; i < imageUrls.length; i++) {
+                const imageUrl = imageUrls[i];
+                try {
+                    const imageBuffer = await downloadImage(imageUrl);
+                    const cid = `image_${i}_${Date.now()}`;
+                    const filename = imageUrl.split('/').pop().split('?')[0] || `image_${i}.jpg`;
+                    
+                    imageAttachments.push({
+                        filename,
+                        content: imageBuffer,
+                        cid, // Content-ID for inline images
+                    });
+                    
+                    imageCidMap[imageUrl] = cid;
+                } catch (error) {
+                    console.error(`Failed to download image ${imageUrl}:`, error);
+                    // Continue with other images even if one fails
+                }
+            }
+
+            // Replace image URLs with cid in emailContent and convert indentation
+            let processedEmailContent = replaceImagesWithCid(emailContent, imageCidMap);
+            processedEmailContent = convertIndentationToInlineStyles(processedEmailContent);
+
             // Define a function to validate email addresses
             const isValidEmail = (email) => {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -34,12 +157,15 @@ export default async function handler(req, res) {
             let emailCount = 0;
 
             // Create attachment objects from URLs only if attachmentUrls is not empty
-            const attachments = attachmentUrls?.length > 0
+            const fileAttachments = attachmentUrls?.length > 0
                 ? attachmentUrls.map((url) => ({
                     filename: url.split('/').pop(), // Use the file name from the URL
                     path: url,                      // URL as the path to the file
                 }))
                 : [];
+
+            // Combine image attachments (with cid) and file attachments
+            const attachments = [...imageAttachments, ...fileAttachments];
 
             // Validate CC Emails
             const validCcEmails = (ccEmails || []).filter(isValidEmail);
@@ -54,11 +180,11 @@ export default async function handler(req, res) {
                 try {
                     await sendMail({
                         from: `${senderName} <info@livingpupilhomeschool.com>`,
-                        html: announcementHtml({ parentName, emailContent, senderRole, senderFullName }),
+                        html: announcementHtml({ parentName, emailContent: processedEmailContent, senderRole, senderFullName }),
                         subject,
                         text: announcementText({ parentName }),
                         to: guardianEmail.email,
-                        attachments, // Attach the Firebase Storage file URLs
+                        attachments, // Attach images with cid and file attachments
                         replyTo: replyEmail,
                         cc: validCcEmails, // Include CC emails here
                     });
@@ -73,11 +199,11 @@ export default async function handler(req, res) {
 
                         await sendMail({
                             from: `${senderName} <info@livingpupilhomeschool.com>`,
-                            html: announcementHtml({ parentName, emailContent, senderRole, senderFullName }),
+                            html: announcementHtml({ parentName, emailContent: processedEmailContent, senderRole, senderFullName }),
                             subject,
                             text: announcementText({ parentName }),
                             to: guardianEmail.secondaryEmail,
-                            attachments, // Attach the Firebase Storage file URLs
+                            attachments, // Attach images with cid and file attachments
                             replyTo: replyEmail,
                             cc: validCcEmails, // Include CC emails here
                         });

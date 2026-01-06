@@ -79,6 +79,94 @@ const html = ({
         font-weight: 600;
         }
 
+        /* Style images in email content - no padding or margin */
+        img {
+            max-width: 100% !important;
+            height: auto !important;
+            display: block;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Ensure images from ReactQuill display properly - no padding or margin */
+        .ql-editor img,
+        .ql-align-center img {
+            display: block;
+            margin: 0 !important;
+            padding: 0 !important;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .ql-align-left img {
+            display: inline-block;
+            margin: 0 !important;
+            padding: 0 !important;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .ql-align-right img {
+            display: inline-block;
+            margin: 0 !important;
+            padding: 0 !important;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Support indentation in emails - ReactQuill uses ql-indent classes */
+        .ql-indent-1 {
+            padding-left: 3em !important;
+        }
+
+        .ql-indent-2 {
+            padding-left: 6em !important;
+        }
+
+        .ql-indent-3 {
+            padding-left: 9em !important;
+        }
+
+        .ql-indent-4 {
+            padding-left: 12em !important;
+        }
+
+        .ql-indent-5 {
+            padding-left: 15em !important;
+        }
+
+        .ql-indent-6 {
+            padding-left: 18em !important;
+        }
+
+        .ql-indent-7 {
+            padding-left: 21em !important;
+        }
+
+        .ql-indent-8 {
+            padding-left: 24em !important;
+        }
+
+        /* Support indentation using inline styles (for email compatibility) */
+        [style*="padding-left"] {
+            /* Preserve inline padding-left styles for indentation */
+        }
+
+        /* Support for list indentation */
+        ol.ql-indent-1,
+        ul.ql-indent-1 {
+            padding-left: 3em !important;
+        }
+
+        ol.ql-indent-2,
+        ul.ql-indent-2 {
+            padding-left: 6em !important;
+        }
+
+        ol.ql-indent-3,
+        ul.ql-indent-3 {
+            padding-left: 9em !important;
+        }
 
 		@media (max-width:620px) {
 			.mobile_hide {
@@ -132,31 +220,6 @@ const html = ({
 		<tbody>
 			<tr>
 				<td>
-                    <table class="row row-1" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #e2edf7; ">
-						<tbody>
-							<tr>
-								<td>
-									<table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; width: 600px; margin: 0 auto; background-color: #fac84f; margin-top: 20px;" width="600">
-										<tbody>
-											<tr>
-												<td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
-													<table class="image_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-														<tr>
-															<td class="pad" style="width:100%;">
-																<div class="alignment" align="center" style="line-height:10px">
-																	<div style="max-width: 600px;"><img src="https://livingpupilhomeschool.com/images/email-img/yellow-header.png" style="display: block; height: auto; border: 0; width: 100%;" width="600" height="auto"></div>
-																</div>
-															</td>                                                            
-														</tr>
-													</table>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</td>
-							</tr>
-						</tbody>
-					</table>
 					<table class="row row-1" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #e2edf7;">
 						<tbody>
 							<tr>
@@ -182,31 +245,6 @@ const html = ({
 							</tr>
 						</tbody>
 					</table>
-                    <table class="row row-1" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #e2edf7;">
-						<tbody>
-							<tr>
-								<td>
-									<table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; width: 600px; margin: 0 auto; background-color: #2e3494;" width="600">
-										<tbody>
-											<tr>
-												<td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
-													<table class="image_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-														<tr>
-															<td class="pad" style="width:100%;">
-																<div class="alignment" align="center" style="line-height:10px">
-																	<div style="max-width: 600px;"><img src="https://livingpupilhomeschool.com/images/email-img/blue-header.png" style="display: block; height: auto; border: 0; width: 100%;" width="600" height="auto"></div>
-																</div>
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</td>
-							</tr>
-						</tbody>
-					</table>
 					<table class="row row-2" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #e2edf7;">
 						<tbody>
 							<tr>
@@ -214,15 +252,14 @@ const html = ({
 									<table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffff; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
 										<tbody>
 											<tr>
-												<td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px; padding: 25px">
-													<table class="paragraph_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+												<td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+													<table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
 														<tr>
-															<td class="pad">
-																<div style="color:#000;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:15px;font-weight:400;letter-spacing:0px;line-height: 20px;text-align:left;mso-line-height-alt:19.2px;">
-                                                                    <p style="margin: 0; margin-bottom: 16px;">Hello <strong style="color: #2e3494;">${parentName}</strong>,</p>
-                                                                    <p style="margin: 0; margin-bottom: 16px;">&nbsp;</p>
-                                                                    ${emailContent}
-																	<div class="senderDetails" style="text-align: center; display: inline-block;">
+															<td class="pad" style="padding:0;">
+																<div class="email-content" style="color:#000;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:15px;font-weight:400;letter-spacing:0px;line-height: 20px;text-align:left;mso-line-height-alt:19.2px;margin:0;">
+                                                                    <p style="margin: 0; margin-bottom: 16px;padding:25px;">Hello <strong style="color: #2e3494;">${parentName}</strong>,</p>
+                                                                    <div style="margin:0;padding:0;">${emailContent}</div>
+																	<div class="senderDetails" style="text-align: center; display: inline-block; padding: 25px">
 																		<p style="margin: 0; font-weight: bold; text-decoration: underline;">${senderFullName}</p>
     																	<p style="margin: 0;">${senderRole}</p>
 																	</div>
