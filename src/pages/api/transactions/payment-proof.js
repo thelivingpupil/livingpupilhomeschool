@@ -34,7 +34,11 @@ const handler = async (req, res) => {
       // Check ownership - user must own the transaction
       if (!transaction.userId || transaction.userId !== session.user.userId) {
         return res.status(403).json({
-          errors: { error: { msg: 'Forbidden: You can only upload proof for your own transactions' } },
+          errors: {
+            error: {
+              msg: 'Forbidden: You can only upload proof for your own transactions',
+            },
+          },
         });
       }
 

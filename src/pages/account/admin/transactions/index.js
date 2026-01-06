@@ -47,7 +47,12 @@ const Transactions = () => {
   const [filter, setFilter] = useState(['', '']);
   const [filterBy, filterValue] = filter;
 
-  const { transactions: transactionsData, pagination: paginationData, isLoading, isError } = useTransactions({
+  const {
+    transactions: transactionsData,
+    pagination: paginationData,
+    isLoading,
+    isError,
+  } = useTransactions({
     page,
     pageSize,
     filterBy: filterBy || null,
@@ -93,8 +98,13 @@ const Transactions = () => {
 
   // Transactions are now filtered and paginated server-side
   const transactions = Array.isArray(transactionsData) ? transactionsData : [];
-  const pagination = paginationData || { total: 0, page: 1, pageSize: 10, totalPages: 0 };
-
+  const pagination = paginationData || {
+    total: 0,
+    page: 1,
+    pageSize: 10,
+    totalPages: 0,
+  };
+  console.log({ transactions });
   // Reset to page 1 when filters change
   const handleFilterChange = (newFilterBy, newFilterValue) => {
     // If filterBy is cleared, also clear filterValue
@@ -133,12 +143,12 @@ const Transactions = () => {
     const deadline =
       initialPayment?.transaction?.paymentStatus === 'S'
         ? getDeadline(
-          transaction.schoolFee.order,
-          transaction.schoolFee.paymentType,
-          initialPayment.transaction.updatedAt,
-          transaction.schoolFee.student.studentRecord.schoolYear,
-          'S'
-        )
+            transaction.schoolFee.order,
+            transaction.schoolFee.paymentType,
+            initialPayment.transaction.updatedAt,
+            transaction.schoolFee.student.studentRecord.schoolYear,
+            'S'
+          )
         : '-';
     setUpdateTransaction({
       ...updateTransaction,
@@ -168,8 +178,8 @@ const Transactions = () => {
         transaction.schoolFee.paymentType === PaymentType.ANNUAL
           ? 'Total Fee'
           : transaction.schoolFee.order === 0
-            ? 'Initial Fee'
-            : `Payment #${transaction.schoolFee.order}`,
+          ? 'Initial Fee'
+          : `Payment #${transaction.schoolFee.order}`,
     });
 
     setNewPaymentStatus('');
@@ -461,10 +471,10 @@ const Transactions = () => {
   const remainingPayments =
     filterBy === 'emailAccount' && filterValue
       ? transactions
-        .filter(
-          (transaction) => transaction.paymentStatus !== TransactionStatus.S
-        )
-        .reduce((total, transaction) => total + Number(transaction.amount), 0)
+          .filter(
+            (transaction) => transaction.paymentStatus !== TransactionStatus.S
+          )
+          .reduce((total, transaction) => total + Number(transaction.amount), 0)
       : null;
 
   return (
@@ -496,16 +506,19 @@ const Transactions = () => {
         <div>
           <h4 className="flex items-center space-x-3 text-xl font-medium capitalize text-primary-500">
             <span>{`${updateTransaction.name}`}</span>
-            <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${GRADE_LEVEL[updateTransaction.gradeLevel]
-              }`}</span>
+            <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${
+              GRADE_LEVEL[updateTransaction.gradeLevel]
+            }`}</span>
             <span
-              className={`px-2 py-0.5 text-xs rounded-full flex items-center justify-center ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
-                }`}
+              className={`px-2 py-0.5 text-xs rounded-full flex items-center justify-center ${
+                STATUS_BG_COLOR[updateTransaction.paymentStatus]
+              }`}
             >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
           </h4>
           <h5 className="font-bold">
-            <span className="text-xs">{`${PROGRAM[updateTransaction.program]
-              } - ${ACCREDITATION[updateTransaction.accreditation]}`}</span>
+            <span className="text-xs">{`${
+              PROGRAM[updateTransaction.program]
+            } - ${ACCREDITATION[updateTransaction.accreditation]}`}</span>
           </h5>
           <p className="text-xs text-gray-400">
             Created {new Date(updateTransaction.createdAt).toDateString()} by:{' '}
@@ -562,8 +575,9 @@ const Transactions = () => {
                 </div>
                 <div className="flex">
                   <span
-                    className={`px-6 py-0.5 rounded-full flex items-center justify-center ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
-                      }`}
+                    className={`px-6 py-0.5 rounded-full flex items-center justify-center ${
+                      STATUS_BG_COLOR[updateTransaction.paymentStatus]
+                    }`}
                   >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
                 </div>
                 <div className="flex py-2 capitalize font-semibold text-lg">
@@ -586,7 +600,7 @@ const Transactions = () => {
                     type="text"
                     value={Number(updateTransaction.balance).toFixed(2)}
                     disabled
-                  // onChange={handleUpdatePaymentTransaction}
+                    // onChange={handleUpdatePaymentTransaction}
                   />
                 </div>
                 <div className="flex py-2 capitalize font-semibold text-lg">
@@ -598,7 +612,7 @@ const Transactions = () => {
                     type="text"
                     value={Number(updateTransaction.payment).toFixed(2)}
                     disabled
-                  // onChange={handleUpdatePaymentTransaction}
+                    // onChange={handleUpdatePaymentTransaction}
                   />
                 </div>
                 <div></div>
@@ -637,8 +651,9 @@ const Transactions = () => {
                 </div>
                 <div className="flex">
                   <span
-                    className={`px-6 py-0.5 rounded-full flex items-center justify-center ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
-                      }`}
+                    className={`px-6 py-0.5 rounded-full flex items-center justify-center ${
+                      STATUS_BG_COLOR[updateTransaction.paymentStatus]
+                    }`}
                   >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
                 </div>
                 <div className="flex py-2 capitalize font-semibold text-lg">
@@ -696,8 +711,9 @@ const Transactions = () => {
                 </div>
                 <div className="flex">
                   <span
-                    className={`px-6 py-0.5 rounded-full flex items-center justify-center ${STATUS_BG_COLOR[updateTransaction.paymentStatus]
-                      }`}
+                    className={`px-6 py-0.5 rounded-full flex items-center justify-center ${
+                      STATUS_BG_COLOR[updateTransaction.paymentStatus]
+                    }`}
                   >{`${STATUS[updateTransaction.paymentStatus]}`}</span>
                 </div>
                 <div className="flex py-2 capitalize font-semibold text-lg">
@@ -738,20 +754,24 @@ const Transactions = () => {
       >
         <div>
           <p className="py-1">
-            You are about to change <b>{updateTransaction.name}'s</b>{' '}
-            school fee transaction.
+            You are about to change <b>{updateTransaction.name}'s</b> school fee
+            transaction.
           </p>
           <p>
             <b>Transaction ID: {updateTransaction.transactionId}</b>
           </p>
           <div className="mt-3">
-            <p><b>Current Values:</b></p>
+            <p>
+              <b>Current Values:</b>
+            </p>
             <p>Amount: ₱{updateTransaction.amount}</p>
             <p>Balance: ₱{updateTransaction.balance}</p>
             <p>Total Paid: ₱{updateTransaction.payment}</p>
           </div>
           <div className="mt-3">
-            <p><b>New Values:</b></p>
+            <p>
+              <b>New Values:</b>
+            </p>
             <p>Amount: ₱{newAmount}</p>
             <p>Balance: ₱{newBalance}</p>
             <p>Total Paid: ₱{newTotalPaid}</p>
@@ -858,16 +878,24 @@ const Transactions = () => {
                   </div>
                 </div>
                 {!!filterBy &&
-                  (filterBy === 'emailAccount' || filterBy === 'firstName' || filterBy === 'middleName' || filterBy === 'lastName' ? (
+                  (filterBy === 'emailAccount' ||
+                  filterBy === 'firstName' ||
+                  filterBy === 'middleName' ||
+                  filterBy === 'lastName' ? (
                     <div className="flex flex-row md:w-1/4">
                       <input
                         className="w-full px-3 py-2 border rounded"
-                        onChange={(e) => handleFilterChange(filterBy, e.target.value)}
+                        onChange={(e) =>
+                          handleFilterChange(filterBy, e.target.value)
+                        }
                         placeholder={
-                          filterBy === 'emailAccount' ? 'Email Account' :
-                            filterBy === 'firstName' ? 'Student First Name' :
-                              filterBy === 'middleName' ? 'Student Middle Name' :
-                                'Student Last Name'
+                          filterBy === 'emailAccount'
+                            ? 'Email Account'
+                            : filterBy === 'firstName'
+                            ? 'Student First Name'
+                            : filterBy === 'middleName'
+                            ? 'Student Middle Name'
+                            : 'Student Last Name'
                         }
                         value={filterValue}
                       />
@@ -906,9 +934,7 @@ const Transactions = () => {
                   </button>
                 )}
               </div>
-              <div className="text-2xl">
-                Total: {pagination.total || 0}
-              </div>
+              <div className="text-2xl">Total: {pagination.total || 0}</div>
             </div>
             <div>
               <table className="w-full">
@@ -933,7 +959,10 @@ const Transactions = () => {
                 <tbody>
                   {isError ? (
                     <tr>
-                      <td colSpan={6} className="px-3 py-1 text-center text-red-500">
+                      <td
+                        colSpan={6}
+                        className="px-3 py-1 text-center text-red-500"
+                      >
                         Error loading transactions. Please try again.
                       </td>
                     </tr>
@@ -948,33 +977,38 @@ const Transactions = () => {
                             <div>
                               <h4 className="flex items-center space-x-3 text-xl font-medium capitalize text-primary-500">
                                 <span>{`${transaction?.schoolFee?.student?.studentRecord?.firstName}`}</span>
-                                <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${GRADE_LEVEL[
-                                  transaction.schoolFee.student.studentRecord
-                                    ?.incomingGradeLevel
-                                ]
-                                  }`}</span>
+                                <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${
+                                  GRADE_LEVEL[
+                                    transaction.schoolFee.student.studentRecord
+                                      ?.incomingGradeLevel
+                                  ]
+                                }`}</span>
                               </h4>
                               <h5 className="font-bold">
                                 <span className="text-xs">
-                                  {`${PROGRAM[
-                                    transaction.schoolFee.student
-                                      .studentRecord?.program
-                                  ]
-                                    }
-                                  ${transaction.schoolFee.student.studentRecord
-                                      ?.program === 'HOMESCHOOL_COTTAGE'
-                                      ? ` (${COTTAGE_TYPE[
+                                  {`${
+                                    PROGRAM[
                                       transaction.schoolFee.student
-                                        .studentRecord?.cottageType
-                                      ]
-                                      })`
-                                      : ''
-                                    } - 
-                                  ${ACCREDITATION[
-                                    transaction.schoolFee.student
-                                      .studentRecord?.accreditation
+                                        .studentRecord?.program
                                     ]
-                                    }
+                                  }
+                                  ${
+                                    transaction.schoolFee.student.studentRecord
+                                      ?.program === 'HOMESCHOOL_COTTAGE'
+                                      ? ` (${
+                                          COTTAGE_TYPE[
+                                            transaction.schoolFee.student
+                                              .studentRecord?.cottageType
+                                          ]
+                                        })`
+                                      : ''
+                                  } - 
+                                  ${
+                                    ACCREDITATION[
+                                      transaction.schoolFee.student
+                                        .studentRecord?.accreditation
+                                    ]
+                                  }
                                   `}
                                 </span>
                               </h5>
@@ -985,7 +1019,7 @@ const Transactions = () => {
                                 <strong>
                                   {transaction.user.guardianInformation
                                     ? transaction.user.guardianInformation
-                                      .primaryGuardianName
+                                        .primaryGuardianName
                                     : transaction.user.email}
                                 </strong>
                               </p>
@@ -995,14 +1029,14 @@ const Transactions = () => {
                               </p>
                               {transaction.schoolFee.student.studentRecord
                                 ?.discount && (
-                                  <p className="text-xs font-semibold text-primary-500">
-                                    Applied discount:{' '}
-                                    {
-                                      transaction.schoolFee.student.studentRecord
-                                        .discount
-                                    }
-                                  </p>
-                                )}
+                                <p className="text-xs font-semibold text-primary-500">
+                                  Applied discount:{' '}
+                                  {
+                                    transaction.schoolFee.student.studentRecord
+                                      .discount
+                                  }
+                                </p>
+                              )}
                               <small>{transaction.user.email}</small>
                             </div>
                           </td>
@@ -1011,33 +1045,33 @@ const Transactions = () => {
                               <div className="flex">
                                 {
                                   PAYMENT_TYPE[
-                                  transaction.schoolFee.paymentType
+                                    transaction.schoolFee.paymentType
                                   ]
                                 }
                               </div>
                               <div className="flex text-sm text-gray-400 italic">
                                 {transaction.schoolFee.paymentType ===
-                                  PaymentType.ANNUAL
+                                PaymentType.ANNUAL
                                   ? 'Total Fee'
                                   : transaction.schoolFee.order === 0
-                                    ? 'Initial Fee'
-                                    : transaction.schoolFee.order === 10
-                                      ? ''
-                                      : `Payment #${transaction.schoolFee.order}`}
+                                  ? 'Initial Fee'
+                                  : transaction.schoolFee.order === 10
+                                  ? ''
+                                  : `Payment #${transaction.schoolFee.order}`}
                               </div>
                               <p className="text-xs font-semibold text-primary-500">
                                 {transaction.schoolFee.order === 0 ||
-                                  transaction.schoolFee.order === 10
+                                transaction.schoolFee.order === 10
                                   ? ''
                                   : getDeadlineForAdmin(
-                                    transaction.schoolFee?.student
-                                      ?.studentRecord?.studentId,
-                                    transaction.schoolFee.order,
-                                    transaction.schoolFee.paymentType,
-                                    //transaction.createdAt,
-                                    transaction.schoolFee.student
-                                      .studentRecord?.schoolYear
-                                  ) || null}
+                                      transaction.schoolFee?.student
+                                        ?.studentRecord?.studentId,
+                                      transaction.schoolFee.order,
+                                      transaction.schoolFee.paymentType,
+                                      //transaction.createdAt,
+                                      transaction.schoolFee.student
+                                        .studentRecord?.schoolYear
+                                    ) || null}
                               </p>
                             </div>
                           </td>
@@ -1054,8 +1088,9 @@ const Transactions = () => {
                                   </span>
                                 )}
                                 <span
-                                  className={`rounded-full py-0.5 text-xs px-2 flex items-center justify-center ${STATUS_BG_COLOR[transaction.paymentStatus]
-                                    }`}
+                                  className={`rounded-full py-0.5 text-xs px-2 flex items-center justify-center ${
+                                    STATUS_BG_COLOR[transaction.paymentStatus]
+                                  }`}
                                 >
                                   {STATUS_CODES[transaction.paymentStatus]}
                                 </span>

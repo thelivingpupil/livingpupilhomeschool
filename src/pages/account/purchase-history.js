@@ -516,6 +516,7 @@ const PurchaseHistory = () => {
                                 order[0].orderStatus === 'In_Transit' ||
                                 order[0].orderStatus === 'For_Delivery' ||
                                 order[0].orderStatus === 'For_Pickup' ||
+                                order[0].orderStatus === 'Completed' ||
                                 order[0].orderStatus === null ? (
                                   // ✅ If there’s a delivery fee
                                   order.length === 6 ? (

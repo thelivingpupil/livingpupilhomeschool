@@ -26,6 +26,7 @@ const Welcome = () => {
     useInvitations();
   const { data: workspacesData, isLoading: isFetchingWorkspaces } =
     useWorkspaces();
+
   const { setWorkspace } = useWorkspace();
   const [name, setName] = useState('');
   const [isSubmitting, setSubmittingState] = useState(false);

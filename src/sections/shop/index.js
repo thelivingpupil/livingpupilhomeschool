@@ -816,6 +816,7 @@ const Shop = ({ categories, items }) => {
                     <h4 className="font-semibold text-yellow-800 mb-2">
                       Upload Payment Proof
                     </h4>
+
                     <div className="space-y-3">
                       {transactionId ? (
                         <div className="bg-green-50 p-3 rounded-lg">

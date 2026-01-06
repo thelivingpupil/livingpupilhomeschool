@@ -51,6 +51,7 @@ const Fees = () => {
 
   // State to store total unpaid amount
   const [unpaidTotal, setUnpaidTotal] = useState(0);
+  // const findWorkspace = workspace.find
 
   // Function to calculate total unpaid fees
   const calculateUnpaidTotal = () => {
@@ -91,9 +92,9 @@ const Fees = () => {
         .update(paymentProofFile.name + Date.now())
         .digest('hex')
         .substring(0, 12)}-${format(
-          new Date(),
-          'yyyy.MM.dd.kk.mm.ss'
-        )}.${extension}`;
+        new Date(),
+        'yyyy.MM.dd.kk.mm.ss'
+      )}.${extension}`;
 
       // ✅ Upload to Firebase Storage
       const storageRef = ref(storage, fileName);
@@ -165,12 +166,19 @@ const Fees = () => {
     });
   };
 
-  const showBankPaymentModal = (transactionId, referenceNumber, amount) => {
+  const showBankPaymentModal = (
+    transactionId,
+    referenceNumber,
+    amount,
+    paymentProofLink
+  ) => {
     setSelectedTransaction({
       transactionId,
       referenceNumber,
       amount,
+      paymentProofLink,
     });
+    console.log({ paymentProofLink });
     setShowBankModal(true);
   };
 
@@ -280,7 +288,9 @@ const Fees = () => {
     <AccountLayout>
       {workspace ? (
         <>
-          <Meta title={`Living Pupil Homeschool - ${workspace.name} | Profile`} />
+          <Meta
+            title={`Living Pupil Homeschool - ${workspace.name} | Profile`}
+          />
           <Content.Title
             title={`${workspace.name} - School Fees`}
             subtitle="This is the student record information"
@@ -331,7 +341,9 @@ const Fees = () => {
                               <th className="px-3 text-center py-2">
                                 Manual Payment
                               </th>
-                              <th className="px-3 py-2 text-center">Deadline</th>
+                              <th className="px-3 py-2 text-center">
+                                Deadline
+                              </th>
                               <th className="px-3 py-2 text-center">
                                 Action / Status
                               </th>
@@ -347,19 +359,20 @@ const Fees = () => {
                                   <td className="px-3 py-2">
                                     <p>
                                       {index === 0 &&
-                                        f.paymentType === PaymentType.ANNUAL
+                                      f.paymentType === PaymentType.ANNUAL
                                         ? 'Total School Fee'
                                         : index === 0 &&
                                           f.paymentType !== PaymentType.ANNUAL
-                                          ? 'Initial School Fee'
-                                          : index > 0 &&
-                                            f.paymentType ===
+                                        ? 'Initial School Fee'
+                                        : index > 0 &&
+                                          f.paymentType ===
                                             PaymentType.SEMI_ANNUAL
-                                            ? `Three (3) Term Payment School Fee #${index}`
-                                            : index > 0 &&
-                                              f.paymentType === PaymentType.QUARTERLY
-                                              ? `Three (4) Term Payment School Fee #${index}`
-                                              : `Monthly Payment School Fee #${index}`}
+                                        ? `Three (3) Term Payment School Fee #${index}`
+                                        : index > 0 &&
+                                          f.paymentType ===
+                                            PaymentType.QUARTERLY
+                                        ? `Three (4) Term Payment School Fee #${index}`
+                                        : `Monthly Payment School Fee #${index}`}
                                     </p>
                                     <p className="text-xs italic text-gray-400">
                                       <span className="font-medium">
@@ -380,9 +393,9 @@ const Fees = () => {
                                     <div>
                                       {f.transaction.payment
                                         ? new Intl.NumberFormat('en-US', {
-                                          style: 'currency',
-                                          currency: 'PHP',
-                                        }).format(f.transaction.payment)
+                                            style: 'currency',
+                                            currency: 'PHP',
+                                          }).format(f.transaction.payment)
                                         : '-'}
                                       {f.transaction.balance ? (
                                         <p className="font-mono text-xs text-gray-400 lowercase">
@@ -395,12 +408,12 @@ const Fees = () => {
                                   </td>
                                   <td className="px-3 py-2 text-sm text-center">
                                     {index !== 0 &&
-                                      fees[level].schoolFees[0].transaction
-                                        .paymentStatus !== 'S'
+                                    fees[level].schoolFees[0].transaction
+                                      .paymentStatus !== 'S'
                                       ? '-'
                                       : index === 0
-                                        ? 'Initial Fee'
-                                        : getDeadline(
+                                      ? 'Initial Fee'
+                                      : getDeadline(
                                           index,
                                           f.paymentType,
                                           fees[level].schoolFees[0].transaction
@@ -412,11 +425,11 @@ const Fees = () => {
                                   </td>
                                   <td className="px-3 py-2 space-x-3 text-center">
                                     {f.transaction.paymentStatus !==
-                                      TransactionStatus.S ? (
+                                    TransactionStatus.S ? (
                                       <>
                                         {index !== 0 &&
-                                          fees[level].schoolFees[0].transaction
-                                            .paymentStatus !== 'S' ? (
+                                        fees[level].schoolFees[0].transaction
+                                          .paymentStatus !== 'S' ? (
                                           <span className="inline-block px-3 py-1 text-xs text-white bg-red-600 rounded-full">
                                             Unpaid Initial Fee
                                           </span>
@@ -441,7 +454,8 @@ const Fees = () => {
                                                 showBankPaymentModal(
                                                   f.transaction.transactionId,
                                                   f.transaction.referenceNumber,
-                                                  f.transaction.amount
+                                                  f.transaction.amount,
+                                                  f.transaction.paymentProofLink
                                                 )
                                               }
                                             >
@@ -486,8 +500,8 @@ const Fees = () => {
                 <Card.Body title="School Fees">
                   <div className="px-3 py-3 text-sm text-red-500 border-2 border-red-600 rounded bg-red-50">
                     <p>
-                      You will need to enroll your student first prior to viewing
-                      the school fees.
+                      You will need to enroll your student first prior to
+                      viewing the school fees.
                     </p>
                   </div>
                 </Card.Body>
@@ -567,7 +581,9 @@ const Fees = () => {
                         <span className="text-white text-lg font-bold">GC</span>
                       </div>
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-800">GCash</h3>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      GCash
+                    </h3>
                   </div>
 
                   <div className="mt-4 text-center">
@@ -635,6 +651,48 @@ const Fees = () => {
                 <h4 className="font-semibold text-yellow-800 mb-2">
                   Upload Payment Proof
                 </h4>
+                {selectedTransaction &&
+                  selectedTransaction.paymentProofLink && (
+                    <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-green-800">
+                          ✓ Payment Proof Already Uploaded
+                        </span>
+                        {/* <span
+                        className={`text-xs px-2 py-1 rounded-full text-center ${
+                          STATUS_BG_COLOR[
+                            documentRequest?.transaction?.paymentStatus
+                          ] || 'bg-gray-200'
+                        }`}
+                      >
+                        {STATUS_CODES[
+                          documentRequest?.transaction?.paymentStatus
+                        ] || 'Unknown'}
+                      </span> */}
+                      </div>
+                      <div className="flex items-center space-x-3 mb-3">
+                        <button
+                          onClick={() =>
+                            window.open(
+                              selectedTransaction.paymentProofLink,
+                              '_blank'
+                            )
+                          }
+                          className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
+                        >
+                          View Uploaded
+                        </button>
+                        <span className="text-xs text-green-600">
+                          Click to view the payment proof you previously
+                          uploaded
+                        </span>
+                      </div>
+                      <div className="text-xs text-green-700 border-t border-green-200 pt-2">
+                        💡 You can upload a new payment proof below to replace
+                        the existing one
+                      </div>
+                    </div>
+                  )}
                 <div className="space-y-3">
                   <input
                     type="file"
@@ -678,7 +736,9 @@ export const getServerSideProps = async (context) => {
 
   // Redirect to login if not authenticated, preserving the original URL
   if (!session) {
-    const callbackUrl = encodeURIComponent(context.resolvedUrl || context.req.url);
+    const callbackUrl = encodeURIComponent(
+      context.resolvedUrl || context.req.url
+    );
     return {
       redirect: {
         destination: `/auth/login?callbackUrl=${callbackUrl}`,

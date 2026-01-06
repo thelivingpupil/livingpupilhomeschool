@@ -14,7 +14,9 @@ const handler = async (req, res) => {
       );
 
       if (!workspace) {
-        return res.status(404).json({ errors: { error: { msg: 'Workspace not found' } } });
+        return res
+          .status(404)
+          .json({ errors: { error: { msg: 'Workspace not found' } } });
       }
 
       // Transform data similar to getServerSideProps
