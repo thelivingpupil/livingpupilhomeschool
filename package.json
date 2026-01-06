@@ -40,6 +40,7 @@
     "nodemailer": "^6.9.13",
     "papaparse": "^5.4.1",
     "phil-reg-prov-mun-brgy": "^1.1.0",
+    "quill-image-resize": "^3.0.9",
     "react": "17.0.2",
     "react-chartjs-2": "^4.2.0",
     "react-confetti": "^6.1.0",

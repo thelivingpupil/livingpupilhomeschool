@@ -91,23 +91,23 @@ export default async function handler(req, res) {
                         // Extract existing style if any
                         const styleMatch = match.match(/style="([^"]*)"/);
                         let existingStyle = styleMatch ? styleMatch[1] : '';
-                        
+
                         // Add padding-left if not already present
                         if (!existingStyle.includes('padding-left')) {
-                            existingStyle = existingStyle 
+                            existingStyle = existingStyle
                                 ? `${existingStyle}; padding-left: ${padding};`
                                 : `padding-left: ${padding};`;
                         }
-                        
+
                         // Remove ql-indent class
                         const classParts = (beforeClass || '') + (afterClass || '');
                         const cleanedClass = classParts.replace(new RegExp(`\\s*ql-indent-${level}\\s*`, 'gi'), ' ').trim();
-                        
+
                         // Reconstruct the tag
                         const classAttr = cleanedClass ? `class="${cleanedClass}"` : '';
                         const styleAttr = existingStyle ? `style="${existingStyle}"` : '';
                         const attrs = [classAttr, styleAttr].filter(Boolean).join(' ');
-                        
+
                         return `<${tagName} ${attrs}${rest}>`;
                     });
                 });
@@ -126,13 +126,13 @@ export default async function handler(req, res) {
                     const imageBuffer = await downloadImage(imageUrl);
                     const cid = `image_${i}_${Date.now()}`;
                     const filename = imageUrl.split('/').pop().split('?')[0] || `image_${i}.jpg`;
-                    
+
                     imageAttachments.push({
                         filename,
                         content: imageBuffer,
                         cid, // Content-ID for inline images
                     });
-                    
+
                     imageCidMap[imageUrl] = cid;
                 } catch (error) {
                     console.error(`Failed to download image ${imageUrl}:`, error);
