@@ -1,10 +1,5 @@
-const html = ({
-	parentName,
-	emailContent,
-	senderRole,
-	senderFullName
-}) => {
-	return `
+const html = ({ parentName, emailContent, senderRole, senderFullName }) => {
+  return `
 <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 
@@ -323,7 +318,7 @@ const html = ({
 };
 
 const text = ({ email }) => {
-	return `
+  return `
 Welcome! You are logging in with ${email}
 
 If you did not request this email you can safely ignore it.
