@@ -28,7 +28,7 @@ const Menus = ({
           <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto bg-white rounded-md shadow-lg max-h-60">
             {data.menuItems.map((entry, index) =>
               (entry.showDefault && (
-                <Listbox.Option key={index} value={entry} disabled={isLoading || !entry.validateItem || !entry.validateItem(validate, workspace)}>
+                <Listbox.Option key={index} value={entry} disabled={isLoading || (entry.validateItem ? !entry.validateItem(validate, workspace) : false)}>
 
                   <Item
                     data={entry}
@@ -41,7 +41,7 @@ const Menus = ({
                 (menuCondition &&
                   entry.validateItem &&
                   entry.validateItem(validate, workspace)) ? (
-                <Listbox.Option key={index} value={entry} disabled={isLoading || !entry.validateItem || !entry.validateItem(validate, workspace)}>
+                <Listbox.Option key={index} value={entry} disabled={isLoading || (entry.validateItem ? !entry.validateItem(validate, workspace) : false)}>
                   {({ active, selected }) => (
                     <Item
                       data={entry}

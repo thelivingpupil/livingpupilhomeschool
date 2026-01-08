@@ -17,25 +17,25 @@ const Sidebar = ({ menu, showModal }) => {
   const { workspace } = useWorkspace();
 
   const renderMenu = () => {
-    if (!workspace || !menu || !Array.isArray(menu)) {
-      return null;
-    }
-    return menu.map((item, index) => (
-      <Menu
-        key={index}
-        data={item}
-        isLoading={isLoading}
-        menuCondition={!!workspace?.studentRecord}
-        showMenu={data?.workspaces.length > 0 || isLoading}
-        validate={
-          workspace?.schoolFees?.length > 0 &&
-          workspace?.schoolFees?.filter(
-            (fee) => fee.transaction.paymentStatus === TransactionStatus.S
-          )?.length > 0
-        }
-        workspace={workspace}
-      />
-    ));
+    return (
+      workspace &&
+      menu.map((item, index) => (
+        <Menu
+          key={index}
+          data={item}
+          isLoading={isLoading}
+          menuCondition={!!workspace?.studentRecord}
+          showMenu={data?.workspaces.length > 0 || isLoading}
+          validate={
+            workspace?.schoolFees?.length > 0 &&
+            workspace?.schoolFees?.filter(
+              (fee) => fee.transaction.paymentStatus === TransactionStatus.S
+            )?.length > 0
+          }
+          workspace={workspace}
+        />
+      ))
+    );
   };
 
   const renderStaticMenu = () => {

@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import Router, { useRouter } from 'next/router';
 import { SessionProvider, useSession, signOut } from 'next-auth/react';
 import { ThemeProvider } from 'next-themes';
@@ -23,7 +23,7 @@ const App = ({ Component, pageProps }) => {
   const [progress, setProgress] = useState(false);
   const [isGAInitialized, setIsGAInitialized] = useState(false);
   const router = useRouter();
-  const swrOptions = useMemo(() => swrConfig(), []);
+  const swrOptions = swrConfig();
 
   // Configure progress bar once
   useEffect(() => {
