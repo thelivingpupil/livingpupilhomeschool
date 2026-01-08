@@ -21,30 +21,64 @@ import '@splidejs/react-splide/css';
 
 const App = ({ Component, pageProps }) => {
   const [progress, setProgress] = useState(false);
+  const [isGAInitialized, setIsGAInitialized] = useState(false);
   const router = useRouter();
   const swrOptions = swrConfig();
 
-  Router.events.on('routeChangeStart', () => setProgress(true));
-  Router.events.on('routeChangeComplete', () => setProgress(false));
-  TopBarProgress.config(progressBarConfig());
-
+  // Configure progress bar once
   useEffect(() => {
-    if (process.env.NODE_ENV === 'production') {
-      ReactGA.initialize(process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID);
+    TopBarProgress.config(progressBarConfig());
+  }, []);
+
+  // Set up router event listeners
+  useEffect(() => {
+    const handleRouteStart = () => setProgress(true);
+    const handleRouteComplete = () => setProgress(false);
+
+    Router.events.on('routeChangeStart', handleRouteStart);
+    Router.events.on('routeChangeComplete', handleRouteComplete);
+
+    return () => {
+      Router.events.off('routeChangeStart', handleRouteStart);
+      Router.events.off('routeChangeComplete', handleRouteComplete);
+    };
+  }, []);
+
+  // Initialize Google Analytics
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production' && typeof window !== 'undefined') {
+      const gaTrackingID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+      if (gaTrackingID) {
+        try {
+          ReactGA.initialize(gaTrackingID);
+          setIsGAInitialized(true);
+          // Track initial pageview
+          ReactGA.pageview(window.location.pathname + window.location.search);
+        } catch (error) {
+          console.error('Failed to initialize Google Analytics:', error);
+        }
+      }
     }
   }, []);
 
+  // Track route changes
   useEffect(() => {
+    if (!isGAInitialized) return;
+
     const handleRouteChange = (url) => {
-      ReactGA.pageview(url);
+      try {
+        ReactGA.pageview(url);
+      } catch (error) {
+        console.error('Failed to track pageview:', error);
+      }
     };
 
-    router.events.on('routeChangeComplete', handleRouteChange);
+    Router.events.on('routeChangeComplete', handleRouteChange);
 
     return () => {
-      router.events.off('routeChangeComplete', handleRouteChange);
+      Router.events.off('routeChangeComplete', handleRouteChange);
     };
-  }, [router.events]);
+  }, [isGAInitialized]);
 
   return (
     <SessionProvider session={pageProps.session}>
@@ -52,8 +86,9 @@ const App = ({ Component, pageProps }) => {
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
-          enableSystem="false"
+          enableSystem={false}
           forcedTheme="light"
+          suppressHydrationWarning
         >
           <WorkspaceProvider>
             <CartProvider>

@@ -249,10 +249,18 @@ const CartProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem(LPH_CART_KEY));
-
-    if (storedCart) {
-      setCart([...storedCart]);
+    if (typeof window !== 'undefined') {
+      try {
+        const storedCartData = localStorage.getItem(LPH_CART_KEY);
+        if (storedCartData) {
+          const storedCart = JSON.parse(storedCartData);
+          if (storedCart) {
+            setCart([...storedCart]);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load cart from localStorage:', error);
+      }
     }
   }, []);
 
