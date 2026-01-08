@@ -213,11 +213,11 @@ const AccountLayout = ({ children }) => {
   return (
     <main className="relative flex flex-col w-screen h-screen space-x-0 text-gray-800 dark:text-gray-200 md:space-x-5 md:flex-row bg-gray-50 dark:bg-gray-800">
       {router.route !== '/account/enrollment' && (
-        <Sidebar menu={menu(workspace?.slug)} showModal={showModal} />
+        <Sidebar menu={workspace?.slug ? menu(workspace.slug) : []} showModal={showModal} />
       )}
       <Content route={router.route}>
         <Toaster position="bottom-left" toastOptions={{ duration: 10000 }} />
-        <Header menu={menu(workspace?.slug)} />
+        <Header menu={workspace?.slug ? menu(workspace.slug) : []} />
         {children}
         <Script strategy="lazyOnload">
           {`

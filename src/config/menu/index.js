@@ -1,14 +1,20 @@
 import { getDeadline } from '@/utils/index';
 
-const menu = (workspaceId) => [
-  {
-    name: 'Student Record',
-    menuItems: [
-      {
-        name: 'Profile',
-        path: `/account/${workspaceId}`,
-        showDefault: true,
-      },
+const menu = (workspaceId) => {
+  // Return empty array if workspaceId is not provided
+  if (!workspaceId) {
+    return [];
+  }
+
+  return [
+    {
+      name: 'Student Record',
+      menuItems: [
+        {
+          name: 'Profile',
+          path: `/account/${workspaceId}`,
+          showDefault: true,
+        },
       {
         name: 'Grades',
         path: `/account/${workspaceId}/grades`,
@@ -97,7 +103,8 @@ const menu = (workspaceId) => [
       },
     ],
   },
-];
+  ];
+};
 
 // Helper function to get month names
 const getMonthName = (monthIndex) => {

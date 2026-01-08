@@ -46,25 +46,25 @@ const Header = ({ menu }) => {
   const [selectedItem, setSelectedItem] = useState(null); // Define selectedItem
 
   const renderMenu = () => {
-    return (
-      workspace &&
-      menu?.map((item, index) => (
-        <Menus
-          key={index}
-          data={item}
-          isLoading={isLoading}
-          menuCondition={!!workspace?.studentRecord}
-          showMenu={true}
-          validate={
-            workspace?.schoolFees?.length > 0 &&
-            workspace?.schoolFees?.filter(
-              (fee) => fee.transaction.paymentStatus === TransactionStatus.S
-            )?.length > 0
-          }
-          workspace={workspace}
-        />
-      ))
-    );
+    if (!workspace || !menu || !Array.isArray(menu)) {
+      return null;
+    }
+    return menu.map((item, index) => (
+      <Menus
+        key={index}
+        data={item}
+        isLoading={isLoading}
+        menuCondition={!!workspace?.studentRecord}
+        showMenu={true}
+        validate={
+          workspace?.schoolFees?.length > 0 &&
+          workspace?.schoolFees?.filter(
+            (fee) => fee.transaction.paymentStatus === TransactionStatus.S
+          )?.length > 0
+        }
+        workspace={workspace}
+      />
+    ));
   };
 
   return (
