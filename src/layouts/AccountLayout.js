@@ -112,7 +112,7 @@ const AccountLayout = ({ children }) => {
 
   // Check if we're on a workspace route (has [workspaceSlug] in the path)
   const isWorkspaceRoute = router.route?.includes('[workspaceSlug]') || router.pathname?.includes('/account/') && router.pathname !== '/account/enrollment';
-  
+
   // Extract workspaceSlug from route - wait for router to be ready
   const workspaceSlug = router.isReady ? router.query.workspaceSlug : null;
 
@@ -128,6 +128,21 @@ const AccountLayout = ({ children }) => {
       setWorkspace(workspaceData.data.workspace);
     }
   }, [workspaceData, workspace, setWorkspace]);
+
+  // Clear workspace when navigating to a route without workspaceSlug
+  useEffect(() => {
+    if (router.isReady && !workspaceSlug && workspace) {
+      // We're on a route without workspaceSlug (like /account), clear the workspace
+      setWorkspace(null);
+    }
+  }, [router.isReady, workspaceSlug, workspace, setWorkspace]);
+
+  // Determine if we should show workspace menu (only on workspace routes with a valid workspace)
+  // Only show if we have a workspaceSlug in the route AND a matching workspace
+  const shouldShowWorkspaceMenu = workspaceSlug &&
+    workspace?.slug === workspaceSlug &&
+    router.pathname !== '/account' &&
+    router.pathname !== '/account/enrollment';
 
   // Show loading state while fetching workspace on direct access
   // Show loading if: we're on a workspace route, workspace is not loaded, and either fetching or waiting for router
@@ -172,16 +187,16 @@ const AccountLayout = ({ children }) => {
     const errorStatus = workspaceError.status || workspaceError?.response?.status;
     const errorMessage = workspaceError?.message || workspaceError?.data?.errors?.error?.msg || '';
     const errorString = JSON.stringify(workspaceError).toLowerCase();
-    const isNotFound = 
-      errorStatus === 404 || 
+    const isNotFound =
+      errorStatus === 404 ||
       errorMessage.toLowerCase().includes('not found') ||
       errorString.includes('not found') ||
       errorString.includes('404');
-    
+
     if (isNotFound) {
       return <WorkspaceNotFound workspaceSlug={workspaceSlug} />;
     }
-    
+
     // Show generic error for other errors (500, network, etc.)
     return (
       <main className="relative flex flex-col items-center justify-center w-screen h-screen text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-800">
@@ -213,11 +228,11 @@ const AccountLayout = ({ children }) => {
   return (
     <main className="relative flex flex-col w-screen h-screen space-x-0 text-gray-800 dark:text-gray-200 md:space-x-5 md:flex-row bg-gray-50 dark:bg-gray-800">
       {router.route !== '/account/enrollment' && (
-        <Sidebar menu={menu(workspace?.slug)} showModal={showModal} />
+        <Sidebar menu={shouldShowWorkspaceMenu ? menu(workspace.slug) : []} showModal={showModal} />
       )}
       <Content route={router.route}>
         <Toaster position="bottom-left" toastOptions={{ duration: 10000 }} />
-        <Header menu={menu(workspace?.slug)} />
+        <Header menu={shouldShowWorkspaceMenu ? menu(workspace.slug) : []} />
         {children}
         <Script strategy="lazyOnload">
           {`
