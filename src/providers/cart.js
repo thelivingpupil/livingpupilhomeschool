@@ -32,20 +32,20 @@ const cartInitialState = {
   signatureLink: '', //returned
   sigCanvas: null, //returned
   showSignCanvas: false, //returned
-  addToCart: () => {},
-  removeFromCart: () => {},
-  setShippingFee: () => {},
-  setDeliveryAddress: () => {},
-  setContactNumber: () => {},
-  clearCart: () => {},
-  toggleCartVisibility: () => {},
-  togglePaymentLinkVisibility: () => {},
-  checkoutCart: () => {},
-  setPaymentType: () => {},
-  clearSignature: () => {}, //returned
-  toggleSignCanvasVisibility: () => {}, //returned
-  saveSignature: () => {},
-  handleEndDrawing: () => {},
+  addToCart: () => { },
+  removeFromCart: () => { },
+  setShippingFee: () => { },
+  setDeliveryAddress: () => { },
+  setContactNumber: () => { },
+  clearCart: () => { },
+  toggleCartVisibility: () => { },
+  togglePaymentLinkVisibility: () => { },
+  checkoutCart: () => { },
+  setPaymentType: () => { },
+  clearSignature: () => { }, //returned
+  toggleSignCanvasVisibility: () => { }, //returned
+  saveSignature: () => { },
+  handleEndDrawing: () => { },
 };
 
 const LPH_CART_KEY = 'LPHCART';
@@ -191,9 +191,9 @@ const CartProvider = ({ children }) => {
       .update(dataUrl)
       .digest('hex')
       .substring(0, 12)}-${format(
-      new Date(),
-      'yyyy.MM.dd.kk.mm.ss'
-    )}.${extension}`;
+        new Date(),
+        'yyyy.MM.dd.kk.mm.ss'
+      )}.${extension}`;
 
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, blob);
@@ -334,10 +334,10 @@ const CartProvider = ({ children }) => {
     const newCart =
       findExistingItem !== -1
         ? [...cart].map((cartItem, index) =>
-            index === findExistingItem
-              ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
-              : cartItem
-          )
+          index === findExistingItem
+            ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
+            : cartItem
+        )
         : [...cart, item];
 
     setCart([...newCart]);

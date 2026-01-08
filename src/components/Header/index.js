@@ -96,23 +96,27 @@ const Header = ({ menu }) => {
             <Menu.Items className="absolute right-0 w-40 mt-2 origin-top-right bg-white border divide-y divide-gray-100 rounded">
               <div className="p-2">
                 <Menu.Item>
-                  <Link href="/account">
-                    <a className="flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group">
-                      <DesktopComputerIcon
-                        aria-hidden="true"
-                        className="w-5 h-5"
-                      />
-                      <span>Dashboard</span>
-                    </a>
-                  </Link>
+                  {({ active }) => (
+                    <Link href="/account">
+                      <a className={`flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group ${active ? 'bg-primary-600 text-white' : ''}`}>
+                        <DesktopComputerIcon
+                          aria-hidden="true"
+                          className="w-5 h-5"
+                        />
+                        <span>Dashboard</span>
+                      </a>
+                    </Link>
+                  )}
                 </Menu.Item>
                 <Menu.Item>
-                  <Link href="/account/settings">
-                    <a className="flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group">
-                      <UserCircleIcon aria-hidden="true" className="w-5 h-5" />
-                      <span>Account</span>
-                    </a>
-                  </Link>
+                  {({ active }) => (
+                    <Link href="/account/settings">
+                      <a className={`flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group ${active ? 'bg-primary-600 text-white' : ''}`}>
+                        <UserCircleIcon aria-hidden="true" className="w-5 h-5" />
+                        <span>Account</span>
+                      </a>
+                    </Link>
+                  )}
                 </Menu.Item>
                 {/* <Menu.Item>
                   <Link href="/account/billing">
@@ -136,18 +140,20 @@ const Header = ({ menu }) => {
                   </Link>
                 </Menu.Item> */}
                 <Menu.Item>
-                  <Link href="/shop">
-                    <a
-                      className="flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group"
-                      target="_blank"
-                    >
-                      <ShoppingCartIcon
-                        aria-hidden="true"
-                        className="w-5 h-5"
-                      />
-                      <span>Shop</span>
-                    </a>
-                  </Link>
+                  {({ active }) => (
+                    <Link href="/shop">
+                      <a
+                        className={`flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group ${active ? 'bg-primary-600 text-white' : ''}`}
+                        target="_blank"
+                      >
+                        <ShoppingCartIcon
+                          aria-hidden="true"
+                          className="w-5 h-5"
+                        />
+                        <span>Shop</span>
+                      </a>
+                    </Link>
+                  )}
                 </Menu.Item>
                 {/* <Menu.Item>
                   <button
@@ -171,25 +177,27 @@ const Header = ({ menu }) => {
               {data && data.user && data.user.userType === UserType.ADMIN && (
                 <div className="p-2">
                   <Menu.Item>
-                    <Link
-                      href={
-                        router.pathname.includes('/account/admin')
-                          ? '/account'
-                          : '/account/admin'
-                      }
-                    >
-                      <a className="flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group">
-                        <IdentificationIcon
-                          aria-hidden="true"
-                          className="w-5 h-5"
-                        />
-                        <span>
-                          {router.pathname.includes('/account/admin')
-                            ? 'Parent Portal'
-                            : 'Administration'}
-                        </span>
-                      </a>
-                    </Link>
+                    {({ active }) => (
+                      <Link
+                        href={
+                          router.pathname.includes('/account/admin')
+                            ? '/account'
+                            : '/account/admin'
+                        }
+                      >
+                        <a className={`flex items-center w-full px-2 py-2 space-x-2 text-sm text-gray-800 rounded hover:bg-primary-600 hover:text-white group ${active ? 'bg-primary-600 text-white' : ''}`}>
+                          <IdentificationIcon
+                            aria-hidden="true"
+                            className="w-5 h-5"
+                          />
+                          <span>
+                            {router.pathname.includes('/account/admin')
+                              ? 'Parent Portal'
+                              : 'Administration'}
+                          </span>
+                        </a>
+                      </Link>
+                    )}
                   </Menu.Item>
                 </div>
               )}
