@@ -324,9 +324,9 @@ const Broadcast = () => {
         .update(imageFile.name + Date.now())
         .digest('hex')
         .substring(0, 12)}-${format(
-        new Date(),
-        'yyyy.MM.dd.kk.mm.ss'
-      )}.${extension}`;
+          new Date(),
+          'yyyy.MM.dd.kk.mm.ss'
+        )}.${extension}`;
 
       const storageRef = ref(storage, fileName);
       const uploadTask = uploadBytesResumable(storageRef, imageFile);
@@ -503,8 +503,7 @@ const Broadcast = () => {
         if (!response.ok) {
           const errorData = await response.json();
           toast.error(
-            `Failed to send emails: ${
-              errorData.errors?.error?.msg || 'Unknown error'
+            `Failed to send emails: ${errorData.errors?.error?.msg || 'Unknown error'
             }`
           );
           setIsSending(false);
@@ -543,6 +542,7 @@ const Broadcast = () => {
       quillEditorRef.current = editor;
     }
   };
+
 
   // Keep ref updated with latest handleContentChange
   useEffect(() => {
@@ -624,7 +624,7 @@ const Broadcast = () => {
                   quillRef.current.editor ||
                   quillRef.current.quill ||
                   (quillRef.current.getEditor &&
-                  typeof quillRef.current.getEditor === 'function'
+                    typeof quillRef.current.getEditor === 'function'
                     ? quillRef.current.getEditor()
                     : null);
               }
@@ -860,9 +860,9 @@ const Broadcast = () => {
       const senderDetails = emailSender
         ? getSenderDetails(emailSender)
         : {
-            senderRole: 'Administrator',
-            senderFullName: 'Living Pupil Homeschool Team',
-          };
+          senderRole: 'Administrator',
+          senderFullName: 'Living Pupil Homeschool Team',
+        };
       const { senderRole, senderFullName } = senderDetails;
 
       // Determine parent name for preview
@@ -922,10 +922,10 @@ const Broadcast = () => {
     // We'll check if there's actual text content (not just HTML tags)
     const textContent = emailContent
       ? emailContent
-          .replace(/<[^>]*>/g, '')
-          .replace(/&nbsp;/g, ' ')
-          .replace(/\s+/g, ' ')
-          .trim()
+        .replace(/<[^>]*>/g, '')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
       : '';
     const hasContent = textContent.length > 0;
     const hasTestSender = testEmailSender && testEmailSender.trim().length > 0;
@@ -1151,11 +1151,11 @@ const Broadcast = () => {
     filterBy === 'gradeLevels'
       ? Object.entries(GRADE_LEVEL).map(([value, label]) => ({ value, label }))
       : filterBy === 'gradeGroups'
-      ? GRADE_LEVEL_GROUPS.map((group) => ({
+        ? GRADE_LEVEL_GROUPS.map((group) => ({
           value: group.name,
           label: group.name,
         }))
-      : Object.entries(GRADE_LEVEL_FORMS).map(([form, levels]) => ({
+        : Object.entries(GRADE_LEVEL_FORMS).map(([form, levels]) => ({
           value: form,
           label: form,
         }));
@@ -1207,11 +1207,10 @@ const Broadcast = () => {
               <div className="mb-4 lg:w-1/4">
                 <label className="text-lg font-bold mr-5">School Year</label>
                 <div
-                  className={`relative inline-block w-full ${
-                    schoolYear.length <= 0
+                  className={`relative inline-block w-full ${schoolYear.length <= 0
                       ? 'border-red-500 border-2 rounded'
                       : 'border-none'
-                  }`}
+                    }`}
                 >
                   <select
                     className="w-full px-3 py-2 appearance-none rounded border"
@@ -1236,11 +1235,10 @@ const Broadcast = () => {
                       <button
                         key={key}
                         onClick={() => handleFilterByChange(key)} // Use handleFilterByChange to reset filterValues
-                        className={`p-2 border rounded ${
-                          filterBy === key
+                        className={`p-2 border rounded ${filterBy === key
                             ? 'bg-blue-500 text-white'
                             : 'bg-white'
-                        }`}
+                          }`}
                       >
                         {label}
                       </button>
@@ -1312,11 +1310,10 @@ const Broadcast = () => {
                   type="email"
                   value={singularEmail}
                   onChange={(e) => setSingularEmail(e.target.value)}
-                  className={` p-2 border rounded w-full md:w-1/2 ${
-                    guardianEmails.length <= 0
+                  className={` p-2 border rounded w-full md:w-1/2 ${guardianEmails.length <= 0
                       ? 'border-red-500 border-2 rounded'
                       : 'border'
-                  }`}
+                    }`}
                   placeholder="Enter parent's email"
                 />
               </div>
@@ -1326,11 +1323,10 @@ const Broadcast = () => {
                   type="text"
                   value={singularParent}
                   onChange={(e) => setSingularParent(e.target.value)}
-                  className={` p-2 border rounded w-full md:w-1/2 ${
-                    guardianEmails.length <= 0
+                  className={` p-2 border rounded w-full md:w-1/2 ${guardianEmails.length <= 0
                       ? 'border-red-500 border-2 rounded'
                       : 'border'
-                  }`}
+                    }`}
                   placeholder="Enter parent's name"
                 />
               </div>
@@ -1426,11 +1422,10 @@ const Broadcast = () => {
           <div className="flex flex-col w-full md:w-1/2 space-y-2 mt-5">
             <div className="text-lg font-bold">Sender:</div>
             <div
-              className={`relative inline-block w-full ${
-                emailSender.length <= 0
+              className={`relative inline-block w-full ${emailSender.length <= 0
                   ? 'border-red-500 border-2 rounded'
                   : 'border-none'
-              }`}
+                }`}
             >
               <select
                 className="w-full px-3 py-2 appearance-none rounded border"
@@ -1456,9 +1451,8 @@ const Broadcast = () => {
               Subject:
             </label>
             <input
-              className={`px-3 py-2 rounded md:w-1/2 ${
-                emailSubject.length <= 0 ? 'border-red-500 border-2' : 'border'
-              }`}
+              className={`px-3 py-2 rounded md:w-1/2 ${emailSubject.length <= 0 ? 'border-red-500 border-2' : 'border'
+                }`}
               onChange={(e) => setEmailSubject(e.target.value)}
               value={emailSubject}
             />
@@ -1533,22 +1527,20 @@ const Broadcast = () => {
             <button
               onClick={generatePreviewContent}
               disabled={isProcessingPreview}
-              className={`w-1/4 mt-10 py-3 px-4 rounded-md text-white font-bold ${
-                isProcessingPreview
+              className={`w-1/4 mt-10 py-3 px-4 rounded-md text-white font-bold ${isProcessingPreview
                   ? 'bg-gray-400 cursor-not-allowed'
                   : 'bg-green-500 hover:bg-green-600'
-              }`}
+                }`}
             >
               {isProcessingPreview ? 'Processing...' : 'Preview Email'}
             </button>
             <button
               onClick={handleSendClick}
               disabled={!isFormValid || isSending}
-              className={`w-1/4 mt-10 py-3 px-4 rounded-md text-white font-bold ${
-                isSending || !isFormValid
+              className={`w-1/4 mt-10 py-3 px-4 rounded-md text-white font-bold ${isSending || !isFormValid
                   ? 'bg-gray-400 cursor-not-allowed'
                   : 'bg-blue-500 hover:bg-blue-600'
-              }`}
+                }`}
             >
               {isSending ? 'Sending...' : 'Send Email'}
             </button>
@@ -1570,7 +1562,7 @@ const Broadcast = () => {
               From:{' '}
               {emailSender
                 ? emailSenderOptions.find((opt) => opt.value === emailSender)
-                    ?.label
+                  ?.label
                 : 'Not selected'}
             </p>
             <p>
@@ -1639,14 +1631,13 @@ const Broadcast = () => {
                   !testEmailSubject ||
                   !testEmailSender
                 }
-                className={`px-4 py-2 rounded text-white font-medium ${
-                  isSendingTestEmail ||
-                  !testEmail ||
-                  !testEmailSubject ||
-                  !testEmailSender
+                className={`px-4 py-2 rounded text-white font-medium ${isSendingTestEmail ||
+                    !testEmail ||
+                    !testEmailSubject ||
+                    !testEmailSender
                     ? 'bg-gray-400 cursor-not-allowed'
                     : 'bg-blue-500 hover:bg-blue-600'
-                }`}
+                  }`}
               >
                 {isSendingTestEmail ? 'Sending...' : 'Send Test Email'}
               </button>

@@ -46,6 +46,7 @@ const html = ({ parentName, emailContent, senderRole, senderFullName }) => {
             padding-left: 25px;
             padding-right: 25px;
         }
+            
 
 		.desktop_hide,
 		.desktop_hide table {
