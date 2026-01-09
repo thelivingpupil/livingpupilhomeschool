@@ -1,5 +1,5 @@
 const html = ({ parentName, emailContent, senderRole, senderFullName }) => {
-  return `
+    return `
 <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 
@@ -30,8 +30,22 @@ const html = ({ parentName, emailContent, senderRole, senderFullName }) => {
 		}
 
 		p {
-			line-height: inherit
+			line-height: inherit;
+			padding-left: 25px;
+			padding-right: 25px;
 		}
+
+		/* Remove padding from paragraphs that contain images */
+		/* Note: :has() is not supported in all email clients, so we'll also handle this with inline styles */
+		p:has(img) {
+			padding-left: 0 !important;
+			padding-right: 0 !important;
+		}
+        
+        .email-content-wrapper p{
+            padding-left: 25px;
+            padding-right: 25px;
+        }
 
 		.desktop_hide,
 		.desktop_hide table {
@@ -253,7 +267,7 @@ const html = ({ parentName, emailContent, senderRole, senderFullName }) => {
 															<td class="pad" style="padding:0;">
 																<div class="email-content" style="color:#000;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:15px;font-weight:400;letter-spacing:0px;line-height: 20px;text-align:left;mso-line-height-alt:19.2px;margin:0;">
                                                                     <p style="margin: 0; margin-bottom: 16px;padding:25px;">Hello <strong style="color: #2e3494;">${parentName}</strong>,</p>
-                                                                    <div style="margin:0;padding:0;">${emailContent}</div>
+                                                                    <div class="email-content-wrapper" style="margin:0;padding:0;">${emailContent}</div>
 																	<div class="senderDetails" style="text-align: center; display: inline-block; padding: 25px">
 																		<p style="margin: 0; font-weight: bold; text-decoration: underline;">${senderFullName}</p>
     																	<p style="margin: 0;">${senderRole}</p>
@@ -318,7 +332,7 @@ const html = ({ parentName, emailContent, senderRole, senderFullName }) => {
 };
 
 const text = ({ email }) => {
-  return `
+    return `
 Welcome! You are logging in with ${email}
 
 If you did not request this email you can safely ignore it.

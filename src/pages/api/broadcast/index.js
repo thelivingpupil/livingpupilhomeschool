@@ -140,9 +140,44 @@ export default async function handler(req, res) {
                 }
             }
 
+            // Remove padding from paragraphs that contain images (for email client compatibility)
+            // Since :has() selector isn't supported in all email clients, we add inline styles
+            const removePaddingFromParagraphsWithImages = (html) => {
+                return html.replace(/<p([^>]*)>([\s\S]*?)<\/p>/gi, (match, pAttrs, content) => {
+                    // Check if paragraph contains images
+                    if (!/<img[^>]*>/gi.test(content)) {
+                        return match; // No images, keep as-is
+                    }
+
+                    // Paragraph contains images - add inline styles to remove padding
+                    const styleMatch = pAttrs.match(/style="([^"]*)"/);
+                    let existingStyle = styleMatch ? styleMatch[1] : '';
+
+                    // Remove padding-left and padding-right if present, then add them as 0
+                    existingStyle = existingStyle
+                        .replace(/padding-left\s*:\s*[^;]+;?/gi, '')
+                        .replace(/padding-right\s*:\s*[^;]+;?/gi, '')
+                        .replace(/padding\s*:\s*[^;]+;?/gi, '')
+                        .trim();
+
+                    // Add padding-left and padding-right as 0
+                    existingStyle = existingStyle
+                        ? `${existingStyle}; padding-left: 0; padding-right: 0;`
+                        : 'padding-left: 0; padding-right: 0;';
+
+                    const styleAttr = `style="${existingStyle}"`;
+                    const otherAttrs = pAttrs.replace(/style="[^"]*"/, '').trim();
+                    const attrs = [styleAttr, otherAttrs].filter(Boolean).join(' ');
+
+                    return `<p${attrs}>${content}</p>`;
+                });
+            };
+
             // Replace image URLs with cid in emailContent and convert indentation
             let processedEmailContent = replaceImagesWithCid(emailContent, imageCidMap);
             processedEmailContent = convertIndentationToInlineStyles(processedEmailContent);
+            // Remove padding from paragraphs with images (for email client compatibility)
+            processedEmailContent = removePaddingFromParagraphsWithImages(processedEmailContent);
 
             // Define a function to validate email addresses
             const isValidEmail = (email) => {
