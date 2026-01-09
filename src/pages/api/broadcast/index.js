@@ -145,34 +145,50 @@ export default async function handler(req, res) {
             const processParagraphPadding = (html) => {
                 return html.replace(/<p([^>]*)>([\s\S]*?)<\/p>/gi, (match, pAttrs, content) => {
                     const hasImage = /<img[^>]*>/gi.test(content);
-                    const styleMatch = pAttrs.match(/style="([^"]*)"/);
+
+                    // Extract existing style attribute
+                    const styleMatch = pAttrs.match(/style\s*=\s*"([^"]*)"/i);
                     let existingStyle = styleMatch ? styleMatch[1] : '';
 
-                    // Remove existing padding declarations
+                    // Remove existing padding declarations (handle all variations)
                     existingStyle = existingStyle
                         .replace(/padding-left\s*:\s*[^;]+;?/gi, '')
                         .replace(/padding-right\s*:\s*[^;]+;?/gi, '')
                         .replace(/padding\s*:\s*[^;]+;?/gi, '')
+                        .replace(/;\s*;/g, ';') // Clean up double semicolons
                         .trim();
 
                     // Add appropriate padding based on whether paragraph has images
                     if (hasImage) {
                         // Paragraph contains images - no padding
-                        existingStyle = existingStyle
-                            ? `${existingStyle}; padding-left: 0; padding-right: 0;`
-                            : 'padding-left: 0; padding-right: 0;';
+                        if (existingStyle) {
+                            existingStyle = `${existingStyle}; padding-left: 0; padding-right: 0;`;
+                        } else {
+                            existingStyle = 'padding-left: 0; padding-right: 0;';
+                        }
                     } else {
                         // Paragraph has no images - add 25px left/right padding
-                        existingStyle = existingStyle
-                            ? `${existingStyle}; padding-left: 25px; padding-right: 25px;`
-                            : 'padding-left: 25px; padding-right: 25px;';
+                        if (existingStyle) {
+                            existingStyle = `${existingStyle}; padding-left: 25px; padding-right: 25px;`;
+                        } else {
+                            existingStyle = 'padding-left: 25px; padding-right: 25px;';
+                        }
                     }
 
-                    const styleAttr = `style="${existingStyle}"`;
-                    const otherAttrs = pAttrs.replace(/style="[^"]*"/, '').trim();
-                    const attrs = [styleAttr, otherAttrs].filter(Boolean).join(' ');
+                    // Remove the old style attribute from pAttrs
+                    let otherAttrs = pAttrs.replace(/style\s*=\s*"[^"]*"/i, '').trim();
 
-                    return `<p${attrs}>${content}</p>`;
+                    // Build the new attributes string
+                    const styleAttr = `style="${existingStyle}"`;
+                    let attrs;
+                    if (otherAttrs && otherAttrs.length > 0) {
+                        attrs = `${otherAttrs} ${styleAttr}`.trim();
+                    } else {
+                        attrs = styleAttr;
+                    }
+
+                    // Always add a space before attributes for proper HTML formatting
+                    return `<p ${attrs}>${content}</p>`;
                 });
             };
 
