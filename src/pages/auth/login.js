@@ -55,15 +55,19 @@ const Login = () => {
     signIn(socialId, signInOptions);
   };
 
-  useEffect(async () => {
-    const socialProviders = [];
-    const { email, ...providers } = await getProviders();
+  useEffect(() => {
+    const loadProviders = async () => {
+      const socialProviders = [];
+      const { email, ...providers } = await getProviders();
 
-    for (const provider in providers) {
-      socialProviders.push(providers[provider]);
-    }
+      for (const provider in providers) {
+        socialProviders.push(providers[provider]);
+      }
 
-    setSocialProviders([...socialProviders]);
+      setSocialProviders(socialProviders);
+    };
+
+    loadProviders();
   }, []);
 
   return (
@@ -155,8 +159,8 @@ const Login = () => {
               {status === 'loading'
                 ? 'Checking session...'
                 : isSubmitting
-                  ? 'Sending the link...'
-                  : 'Send the Magic Link'}
+                ? 'Sending the link...'
+                : 'Send the Magic Link'}
             </button>
           </form>
           {socialProviders.length > 0 && (
@@ -180,7 +184,6 @@ const Login = () => {
       )}
     </AuthLayout>
   );
-
 };
 
 export default Login;
