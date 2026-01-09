@@ -140,30 +140,33 @@ export default async function handler(req, res) {
                 }
             }
 
-            // Remove padding from paragraphs that contain images (for email client compatibility)
-            // Since :has() selector isn't supported in all email clients, we add inline styles
-            const removePaddingFromParagraphsWithImages = (html) => {
+            // Add/remove padding from paragraphs based on whether they contain images
+            // Email clients often ignore CSS, so we need inline styles
+            const processParagraphPadding = (html) => {
                 return html.replace(/<p([^>]*)>([\s\S]*?)<\/p>/gi, (match, pAttrs, content) => {
-                    // Check if paragraph contains images
-                    if (!/<img[^>]*>/gi.test(content)) {
-                        return match; // No images, keep as-is
-                    }
-
-                    // Paragraph contains images - add inline styles to remove padding
+                    const hasImage = /<img[^>]*>/gi.test(content);
                     const styleMatch = pAttrs.match(/style="([^"]*)"/);
                     let existingStyle = styleMatch ? styleMatch[1] : '';
 
-                    // Remove padding-left and padding-right if present, then add them as 0
+                    // Remove existing padding declarations
                     existingStyle = existingStyle
                         .replace(/padding-left\s*:\s*[^;]+;?/gi, '')
                         .replace(/padding-right\s*:\s*[^;]+;?/gi, '')
                         .replace(/padding\s*:\s*[^;]+;?/gi, '')
                         .trim();
 
-                    // Add padding-left and padding-right as 0
-                    existingStyle = existingStyle
-                        ? `${existingStyle}; padding-left: 0; padding-right: 0;`
-                        : 'padding-left: 0; padding-right: 0;';
+                    // Add appropriate padding based on whether paragraph has images
+                    if (hasImage) {
+                        // Paragraph contains images - no padding
+                        existingStyle = existingStyle
+                            ? `${existingStyle}; padding-left: 0; padding-right: 0;`
+                            : 'padding-left: 0; padding-right: 0;';
+                    } else {
+                        // Paragraph has no images - add 25px left/right padding
+                        existingStyle = existingStyle
+                            ? `${existingStyle}; padding-left: 25px; padding-right: 25px;`
+                            : 'padding-left: 25px; padding-right: 25px;';
+                    }
 
                     const styleAttr = `style="${existingStyle}"`;
                     const otherAttrs = pAttrs.replace(/style="[^"]*"/, '').trim();
@@ -176,8 +179,8 @@ export default async function handler(req, res) {
             // Replace image URLs with cid in emailContent and convert indentation
             let processedEmailContent = replaceImagesWithCid(emailContent, imageCidMap);
             processedEmailContent = convertIndentationToInlineStyles(processedEmailContent);
-            // Remove padding from paragraphs with images (for email client compatibility)
-            processedEmailContent = removePaddingFromParagraphsWithImages(processedEmailContent);
+            // Add/remove padding from paragraphs based on images (for email client compatibility)
+            processedEmailContent = processParagraphPadding(processedEmailContent);
 
             // Define a function to validate email addresses
             const isValidEmail = (email) => {
