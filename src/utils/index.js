@@ -108,7 +108,7 @@ const deadlines = {
     // January
     {
       [PaymentType.ANNUAL]: [0],
-      [PaymentType.SEMI_ANNUAL]: [0, 1],
+      [PaymentType.SEMI_ANNUAL]: [0, 1, 2],
       [PaymentType.QUARTERLY]: [0, 1],
       [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5],
       [PaymentType.PAY_ALL]: [0],
@@ -307,7 +307,7 @@ const deadlines2025 = {
     // January 2026
     {
       [PaymentType.ANNUAL]: [0],
-      [PaymentType.SEMI_ANNUAL]: [0, 1], // Feb 5
+      [PaymentType.SEMI_ANNUAL]: [0, 1, 2], // Feb 5
       [PaymentType.QUARTERLY]: [0, 1], // Feb 5
       [PaymentType.MONTHLY]: [0, 1], // Feb 5
       [PaymentType.PAY_ALL]: [0],
@@ -411,40 +411,36 @@ export const getDeadline = (
   paymentStatus
 ) => {
   const date = new Date(downpaymentDate);
-  const selectedYear =
-    Number(schoolYear) < date.getFullYear() ? 'laterYear' : 'currentYear';
 
-  let monthsToAdd = 0; // Changed from const to let
+  // Extract the start year from schoolYear string (e.g., "2025-2026" -> 2025)
+  const schoolYearStart = schoolYear.includes('-')
+    ? Number(schoolYear.split('-')[0])
+    : Number(schoolYear);
+
+  const selectedYear =
+    schoolYearStart < date.getFullYear() ? 'laterYear' : 'currentYear';
+
+  let monthsToAdd = 0;
   if (schoolYear === '2024-2025' || schoolYear === '2023') {
-    if (paymentStatus !== 'S') {
-      monthsToAdd = deadlines[selectedYear][date.getMonth()][paymentType][0];
-    } else if (paymentStatus === null) {
-      monthsToAdd =
-        deadlines[selectedYear][date.getMonth()][paymentType][index];
-    } else {
-      monthsToAdd =
-        deadlines[selectedYear][date.getMonth()][paymentType][index];
-    }
+    // Always use the index to get the correct deadline for the payment order
+    monthsToAdd =
+      deadlines[selectedYear][date.getMonth()][paymentType][index];
   } else {
-    if (paymentStatus !== 'S') {
-      monthsToAdd =
-        deadlines2025[selectedYear][date.getMonth()][paymentType][0];
-    } else if (paymentStatus === null) {
-      monthsToAdd =
-        deadlines2025[selectedYear][date.getMonth()][paymentType][index];
-    } else {
-      monthsToAdd =
-        deadlines2025[selectedYear][date.getMonth()][paymentType][index];
-    }
+    // Always use the index to get the correct deadline for the payment order
+    monthsToAdd =
+      deadlines2025[selectedYear][date.getMonth()][paymentType][index];
+  }
+
+  // Check if monthsToAdd is valid
+  if (monthsToAdd === null || monthsToAdd === undefined) {
+    return null;
   }
 
   const deadline = add(new Date(date.getFullYear(), date.getMonth(), 5), {
     months: monthsToAdd,
   });
 
-  return monthsToAdd !== null && monthsToAdd !== undefined
-    ? format(deadline, 'MMMM dd, yyyy')
-    : null;
+  return format(deadline, 'MMMM dd, yyyy');
 };
 
 export const groupBy = (array, key) => {
