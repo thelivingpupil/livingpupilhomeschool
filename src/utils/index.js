@@ -410,25 +410,56 @@ export const getDeadline = (
   schoolYear,
   paymentStatus
 ) => {
+  // Validate inputs
+  if (!downpaymentDate || !schoolYear || !paymentType) {
+    return null;
+  }
+
   const date = new Date(downpaymentDate);
+
+  // Check if date is valid
+  if (isNaN(date.getTime())) {
+    return null;
+  }
 
   // Extract the start year from schoolYear string (e.g., "2025-2026" -> 2025)
   const schoolYearStart = schoolYear.includes('-')
     ? Number(schoolYear.split('-')[0])
     : Number(schoolYear);
 
+  // Validate schoolYearStart
+  if (isNaN(schoolYearStart)) {
+    return null;
+  }
+
   const selectedYear =
     schoolYearStart < date.getFullYear() ? 'laterYear' : 'currentYear';
 
+  // Validate date and month index
+  const monthIndex = date.getMonth();
+  if (isNaN(monthIndex) || monthIndex < 0 || monthIndex > 11) {
+    return null;
+  }
+
+  // Validate that selectedYear exists in the deadlines object
+  if (selectedYear !== 'currentYear' && selectedYear !== 'laterYear') {
+    return null;
+  }
+
   let monthsToAdd = 0;
-  if (schoolYear === '2024-2025' || schoolYear === '2023') {
+  // Use schoolYearStart (first year) to determine which deadlines object to use
+  if (schoolYearStart === 2024 || schoolYearStart === 2023) {
     // Always use the index to get the correct deadline for the payment order
-    monthsToAdd =
-      deadlines[selectedYear][date.getMonth()][paymentType][index];
+    const yearData = deadlines[selectedYear];
+    const monthData = yearData?.[monthIndex];
+    const paymentData = monthData?.[paymentType];
+    monthsToAdd = paymentData?.[index];
   } else {
     // Always use the index to get the correct deadline for the payment order
-    monthsToAdd =
-      deadlines2025[selectedYear][date.getMonth()][paymentType][index];
+    const yearData = deadlines2025[selectedYear];
+    const monthData = yearData?.[monthIndex];
+    const paymentData = monthData?.[paymentType];
+    monthsToAdd = paymentData?.[index];
   }
 
   // Check if monthsToAdd is valid
