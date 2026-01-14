@@ -73,6 +73,9 @@ const filterValueOptions = {
   schoolYear: {
     2022: '2022 - 2023',
     2023: '2023 - 2024',
+    2024: '2024 - 2025',
+    2025: '2025 - 2026',
+    2026: '2026 - 2027',
   },
 };
 
@@ -916,6 +919,9 @@ const Students = ({ schoolFees, programs }) => {
               value={schoolYear}
             >
               <option value="">Please select School year...</option>
+              <option value={SCHOOL_YEAR.SY_2026_2027}>
+                {SCHOOL_YEAR.SY_2026_2027}
+              </option>
               <option value={SCHOOL_YEAR.SY_2025_2026}>
                 {SCHOOL_YEAR.SY_2025_2026}
               </option>

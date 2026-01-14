@@ -1,8 +1,8 @@
 import { GradeLevel } from '@prisma/client';
 
 export const SCHOOL_YEAR = {
+  SY_2026_2027: '2026-2027',
   SY_2025_2026: '2025-2026',
-  SY_2024_2025: '2024-2025',
 };
 
 export const ACCREDITATION = {

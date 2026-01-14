@@ -1675,11 +1675,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                   value={schoolYear}
                 >
                   <option value="">Please select School year...</option>
-                  {enrollmentType !== Enrollment.CONTINUING && (
-                    <option value={SCHOOL_YEAR.SY_2024_2025}>
-                      {SCHOOL_YEAR.SY_2024_2025}
-                    </option>
-                  )}
+                  <option value={SCHOOL_YEAR.SY_2026_2027}>
+                    {SCHOOL_YEAR.SY_2026_2027}
+                  </option>
                   <option value={SCHOOL_YEAR.SY_2025_2026}>
                     {SCHOOL_YEAR.SY_2025_2026}
                   </option>

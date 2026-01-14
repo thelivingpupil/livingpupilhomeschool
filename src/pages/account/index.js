@@ -225,7 +225,7 @@ const Welcome = () => {
                     </Card.Footer>
 
                     {workspace.studentRecord != null &&
-                      workspace.studentRecord.schoolYear !== '2025-2026' && (
+                      workspace.studentRecord.schoolYear === '2025-2026' && (
                         <Card.Footer>
                           <button
                             className="text-primary-600"
@@ -233,7 +233,7 @@ const Welcome = () => {
                               navigateEnroll(workspace.studentRecord.studentId)
                             }
                           >
-                            Enroll for SY 2025-2026 &rarr;
+                            Enroll for SY 2026-2027 &rarr;
                           </button>
                         </Card.Footer>
                       )}
