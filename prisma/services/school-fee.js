@@ -121,7 +121,7 @@ export const createSchoolFees = async (
       ? fee.fullPayment -
         (discount.type === 'VALUE'
           ? discount.value
-          : (discount.value / 100) * fee.fullPayment)
+          : (discount.value / 100) * fee.fullPayment) // Annual: discount = % of all payments (fullPayment)
       : fee.fullPayment;
 
     scholarshipValue = scholarship
@@ -207,7 +207,7 @@ export const createSchoolFees = async (
             (discount.type === 'VALUE'
               ? discount.value
               : (discount.value / 100) *
-                (fee.secondPayment + fee.thirdPayment)),
+                (fee.downPayment + fee.secondPayment + fee.thirdPayment)), // Semi-annual: discount = % of all payments, deducted from 2nd payment
           fee.thirdPayment,
         ]
       : [fee.downPayment, fee.secondPayment, fee.thirdPayment];
@@ -351,10 +351,7 @@ export const createSchoolFees = async (
             (discount.type === 'VALUE'
               ? discount.value
               : (discount.value / 100) *
-                (fee.secondPayment +
-                  fee.thirdPayment +
-                  fee.thirdPayment +
-                  fee.fourthPayment)),
+                (fee.downPayment + fee.secondPayment + fee.thirdPayment + fee.fourthPayment)), // Quarterly: discount = % of all payments, deducted from 2nd payment
           fee.thirdPayment,
           fee.fourthPayment,
         ]
@@ -565,10 +562,11 @@ export const createSchoolFees = async (
 
       // Apply discount to the second payment
       if (discount) {
+        const allPaymentsSum = fee.downPayment + totalPayment;
         const discountValue =
           discount.type === 'VALUE'
             ? discount.value
-            : (discount.value / 100) * totalPayment;
+            : (discount.value / 100) * allPaymentsSum; // Monthly: discount = % of all payments, deducted from 2nd payment
         payments[1] -= discountValue;
       }
     }

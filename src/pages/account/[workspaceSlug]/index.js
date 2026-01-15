@@ -3206,8 +3206,12 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                 : Number(discount.value).toFixed(2)) * -1
                               : Math.ceil(
                                 fee?._type === 'fullTermPayment'
-                                  ? fee?.fullPayment
-                                  : fee?.secondPayment
+                                  ? fee?.fullPayment // Annual: discount = % of all payments (fullPayment)
+                                  : fee?._type === 'threeTermPayment'
+                                    ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment // Semi-annual: discount = % of all payments
+                                    : fee?._type === 'fourTermPayment'
+                                      ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment // Quarterly: discount = % of all payments
+                                      : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment + fee?.fifthPayment + fee?.sixthPayment + fee?.seventhPayment + fee?.eighthPayment + fee?.ninthPayment // Monthly: discount = % of all payments
                               ) *
                               (discount.value / 100) *
                               -1
@@ -3267,7 +3271,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                           fee.ninthPayment
                                   ) - discount.value
                                   : discount.value
-                                : (discount.value / 100) * fee?.fullPayment
+                                : (discount.value / 100) * fee?.fullPayment // Annual: discount = % of all payments (fullPayment)
                               : 0)
                             : fee?.downPayment) + FEES[paymentMethod] + (fee?._type === 'fullTermPayment' ? 500 : 0) || 0
                         )}
@@ -4199,7 +4203,15 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                       discount?.type === 'VALUE'
                                         ? discount?.value
                                         : (discount?.value / 100) *
-                                        Math.ceil(fee?.secondPayment)
+                                        Math.ceil(
+                                          fee?._type === 'fullTermPayment'
+                                            ? fee?.fullPayment
+                                            : fee?._type === 'threeTermPayment'
+                                              ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment
+                                              : fee?._type === 'fourTermPayment'
+                                                ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment
+                                                : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment + fee?.fifthPayment + fee?.sixthPayment + fee?.seventhPayment + fee?.eighthPayment + fee?.ninthPayment
+                                        )
                                     )}
                                     )
                                   </span>
@@ -4266,8 +4278,12 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                     : Number(discount.value).toFixed(2)) * -1
                                   : Math.ceil(
                                     fee?._type === 'fullTermPayment'
-                                      ? fee?.fullPayment
-                                      : fee?.secondPayment
+                                      ? fee?.fullPayment // Annual: discount = % of all payments (fullPayment)
+                                      : fee?._type === 'threeTermPayment'
+                                        ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment // Semi-annual: discount = % of all payments
+                                        : fee?._type === 'fourTermPayment'
+                                          ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment // Quarterly: discount = % of all payments
+                                          : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment + fee?.fifthPayment + fee?.sixthPayment + fee?.seventhPayment + fee?.eighthPayment + fee?.ninthPayment // Monthly: discount = % of all payments
                                   ) *
                                   (discount.value / 100) *
                                   -1
@@ -4346,8 +4362,12 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                             : discount.value
                           : (discount.value / 100) *
                           (fee?._type === 'fullTermPayment'
-                            ? fee?.fullPayment
-                            : fee?.secondPayment)
+                            ? fee?.fullPayment // Annual: discount = % of all payments (fullPayment)
+                            : fee?._type === 'threeTermPayment'
+                              ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment // Semi-annual: discount = % of all payments
+                              : fee?._type === 'fourTermPayment'
+                                ? fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment // Quarterly: discount = % of all payments
+                                : fee?.downPayment + fee?.secondPayment + fee?.thirdPayment + fee?.fourthPayment + fee?.fifthPayment + fee?.sixthPayment + fee?.seventhPayment + fee?.eighthPayment + fee?.ninthPayment) // Monthly: discount = % of all payments
                         : 0) || 0
                     )}
                   </span>
