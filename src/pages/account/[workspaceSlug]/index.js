@@ -3131,6 +3131,24 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                       </span>
                     </div>
                   </div>
+                  {fee?._type === 'fullTermPayment' && (
+                    <div className="flex items-center justify-between p-5 space-x-5 border-b">
+                      <div>
+                        <h5 className="font-medium">Miscellaneous Fee</h5>
+                        <h6 className="text-xs text-gray-400">
+                          Enrollment miscellaneous fee
+                        </h6>
+                      </div>
+                      <div className="text-right">
+                        <span>
+                          {new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'PHP',
+                          }).format(500)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between p-5 space-x-5">
                     <div>
                       <h5 className="font-medium">Discount</h5>
@@ -3251,7 +3269,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                   : discount.value
                                 : (discount.value / 100) * fee?.fullPayment
                               : 0)
-                            : fee?.downPayment) + FEES[paymentMethod] || 0
+                            : fee?.downPayment) + FEES[paymentMethod] + (fee?._type === 'fullTermPayment' ? 500 : 0) || 0
                         )}
                       </span>
                     </div>
@@ -4105,9 +4123,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                             style: 'currency',
                             currency: 'PHP',
                           }).format(
-                            fee?._type === 'fullTermPayment'
+                            (fee?._type === 'fullTermPayment'
                               ? fee?.fullPayment
-                              : fee?.downPayment
+                              : fee?.downPayment) + (FEES[paymentMethod] || 0)
                           )}
                         </td>
                       </tr>
@@ -4141,11 +4159,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                 style: 'currency',
                                 currency: 'PHP',
                               }).format(
-                                fee?._type === 'fullTermPayment'
+                                (fee?._type === 'fullTermPayment'
                                   ? 0
                                   : fee?._type === 'nineTermPayment'
                                     ? monthlyPayment // Render monthly payment for nineTermPayment
-                                    : fee && fee[payments[index + 1]]
+                                    : fee && fee[payments[index + 1]]) + (FEES[paymentMethod] || 0)
                               )}{' '}
                               {discount &&
                                 discount?.code
@@ -4290,7 +4308,16 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                               fee?.eighthPayment +
                               fee?.ninthPayment
                       ) +
-                      500 -
+                      500 +
+                      (fee?._type === 'fullTermPayment'
+                        ? FEES[paymentMethod] || 0
+                        : fee?._type === 'threeTermPayment'
+                          ? (FEES[paymentMethod] || 0) * 3
+                          : fee?._type === 'fourTermPayment'
+                            ? (FEES[paymentMethod] || 0) * 4
+                            : fee?._type === 'nineTermPayment'
+                              ? (FEES[paymentMethod] || 0) * (monthIndex + 1)
+                              : FEES[paymentMethod] || 0) -
                       (discount
                         ? discount?.type === 'VALUE'
                           ? discount?.code?.toLowerCase().includes('pastor')
