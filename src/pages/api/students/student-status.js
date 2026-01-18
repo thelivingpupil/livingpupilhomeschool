@@ -29,14 +29,15 @@ import {
     html as initialHighschool2025Html,
     text as initialHighschool2025Text,
 } from '@/config/email-templates/initial-acceptance-2025-2026/highschool';
-import {
-    html as initialSenior2025Html,
-    text as initialSenior2025Text,
-} from '@/config/email-templates/initial-acceptance-2025-2026/senior-high';
-import {
-    html as initialCottage2025Html,
-    text as initialCottage2025Text,
-} from '@/config/email-templates/initial-acceptance-2025-2026/cottage-all';
+// TODO: Uncomment when email templates are ready for 2026-2027
+// import {
+//     html as initialSenior2025Html,
+//     text as initialSenior2025Text,
+// } from '@/config/email-templates/initial-acceptance-2025-2026/senior-high';
+// import {
+//     html as initialCottage2025Html,
+//     text as initialCottage2025Text,
+// } from '@/config/email-templates/initial-acceptance-2025-2026/cottage-all';
 
 
 const handler = async (req, res) => {
@@ -74,14 +75,14 @@ const handler = async (req, res) => {
             const parentFirstName = getParentFirstName(primaryGuardianName);
 
             if (studentStatus === 'INITIALLY_ENROLLED') {
-                if (schoolYear === "2025-2026") {
+                if (schoolYear === "2026-2027") {
                     if (program === "HOMESCHOOL_PROGRAM") {
                         if (incomingGradeLevel === "PRESCHOOL") {
                             await sendMail({
                                 html: initialPreschool2025Html({
                                     parentFirstName,
                                 }),
-                                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
+                                subject: `Welcome to Living Pupil Homeschool! Onboarding Guide & Next Steps (SY 2026-2027)`,
                                 text: initialpreschool2025Text({
                                     parentFirstName,
                                     firstName,
@@ -93,7 +94,7 @@ const handler = async (req, res) => {
                                 html: initialKindergarten2025Html({
                                     parentFirstName,
                                 }),
-                                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
+                                subject: `Welcome to Living Pupil Homeschool! Onboarding Guide & Next Steps (SY 2026-2027)`,
                                 text: initialKindergarten2025Text({
                                     parentFirstName,
                                     firstName,
@@ -111,7 +112,7 @@ const handler = async (req, res) => {
                                 html: initialGradeschool2025Html({
                                     parentFirstName,
                                 }),
-                                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
+                                subject: `Welcome to Living Pupil Homeschool! Onboarding Guide & Next Steps (SY 2026-2027)`,
                                 text: initialGradeschool2025Text({
                                     parentFirstName,
                                     firstName,
@@ -127,7 +128,7 @@ const handler = async (req, res) => {
                                 html: initialHighschool2025Html({
                                     parentFirstName,
                                 }),
-                                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
+                                subject: `Welcome to Living Pupil Homeschool! Onboarding Guide & Next Steps (SY 2026-2027)`,
                                 text: initialHighschool2025Text({
                                     parentFirstName,
                                     firstName,
@@ -135,35 +136,17 @@ const handler = async (req, res) => {
                                 to: [email],
                             });
                         } else if (incomingGradeLevel === "GRADE_11" || incomingGradeLevel === "GRADE_12") {
-                            await sendMail({
-                                html: initialSenior2025Html({
-                                    parentFirstName,
-                                }),
-                                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
-                                text: initialSenior2025Text({
-                                    parentFirstName,
-                                    firstName,
-                                }),
-                                to: [email],
-                            });
+                            // TODO: Senior High email template for 2026-2027 will be updated later
+                            res.status(500).json({ error: 'Senior High email template for 2026-2027 is not yet available. Please contact admin.' });
                         } else {
-                            res.status(500).json({ error: 'Invallid Grade Level' });
+                            res.status(500).json({ error: 'Invalid Grade Level' });
                         }
 
                     } else if (program === "HOMESCHOOL_COTTAGE") {
-                        await sendMail({
-                            html: initialCottage2025Html({
-                                parentFirstName,
-                            }),
-                            subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2025-2026`,
-                            text: initialCottage2025Text({
-                                parentFirstName,
-                                firstName,
-                            }),
-                            to: [email],
-                        });
+                        // TODO: Cottage email template for 2026-2027 will be updated later
+                        res.status(500).json({ error: 'Cottage email template for 2026-2027 is not yet available. Please contact admin.' });
                     } else {
-                        res.status(500).json({ error: 'Invallid Program' });
+                        res.status(500).json({ error: 'Invalid Program' });
                     }
 
                 } else if (schoolYear === "2024-2025") {
@@ -209,7 +192,7 @@ const handler = async (req, res) => {
                 });
             }
             else {
-                res.status(500).json({ error: 'maroerns' });
+                res.status(500).json({ error: 'No action taken' });
             }
 
             res.status(200).json({ message: 'Student status updated successfully' });

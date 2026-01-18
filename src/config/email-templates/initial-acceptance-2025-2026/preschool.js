@@ -1,8 +1,7 @@
 const html = ({
-    parentFirstName,
+  parentFirstName,
 }) => {
-    return `<!DOCTYPE html>
-<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
+  return `<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
   <head>
     <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -159,192 +158,75 @@ const html = ({
                                   <div style="color:#ffffff;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:150%;text-align:left;mso-line-height-alt:21px;">
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Dear <strong>${parentFirstName ? parentFirstName : "Parent"}</strong>, </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Welcome to Living Pupil Homeschool! </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> A warm welcome to Living Pupil Homeschool! </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> We are delighted to have you and your child join our homeschool community for the School Year 2025-2026. &nbsp; </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> We are truly delighted to walk alongside you and your family in the School Year 2026–2027. As we begin this new season of learning—formed by truth, nourished by goodness, and inspired by beauty—we hope this guide will help you settle in with confidence and peace. &nbsp; </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Start of the School Year 2025-2026 </p>
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Beginning of the School Year </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> The school year officially begins on June 16, 2025. Before that, we invite you to join us for Pagbukas, our school year kick-off event. Stay tuned for more details coming soon! </p>
                                     <p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Admin Requirements</p>
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Administrative Requirements</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> To complete the enrollment process, please follow these next steps:</p>
                                     <ul style="list-style-type: disc; color:#ffffff;">
                                       <li style="margin: 0 0 10px 0;">
                                         <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                          <b>Upload your child’s report card and birth certificate</b> (required for new families).
+                                          <b>Upload your child’s report card and birth certificate</b> (for new families).
                                         </p>
                                       </li>
                                       <li style="margin: 0 0 10px 0;">
                                         <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                          <b>Submit your child’s school ID entry </b>using this link: <a href="https://forms.gle/qDmscL5o4HqxxMij7" target="_blank" style="text-decoration: underline; color: #ffffff;">https://forms.gle/qDmscL5o4HqxxMij7</a>
+                                          <b>Submit your child’s school ID entry </b>using this link: <a href="https://form.jotform.com/260150972907459" target="_blank" style="text-decoration: underline; color: #ffffff;">https://form.jotform.com/260150972907459</a>
                                         </p>
                                       </li>
                                     </ul>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Self-Paced Parent Training </p>
-                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> To help you navigate homeschooling effectively, we have prepared mandatory self-paced parent training sessions, you can access it on our website https://livingpupilhomeschool.com/. These sessions are designed to equip you with the necessary tools and knowledge to support your child's learning journey. Please take the time to watch the videos and complete the assessment questions. </p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Follow the steps below to access our <i>
+                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> To support you in your homeschooling journey, we have prepared mandatory self-paced Parent Training sessions, available through our website: <a href="https://livingpupilhomeschool.com/" target="_blank" style="text-decoration: underline; color: #ffffff;"> https://livingpupilhomeschool.com/</a>.</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> These trainings are thoughtfully designed to help you understand our philosophy and equip you with practical tools for guiding your child’s learning at home. Please take time to watch the videos and complete the accompanying assessments.</p>
+                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> How to access the <i>
                                         <b>Parent Training Courses: </b>
                                       </i>
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                      <b>Step 1: </b> Visit our website at <a style="text-decoration: underline; color: #ffffff;" target="_blank" href="https://livingpupilhomeschool.com/">https://livingpupilhomeschool.com/</a>.
+                                      <b>Step 1: </b> Visit <a style="text-decoration: underline; color: #ffffff;" target="_blank" href="https://livingpupilhomeschool.com/">https://livingpupilhomeschool.com/</a>.
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                      <b>Step 2: </b> Click on the "Parent Portal" button at the top right corner of the homepage.
+                                      <b>Step 2: </b> Click “Parent Portal” at the top right corner of the homepage.
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                      <b>Step 3: </b> Enter your email address/Facebook or Gmail associated with your Living Pupil account.
+                                      <b>Step 3: </b> Log in using the email, Facebook, or Gmail account linked to your Living Pupil account.
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                      <b>Step 4: </b> Once logged in, click "View Record" and navigate to the "Courses and Training" menu.
+                                      <b>Step 4: </b> Select “View Record”, then go to “Courses and Training”.
                                     </p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> For a video tutorial on how to navigate the website, please click <a style="text-decoration: underline; color: #ffffff;" target="_blank" href="https://youtu.be/OKEW_zsZIIQ">https://youtu.be/OKEW_zsZIIQ</a>. </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> You may also watch this short video guide on navigating the website: <a style="text-decoration: underline; color: #ffffff;" target="_blank" href="https://youtu.be/OKEW_zsZIIQ">https://youtu.be/OKEW_zsZIIQ</a>. </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp; </p>
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Live Parent Trainings </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
+                                      In addition to the self-paced sessions, we will be hosting live Parent Trainings via Zoom throughout the year. These gatherings allow us to learn together and address common questions. Kindly watch for our email announcements regarding schedules and details.
+                                    </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Preschool for 3’s box, </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                      <b>Your Preschool for 3’s box</b> will serve as your curriculum and guide throughout the school year. Our team will reach out to you soon to confirm your delivery address once the box is ready for shipment.
+                                      <b>Your Preschool for 3’s box</b> will serve as your child’s primary curriculum and guide for the school year. Our team will be in touch soon to confirm your delivery address once the boxes are ready for shipment.
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp; </p>
-                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Book Ordering </p>
-                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> Our Preschool for 3’s program includes free books, which are part of your Preschool for 3’s box. If you’d like to explore more materials, additional resources are available for purchase at the Living Pupil Homeschool Shop through our website: <a style="text-decoration: underline; color: #ffffff;" target="_blank" href="https://livingpupilhomeschool.com/shop">https://livingpupilhomeschool.com/shop</a>. </p>
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Books & Additional Resources </p>
+                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> The Preschool for 3’s program already includes free books, which are part of your Preschool for 3’s Box.</p>
+                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> Should you wish to explore additional materials, you may browse our curated resources at the Living Pupil Homeschool Shop: <a style="text-decoration: underline; color: #ffffff;" target="_blank" href="https://livingpupilhomeschool.com/shop">https://livingpupilhomeschool.com/shop</a>.</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff; font-size: 16px;">
-                                      <b>Important: LP Group Chat</b>
+                                      <b>LP Parent Group Chat</b>
                                     </p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> To receive important updates and support, we have set up a group chat for the 2025-2026 school year. Please only select the Messenger groups where you belong or the category that applies to you. Access the group using the links below: </p>
-                                    <table border="1" cellspacing="0" cellpadding="5" style="color:#ffffff;">
-                                      <thead>
-                                        <tr>
-                                          <td>Facebook group</td>
-                                          <td colspan="2">
-                                            <a href="https://www.facebook.com/share/g/12DKackjR9i/" target="_blank">https://www.facebook.com/share/g/12DKackjR9i/</a>
-                                          </td>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        <tr>
-                                          <td rowspan="10">Grade-level Group Chats</td>
-                                          <td>Preschool</td>
-                                          <td>
-                                            <a href="https://m.me/j/AbYuhpIUz4PV3F5Y/" target="_blank">https://m.me/j/AbYuhpIUz4PV3F5Y/</a>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td>Kindergarten</td>
-                                          <td>
-                                            <a href="https://m.me/j/AbbuotkgGJHeCK_E/" target="_blank">https://m.me/j/AbbuotkgGJHeCK_E/</a>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td>Grades 1-3</td>
-                                          <td>
-                                            <a href="https://m.me/j/AbY3WhELWX3l9A9H/" target="_blank">https://m.me/j/AbY3WhELWX3l9A9H/</a>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td>Grades 4-6</td>
-                                          <td>
-                                            <a href="https://m.me/j/AbYVyng-IHFe7Bnd/" target="_blank">https://m.me/j/AbYVyng-IHFe7Bnd/</a>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td>Grades 7-10</td>
-                                          <td>
-                                            <a href="https://m.me/j/AbaofMA1h89he-TG/" target="_blank">https://m.me/j/AbaofMA1h89he-TG/</a>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td>Senior High</td>
-                                          <td>
-                                            <a href="https://m.me/j/Abb5saK-v8If8MLG/" target="_blank">https://m.me/j/Abb5saK-v8If8MLG/</a>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td colspan="2">If enrolled under Homeschool Cottage:</td>
-                                        </tr>
-                                        <tr>
-                                          <td>Form 1 (Grades 1-3)</td>
-                                          <td>
-                                            <a href="https://m.me/j/Abasrv3abQI3d60o/" target="_blank">https://m.me/j/Abasrv3abQI3d60o/</a>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td>Form 2 (Grades 4-6)</td>
-                                          <td>
-                                            <a href="https://m.me/j/AbaNYTIZrKv9LWLo/" target="_blank">https://m.me/j/AbaNYTIZrKv9LWLo/</a>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td>Form 3 (Grades 7-10)</td>
-                                          <td>
-                                            <a href="https://m.me/j/AbbBY3h1cjQS5jXV/" target="_blank">https://m.me/j/AbbBY3h1cjQS5jXV/</a>
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                    <p style="margin: 10px 0 4px 0; color:#ffffff;">
-                                      <b>Join the District Group Chat</b> based on your location:
-                                    </p>
-                                    <table border="1" cellspacing="0" cellpadding="5" style="color:#ffffff;">
-                                      <tr>
-                                        <td rowspan="8">
-                                          <b>District Group Chats</b>
-                                        </td>
-                                        <td>
-                                          <b>VISAYAS</b>
-                                        </td>
-                                        <td>
-                                          <b>LUZON</b>
-                                        </td>
-                                        <td>
-                                          <b>MINDANAO</b>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Central Cebu (Cebu City) <a href="https://m.me/j/AbZ_VLU_SBhkzcxnP/" target="_blank">https://m.me/j/AbZ_VLUSBhkzcxnP/</a>
-                                        </td>
-                                        <td>Central Luzon <a href="https://m.me/j/Aba-SbCE3Rm3yePl/" target="_blank">https://m.me/j/Aba-SbCE3Rm3yePl/</a>
-                                        </td>
-                                        <td rowspan="3">Mindanao <a href="https://m.me/j/AbZQ6ISLbsYdfk3U/" target="_blank">https://m.me/j/AbZQ6ISLbsYdfk3U/</a>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Southern Cebu (Pardo - Argao) <a href="https://m.me/j/AbYpNzlxZapqpC0y/" target="_blank">https://m.me/j/AbYpNzIxZapqpC0y/</a>
-                                        </td>
-                                        <td>Southern Luzon <a href="https://m.me/j/AbYFOrHVenV-6Zzg/" target="_blank">https://m.me/j/AbYFOrHVenV-6Zzg/</a>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Northern Cebu (Mandaue City - Daanbantayan) <a href="https://m.me/j/AbZs9c_fte_Mm8gF/" target="_blank">https://m.me/j/AbZs9c_fte_Mm8gF/</a>
-                                        </td>
-                                        <td>Northern Luzon <a href="https://m.me/j/AbatGaqFqcVmABWb/" target="_blank">https://m.me/j/AbatGaqFqcVmABWb/</a>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Iloilo <a href="https://m.me/j/AbZwJs2ruZ__XdCl/" target="_blank">https://m.me/j/AbZwJs2ruZ__XdCl/</a>
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                      </tr>
-                                      <tr>
-                                        <td>Bohol <a href="https://m.me/j/AbblKRSUiTqaYSYH/" target="_blank">https://m.me/j/AbblKRSUiTgaYSYH/</a>
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                      </tr>
-                                      <tr>
-                                        <td>Leyte <a href="https://m.me/j/AbbqeERGi-y1jmxX/" target="_blank">https://m.me/j/AbbqeERGi-y1jmxX/</a>
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                      </tr>
-                                    </table>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> We look forward to partnering with you in your child’s education. If you have any questions, feel free to reach out.</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> To keep you connected and well-supported, we will be setting up a Messenger group chat for School Year 2026–2027 this March. This will be our space for important announcements and reminders. Please stay tuned for an email with instructions on how to join.</p>
+                                    
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Once again, welcome to Living Pupil Homeschool. We are grateful to partner with you in nurturing a love for learning in your child, and we look forward to a meaningful and life-giving school year together.</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Should you have any questions or need assistance, please do not hesitate to reach out.</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Warm regards,</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> With warm regards,</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                      <strong>Ameline C. Baran</strong>
+                                      <strong>Chanella Venice Giganto</strong>
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Admin Officer</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Living Pupil Homeschool</p>
@@ -409,10 +291,10 @@ const html = ({
 };
 
 const text = ({
-    primaryGuardianName,
-    firstName,
+  primaryGuardianName,
+  firstName,
 }) => {
-    return `
+  return `
 Dear ${primaryGuardianName},
 
 It is with great pleasure that I share the news of ${firstName}'s initial acceptance into Living Pupil Homeschool for the academic year 2024-2025:
