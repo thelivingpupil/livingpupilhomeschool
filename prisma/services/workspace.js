@@ -327,7 +327,37 @@ export const getWorkspace = async (id, email, slug) =>
       creator: {
         select: {
           email: true,
-          guardianInformation: true,
+          guardianInformation: {
+            select: {
+              id: true,
+              primaryGuardianName: true,
+              primaryGuardianOccupation: true,
+              primaryGuardianType: true,
+              primaryGuardianProfile: true,
+              secondaryGuardianName: true,
+              secondaryGuardianOccupation: true,
+              secondaryGuardianType: true,
+              secondaryGuardianProfile: true,
+              mobileNumber: true,
+              telephoneNumber: true,
+              anotherEmail: true,
+              address1: true,
+              address2: true,
+              parentTraining: {
+                where: {
+                  deletedAt: null,
+                },
+                select: {
+                  id: true,
+                  courseCode: true,
+                  schoolYear: true,
+                  status: true,
+                  createdAt: true,
+                  updatedAt: true,
+                },
+              },
+            },
+          },
         },
       },
       members: {

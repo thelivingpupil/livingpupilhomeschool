@@ -30,7 +30,6 @@ const Training = ({ courses }) => {
                   .filter(
                     (course) =>
                       course.gradeLevel?.includes(workspace.studentRecord?.incomingGradeLevel) &&
-                      course.schoolYear?.includes(workspace.studentRecord?.schoolYear) &&
                       course.curriculum?.includes(workspace.studentRecord.program)
                   )
                   .sort((a, b) => collator.compare(a.code, b.code))

@@ -157,7 +157,16 @@ const handler = async (req, res) => {
     ]);
 
     const guardianInfoId = await getGuardianInformationID(session.user.userId); //get guardian ID
-    await createParentTrainingsForGrade(incomingGradeLevel, guardianInfoId, schoolYear, 'UNFINISHED') //create parent training
+    if (guardianInfoId) {
+      try {
+        await createParentTrainingsForGrade(incomingGradeLevel, guardianInfoId, schoolYear, 'UNFINISHED') //create parent training
+      } catch (error) {
+        console.error('Error creating parent trainings:', error);
+        // Continue even if parent training creation fails
+      }
+    } else {
+      console.warn(`Guardian information not found for user ${session.user.userId}`);
+    }
     const url = schoolFee.url;
     await sendMail({
       html: html({
