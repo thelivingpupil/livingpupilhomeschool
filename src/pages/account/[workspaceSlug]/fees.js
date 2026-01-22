@@ -435,18 +435,20 @@ const Fees = () => {
                                           </span>
                                         ) : (
                                           <div className="flex flex-col space-y-2">
-                                            <button
-                                              className="inline-block px-3 py-2 text-xs text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
-                                              disabled={isSubmitting}
-                                              onClick={() =>
-                                                renew(
-                                                  f.transaction.transactionId,
-                                                  f.transaction.referenceNumber
-                                                )
-                                              }
-                                            >
-                                              Pay via Dragonpay
-                                            </button>
+                                            {workspace?.studentRecord?.schoolYear !== '2026-2027' && (
+                                              <button
+                                                className="inline-block px-3 py-2 text-xs text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
+                                                disabled={isSubmitting}
+                                                onClick={() =>
+                                                  renew(
+                                                    f.transaction.transactionId,
+                                                    f.transaction.referenceNumber
+                                                  )
+                                                }
+                                              >
+                                                Pay via Dragonpay
+                                              </button>
+                                            )}
                                             <button
                                               className="inline-block px-3 py-2 text-xs text-white rounded bg-green-600 hover:bg-green-500 disabled:opacity-25"
                                               disabled={isSubmitting}

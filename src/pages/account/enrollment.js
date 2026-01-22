@@ -3766,7 +3766,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           {viewFees ? (
             <>
               <div className="space-y-3">
-                {paymentLink && (
+                {paymentLink && schoolYear !== '2026-2027' && student?.schoolYear !== '2026-2027' && (
                   <a
                     className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
                     href={paymentLink}
