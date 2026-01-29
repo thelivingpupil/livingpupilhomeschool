@@ -141,7 +141,7 @@ const HomeschoolProgram = ({ page, programs }) => {
             style={{ color: '#7189BE' }}
           >
             Tuition Fees and Payment Plan for{' '}
-            {ENROLLMENT_TYPE[program?.enrollmentType]} for SY 2025-2026
+            {ENROLLMENT_TYPE[program?.enrollmentType]} for SY 2026-2027
           </div>
         </div>
         {program?.tuitionFees?.map((tuitionFee) => (
@@ -157,7 +157,7 @@ const HomeschoolProgram = ({ page, programs }) => {
                     {`Total: ${new Intl.NumberFormat('en-US', {
                       style: 'currency',
                       currency: 'PHP',
-                    }).format(tuitionFee?.paymentTerms[0]?.fullPayment || 0)}`}
+                    }).format((tuitionFee?.paymentTerms[0]?.fullPayment || 0) + 500)}`}
                   </div>
                 </div>
                 <div className="flex-1 p-5 text-center border border-primary-500 rounded-lg">
@@ -174,22 +174,22 @@ const HomeschoolProgram = ({ page, programs }) => {
                     {`2nd payment: ${new Intl.NumberFormat('en-US', {
                       style: 'currency',
                       currency: 'PHP',
-                    }).format(tuitionFee?.paymentTerms[1]?.secondPayment || 0)}`}
+                    }).format((tuitionFee?.paymentTerms[1]?.secondPayment || 0) + 250)}`}
                   </div>
                   <div className="text-primary-500 text-xl font-bold font-display">
                     {`3rd payment: ${new Intl.NumberFormat('en-US', {
                       style: 'currency',
                       currency: 'PHP',
-                    }).format(tuitionFee?.paymentTerms[1]?.thirdPayment || 0)}`}
+                    }).format((tuitionFee?.paymentTerms[1]?.thirdPayment || 0) + 250)}`}
                   </div>
                   <div className="text-secondary-500 text-xl font-bold font-display">
                     {`Total: ${new Intl.NumberFormat('en-US', {
                       style: 'currency',
                       currency: 'PHP',
                     }).format(
-                      tuitionFee?.paymentTerms[1]?.downPayment +
-                      tuitionFee?.paymentTerms[1]?.secondPayment +
-                      tuitionFee?.paymentTerms[1]?.thirdPayment || 0
+                      (tuitionFee?.paymentTerms[1]?.downPayment || 0) +
+                      (tuitionFee?.paymentTerms[1]?.secondPayment || 0) +
+                      (tuitionFee?.paymentTerms[1]?.thirdPayment || 0) + 500
                     )}`}
                   </div>
                 </div>
@@ -207,19 +207,19 @@ const HomeschoolProgram = ({ page, programs }) => {
                     {`2nd payment: ${new Intl.NumberFormat('en-US', {
                       style: 'currency',
                       currency: 'PHP',
-                    }).format(tuitionFee?.paymentTerms[2]?.secondPayment || 0)}`}
+                    }).format((tuitionFee?.paymentTerms[2]?.secondPayment || 0) + 500 / 3)}`}
                   </div>
                   <div className="text-primary-500 text-xl font-bold font-display">
                     {`3rd payment: ${new Intl.NumberFormat('en-US', {
                       style: 'currency',
                       currency: 'PHP',
-                    }).format(tuitionFee?.paymentTerms[2]?.thirdPayment || 0)}`}
+                    }).format((tuitionFee?.paymentTerms[2]?.thirdPayment || 0) + 500 / 3)}`}
                   </div>
                   <div className="text-primary-500 text-xl font-bold font-display">
                     {`4th payment: ${new Intl.NumberFormat('en-US', {
                       style: 'currency',
                       currency: 'PHP',
-                    }).format(tuitionFee?.paymentTerms[2]?.fourthPayment || 0)}`}
+                    }).format((tuitionFee?.paymentTerms[2]?.fourthPayment || 0) + 500 / 3)}`}
                   </div>
                   <div className="text-secondary-500 text-xl font-bold font-display">
                     {`Total: ${new Intl.NumberFormat('en-US', {
@@ -230,7 +230,7 @@ const HomeschoolProgram = ({ page, programs }) => {
                         (tuitionFee?.paymentTerms[2]?.downPayment || 0) +
                         (tuitionFee?.paymentTerms[2]?.secondPayment || 0) +
                         (tuitionFee?.paymentTerms[2]?.thirdPayment || 0) +
-                        (tuitionFee?.paymentTerms[2]?.fourthPayment || 0)
+                        (tuitionFee?.paymentTerms[2]?.fourthPayment || 0) + 500
                       )
                     )}`}
                   </div>
@@ -251,15 +251,14 @@ const HomeschoolProgram = ({ page, programs }) => {
                       style: 'currency',
                       currency: 'PHP',
                     }).format(
-                      (
-                        tuitionFee?.paymentTerms[3]?.secondPayment +
-                        tuitionFee?.paymentTerms[3]?.thirdPayment +
-                        tuitionFee?.paymentTerms[3]?.fourthPayment +
-                        tuitionFee?.paymentTerms[3]?.fifthPayment +
-                        tuitionFee?.paymentTerms[3]?.sixthPayment +
-                        tuitionFee?.paymentTerms[3]?.seventhPayment +
-                        tuitionFee?.paymentTerms[3]?.eighthPayment +
-                        tuitionFee?.paymentTerms[3]?.ninthPayment || 0) / monthIndex
+                      ((tuitionFee?.paymentTerms[3]?.secondPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.thirdPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.fourthPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.fifthPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.sixthPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.seventhPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.eighthPayment || 0) +
+                        (tuitionFee?.paymentTerms[3]?.ninthPayment || 0) + 500) / (monthIndex || 1)
                     )}`}
                   </div>
                   <div className="text-secondary-500 text-xl font-bold font-display">
@@ -267,15 +266,15 @@ const HomeschoolProgram = ({ page, programs }) => {
                       style: 'currency',
                       currency: 'PHP',
                     }).format(
-                      tuitionFee?.paymentTerms[3]?.downPayment +
-                      tuitionFee?.paymentTerms[3]?.secondPayment +
-                      tuitionFee?.paymentTerms[3]?.thirdPayment +
-                      tuitionFee?.paymentTerms[3]?.fourthPayment +
-                      tuitionFee?.paymentTerms[3]?.fifthPayment +
-                      tuitionFee?.paymentTerms[3]?.sixthPayment +
-                      tuitionFee?.paymentTerms[3]?.seventhPayment +
-                      tuitionFee?.paymentTerms[3]?.eighthPayment +
-                      tuitionFee?.paymentTerms[3]?.ninthPayment || 0
+                      (tuitionFee?.paymentTerms[3]?.downPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.secondPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.thirdPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.fourthPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.fifthPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.sixthPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.seventhPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.eighthPayment || 0) +
+                      (tuitionFee?.paymentTerms[3]?.ninthPayment || 0) + 500
                     )}`}
                   </div>
                 </div>

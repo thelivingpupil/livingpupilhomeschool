@@ -300,7 +300,20 @@ export const MONTHLY_INDEX = {
   OCTOBER_2025: 4,
   NOVEMBER_2025: 3,
   DECEMBER_2025: 3,
-  JANUARY_2026: 1,
+  // SY 2026-2027 (8 payments again)
+  JANUARY_2026: 8,
+  FEBRUARY_2026: 8,
+  MARCH_2026: 8,
+  APRIL_2026: 8,
+  MAY_2026: 8,
+  JUNE_2026: 8,
+  JULY_2026: 7,
+  AUGUST_2026: 6,
+  SEPTEMBER_2026: 5,
+  OCTOBER_2026: 4,
+  NOVEMBER_2026: 3,
+  DECEMBER_2026: 3,
+  JANUARY_2027: 1,
 };
 
 //function to get the current month and year with format with the format of MONTHLY_INDEX
@@ -340,7 +353,20 @@ export const MONTHLY_INDEX_CURRENT = {
   OCTOBER_2025: 4,
   NOVEMBER_2025: 3,
   DECEMBER_2025: 3,
-  JANUARY_2026: 1,
+  // SY 2026-2027 (8 payments again)
+  JANUARY_2026: 8,
+  FEBRUARY_2026: 8,
+  MARCH_2026: 8,
+  APRIL_2026: 8,
+  MAY_2026: 8,
+  JUNE_2026: 8,
+  JULY_2026: 7,
+  AUGUST_2026: 6,
+  SEPTEMBER_2026: 5,
+  OCTOBER_2026: 4,
+  NOVEMBER_2026: 3,
+  DECEMBER_2026: 3,
+  JANUARY_2027: 1,
 };
 //function to get the current month and year with format with the format of MONTHLY_INDEX
 export const getMonthIndexCurrent = (date) => {
