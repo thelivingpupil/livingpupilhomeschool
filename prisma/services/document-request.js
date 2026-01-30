@@ -79,14 +79,6 @@ export const createDocumentRequest = async (data) => {
       deliveryOption,
     } = data;
 
-    // Create requestor information if it exists (now that DocumentRequest exists)
-    if (requestorInformation) {
-      await createRequestorInformation(
-        prisma,
-        requestCode,
-        requestorInformation
-      );
-    }
     // Create the main document request record FIRST (before dependent records)
     const documentRequest = await createDocumentRequestRecord(prisma, {
       requestCode,
@@ -96,6 +88,15 @@ export const createDocumentRequest = async (data) => {
       transactionId: null,
       deliveryOption,
     });
+
+    // Create requestor information if it exists (now that DocumentRequest exists)
+    if (requestorInformation) {
+      await createRequestorInformation(
+        prisma,
+        requestCode,
+        requestorInformation
+      );
+    }
 
     // Create student information for each student
     const createdStudents = [];

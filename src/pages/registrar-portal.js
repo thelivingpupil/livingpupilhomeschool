@@ -32,7 +32,9 @@ const RegistrarPortal = ({ page }) => {
   const { footer, header } = page;
   const [footerSection] = footer?.sectionType;
   const recaptchaRef = createRef();
+  const paymentProofRecaptchaRef = createRef();
   const [captcha, setCaptcha] = useState(null);
+  const [paymentProofCaptcha, setPaymentProofCaptcha] = useState(null);
   const [step, setStep] = useState(0); // State to track the current step
   const [review, setReviewVisibility] = useState(false);
   const [trackingCode, setTrackingCode] = useState('');
@@ -310,9 +312,9 @@ const RegistrarPortal = ({ page }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -357,9 +359,9 @@ const RegistrarPortal = ({ page }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -403,9 +405,9 @@ const RegistrarPortal = ({ page }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -547,9 +549,9 @@ const RegistrarPortal = ({ page }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -613,6 +615,13 @@ const RegistrarPortal = ({ page }) => {
       return;
     }
 
+    // Capture captcha token NOW (before upload) - tokens can expire during upload
+    const captchaToken = paymentProofRecaptchaRef.current?.getValue();
+    if (!captchaToken) {
+      toast.error('Please complete the captcha verification (Step 2)');
+      return;
+    }
+
     setUploadingProof(true);
     try {
       // Upload file to Firebase storage first
@@ -632,17 +641,8 @@ const RegistrarPortal = ({ page }) => {
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
-          // Now send the URL to the API endpoint
+          // Now send the URL to the API endpoint (use token captured at click time)
           try {
-            // Get current captcha token
-            const currentCaptcha = recaptchaRef.current?.getValue();
-
-            if (!currentCaptcha) {
-              toast.error('Please complete the captcha verification');
-              setUploadingProof(false);
-              return;
-            }
-
             const response = await api(
               '/api/documentRequest/updatePaymentProof',
               {
@@ -650,7 +650,7 @@ const RegistrarPortal = ({ page }) => {
                 body: {
                   transactionId: transactionId,
                   paymentProofUrl: downloadURL,
-                  captchaToken: currentCaptcha,
+                  captchaToken,
                 },
               }
             );
@@ -691,6 +691,14 @@ const RegistrarPortal = ({ page }) => {
     }
   };
 
+  const onPaymentProofCaptchaChange = (captchaCode) => {
+    if (captchaCode) {
+      setPaymentProofCaptcha(captchaCode);
+    } else {
+      setPaymentProofCaptcha(null);
+    }
+  };
+
   const refreshPage = () => {
     window.location.reload();
   };
@@ -717,11 +725,10 @@ const RegistrarPortal = ({ page }) => {
 
         {step < 6 && step > 0 && (
           <button
-            className={`absolute md:right-0 md:top-1/2 md:transform md:-translate-y-1/2 bottom-4 right-4 flex items-center justify-center w-20 h-10 rounded-full shadow-md ${
-              validateNext
-                ? 'bg-gray-200 hover:bg-gray-300'
-                : 'bg-gray-400 cursor-not-allowed hover:bg-gray-400'
-            } md:mr-5`}
+            className={`absolute md:right-0 md:top-1/2 md:transform md:-translate-y-1/2 bottom-4 right-4 flex items-center justify-center w-20 h-10 rounded-full shadow-md ${validateNext
+              ? 'bg-gray-200 hover:bg-gray-300'
+              : 'bg-gray-400 cursor-not-allowed hover:bg-gray-400'
+              } md:mr-5`}
             style={{ zIndex: 1000 }}
             onClick={() => goToStep(step + 1)} //validateNext &&
             disabled={!validateNext}
@@ -759,9 +766,8 @@ const RegistrarPortal = ({ page }) => {
                     </span>
                     <span class="ml-1 mr-1">|</span>
                     <span
-                      class={`text-sm px-2 rounded ${
-                        DOC_STATUS_BG_COLOR[documentRequest?.status]
-                      }`}
+                      class={`text-sm px-2 rounded ${DOC_STATUS_BG_COLOR[documentRequest?.status]
+                        }`}
                     >
                       {DOC_STATUS[documentRequest?.status]}
                     </span>
@@ -785,7 +791,7 @@ const RegistrarPortal = ({ page }) => {
                   <div class="mt-4">
                     <p class="font-bold text-gray-800 mb-2">Students:</p>
                     {documentRequest?.studentInformation &&
-                    documentRequest.studentInformation.length > 0 ? (
+                      documentRequest.studentInformation.length > 0 ? (
                       <div class="space-y-2">
                         {documentRequest.studentInformation.map(
                           (student, index) => (
@@ -814,7 +820,7 @@ const RegistrarPortal = ({ page }) => {
                   <div class="mt-6">
                     <p class="font-bold text-gray-800 mb-2">Documents:</p>
                     {documentRequest?.documents &&
-                    documentRequest.documents.length > 0 ? (
+                      documentRequest.documents.length > 0 ? (
                       <ul class="list-disc list-inside text-gray-600">
                         {documentRequest.documents.map((doc) => (
                           <li key={doc.id}>
@@ -894,15 +900,14 @@ const RegistrarPortal = ({ page }) => {
                     )}
                     {documentRequest && documentRequest?.transaction && (
                       <span
-                        className={`rounded-full py-0.5 text-sm px-2 text-center ${
-                          STATUS_BG_COLOR[
-                            documentRequest?.transaction.paymentStatus
-                          ]
-                        }`}
+                        className={`rounded-full py-0.5 text-sm px-2 text-center ${STATUS_BG_COLOR[
+                          documentRequest?.transaction.paymentStatus
+                        ]
+                          }`}
                       >
                         {
                           STATUS_CODES[
-                            documentRequest?.transaction.paymentStatus
+                          documentRequest?.transaction.paymentStatus
                           ]
                         }
                       </span>
@@ -910,32 +915,32 @@ const RegistrarPortal = ({ page }) => {
                   </div>
                   {documentRequest?.transaction.paymentStatus !==
                     TransactionStatus.S && (
-                    <div className="flex items-center space-x-5">
-                      <h6>
-                        {new Intl.NumberFormat('en-PH', {
-                          style: 'currency',
-                          currency: 'PHP',
-                        }).format(documentRequest?.transaction?.amount || 0)}
-                      </h6>
-                      <button
-                        className="inline-block px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
-                        disabled={submittingState}
-                        onClick={() => {
-                          // Open payment modal for existing transaction
-                          setPaymentAmount(
-                            documentRequest?.transaction?.amount || 0
-                          );
-                          setTransactionId(documentRequest?.transactionId);
-                          setReferenceNumber(
-                            documentRequest?.transaction?.referenceNumber
-                          );
-                          setShowPaymentModal(true);
-                        }}
-                      >
-                        Pay Now
-                      </button>
-                    </div>
-                  )}
+                      <div className="flex items-center space-x-5">
+                        <h6>
+                          {new Intl.NumberFormat('en-PH', {
+                            style: 'currency',
+                            currency: 'PHP',
+                          }).format(documentRequest?.transaction?.amount || 0)}
+                        </h6>
+                        <button
+                          className="inline-block px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
+                          disabled={submittingState}
+                          onClick={() => {
+                            // Open payment modal for existing transaction
+                            setPaymentAmount(
+                              documentRequest?.transaction?.amount || 0
+                            );
+                            setTransactionId(documentRequest?.transactionId);
+                            setReferenceNumber(
+                              documentRequest?.transaction?.referenceNumber
+                            );
+                            setShowPaymentModal(true);
+                          }}
+                        >
+                          Pay Now
+                        </button>
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
@@ -1035,11 +1040,10 @@ const RegistrarPortal = ({ page }) => {
                     id="purpose"
                     value={selectedPurpose}
                     onChange={handleDropdownChange}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-                      selectedPurpose.length === 0
-                        ? 'border-red-500 border-2'
-                        : 'border'
-                    }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${selectedPurpose.length === 0
+                      ? 'border-red-500 border-2'
+                      : 'border'
+                      }`}
                   >
                     {PURPOSE_OPTIONS.map((option, index) => (
                       <option key={index} value={option.value}>
@@ -1094,11 +1098,10 @@ const RegistrarPortal = ({ page }) => {
                     id="studentName"
                     value={formData.studentName}
                     onChange={(e) => handleChange(e, setFormData)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-                      !formData.studentName
-                        ? 'border-red-500 border-2'
-                        : 'border'
-                    }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData.studentName
+                      ? 'border-red-500 border-2'
+                      : 'border'
+                      }`}
                     placeholder="Enter full name"
                   />
                 </div>
@@ -1116,9 +1119,8 @@ const RegistrarPortal = ({ page }) => {
                     id="lrn"
                     value={formData.lrn}
                     onChange={(e) => handleChange(e, setFormData)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-                      !formData.lrn ? 'border-red-500 border-2' : 'border'
-                    }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData.lrn ? 'border-red-500 border-2' : 'border'
+                      }`}
                     placeholder="Enter LRN"
                   />
                 </div>
@@ -1135,11 +1137,10 @@ const RegistrarPortal = ({ page }) => {
                     id="gradeLevel"
                     value={formData.gradeLevel}
                     onChange={(e) => handleChange(e, setFormData)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-                      !formData.gradeLevel
-                        ? 'border-red-500 border-2'
-                        : 'border'
-                    }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData.gradeLevel
+                      ? 'border-red-500 border-2'
+                      : 'border'
+                      }`}
                   >
                     <option value="" disabled>
                       Select grade level
@@ -1175,11 +1176,10 @@ const RegistrarPortal = ({ page }) => {
                     id="currentSchool"
                     value={formData.currentSchool}
                     onChange={(e) => handleChange(e, setFormData)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-                      !formData.currentSchool
-                        ? 'border-red-500 border-2'
-                        : 'border'
-                    }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData.currentSchool
+                      ? 'border-red-500 border-2'
+                      : 'border'
+                      }`}
                     placeholder="Enter current school"
                   />
                 </div>
@@ -1197,11 +1197,10 @@ const RegistrarPortal = ({ page }) => {
                     id="gradesWithLP"
                     value={formData.gradesWithLP}
                     onChange={(e) => handleChange(e, setFormData)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-                      !formData.gradesWithLP
-                        ? 'border-red-500 border-2'
-                        : 'border'
-                    }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData.gradesWithLP
+                      ? 'border-red-500 border-2'
+                      : 'border'
+                      }`}
                     placeholder="Enter grade levels (e.g., 3, 4, 5)"
                   />
                 </div>
@@ -1219,11 +1218,10 @@ const RegistrarPortal = ({ page }) => {
                     id="lastSchoolYear"
                     value={formData.lastSchoolYear}
                     onChange={(e) => handleChange(e, setFormData)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-                      !formData.lastSchoolYear
-                        ? 'border-red-500 border-2'
-                        : 'border'
-                    }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData.lastSchoolYear
+                      ? 'border-red-500 border-2'
+                      : 'border'
+                      }`}
                     placeholder="Enter last school year"
                   />
                 </div>
@@ -1251,11 +1249,10 @@ const RegistrarPortal = ({ page }) => {
                     id="requestorName"
                     value={formData2.requestorName}
                     onChange={(e) => handleChange(e, setFormData2)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-                      !formData2.requestorName
-                        ? 'border-red-500 border-2'
-                        : 'border'
-                    }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData2.requestorName
+                      ? 'border-red-500 border-2'
+                      : 'border'
+                      }`}
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -1273,11 +1270,10 @@ const RegistrarPortal = ({ page }) => {
                     id="relationship"
                     value={formData2.relationship}
                     onChange={(e) => handleChange(e, setFormData2)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-                      !formData2.relationship
-                        ? 'border-red-500 border-2'
-                        : 'border'
-                    }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData2.relationship
+                      ? 'border-red-500 border-2'
+                      : 'border'
+                      }`}
                     placeholder="Enter your relationship (e.g., parent, guardian)"
                   />
                 </div>
@@ -1295,9 +1291,8 @@ const RegistrarPortal = ({ page }) => {
                     id="email"
                     value={formData2.email}
                     onChange={(e) => handleChange(e, setFormData2)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-                      !formData2.email ? 'border-red-500 border-2' : 'border'
-                    }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData2.email ? 'border-red-500 border-2' : 'border'
+                      }`}
                     placeholder="Enter email address"
                   />
                 </div>
@@ -1315,11 +1310,10 @@ const RegistrarPortal = ({ page }) => {
                     id="occupation"
                     value={formData2.occupation}
                     onChange={(e) => handleChange(e, setFormData2)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-                      !formData2.occupation
-                        ? 'border-red-500 border-2'
-                        : 'border'
-                    }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData2.occupation
+                      ? 'border-red-500 border-2'
+                      : 'border'
+                      }`}
                     placeholder="Enter occupation"
                   />
                 </div>
@@ -1337,11 +1331,10 @@ const RegistrarPortal = ({ page }) => {
                     id="guardianAddress"
                     value={formData2.guardianAddress}
                     onChange={(e) => handleChange(e, setFormData2)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-                      !formData2.guardianAddress
-                        ? 'border-red-500 border-2'
-                        : 'border'
-                    }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData2.guardianAddress
+                      ? 'border-red-500 border-2'
+                      : 'border'
+                      }`}
                     placeholder="Enter address"
                   />
                 </div>
@@ -1359,11 +1352,10 @@ const RegistrarPortal = ({ page }) => {
                     id="guardianMobile"
                     value={formData2.guardianMobile}
                     onChange={(e) => handleChange(e, setFormData2)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
-                      !formData2.guardianMobile
-                        ? 'border-red-500 border-2'
-                        : 'border'
-                    }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData2.guardianMobile
+                      ? 'border-red-500 border-2'
+                      : 'border'
+                      }`}
                     placeholder="Enter mobile number"
                   />
                 </div>
@@ -1452,9 +1444,8 @@ const RegistrarPortal = ({ page }) => {
                         <b>Requirements:</b>
                       </p>
                       <div
-                        className={`mt-2 p-1 flex flex-col ${
-                          !affidavit ? 'border-red-500 border-2' : 'border'
-                        }`}
+                        className={`mt-2 p-1 flex flex-col ${!affidavit ? 'border-red-500 border-2' : 'border'
+                          }`}
                       >
                         <label className="text-sm font-medium text-gray-700">
                           {DOCUMENT_DETAILS.re_form_138.requirement}
@@ -1499,11 +1490,10 @@ const RegistrarPortal = ({ page }) => {
                         <b>Requirements:</b>
                       </p>
                       <div
-                        className={`mt-2 p-1 flex flex-col ${
-                          !letterRequest137
-                            ? 'border-red-500 border-2'
-                            : 'border'
-                        }`}
+                        className={`mt-2 p-1 flex flex-col ${!letterRequest137
+                          ? 'border-red-500 border-2'
+                          : 'border'
+                          }`}
                       >
                         <label className="text-sm font-medium text-gray-700">
                           {DOCUMENT_DETAILS.form_137.requirement}
@@ -1532,69 +1522,69 @@ const RegistrarPortal = ({ page }) => {
                 {selectedDocuments.some(
                   (doc) => doc === 'certificate_of_no_financial_obligation'
                 ) && (
-                  <div>
-                    <label
-                      htmlFor="guardianAddress"
-                      className="block font-medium text-primary-500"
-                    >
-                      Certificate of No Financial Obligation
-                    </label>
-                    <div className="ml-5 block text-sm font-medium text-gray-700">
-                      <p className="mt-2">
-                        <b>Processing Time:</b>{' '}
-                        {
-                          DOCUMENT_DETAILS
-                            .certificate_of_no_financial_obligation
-                            .processing_time
-                        }
-                      </p>
-                      <p className="mt-2">
-                        <b>Processing Fee:</b> ₱{' '}
-                        {
-                          DOCUMENT_DETAILS
-                            .certificate_of_no_financial_obligation.fee
-                        }
-                      </p>
-                      <p className="mt-2">
-                        <b>Requirements:</b>{' '}
-                        {
-                          DOCUMENT_DETAILS
-                            .certificate_of_no_financial_obligation.requirement
-                        }
-                      </p>
+                    <div>
+                      <label
+                        htmlFor="guardianAddress"
+                        className="block font-medium text-primary-500"
+                      >
+                        Certificate of No Financial Obligation
+                      </label>
+                      <div className="ml-5 block text-sm font-medium text-gray-700">
+                        <p className="mt-2">
+                          <b>Processing Time:</b>{' '}
+                          {
+                            DOCUMENT_DETAILS
+                              .certificate_of_no_financial_obligation
+                              .processing_time
+                          }
+                        </p>
+                        <p className="mt-2">
+                          <b>Processing Fee:</b> ₱{' '}
+                          {
+                            DOCUMENT_DETAILS
+                              .certificate_of_no_financial_obligation.fee
+                          }
+                        </p>
+                        <p className="mt-2">
+                          <b>Requirements:</b>{' '}
+                          {
+                            DOCUMENT_DETAILS
+                              .certificate_of_no_financial_obligation.requirement
+                          }
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 {/* Guardian's Mobile Number */}
                 {selectedDocuments.some(
                   (doc) => doc === 'certificate_of_enrollment'
                 ) && (
-                  <div>
-                    <label
-                      htmlFor="guardianMobile"
-                      className="block font-medium text-primary-500"
-                    >
-                      Certificate of Enrollment
-                    </label>
-                    <div className="ml-5 block text-sm font-medium text-gray-700">
-                      <p className="mt-2">
-                        <b>Processing Time:</b>{' '}
-                        {
-                          DOCUMENT_DETAILS.certificate_of_enrollment
-                            .processing_time
-                        }
-                      </p>
-                      <p className="mt-2">
-                        <b>Processing Fee:</b> ₱{' '}
-                        {DOCUMENT_DETAILS.certificate_of_enrollment.fee}
-                      </p>
-                      <p className="mt-2">
-                        <b>Requirements:</b>{' '}
-                        {DOCUMENT_DETAILS.certificate_of_enrollment.requirement}
-                      </p>
+                    <div>
+                      <label
+                        htmlFor="guardianMobile"
+                        className="block font-medium text-primary-500"
+                      >
+                        Certificate of Enrollment
+                      </label>
+                      <div className="ml-5 block text-sm font-medium text-gray-700">
+                        <p className="mt-2">
+                          <b>Processing Time:</b>{' '}
+                          {
+                            DOCUMENT_DETAILS.certificate_of_enrollment
+                              .processing_time
+                          }
+                        </p>
+                        <p className="mt-2">
+                          <b>Processing Fee:</b> ₱{' '}
+                          {DOCUMENT_DETAILS.certificate_of_enrollment.fee}
+                        </p>
+                        <p className="mt-2">
+                          <b>Requirements:</b>{' '}
+                          {DOCUMENT_DETAILS.certificate_of_enrollment.requirement}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Render the ECCD file input if ECCD is selected */}
                 {selectedDocuments.some((doc) => doc === 'eccd') && (
@@ -1619,11 +1609,10 @@ const RegistrarPortal = ({ page }) => {
 
                       {/* Letter Input */}
                       <div
-                        className={`mt-2 flex p-1 flex-col ${
-                          !letterRequestEccd
-                            ? 'border-red-500 border-2'
-                            : 'border'
-                        }`}
+                        className={`mt-2 flex p-1 flex-col ${!letterRequestEccd
+                          ? 'border-red-500 border-2'
+                          : 'border'
+                          }`}
                       >
                         <label className="text-sm font-medium text-gray-700">
                           {DOCUMENT_DETAILS.eccd.requirement.letter}
@@ -1648,9 +1637,8 @@ const RegistrarPortal = ({ page }) => {
 
                       {/* Form Input */}
                       <div
-                        className={`mt-2 p-1 flex flex-col mb-4 ${
-                          !eccdForm ? 'border-red-500 border-2' : 'border'
-                        }`}
+                        className={`mt-2 p-1 flex flex-col mb-4 ${!eccdForm ? 'border-red-500 border-2' : 'border'
+                          }`}
                       >
                         <label className="text-sm font-medium text-gray-700">
                           {DOCUMENT_DETAILS.eccd.requirement.form}
@@ -1749,11 +1737,10 @@ const RegistrarPortal = ({ page }) => {
               <div className="mt-4 mb-4">
                 <label
                   htmlFor="deliveryAddress"
-                  className={`block text-sm font-medium ${
-                    deliveryOption === 'pickup'
-                      ? 'text-gray-400'
-                      : 'text-gray-700'
-                  }`}
+                  className={`block text-sm font-medium ${deliveryOption === 'pickup'
+                    ? 'text-gray-400'
+                    : 'text-gray-700'
+                    }`}
                 >
                   Delivery Address
                 </label>
@@ -1771,11 +1758,10 @@ const RegistrarPortal = ({ page }) => {
               {/* Disclaimer Section */}
               <div className="flex flex-col items-start mb-4">
                 <p
-                  className={`mb-2 text-sm ${
-                    deliveryOption === 'pickup'
-                      ? 'text-gray-400'
-                      : 'text-gray-700'
-                  }`}
+                  className={`mb-2 text-sm ${deliveryOption === 'pickup'
+                    ? 'text-gray-400'
+                    : 'text-gray-700'
+                    }`}
                 >
                   <i>
                     Please note that Living Pupil Homeschool is not responsible
@@ -1787,11 +1773,10 @@ const RegistrarPortal = ({ page }) => {
                   </i>
                 </p>
                 <label
-                  className={`flex items-center gap-2 ${
-                    deliveryOption === 'pickup'
-                      ? 'text-gray-400'
-                      : 'text-gray-700'
-                  }`}
+                  className={`flex items-center gap-2 ${deliveryOption === 'pickup'
+                    ? 'text-gray-400'
+                    : 'text-gray-700'
+                    }`}
                 >
                   <input
                     type="radio"
@@ -2162,10 +2147,10 @@ const RegistrarPortal = ({ page }) => {
         title="Payment Options"
         toggle={() => {
           setShowPaymentModal(false);
-          // Reset captcha when closing modal
-          setCaptcha(null);
-          if (recaptchaRef.current) {
-            recaptchaRef.current.reset();
+          // Reset payment proof captcha when closing modal
+          setPaymentProofCaptcha(null);
+          if (paymentProofRecaptchaRef.current) {
+            paymentProofRecaptchaRef.current.reset();
           }
         }}
       >
@@ -2283,49 +2268,9 @@ const RegistrarPortal = ({ page }) => {
               Upload Payment Proof
             </h4>
 
-            {/* Show existing payment proof if available */}
-            {documentRequest?.transaction?.paymentProofLink && (
-              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-green-800">
-                    ✓ Payment Proof Already Uploaded
-                  </span>
-                  <span
-                    className={`text-xs px-2 py-1 rounded-full text-center ${
-                      STATUS_BG_COLOR[
-                        documentRequest?.transaction?.paymentStatus
-                      ] || 'bg-gray-200'
-                    }`}
-                  >
-                    {STATUS_CODES[
-                      documentRequest?.transaction?.paymentStatus
-                    ] || 'Unknown'}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-3 mb-3">
-                  <button
-                    onClick={() =>
-                      window.open(
-                        documentRequest.transaction.paymentProofLink,
-                        '_blank'
-                      )
-                    }
-                    className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
-                  >
-                    View Uploaded
-                  </button>
-                  <span className="text-xs text-green-600">
-                    Click to view the payment proof you previously uploaded
-                  </span>
-                </div>
-                <div className="text-xs text-green-700 border-t border-green-200 pt-2">
-                  💡 You can upload a new payment proof below to replace the
-                  existing one
-                </div>
-              </div>
-            )}
-
-            <div className="space-y-3">
+            {/* Step 1: Select file first */}
+            <div className="space-y-3 mb-4">
+              <p className="text-sm text-gray-600 font-medium">Step 1: Select your payment proof image</p>
               <input
                 type="file"
                 accept="image/*"
@@ -2337,47 +2282,45 @@ const RegistrarPortal = ({ page }) => {
                   ✓ {paymentProofFile.name} selected
                 </div>
               )}
-              <button
-                onClick={handlePaymentProofUpload}
-                disabled={!paymentProofFile || uploadingProof || !captcha}
-                className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {uploadingProof
-                  ? 'Uploading...'
-                  : documentRequest?.transaction?.paymentProofLink
-                  ? 'Replace Payment Proof'
-                  : 'Upload Payment Proof'}
-              </button>
             </div>
 
-            {/* Captcha verification */}
-            <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
-              <div className="text-center">
-                <p className="text-sm text-gray-600 mb-2">
-                  Please verify you're human
+            {/* Step 2: Captcha verification */}
+            <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+              <div className="text-left">
+                <p className="text-sm text-gray-600 mb-2 font-medium">
+                  Step 2: Verify you're human (required)
                 </p>
-                {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
+                {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
                   <ReCAPTCHA
-                    ref={recaptchaRef}
+                    ref={paymentProofRecaptchaRef}
                     sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                    onChange={onReCAPTCHAChange}
+                    onChange={onPaymentProofCaptchaChange}
                     theme="light"
-                    onExpired={() => {
-                      setCaptcha(null);
-                    }}
-                    onError={() => {
-                      setCaptcha(null);
-                    }}
+                    onExpired={() => setPaymentProofCaptcha(null)}
+                    onError={() => setPaymentProofCaptcha(null)}
                   />
+                ) : (
+                  <p className="text-xs text-amber-600">
+                    ReCAPTCHA is not configured. Contact support to enable uploads.
+                  </p>
                 )}
-                {/* Debug info - remove this in production */}
                 <div className="mt-2 text-xs text-gray-500">
-                  Captcha Status: {captcha ? '✓ Completed' : '✗ Not completed'}
-                  {!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY &&
-                    ' (No site key configured)'}
+                  {paymentProofCaptcha ? '✓ Verified' : '✗ Complete the captcha'}
                 </div>
               </div>
             </div>
+
+            <button
+              onClick={handlePaymentProofUpload}
+              disabled={!paymentProofFile || uploadingProof || !paymentProofCaptcha}
+              className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {uploadingProof
+                ? 'Uploading...'
+                : documentRequest?.transaction?.paymentProofLink
+                  ? 'Replace Payment Proof'
+                  : 'Upload Payment Proof'}
+            </button>
           </div>
 
           <div className="bg-yellow-50 p-4 rounded-lg">
@@ -2394,6 +2337,58 @@ const RegistrarPortal = ({ page }) => {
                 <span className="font-mono">{referenceNumber}</span>
               </div>
             </div>
+
+            {/* Show uploaded payment proof below reference number */}
+            {documentRequest?.transaction?.paymentProofLink && (
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-green-800">
+                    ✓ Payment Proof Already Uploaded
+                  </span>
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full text-center ${STATUS_BG_COLOR[
+                      documentRequest?.transaction?.paymentStatus
+                    ] || 'bg-gray-200'
+                      }`}
+                  >
+                    {STATUS_CODES[
+                      documentRequest?.transaction?.paymentStatus
+                    ] || 'Unknown'}
+                  </span>
+                </div>
+                <div className="mb-3">
+                  <p className="text-xs text-green-700 mb-2">Uploaded image:</p>
+                  <a
+                    href={documentRequest.transaction.paymentProofLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block rounded-lg overflow-hidden border-2 border-green-300 max-h-48 w-full max-w-xs bg-gray-100"
+                  >
+                    <img
+                      src={documentRequest.transaction.paymentProofLink}
+                      alt="Uploaded payment proof"
+                      className="w-full h-auto object-contain max-h-48"
+                    />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      window.open(
+                        documentRequest.transaction.paymentProofLink,
+                        '_blank'
+                      )
+                    }
+                    className="mt-2 px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
+                  >
+                    Open in new tab
+                  </button>
+                </div>
+                <div className="text-xs text-green-700 border-t border-green-200 pt-2">
+                  💡 You can upload a new payment proof above to replace the
+                  existing one
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex space-x-3">
