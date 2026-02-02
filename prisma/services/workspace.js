@@ -195,13 +195,13 @@ export const getSiteWorkspace = async (slug, customDomain) =>
         { slug },
         customDomain
           ? {
-              domains: {
-                some: {
-                  name: slug,
-                  deletedAt: null,
-                },
+            domains: {
+              some: {
+                name: slug,
+                deletedAt: null,
               },
-            }
+            },
+          }
           : undefined,
       ],
       AND: { deletedAt: null },
@@ -417,6 +417,7 @@ export const getWorkspace = async (id, email, slug) =>
               url: true,
               purchaseHistoryId: true,
               createdAt: true,
+              updatedAt: true,
             },
           },
           createdAt: true,

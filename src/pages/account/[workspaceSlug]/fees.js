@@ -10,7 +10,7 @@ import Content from '@/components/Content';
 import Meta from '@/components/Meta';
 import AccountLayout from '@/layouts/AccountLayout';
 import { useWorkspace } from '@/providers/workspace';
-import { GRADE_LEVEL } from '@/utils/constants';
+import { GRADE_LEVEL, SCHOOL_YEAR } from '@/utils/constants';
 import api from '@/lib/common/api';
 import { getDeadline } from '@/utils/index';
 import { WrongLocation } from '@mui/icons-material';
@@ -92,9 +92,9 @@ const Fees = () => {
         .update(paymentProofFile.name + Date.now())
         .digest('hex')
         .substring(0, 12)}-${format(
-        new Date(),
-        'yyyy.MM.dd.kk.mm.ss'
-      )}.${extension}`;
+          new Date(),
+          'yyyy.MM.dd.kk.mm.ss'
+        )}.${extension}`;
 
       // ✅ Upload to Firebase Storage
       const storageRef = ref(storage, fileName);
@@ -359,20 +359,20 @@ const Fees = () => {
                                   <td className="px-3 py-2">
                                     <p>
                                       {index === 0 &&
-                                      f.paymentType === PaymentType.ANNUAL
+                                        f.paymentType === PaymentType.ANNUAL
                                         ? 'Total School Fee'
                                         : index === 0 &&
                                           f.paymentType !== PaymentType.ANNUAL
-                                        ? 'Initial School Fee'
-                                        : index > 0 &&
-                                          f.paymentType ===
+                                          ? 'Initial School Fee'
+                                          : index > 0 &&
+                                            f.paymentType ===
                                             PaymentType.SEMI_ANNUAL
-                                        ? `Three (3) Term Payment School Fee #${index}`
-                                        : index > 0 &&
-                                          f.paymentType ===
-                                            PaymentType.QUARTERLY
-                                        ? `Three (4) Term Payment School Fee #${index}`
-                                        : `Monthly Payment School Fee #${index}`}
+                                            ? `Three (3) Term Payment School Fee #${index}`
+                                            : index > 0 &&
+                                              f.paymentType ===
+                                              PaymentType.QUARTERLY
+                                              ? `Four (4) Term Payment School Fee #${index}`
+                                              : `Monthly Payment School Fee #${index}`}
                                     </p>
                                     <p className="text-xs italic text-gray-400">
                                       <span className="font-medium">
@@ -393,9 +393,9 @@ const Fees = () => {
                                     <div>
                                       {f.transaction.payment
                                         ? new Intl.NumberFormat('en-US', {
-                                            style: 'currency',
-                                            currency: 'PHP',
-                                          }).format(f.transaction.payment)
+                                          style: 'currency',
+                                          currency: 'PHP',
+                                        }).format(f.transaction.payment)
                                         : '-'}
                                       {f.transaction.balance ? (
                                         <p className="font-mono text-xs text-gray-400 lowercase">
@@ -407,35 +407,44 @@ const Fees = () => {
                                     </div>
                                   </td>
                                   <td className="px-3 py-2 text-sm text-center">
-                                    {index !== 0 &&
-                                    fees[level].schoolFees[0].transaction
-                                      .paymentStatus !== 'S'
-                                      ? '-'
-                                      : index === 0
-                                      ? 'Initial Fee'
-                                      : getDeadline(
-                                          index,
-                                          f.paymentType,
-                                          fees[level].schoolFees[0].transaction
-                                            .updatedAt,
-                                          workspace.studentRecord.schoolYear,
-                                          fees[level].schoolFees[0].transaction
-                                            .paymentStatus
-                                        ) || '-'}
+                                    {(() => {
+                                      const initialStatus = fees[level].schoolFees[0].transaction.paymentStatus;
+                                      const initialUpdatedAt = fees[level].schoolFees[0].transaction.updatedAt;
+                                      const schoolYearRaw = workspace?.studentRecord?.schoolYear;
+                                      const schoolYear =
+                                        SCHOOL_YEAR[schoolYearRaw] ?? schoolYearRaw ?? (() => {
+                                          const d = new Date();
+                                          const y = d.getFullYear();
+                                          return d.getMonth() >= 5 ? `${y}-${y + 1}` : `${y - 1}-${y}`;
+                                        })();
+                                      const deadline =
+                                        index !== 0 && initialStatus !== 'S'
+                                          ? null
+                                          : index === 0
+                                            ? 'Initial Fee'
+                                            : getDeadline(
+                                              index,
+                                              f.paymentType,
+                                              initialUpdatedAt,
+                                              schoolYear,
+                                              fees[level].schoolFees[0].transaction.paymentStatus
+                                            );
+                                      return deadline ?? '-';
+                                    })()}
                                   </td>
                                   <td className="px-3 py-2 space-x-3 text-center">
                                     {f.transaction.paymentStatus !==
-                                    TransactionStatus.S ? (
+                                      TransactionStatus.S ? (
                                       <>
                                         {index !== 0 &&
-                                        fees[level].schoolFees[0].transaction
-                                          .paymentStatus !== 'S' ? (
+                                          fees[level].schoolFees[0].transaction
+                                            .paymentStatus !== 'S' ? (
                                           <span className="inline-block px-3 py-1 text-xs text-white bg-red-600 rounded-full">
                                             Unpaid Initial Fee
                                           </span>
                                         ) : (
                                           <div className="flex flex-col space-y-2">
-                                            {workspace?.studentRecord?.schoolYear !== '2026-2027' && (
+                                            {(SCHOOL_YEAR[workspace?.studentRecord?.schoolYear] ?? workspace?.studentRecord?.schoolYear) !== '2026-2027' && (
                                               <button
                                                 className="inline-block px-3 py-2 text-xs text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
                                                 disabled={isSubmitting}

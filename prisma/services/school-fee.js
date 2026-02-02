@@ -761,6 +761,13 @@ export const getSchoolFees = async () => {
             updatedAt: true,
           },
         },
+        student: {
+          select: {
+            studentRecord: {
+              select: { schoolYear: true },
+            },
+          },
+        },
       },
       where: {
         deletedAt: null,

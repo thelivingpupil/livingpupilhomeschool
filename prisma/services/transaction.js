@@ -439,6 +439,7 @@ export const getTransactions = async (options = {}) => {
           order: true,
           student: {
             select: {
+              id: true,
               studentRecord: {
                 select: {
                   studentId: true,

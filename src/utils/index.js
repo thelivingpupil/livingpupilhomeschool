@@ -312,12 +312,12 @@ const deadlines2025 = {
       [PaymentType.MONTHLY]: [0, 1, 2], // Feb 5
       [PaymentType.PAY_ALL]: [0],
     },
-    // February 2026
+    // February 2026 (SY 2025-2026: Payment #1 Mar 5, #2 Apr 5 before SY ends)
     {
       [PaymentType.ANNUAL]: [0],
-      [PaymentType.SEMI_ANNUAL]: [0],
-      [PaymentType.QUARTERLY]: [0],
-      [PaymentType.MONTHLY]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 1, 2], // Mar 5, Apr 5
+      [PaymentType.QUARTERLY]: [0, 1, 2], // Mar 5, Apr 5
+      [PaymentType.MONTHLY]: [0, 1], // Mar 5, Apr 5
       [PaymentType.PAY_ALL]: [0],
     },
     // March (End of SY)
@@ -403,6 +403,144 @@ const deadlines2025 = {
   ],
 };
 
+// SY 2026-2027: same schedule pattern as 2025-2026, used when schoolYear is "2026-2027"
+const deadlines2026 = {
+  currentYear: [
+    // January (Early Enrollment)
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 5, 10],
+      [PaymentType.QUARTERLY]: [0, 5, 8, 11],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // February (Early Enrollment)
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 4, 8],
+      [PaymentType.QUARTERLY]: [0, 4, 7, 10],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // March
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 3, 8],
+      [PaymentType.QUARTERLY]: [0, 3, 6, 9],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // April
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 3, 8],
+      [PaymentType.QUARTERLY]: [0, 3, 6, 9],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // May
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 3, 6],
+      [PaymentType.QUARTERLY]: [0, 3, 6, 9],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // June (Start of SY 2026-2027)
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 3, 6],
+      [PaymentType.QUARTERLY]: [0, 3, 6, 8],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // July
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 3, 6],
+      [PaymentType.QUARTERLY]: [0, 3, 5, 7],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6, 7],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // August
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 3, 6],
+      [PaymentType.QUARTERLY]: [0, 2, 3, 4],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // September
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 2, 5],
+      [PaymentType.QUARTERLY]: [0, 2, 4, 5],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // October
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 2, 4],
+      [PaymentType.QUARTERLY]: [0, 2, 3, 4],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3, 4],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // November
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 2, 3],
+      [PaymentType.QUARTERLY]: [0, 2, 3],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // December
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 1, 2],
+      [PaymentType.QUARTERLY]: [0, 1, 2],
+      [PaymentType.MONTHLY]: [0, 1, 2, 3],
+      [PaymentType.PAY_ALL]: [0],
+    },
+  ],
+  laterYear: [
+    // January 2027 (second half of SY 2026-2027) — Four (4) Term needs indices 1–3
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 1, 2],
+      [PaymentType.QUARTERLY]: [0, 1, 2, 3],
+      [PaymentType.MONTHLY]: [0, 1, 2],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // February 2027
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0, 1, 2],
+      [PaymentType.QUARTERLY]: [0, 1, 2, 3],
+      [PaymentType.MONTHLY]: [0, 1],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // March (End of SY 2026-2027)
+    {
+      [PaymentType.ANNUAL]: [0],
+      [PaymentType.SEMI_ANNUAL]: [0],
+      [PaymentType.QUARTERLY]: [0],
+      [PaymentType.MONTHLY]: [0],
+      [PaymentType.PAY_ALL]: [0],
+    },
+    // April–December 2027 (past SY end)
+    { [PaymentType.ANNUAL]: [0], [PaymentType.SEMI_ANNUAL]: [0], [PaymentType.QUARTERLY]: [0], [PaymentType.MONTHLY]: [0], [PaymentType.PAY_ALL]: [0] },
+    { [PaymentType.ANNUAL]: [0], [PaymentType.SEMI_ANNUAL]: [0], [PaymentType.QUARTERLY]: [0], [PaymentType.MONTHLY]: [0], [PaymentType.PAY_ALL]: [0] },
+    { [PaymentType.ANNUAL]: [0], [PaymentType.SEMI_ANNUAL]: [0], [PaymentType.QUARTERLY]: [0], [PaymentType.MONTHLY]: [0], [PaymentType.PAY_ALL]: [0] },
+    { [PaymentType.ANNUAL]: [0], [PaymentType.SEMI_ANNUAL]: [0], [PaymentType.QUARTERLY]: [0], [PaymentType.MONTHLY]: [0], [PaymentType.PAY_ALL]: [0] },
+    { [PaymentType.ANNUAL]: [0], [PaymentType.SEMI_ANNUAL]: [0], [PaymentType.QUARTERLY]: [0], [PaymentType.MONTHLY]: [0], [PaymentType.PAY_ALL]: [0] },
+    { [PaymentType.ANNUAL]: [0], [PaymentType.SEMI_ANNUAL]: [0], [PaymentType.QUARTERLY]: [0], [PaymentType.MONTHLY]: [0], [PaymentType.PAY_ALL]: [0] },
+    { [PaymentType.ANNUAL]: [0], [PaymentType.SEMI_ANNUAL]: [0], [PaymentType.QUARTERLY]: [0], [PaymentType.MONTHLY]: [0], [PaymentType.PAY_ALL]: [0] },
+    { [PaymentType.ANNUAL]: [0], [PaymentType.SEMI_ANNUAL]: [0], [PaymentType.QUARTERLY]: [0], [PaymentType.MONTHLY]: [0], [PaymentType.PAY_ALL]: [0] },
+    { [PaymentType.ANNUAL]: [0], [PaymentType.SEMI_ANNUAL]: [0], [PaymentType.QUARTERLY]: [0], [PaymentType.MONTHLY]: [0], [PaymentType.PAY_ALL]: [0] },
+  ],
+};
+
 export const getDeadline = (
   index,
   paymentType,
@@ -410,14 +548,12 @@ export const getDeadline = (
   schoolYear,
   paymentStatus
 ) => {
-  // Validate inputs
   if (!downpaymentDate || !schoolYear || !paymentType) {
     return null;
   }
 
   const date = new Date(downpaymentDate);
 
-  // Check if date is valid
   if (isNaN(date.getTime())) {
     return null;
   }
@@ -427,7 +563,6 @@ export const getDeadline = (
     ? Number(schoolYear.split('-')[0])
     : Number(schoolYear);
 
-  // Validate schoolYearStart
   if (isNaN(schoolYearStart)) {
     return null;
   }
@@ -435,34 +570,28 @@ export const getDeadline = (
   const selectedYear =
     schoolYearStart < date.getFullYear() ? 'laterYear' : 'currentYear';
 
-  // Validate date and month index
   const monthIndex = date.getMonth();
   if (isNaN(monthIndex) || monthIndex < 0 || monthIndex > 11) {
     return null;
   }
 
-  // Validate that selectedYear exists in the deadlines object
   if (selectedYear !== 'currentYear' && selectedYear !== 'laterYear') {
     return null;
   }
 
   let monthsToAdd = 0;
   // Use schoolYearStart (first year) to determine which deadlines object to use
-  if (schoolYearStart === 2024 || schoolYearStart === 2023) {
-    // Always use the index to get the correct deadline for the payment order
-    const yearData = deadlines[selectedYear];
-    const monthData = yearData?.[monthIndex];
-    const paymentData = monthData?.[paymentType];
-    monthsToAdd = paymentData?.[index];
-  } else {
-    // Always use the index to get the correct deadline for the payment order
-    const yearData = deadlines2025[selectedYear];
-    const monthData = yearData?.[monthIndex];
-    const paymentData = monthData?.[paymentType];
-    monthsToAdd = paymentData?.[index];
-  }
+  const deadlinesTable =
+    schoolYearStart === 2024 || schoolYearStart === 2023
+      ? deadlines
+      : schoolYearStart === 2026
+        ? deadlines2026
+        : deadlines2025;
+  const yearData = deadlinesTable[selectedYear];
+  const monthData = yearData?.[monthIndex];
+  const paymentData = monthData?.[paymentType];
+  monthsToAdd = paymentData?.[index];
 
-  // Check if monthsToAdd is valid
   if (monthsToAdd === null || monthsToAdd === undefined) {
     return null;
   }
