@@ -314,6 +314,18 @@ export const MONTHLY_INDEX = {
   NOVEMBER_2026: 3,
   DECEMBER_2026: 3,
   JANUARY_2027: 1,
+  // Past Jan 2027: no remaining monthly payments for SY 2026-2027
+  FEBRUARY_2027: 0,
+  MARCH_2027: 0,
+  APRIL_2027: 0,
+  MAY_2027: 0,
+  JUNE_2027: 0,
+  JULY_2027: 0,
+  AUGUST_2027: 0,
+  SEPTEMBER_2027: 0,
+  OCTOBER_2027: 0,
+  NOVEMBER_2027: 0,
+  DECEMBER_2027: 0,
 };
 
 //function to get the current month and year with format with the format of MONTHLY_INDEX
@@ -367,6 +379,17 @@ export const MONTHLY_INDEX_CURRENT = {
   NOVEMBER_2026: 3,
   DECEMBER_2026: 3,
   JANUARY_2027: 1,
+  FEBRUARY_2027: 0,
+  MARCH_2027: 0,
+  APRIL_2027: 0,
+  MAY_2027: 0,
+  JUNE_2027: 0,
+  JULY_2027: 0,
+  AUGUST_2027: 0,
+  SEPTEMBER_2027: 0,
+  OCTOBER_2027: 0,
+  NOVEMBER_2027: 0,
+  DECEMBER_2027: 0,
 };
 //function to get the current month and year with format with the format of MONTHLY_INDEX
 export const getMonthIndexCurrent = (date) => {
@@ -388,7 +411,33 @@ export const getMonthIndexCurrent = (date) => {
   const formattedMonthYear =
     monthNames[date.getMonth()] + '_' + date.getFullYear();
 
-  return MONTHLY_INDEX_CURRENT[formattedMonthYear];
+  const value = MONTHLY_INDEX_CURRENT[formattedMonthYear];
+  // Fallback for unknown months (e.g. future years): treat as full 8 payments
+  return value !== undefined ? value : 8;
+};
+
+/**
+ * Get the number of monthly payments for a given school year and date.
+ * For 2026-2027, clamps the date to the payment window (June 2026 - Jan 2027)
+ * so that early enrollers (e.g. in Feb 2026) get the full 8 payments, not 2.
+ */
+export const getMonthIndexForSchoolYear = (schoolYear, date) => {
+  if (schoolYear === '2024-2025') {
+    return getMonthIndex(date);
+  }
+  if (schoolYear === '2026-2027') {
+    const syStart = new Date(2026, 5, 1); // June 1, 2026
+    const syEnd = new Date(2027, 0, 31); // Jan 31, 2027
+    const effectiveDate = new Date(
+      Math.min(
+        Math.max(date.getTime(), syStart.getTime()),
+        syEnd.getTime()
+      )
+    );
+    return getMonthIndexCurrent(effectiveDate);
+  }
+  // 2025-2026 and others: use current date
+  return getMonthIndexCurrent(date);
 };
 
 //function to get monthly payment
@@ -396,6 +445,10 @@ export const calculateMonthlyPayment = (
   monthIndex,
   programFeeByAccreditation
 ) => {
+  const safeMonthIndex =
+    monthIndex != null && monthIndex > 0 && Number.isFinite(monthIndex)
+      ? monthIndex
+      : 1;
   const payments = programFeeByAccreditation?.paymentTerms[3] || {};
   const sum =
     (payments.secondPayment || 0) +
@@ -407,7 +460,7 @@ export const calculateMonthlyPayment = (
     (payments.eighthPayment || 0) +
     (payments.ninthPayment || 0);
 
-  const result = sum / monthIndex;
+  const result = sum / safeMonthIndex;
   return result;
 };
 

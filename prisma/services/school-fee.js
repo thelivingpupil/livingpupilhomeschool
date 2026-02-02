@@ -67,22 +67,22 @@ export const createSchoolFees = async (
   const sanityFetchArgs =
     program === Program.HOMESCHOOL_COTTAGE
       ? [
-          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType && cottageType == $cottageType][0]{...}`,
-          {
-            enrollmentType,
-            gradeLevel,
-            program,
-            cottageType,
-          },
-        ]
+        `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType && cottageType == $cottageType][0]{...}`,
+        {
+          enrollmentType,
+          gradeLevel,
+          program,
+          cottageType,
+        },
+      ]
       : [
-          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType][0]{...}`,
-          {
-            enrollmentType,
-            gradeLevel,
-            program,
-          },
-        ];
+        `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType][0]{...}`,
+        {
+          enrollmentType,
+          gradeLevel,
+          program,
+        },
+      ];
 
   const fetchProgram = await sanityClient.fetch(...sanityFetchArgs);
 
@@ -118,11 +118,11 @@ export const createSchoolFees = async (
     const payments = isPastorsFee
       ? discount.value
       : discount
-      ? fee.fullPayment -
+        ? fee.fullPayment -
         (discount.type === 'VALUE'
           ? discount.value
           : (discount.value / 100) * fee.fullPayment) // Annual: discount = % of all payments (fullPayment)
-      : fee.fullPayment;
+        : fee.fullPayment;
 
     scholarshipValue = scholarship
       ? scholarship.type === 'VALUE'
@@ -196,21 +196,21 @@ export const createSchoolFees = async (
 
     const payments = isPastorsFee
       ? [
-          fee.downPayment,
-          (discount.value - fee.downPayment) / 2,
-          (discount.value - fee.downPayment) / 2,
-        ]
+        fee.downPayment,
+        (discount.value - fee.downPayment) / 2,
+        (discount.value - fee.downPayment) / 2,
+      ]
       : discount
-      ? [
+        ? [
           fee.downPayment,
           fee.secondPayment -
-            (discount.type === 'VALUE'
-              ? discount.value
-              : (discount.value / 100) *
-                (fee.downPayment + fee.secondPayment + fee.thirdPayment)), // Semi-annual: discount = % of all payments, deducted from 2nd payment
+          (discount.type === 'VALUE'
+            ? discount.value
+            : (discount.value / 100) *
+            (fee.downPayment + fee.secondPayment + fee.thirdPayment)), // Semi-annual: discount = % of all payments, deducted from 2nd payment
           fee.thirdPayment,
         ]
-      : [fee.downPayment, fee.secondPayment, fee.thirdPayment];
+        : [fee.downPayment, fee.secondPayment, fee.thirdPayment];
 
     const transactionIds = await Promise.all([
       prisma.purchaseHistory.create({
@@ -246,9 +246,9 @@ export const createSchoolFees = async (
         email,
         transactionIds[1].transactionId,
         payments[1] +
-          FEES[paymentMethod] +
-          calculatedMisc -
-          calculatedScholarship,
+        FEES[paymentMethod] +
+        calculatedMisc -
+        calculatedScholarship,
         description,
         transactionIds[1].id,
         TransactionSource.ENROLLMENT,
@@ -259,9 +259,9 @@ export const createSchoolFees = async (
         email,
         transactionIds[2].transactionId,
         payments[2] +
-          FEES[paymentMethod] +
-          calculatedMisc -
-          calculatedScholarship,
+        FEES[paymentMethod] +
+        calculatedMisc -
+        calculatedScholarship,
         description,
         transactionIds[2].id,
         TransactionSource.ENROLLMENT,
@@ -339,23 +339,23 @@ export const createSchoolFees = async (
 
     const payments = isPastorsFee
       ? [
-          fee.downPayment,
-          (discount.value - fee.downPayment) / 3,
-          (discount.value - fee.downPayment) / 3,
-          (discount.value - fee.downPayment) / 3,
-        ]
+        fee.downPayment,
+        (discount.value - fee.downPayment) / 3,
+        (discount.value - fee.downPayment) / 3,
+        (discount.value - fee.downPayment) / 3,
+      ]
       : discount
-      ? [
+        ? [
           fee.downPayment,
           fee.secondPayment -
-            (discount.type === 'VALUE'
-              ? discount.value
-              : (discount.value / 100) *
-                (fee.downPayment + fee.secondPayment + fee.thirdPayment + fee.fourthPayment)), // Quarterly: discount = % of all payments, deducted from 2nd payment
+          (discount.type === 'VALUE'
+            ? discount.value
+            : (discount.value / 100) *
+            (fee.downPayment + fee.secondPayment + fee.thirdPayment + fee.fourthPayment)), // Quarterly: discount = % of all payments, deducted from 2nd payment
           fee.thirdPayment,
           fee.fourthPayment,
         ]
-      : [
+        : [
           fee.downPayment,
           fee.secondPayment,
           fee.thirdPayment,
@@ -414,9 +414,9 @@ export const createSchoolFees = async (
         email,
         transactionIds[1].transactionId,
         payments[1] +
-          FEES[paymentMethod] +
-          calculatedMisc -
-          calculatedScholarship,
+        FEES[paymentMethod] +
+        calculatedMisc -
+        calculatedScholarship,
         description,
         transactionIds[1].id,
         TransactionSource.ENROLLMENT,
@@ -427,9 +427,9 @@ export const createSchoolFees = async (
         email,
         transactionIds[2].transactionId,
         payments[2] +
-          FEES[paymentMethod] +
-          calculatedMisc -
-          calculatedScholarship,
+        FEES[paymentMethod] +
+        calculatedMisc -
+        calculatedScholarship,
         description,
         transactionIds[2].id,
         TransactionSource.ENROLLMENT,
@@ -440,9 +440,9 @@ export const createSchoolFees = async (
         email,
         transactionIds[3].transactionId,
         payments[3] +
-          FEES[paymentMethod] +
-          calculatedMisc -
-          calculatedScholarship,
+        FEES[paymentMethod] +
+        calculatedMisc -
+        calculatedScholarship,
         description,
         transactionIds[3].id,
         TransactionSource.ENROLLMENT,
@@ -525,6 +525,11 @@ export const createSchoolFees = async (
     };
   } else if (payment === PaymentType.MONTHLY) {
     const fee = schoolFee.paymentTerms[3];
+    // Ensure at least 1 monthly payment to avoid division by zero and wrong payment count
+    const safeMonthIndex =
+      monthIndex != null && monthIndex > 0 && Number.isFinite(monthIndex)
+        ? monthIndex
+        : 1;
 
     scholarshipValue = scholarship
       ? scholarship.type === 'VALUE'
@@ -532,15 +537,16 @@ export const createSchoolFees = async (
         : (scholarship.value / 100) * fee.fullPayment
       : 0;
 
-    const calculatedScholarship = scholarshipValue / monthIndex;
-    const calculatedMisc = miscellaneousFee / monthIndex;
+    const calculatedScholarship = scholarshipValue / safeMonthIndex;
+    const calculatedMisc = miscellaneousFee / safeMonthIndex;
 
     let payments;
     if (isPastorsFee) {
-      const discountedPayment = (discount.value - fee.downPayment) / monthIndex;
+      const discountedPayment =
+        (discount.value - fee.downPayment) / safeMonthIndex;
       payments = [
         fee.downPayment,
-        ...Array(monthIndex).fill(discountedPayment),
+        ...Array(safeMonthIndex).fill(discountedPayment),
       ];
     } else {
       // Calculate total payment before applying discount
@@ -555,10 +561,14 @@ export const createSchoolFees = async (
         fee.ninthPayment;
 
       // Calculate monthly payments
-      const monthlyPayment = totalPayment / monthIndex - calculatedScholarship;
+      const monthlyPayment =
+        totalPayment / safeMonthIndex - calculatedScholarship;
 
       // Create payments array with monthly payments
-      payments = [fee.downPayment, ...Array(monthIndex).fill(monthlyPayment)];
+      payments = [
+        fee.downPayment,
+        ...Array(safeMonthIndex).fill(monthlyPayment),
+      ];
 
       // Apply discount to the second payment
       if (discount) {

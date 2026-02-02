@@ -55,8 +55,7 @@ import {
   PROGRAM,
   RELIGION,
   SCHOOL_YEAR,
-  getMonthIndex,
-  getMonthIndexCurrent,
+  getMonthIndexForSchoolYear,
   calculateMonthlyPayment,
   GRADE_TO_FORM_MAP,
 } from '@/utils/constants';
@@ -1079,11 +1078,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const [monthIndex, setMonthIndex] = useState(null);
   const [monthlyPayment, setMonthlyPayment] = useState(0);
   useEffect(() => {
-    if (schoolYear === '2024-2025') {
-      setMonthIndex(getMonthIndex(new Date()));
-    } else {
-      setMonthIndex(getMonthIndexCurrent(new Date()));
-    }
+    setMonthIndex(getMonthIndexForSchoolYear(schoolYear, new Date()));
   }, [schoolYear]);
 
   useEffect(() => {

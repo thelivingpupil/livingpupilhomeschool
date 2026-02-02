@@ -16,7 +16,7 @@ import { getUserWithGuardianInfo, createGuardianUser, createGuardianInformation 
 import { createStudentRecord } from '@/prisma/services/student-record';
 import { createWorkspaceWithSlug } from '@/prisma/services/workspace';
 import { createSchoolFees } from '@/prisma/services/school-fee';
-import { STUDENT_STATUS, getMonthIndex, getMonthIndexCurrent } from '@/utils/constants';
+import { STUDENT_STATUS, getMonthIndexForSchoolYear } from '@/utils/constants';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -226,11 +226,7 @@ const handler = async (req, res) => {
           // If payment is monthly and monthIndex is not provided, calculate it based on school year and current date
           if (paymentType === 'MONTHLY' && !monthIndex) {
             const currentDate = new Date();
-            if (schoolYear === '2024-2025') {
-              monthIndex = getMonthIndex(currentDate);
-            } else {
-              monthIndex = getMonthIndexCurrent(currentDate);
-            }
+            monthIndex = getMonthIndexForSchoolYear(schoolYear, currentDate);
           }
 
           await createSchoolFees(
