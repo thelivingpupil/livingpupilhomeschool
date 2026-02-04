@@ -94,9 +94,10 @@ const Welcome = () => {
   const handleNameChange = (event) => setName(event.target.value);
 
   const navigate = (workspace) => {
+    // "School Year Ended" modal is only for past years; must not affect 2025-2026 or 2026-2027.
     if (
-      workspace?.studentRecord?.schoolYear === '2024-2025' ||
       workspace?.studentRecord?.schoolYear === '2025-2026' ||
+      workspace?.studentRecord?.schoolYear === '2026-2027' ||
       workspace?.studentRecord === null
     ) {
       setWorkspace(workspace);
@@ -272,9 +273,8 @@ const Welcome = () => {
               <Card key={index}>
                 <Card.Body
                   title={invitation.workspace.name}
-                  subtitle={`You have been invited by ${
-                    invitation.invitedBy.name || invitation.invitedBy.email
-                  }`}
+                  subtitle={`You have been invited by ${invitation.invitedBy.name || invitation.invitedBy.email
+                    }`}
                 />
                 <Card.Footer>
                   <Button
@@ -307,10 +307,10 @@ const Welcome = () => {
         toggle={() => setIsModalOpen(false)}
       >
         <p>
-          Thank you for your support during the 2023-2024 school year. We
+          Thank you for your support during the 2024-2025 school year. We
           greatly appreciate your involvement and commitment to your child's
           education. We look forward to partnering with you for the upcoming
-          2024-2025 academic year.
+          2025-2026 academic year.
         </p>
       </PopUp>
     </AccountLayout>
