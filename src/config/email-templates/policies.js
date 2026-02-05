@@ -133,7 +133,7 @@ const html = ({ parentName }) => {
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">
                                                                         Attached, you will find a copy of your signed <strong> Homeschool Agreement </strong>
-                                                                        and the <strong>Payment Policy</strong> for SY 2024-2025. These documents outline the 
+                                                                        and the <strong>Payment Policy</strong> for SY 2026-2027. These documents outline the 
                                                                         terms and conditions of our homeschool program as well as the financial obligations 
                                                                         and procedures.
                                                                     </p>

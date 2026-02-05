@@ -108,6 +108,14 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const [specialNeeds, setSpecialNeeds] = useState('');
   const [specialRadio, setSpecialRadio] = useState('');
   const [enrollmentType, setEnrollmentType] = useState(Enrollment.NEW);
+
+  // When coming from an existing student record (via ?studentID=...),
+  // default the enrollment type to CONTINUING instead of NEW.
+  useEffect(() => {
+    if (student) {
+      setEnrollmentType(Enrollment.CONTINUING);
+    }
+  }, [student]);
   const [incomingGradeLevel, setIncomingGradeLevel] = useState(
     student?.incomingGradeLevel || GradeLevel.PRESCHOOL
   );
