@@ -109,11 +109,16 @@ const Broadcast = () => {
   };
 
   const filterEnrolledStudents = (studentsData, schoolYear) => {
-    return studentsData.students.filter(
-      (student) =>
-        student.schoolYear === schoolYear &&
-        student.student.schoolFees[0]?.transaction.paymentStatus === 'S'
-    );
+    if (!studentsData?.students) return [];
+    return studentsData.students.filter((student) => {
+      if (student.schoolYear !== schoolYear) return false;
+      const fees = student.student?.schoolFees ?? [];
+      // Include if no fees yet (new enrollment) or at least one fee is paid
+      return (
+        fees.length === 0 ||
+        fees.some((f) => f.transaction?.paymentStatus === 'S')
+      );
+    });
   };
 
   // Handle checkbox changes for multiple selections
@@ -167,8 +172,9 @@ const Broadcast = () => {
     ) {
       let filtered = filterEnrolledStudents(studentsData, schoolYear);
 
-      // Common status filter for all cases
+      // Include enrolled or initially enrolled; treat null/undefined as included (e.g. older records)
       const statusFilter = (student) =>
+        !student.studentStatus ||
         student.studentStatus === 'INITIALLY_ENROLLED' ||
         student.studentStatus === 'ENROLLED';
 
@@ -229,10 +235,14 @@ const Broadcast = () => {
     schoolYear,
   ]);
 
-  // Extract guardian emails after filtering students
+  // Extract guardian emails after filtering students (any filter: Grade/Form/Group, Program, or Accreditation)
+  const hasAnyFilter =
+    filterValues.length > 0 ||
+    program.length > 0 ||
+    accreditation.length > 0;
   useEffect(() => {
-    if (filterValues.length === 0 || filteredStudents.length === 0) {
-      setGuardianEmails([]); // Reset guardianEmails if no filters are selected
+    if (!hasAnyFilter || filteredStudents.length === 0) {
+      setGuardianEmails([]);
     } else if (Array.isArray(filteredStudents) && filteredStudents.length > 0) {
       const emailsAndGuardians = filteredStudents
         .map((student) => {
@@ -259,14 +269,17 @@ const Broadcast = () => {
 
       setGuardianEmails(uniqueEmailsAndGuardians);
     }
-  }, [filteredStudents, filterValues]);
+  }, [filteredStudents, filterValues, program, accreditation, hasAnyFilter]);
 
   useEffect(() => {
     // Validate form when any related state changes
     if (emailSendType === 'auto') {
-      // Validate fields for multiple emails
+      // Validate fields for multiple emails (School Year required to get any recipients)
       const isAutoValid =
-        filterValues.length > 0 &&
+        schoolYear &&
+        (filterValues.length > 0 ||
+          program.length > 0 ||
+          accreditation.length > 0) &&
         guardianEmails.length > 0 &&
         emailSender &&
         emailSubject &&
@@ -282,7 +295,10 @@ const Broadcast = () => {
       setIsFormValid(isManualValid);
     }
   }, [
+    schoolYear,
     filterValues,
+    program,
+    accreditation,
     emailSender,
     emailSubject,
     emailContent,
@@ -1208,8 +1224,8 @@ const Broadcast = () => {
                 <label className="text-lg font-bold mr-5">School Year</label>
                 <div
                   className={`relative inline-block w-full ${schoolYear.length <= 0
-                      ? 'border-red-500 border-2 rounded'
-                      : 'border-none'
+                    ? 'border-red-500 border-2 rounded'
+                    : 'border-none'
                     }`}
                 >
                   <select
@@ -1237,8 +1253,8 @@ const Broadcast = () => {
                         key={key}
                         onClick={() => handleFilterByChange(key)} // Use handleFilterByChange to reset filterValues
                         className={`p-2 border rounded ${filterBy === key
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-white'
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-white'
                           }`}
                       >
                         {label}
@@ -1312,8 +1328,8 @@ const Broadcast = () => {
                   value={singularEmail}
                   onChange={(e) => setSingularEmail(e.target.value)}
                   className={` p-2 border rounded w-full md:w-1/2 ${guardianEmails.length <= 0
-                      ? 'border-red-500 border-2 rounded'
-                      : 'border'
+                    ? 'border-red-500 border-2 rounded'
+                    : 'border'
                     }`}
                   placeholder="Enter parent's email"
                 />
@@ -1325,8 +1341,8 @@ const Broadcast = () => {
                   value={singularParent}
                   onChange={(e) => setSingularParent(e.target.value)}
                   className={` p-2 border rounded w-full md:w-1/2 ${guardianEmails.length <= 0
-                      ? 'border-red-500 border-2 rounded'
-                      : 'border'
+                    ? 'border-red-500 border-2 rounded'
+                    : 'border'
                     }`}
                   placeholder="Enter parent's name"
                 />
@@ -1424,8 +1440,8 @@ const Broadcast = () => {
             <div className="text-lg font-bold">Sender:</div>
             <div
               className={`relative inline-block w-full ${emailSender.length <= 0
-                  ? 'border-red-500 border-2 rounded'
-                  : 'border-none'
+                ? 'border-red-500 border-2 rounded'
+                : 'border-none'
                 }`}
             >
               <select
@@ -1504,7 +1520,7 @@ const Broadcast = () => {
                 value={emailContent || ''}
                 onChange={handleContentChange}
                 modules={quillModules}
-                style={{ height: '90%', resize: 'vertical' }}
+                style={{ height: '80%', resize: 'vertical' }}
                 onFocus={() => {
                   // Try to capture editor on focus
                   if (quillRef.current && !quillEditorRef.current) {
@@ -1521,6 +1537,24 @@ const Broadcast = () => {
             )}
           </div>
 
+          {/* Show how many emails will be sent when there are recipients */}
+          {guardianEmails.length > 0 && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-blue-800 text-sm font-medium">
+              {guardianEmails.length} email{guardianEmails.length === 1 ? '' : 's'} will be sent.
+            </div>
+          )}
+
+          {/* Show why Send Email is disabled when Auto mode has no recipients */}
+          {emailSendType === 'auto' &&
+            hasAnyFilter &&
+            guardianEmails.length === 0 && (
+              <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded text-amber-800 text-sm">
+                No recipients found. Select a <strong>School Year</strong> and
+                at least one filter (Grade/Form/Group, Program, or Accreditation)
+                that matches students for that year.
+              </div>
+            )}
+
           {/* Preview and Send Email Buttons */}
           <div className="flex justify-center gap-4 mt-4">
             {' '}
@@ -1529,8 +1563,8 @@ const Broadcast = () => {
               onClick={generatePreviewContent}
               disabled={isProcessingPreview}
               className={`w-1/4 mt-10 py-3 px-4 rounded-md text-white font-bold ${isProcessingPreview
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-green-500 hover:bg-green-600'
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-green-500 hover:bg-green-600'
                 }`}
             >
               {isProcessingPreview ? 'Processing...' : 'Preview Email'}
@@ -1539,8 +1573,8 @@ const Broadcast = () => {
               onClick={handleSendClick}
               disabled={!isFormValid || isSending}
               className={`w-1/4 mt-10 py-3 px-4 rounded-md text-white font-bold ${isSending || !isFormValid
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-blue-500 hover:bg-blue-600'
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-blue-500 hover:bg-blue-600'
                 }`}
             >
               {isSending ? 'Sending...' : 'Send Email'}
@@ -1633,11 +1667,11 @@ const Broadcast = () => {
                   !testEmailSender
                 }
                 className={`px-4 py-2 rounded text-white font-medium ${isSendingTestEmail ||
-                    !testEmail ||
-                    !testEmailSubject ||
-                    !testEmailSender
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-blue-500 hover:bg-blue-600'
+                  !testEmail ||
+                  !testEmailSubject ||
+                  !testEmailSender
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-blue-500 hover:bg-blue-600'
                   }`}
               >
                 {isSendingTestEmail ? 'Sending...' : 'Send Test Email'}
