@@ -13,6 +13,10 @@ import {
   text as deleteText,
 } from '@/config/email-templates/workspace-delete';
 import {
+  html as deleteRequestHtml,
+  text as deleteRequestText,
+} from '@/config/email-templates/workspace-delete-request';
+import {
   html as inviteHtml,
   text as inviteText,
 } from '@/config/email-templates/invitation';
@@ -83,62 +87,77 @@ export const createWorkspace = async (creatorId, email, name, slug) => {
 // import { html, text } from './emailTemplates';
 
 export const deleteWorkspace = async (id, email, slug) => {
+  // Deletion is intentionally disabled. Use requestWorkspaceDeletion instead.
+  // Keeping this function (and export) prevents import breakage, but ensures no records are deleted.
+  const workspace = await getOwnWorkspace(id, email, slug);
+  if (!workspace) throw new Error('Unable to find workspace');
+  throw new Error('Workspace deletion is disabled. Please send a deletion request instead.');
+};
+
+export const requestWorkspaceDeletion = async (id, email, slug) => {
   const workspace = await getOwnWorkspace(id, email, slug);
   if (!workspace) throw new Error('Unable to find workspace');
 
-  await prisma.$transaction(async (tx) => {
-    const current = await tx.workspace.findUnique({
-      where: { id: workspace.id },
-      include: {
-        schoolFees: { select: { transactionId: true } },
-        studentRecord: { select: { id: true } },
-      },
-    });
-    if (!current) throw new Error('Workspace not found');
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) throw new Error('ADMIN_EMAIL is not configured');
 
-    await tx.workspace.update({
-      where: { id: workspace.id },
-      data: {
-        deletedAt: new Date(),
-        schoolFees: {
-          updateMany: {
-            where: { deletedAt: null },
-            data: { deletedAt: new Date() },
-          },
+  const detailed = await prisma.workspace.findUnique({
+    where: { id: workspace.id },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      studentRecord: {
+        select: {
+          firstName: true,
+          middleName: true,
+          lastName: true,
+          incomingGradeLevel: true,
+          schoolYear: true,
         },
-        ...(current.studentRecord
-          ? { studentRecord: { update: { deletedAt: new Date() } } }
-          : {}),
       },
-    });
-
-    const txnIds = current.schoolFees
-      .map((f) => f.transactionId)
-      .filter(Boolean);
-    if (txnIds.length) {
-      await tx.transaction.updateMany({
-        where: { id: { in: txnIds }, deletedAt: null },
-        data: { deletedAt: new Date() },
-      });
-    }
+    },
   });
 
-  // Send admin alert email
+  const studentName = detailed?.studentRecord
+    ? [detailed.studentRecord.firstName, detailed.studentRecord.middleName, detailed.studentRecord.lastName]
+        .filter(Boolean)
+        .join(' ')
+    : '';
+
+  const gradeLevel = detailed?.studentRecord?.incomingGradeLevel || '';
+  const schoolYear = detailed?.studentRecord?.schoolYear || '';
+
+  const requestedAt = new Date().toISOString();
+
   await sendMail({
-    from: `Living Pupil Homeschool <info@livingpupilhomeschool.com>`,
-    to: 'lpwebsite2022@gmail.com',
-    subject: `Workspace Deleted: ${workspace.name}`,
-    html: deleteHtml({
-      workspaceName: workspace.name,
+    to: adminEmail,
+    subject: `[Living Pupil Homeschool] Deletion request for ${workspace.name}`,
+    html: deleteRequestHtml({
       workspaceId: workspace.id,
+      workspaceName: workspace.name,
+      workspaceSlug: slug,
+      studentName,
+      gradeLevel,
+      schoolYear,
+      requesterEmail: email,
+      requesterUserId: id,
+      requestedAt,
     }),
-    text: deleteText({
-      workspaceName: workspace.name,
+    text: deleteRequestText({
       workspaceId: workspace.id,
+      workspaceName: workspace.name,
+      workspaceSlug: slug,
+      studentName,
+      gradeLevel,
+      schoolYear,
+      requesterEmail: email,
+      requesterUserId: id,
+      requestedAt,
     }),
   });
 
-  return slug;
+  return { requestedAt };
 };
 
 export const getInvitation = async (inviteCode) =>

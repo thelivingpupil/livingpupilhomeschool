@@ -1,5 +1,8 @@
 import { validateSession } from '@/config/api-validation';
-import { deleteWorkspace, getWorkspace } from '@/prisma/services/workspace';
+import {
+  getWorkspace,
+  requestWorkspaceDeletion,
+} from '@/prisma/services/workspace';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -57,12 +60,13 @@ const handler = async (req, res) => {
     }
   } else if (method === 'DELETE') {
     const session = await validateSession(req, res);
-    deleteWorkspace(
-      session.user.userId,
-      session.user.email,
-      req.query.workspaceSlug
-    )
-      .then((slug) => res.status(200).json({ data: { slug } }))
+    const slug = req.query.workspaceSlug;
+
+    // Deletion is disabled. This endpoint only sends a deletion request email to admin.
+    requestWorkspaceDeletion(session.user.userId, session.user.email, slug)
+      .then(({ requestedAt }) =>
+        res.status(200).json({ data: { requested: true, requestedAt } })
+      )
       .catch((error) =>
         res.status(404).json({ errors: { error: { msg: error.message } } })
       );

@@ -16,6 +16,7 @@ import {
   BadgeCheckIcon,
   ExclamationIcon,
   MinusCircleIcon,
+  XCircleIcon,
 } from '@heroicons/react/solid';
 import { TransactionStatus } from '@prisma/client';
 import PopUp from '@/components/Modal/pop-up';
@@ -173,6 +174,14 @@ const Welcome = () => {
                             <ExclamationIcon />
                           </div>
                           <p>Unenrolled student</p>
+                        </div>
+                      ) : workspace.studentRecord.studentStatus ===
+                        'DROPPED' ? (
+                        <div className="flex items-center px-2 py-1 space-x-3 text-sm text-red-500 border-2 border-red-600 rounded-full bg-red-50">
+                          <div className="w-5 h-5">
+                            <XCircleIcon />
+                          </div>
+                          <p>Dropped</p>
                         </div>
                       ) : workspace.schoolFees.length > 0 &&
                         workspace.schoolFees.filter(

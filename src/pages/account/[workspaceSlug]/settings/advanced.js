@@ -37,9 +37,7 @@ const Advanced = ({ isCreator }) => {
         );
       } else {
         toggleModal();
-        setWorkspace(null);
-        router.replace('/account');
-        toast.success('Workspace has been deleted!');
+        toast.success('Deletion request sent to admin.');
       }
     });
   };
@@ -63,13 +61,13 @@ const Advanced = ({ isCreator }) => {
         <Card danger>
           <Card.Body
             title="Request Student Record Deletion"
-            subtitle="The student record will be permanently deleted, including its contents and related information. This action is irreversible and cannot be undone."
+            subtitle="This will send a deletion request to the admin. Your student record will not be deleted immediately."
           />
           <Card.Footer>
             <small className={[isCreator && 'text-red-600']}>
               {isCreator
-                ? 'This action is not reversible. Please be certain.'
-                : 'Please contact your team creator for the deletion of your workspace.'}
+                ? 'This sends a deletion request to admin for review.'
+                : 'Please contact your team creator to request deletion.'}
             </small>
             {isCreator && (
               <Button
@@ -77,28 +75,25 @@ const Advanced = ({ isCreator }) => {
                 disabled={isSubmitting}
                 onClick={toggleModal}
               >
-                {isSubmitting ? 'Deleting' : 'Delete'}
+                {isSubmitting ? 'Sending request' : 'Request deletion'}
               </Button>
             )}
           </Card.Footer>
           <Modal
             show={showModal}
-            title="Deactivate Student Record"
+            title="Request Student Record Deletion"
             toggle={toggleModal}
           >
             <p className="flex flex-col">
               <span>
-                Your student record will be deleted, along with all of its
-                contents.
+                This will send a deletion request to the admin.
               </span>
               <span>
-                Data associated with this student can't be accessed by invited
-                members.
+                Your student record will remain accessible until the admin processes the request.
               </span>
             </p>
             <p className="px-3 py-2 text-red-600 border border-red-600 rounded">
-              <strong>Warning:</strong> This action is not reversible. Please be
-              certain.
+              <strong>Note:</strong> This does not delete your record automatically.
             </p>
             <div className="flex flex-col">
               <label className="text-sm text-gray-400">
@@ -118,7 +113,7 @@ const Advanced = ({ isCreator }) => {
                 disabled={!verifiedWorkspace || isSubmitting}
                 onClick={deleteWorkspace}
               >
-                <span>Request Student Record Deletion</span>
+                <span>Send deletion request</span>
               </Button>
             </div>
           </Modal>
