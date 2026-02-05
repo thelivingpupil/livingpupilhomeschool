@@ -172,10 +172,6 @@ const html = ({
 																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Payment Type: ${payment === 'MONTHLY' ? 'Monthly Term Payment' : PAYMENT_TYPE[payment]}</p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">You can access the payment URL here if you have not yet paid the school fees.</p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">Payment URL: <a href="${url}" target="_blank"><strong>Payment URL</strong></a></p>
-																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">In case you need any assistance and found any discrepancies, just hit reply.</p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; color:#ffffff;">Thank you and have a wonderful day.</p>
@@ -268,9 +264,6 @@ ${reportCardLink ? '* Report Card' : ''}
 Payment Details
 1. Payment Method: ${PAYMENT_METHOD[paymentMethod]}
 2. Payment Type: ${PAYMENT_TYPE[payment]}
-
-You can access the payment URL here if you have not yet paid the school fees.
-Payment URL: ${url}
 
 In case you need any assistance and found any discrepancies, just hit reply.
 
