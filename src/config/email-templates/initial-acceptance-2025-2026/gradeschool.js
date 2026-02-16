@@ -213,10 +213,10 @@ const html = ({
                                     </p>
                                     
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp; </p>
-                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Books & Additional Resources </p>
-                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;">
-                                        Most of the books in the curriculum are available for purchase at our Living Pupil Homeschool Shop via our website https://livingpupilhomeschool.com/shop. The booklist will be made available <b><i>by the end of January to help you plan your book purchases</i></b>. Please watch for our email announcement once it is ready.While we have carefully selected these materials to align with our educational philosophy, we understand that each learner is unique. You may follow the provided list or adjust it to best suit your child’s learning needs.
-                                    </p>
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Book Ordering </p>
+                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> Most of the books in the curriculum are available for purchase at the Living Pupil Homeschool Shop through our website: <a href="https://livingpupilhomeschool.com/shop">https://livingpupilhomeschool.com/shop</a>.</p>
+                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;">The Booklist is now available on the Parent Portal under “Guides and Resources.” You may log in to access the list and begin planning your book purchases.</p>
+                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;">While we have carefully selected these materials to align with our educational philosophy, we understand that each learner is unique. You may follow the provided list or make adjustments to best suit your child’s learning needs.</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff; font-size: 16px;">
                                       <b>LP Parent Group Chat</b>
