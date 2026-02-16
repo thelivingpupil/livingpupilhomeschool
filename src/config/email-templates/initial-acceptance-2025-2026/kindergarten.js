@@ -210,13 +210,15 @@ const html = ({
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Homeschool Curriclum  </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
                                       <b>Talino Charlotte Mason Kindergarten</b> curriculum is a comprehensive, ready-to-use lesson guide for an entire year. It allows you to enjoy a full year of kindergarten CM lessons without the stress of creating your own curriculum or daily schedules. The Talino Curriculum includes complete daily schedules for major subjects. Simply add your own math, filipino, enrichment activities, musical instruments, and foreign language, and you’re all set!  You can purchase the Talino Kindergarten Curriculum at 
-                                      <a style="text-decoration: underline; color: #ffffff;" target="_blank" href="https://charlottemasonphilippines.com/product/talino-charlotte-mason-curriculum-kinder/">https://charlottemasonphilippines.com/product/talino-charlotte-mason-curriculum-kinder/</a>. Use the discount code <b>LPHS2025KINDER20</b> to avail of a 20% discount, exclusive to Living Pupil Homeschool families.
+                                      <a style="text-decoration: underline; color: #ffffff;" target="_blank" href="https://charlottemasonphilippines.com/product/talino-charlotte-mason-curriculum-kinder/">https://charlottemasonphilippines.com/product/talino-charlotte-mason-curriculum-kinder/</a>. Use the discount code <b>ILoveLP2026</b> to avail of a 20% discount, exclusive to Living Pupil Homeschool families.
                                     </p>
                                     <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> For families who have completed the Talino Curriculum, the booklist will be made available by the end of January to help you plan your book purchases. Please watch for our email announcement once it is ready.</p>
                                     
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp; </p>
-                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Books & Additional Resources </p>
-                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> Most of the books in the curriculum are available for purchase at our Living Pupil Homeschool Shop via our website https://livingpupilhomeschool.com/shop. The booklist will be made available by the end of January to help you plan your book purchases. Please watch for our email announcement once it is ready.While we have carefully selected these materials to align with our educational philosophy, we understand that each learner is unique. You may follow the provided list or adjust it to best suit your child’s learning needs.</p>
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Book Ordering </p>
+                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> Most of the books in the curriculum are available for purchase at the Living Pupil Homeschool Shop through our website: <a href="https://livingpupilhomeschool.com/shop">https://livingpupilhomeschool.com/shop</a>.</p>
+                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;">The Booklist is now available on the Parent Portal under “Guides and Resources.” You may log in to access the list and begin planning your book purchases.</p>
+                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;">While we have carefully selected these materials to align with our educational philosophy, we understand that each learner is unique. You may follow the provided list or make adjustments to best suit your child’s learning needs.</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff; font-size: 16px;">
                                       <b>LP Parent Group Chat</b>
@@ -289,8 +291,7 @@ const html = ({
     </table>
     <!-- End -->
   </body>
-</html>
-    `;
+</html>`;
 };
 
 const text = ({
