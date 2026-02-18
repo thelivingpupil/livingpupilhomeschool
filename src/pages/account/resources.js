@@ -15,7 +15,14 @@ const formGradeLevels = {
   FORM_3: ['GRADE_7', 'GRADE_8', 'GRADE_9', 'GRADE_10'],
 };
 
-const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjects, scienceExperiment }) => {
+const Resources = ({
+  lessonPlans,
+  blueprints,
+  booklist,
+  recitation,
+  commonSubjects,
+  scienceExperiment,
+}) => {
   const { data } = useWorkspaces();
   const [isOpen, setIsOpen] = useState(true);
 
@@ -55,27 +62,28 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
     }
 
     return (
-      availablePrograms?.includes('HOMESCHOOL_PROGRAM') || availablePrograms?.includes('HOMESCHOOL_COTTAGE') &&
-      availableGrades?.reduce(
-        (isValid, grade) =>
-          [
-            'K1',
-            'K2',
-            'GRADE_1',
-            'GRADE_2',
-            'GRADE_3',
-            'GRADE_4',
-            'GRADE_5',
-            'GRADE_6',
-            'GRADE_7',
-            'GRADE_8',
-            'GRADE_9',
-            'GRADE_10',
-            'GRADE_11',
-            'GRADE_12',
-          ].includes(grade) || isValid,
-        false
-      )
+      availablePrograms?.includes('HOMESCHOOL_PROGRAM') ||
+      (availablePrograms?.includes('HOMESCHOOL_COTTAGE') &&
+        availableGrades?.reduce(
+          (isValid, grade) =>
+            [
+              'K1',
+              'K2',
+              'GRADE_1',
+              'GRADE_2',
+              'GRADE_3',
+              'GRADE_4',
+              'GRADE_5',
+              'GRADE_6',
+              'GRADE_7',
+              'GRADE_8',
+              'GRADE_9',
+              'GRADE_10',
+              'GRADE_11',
+              'GRADE_12',
+            ].includes(grade) || isValid,
+          false,
+        ))
     );
   });
 
@@ -84,18 +92,19 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
       lessonPlans
         ?.sort(
           (a, b) =>
-            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1])
+            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1]),
         )
         ?.filter((lessonPlan) => {
           const isProgramLevelValid = lessonPlan?.program
-            ? availablePrograms.includes(lessonPlan?.program) && availableSchoolYear.includes(lessonPlan?.schoolYear)
+            ? availablePrograms.includes(lessonPlan?.program) &&
+              availableSchoolYear.includes(lessonPlan?.schoolYear)
             : true;
 
           return (
             availableGrades.includes(lessonPlan?.grade) && isProgramLevelValid
           );
         }),
-    [availableGrades, lessonPlans]
+    [availableGrades, lessonPlans],
   );
 
   const availableBlueprints = useMemo(
@@ -103,18 +112,19 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
       blueprints
         ?.sort(
           (a, b) =>
-            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1])
+            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1]),
         )
         ?.filter((blueprints) => {
           const isProgramLevelValid = blueprints?.program
-            ? availablePrograms.includes(blueprints?.program) && availableSchoolYear.includes(blueprints?.schoolYear)
+            ? availablePrograms.includes(blueprints?.program) &&
+              availableSchoolYear.includes(blueprints?.schoolYear)
             : true;
 
           return (
             availableGrades.includes(blueprints?.grade) && isProgramLevelValid
           );
         }),
-    [availableGrades, blueprints]
+    [availableGrades, blueprints],
   );
 
   const availableBooklist = useMemo(
@@ -122,18 +132,19 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
       booklist
         ?.sort(
           (a, b) =>
-            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1])
+            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1]),
         )
         ?.filter((booklist) => {
           const isProgramLevelValid = booklist?.program
-            ? availablePrograms.includes(booklist?.program) && availableSchoolYear.includes(booklist?.schoolYear)
+            ? availablePrograms.includes(booklist?.program) &&
+              availableSchoolYear.includes(booklist?.schoolYear)
             : true;
 
           return (
             availableGrades.includes(booklist?.grade) && isProgramLevelValid
           );
         }),
-    [availableGrades, booklist]
+    [availableGrades, booklist],
   );
 
   const availableRecitation = useMemo(
@@ -141,18 +152,19 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
       recitation
         ?.sort(
           (a, b) =>
-            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1])
+            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1]),
         )
         ?.filter((recitation) => {
           const isProgramLevelValid = recitation?.program
-            ? availablePrograms.includes(recitation?.program) && availableSchoolYear.includes(recitation?.schoolYear)
+            ? availablePrograms.includes(recitation?.program) &&
+              availableSchoolYear.includes(recitation?.schoolYear)
             : true;
 
           return (
             availableGrades.includes(recitation?.grade) && isProgramLevelValid
           );
         }),
-    [availableGrades, recitation]
+    [availableGrades, recitation],
   );
 
   const availableCommonSubjects = useMemo(
@@ -160,38 +172,41 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
       commonSubjects
         ?.sort(
           (a, b) =>
-            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1])
+            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1]),
         )
         ?.filter((commonSubjects) => {
           const isProgramLevelValid = commonSubjects?.program
-            ? availablePrograms.includes(commonSubjects?.program) && availableSchoolYear.includes(commonSubjects?.schoolYear)
+            ? availablePrograms.includes(commonSubjects?.program) &&
+              availableSchoolYear.includes(commonSubjects?.schoolYear)
             : true;
 
           return (
-            availableGrades.includes(commonSubjects?.grade) && isProgramLevelValid
+            availableGrades.includes(commonSubjects?.grade) &&
+            isProgramLevelValid
           );
         }),
-    [availableGrades, commonSubjects]
+    [availableGrades, commonSubjects],
   );
-
 
   const availableScienceExperiment = useMemo(
     () =>
       scienceExperiment
         ?.sort(
           (a, b) =>
-            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1])
+            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1]),
         )
         ?.filter((scienceExperiment) => {
           const isProgramLevelValid = scienceExperiment?.program
-            ? availablePrograms.includes(scienceExperiment?.program) && availableSchoolYear.includes(scienceExperiment?.schoolYear)
+            ? availablePrograms.includes(scienceExperiment?.program) &&
+              availableSchoolYear.includes(scienceExperiment?.schoolYear)
             : true;
 
           return (
-            availableGrades.includes(scienceExperiment?.grade) && isProgramLevelValid
+            availableGrades.includes(scienceExperiment?.grade) &&
+            isProgramLevelValid
           );
         }),
-    [availableGrades, scienceExperiment]
+    [availableGrades, scienceExperiment],
   );
   return (
     <AccountLayout>
@@ -217,11 +232,21 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
 
           {isOpen && (
             <div>
+              <strong>Curriculum Guide</strong>
               <p className="text-base leading-relaxed mb-4">
-                The LP Kindergarten lesson plan, booklist and blueprint available on the Parent Portal are intended only for continuing families who have already completed the Talino Curriculum. These materials are designed as a follow-up and may not provide the foundational learning necessary for new homeschoolers at the kindergarten level.
+                The LP Kindergarten lesson plan, booklist and blueprint
+                available on the Parent Portal are intended only for continuing
+                families who have already completed the Talino Curriculum. These
+                materials are designed as a follow-up and may not provide the
+                foundational learning necessary for new homeschoolers at the
+                kindergarten level.
               </p>
               <p className="text-base leading-relaxed mb-4">
-                We highly encourage you to begin with the Talino Curriculum to ensure your child’s learning journey starts with the right structure and support. Use the discount code: <strong>LPHS2025KINDER20</strong> to get 20% off at{' '}
+                We highly encourage you to begin with the Talino Curriculum to
+                ensure your child’s learning journey starts with the right
+                structure and support. Use the discount code:{' '}
+                <strong>ILoveLP2026</strong> to avail 20% discount on all items,
+                minimum purchase of P500, and expires Aug 31, 2026. Link:
                 <a
                   href="https://charlottemasonphilippines.com/product/talino-charlotte-mason-curriculum-kinder/"
                   target="_blank"
@@ -229,7 +254,8 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                   className="text-blue-600 underline hover:text-blue-800"
                 >
                   https://charlottemasonphilippines.com/product/talino-charlotte-mason-curriculum-kinder/
-                </a>.
+                </a>
+                .
               </p>
             </div>
           )}
@@ -245,10 +271,12 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                     <div key={idx} className="flex justify-center">
                       <a
                         className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
-                        href={`${plan?.fileUrl
-                          }?dl=${plan?.grade?.toLowerCase()}-lesson_plan.pdf`}
+                        href={`${
+                          plan?.fileUrl
+                        }?dl=${plan?.grade?.toLowerCase()}-lesson_plan.pdf`}
                       >
-                        {plan?.grade?.replace('_', ' ')} - {plan?.program?.replace('_', ' ')}
+                        {plan?.grade?.replace('_', ' ')} -{' '}
+                        {plan?.program?.replace('_', ' ')}
                       </a>
                     </div>
                   );
@@ -266,10 +294,12 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                     <div key={idx} className="flex justify-center">
                       <a
                         className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
-                        href={`${blueprint?.fileUrl
-                          }?dl=${blueprint?.grade?.toLowerCase()}-sy_blueprint.pdf`}
+                        href={`${
+                          blueprint?.fileUrl
+                        }?dl=${blueprint?.grade?.toLowerCase()}-sy_blueprint.pdf`}
                       >
-                        {blueprint?.grade?.replace('_', ' ')} - {blueprint?.program?.replace('_', ' ')}
+                        {blueprint?.grade?.replace('_', ' ')} -{' '}
+                        {blueprint?.program?.replace('_', ' ')}
                       </a>
                     </div>
                   );
@@ -309,10 +339,12 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                     <div key={idx} className="flex justify-center">
                       <a
                         className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
-                        href={`${booklist?.fileUrl
-                          }?dl=${booklist?.grade?.toLowerCase()}-booklist.pdf`}
+                        href={`${
+                          booklist?.fileUrl
+                        }?dl=${booklist?.grade?.toLowerCase()}-booklist.pdf`}
                       >
-                        {booklist?.grade?.replace('_', ' ')} - {booklist?.program?.replace('_', ' ')}
+                        {booklist?.grade?.replace('_', ' ')} -{' '}
+                        {booklist?.program?.replace('_', ' ')}
                       </a>
                     </div>
                   );
@@ -330,10 +362,12 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                     <div key={idx} className="flex justify-center">
                       <a
                         className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
-                        href={`${recitation?.fileUrl
-                          }?dl=${recitation?.grade?.toLowerCase()}-recitation.pdf`}
+                        href={`${
+                          recitation?.fileUrl
+                        }?dl=${recitation?.grade?.toLowerCase()}-recitation.pdf`}
                       >
-                        {recitation?.grade?.replace('_', ' ')} - {recitation?.program?.replace('_', ' ')}
+                        {recitation?.grade?.replace('_', ' ')} -{' '}
+                        {recitation?.program?.replace('_', ' ')}
                       </a>
                     </div>
                   );
@@ -351,10 +385,12 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                     <div key={idx} className="flex justify-center">
                       <a
                         className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
-                        href={`${experiment?.fileUrl
-                          }?dl=${experiment?.grade?.toLowerCase()}-experiment.pdf`}
+                        href={`${
+                          experiment?.fileUrl
+                        }?dl=${experiment?.grade?.toLowerCase()}-experiment.pdf`}
                       >
-                        {experiment?.grade?.replace('_', ' ')} - {experiment?.program?.replace('_', ' ')}
+                        {experiment?.grade?.replace('_', ' ')} -{' '}
+                        {experiment?.program?.replace('_', ' ')}
                       </a>
                     </div>
                   );
@@ -372,10 +408,12 @@ const Resources = ({ lessonPlans, blueprints, booklist, recitation, commonSubjec
                     <div key={idx} className="flex justify-center">
                       <a
                         className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
-                        href={`${commonSubjects?.fileUrl
-                          }?dl=${commonSubjects?.grade?.toLowerCase()}-common-subjects.pdf`}
+                        href={`${
+                          commonSubjects?.fileUrl
+                        }?dl=${commonSubjects?.grade?.toLowerCase()}-common-subjects.pdf`}
                       >
-                        {commonSubjects?.grade?.replace('_', ' ')} - {commonSubjects?.program?.replace('_', ' ')}
+                        {commonSubjects?.grade?.replace('_', ' ')} -{' '}
+                        {commonSubjects?.program?.replace('_', ' ')}
                       </a>
                     </div>
                   );
@@ -498,7 +536,7 @@ export const getServerSideProps = async () => {
       booklist,
       recitation,
       commonSubjects,
-      scienceExperiment
+      scienceExperiment,
     },
   };
 };
