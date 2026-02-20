@@ -371,7 +371,8 @@ const HomeschoolCottage = ({ page, programs }) => {
               <div className="text-xl font-semibold">
                 <p>Other Fees:</p>
                 <ul className="list-disc pl-5 ml-5">
-                  <li>Miscellaneous Fee: ₱500</li>
+                  <li>Graduation Fee (K2, G6, G10, G12): ₱3,500</li>
+                  <li>Recognition Fee (All Levels): ₱1,000</li>
                 </ul>
               </div>
             </div>
