@@ -293,6 +293,9 @@ const HomeschoolProgram = ({ page, programs }) => {
               <li>Graduation Fee (K2, G6, G10, G12): ₱3,500</li>
               <li>Recognition Fee (All Levels): ₱1,000</li>
             </ul>
+            <p className="mt-3">
+              <strong>Note:</strong> Books and optional Living Pupil events and activities are billed separately and are not included in the tuition fee.
+            </p>
           </div>
         </div>
         <div className="flex flex-col px-5 py-5 mt-5 bg-primary-500 rounded-lg w-full md:w-3/4">
