@@ -24,7 +24,11 @@ const FAQItem = ({ item }) => {
         </div>
         <p className="font-bold">{item.question}</p>
       </div>
-      {showFAQ && <PortableText value={item.answer} />}
+      {showFAQ && (
+        <div className="pl-5 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:space-y-1 [&_li]:my-1">
+          <PortableText value={item.answer} />
+        </div>
+      )}
     </div>
   );
 };
