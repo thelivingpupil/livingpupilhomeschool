@@ -25,7 +25,6 @@ const Resources = ({
 }) => {
   const { data } = useWorkspaces();
   const [isOpen, setIsOpen] = useState(true);
-
   const availableGrades = useMemo(() => {
     if (!data) {
       return [];
@@ -36,15 +35,15 @@ const Resources = ({
       ?.map((workspace) => workspace?.studentRecord?.incomingGradeLevel);
   }, [data]);
 
-  const availableSchoolYear = useMemo(() => {
-    if (!data) {
-      return [];
-    }
+  // const availableSchoolYear = useMemo(() => {
+  //   if (!data) {
+  //     return [];
+  //   }
 
-    return data?.workspaces
-      ?.filter((workspace) => workspace?.studentRecord)
-      ?.map((workspace) => workspace?.studentRecord?.schoolYear);
-  }, [data]);
+  //   return data?.workspaces
+  //     ?.filter((workspace) => workspace?.studentRecord)
+  //     ?.map((workspace) => workspace?.studentRecord?.schoolYear);
+  // }, [data]);
 
   const availablePrograms = useMemo(() => {
     if (!data) {
@@ -55,6 +54,18 @@ const Resources = ({
       ?.filter((workspace) => workspace?.studentRecord)
       ?.map((workspace) => workspace?.studentRecord?.program);
   }, [data]);
+  const availableFilters = useMemo(() => {
+    if (!data) return [];
+
+    return data.workspaces
+      ?.filter((workspace) => workspace?.studentRecord)
+      ?.map((workspace) => ({
+        program: workspace.studentRecord.program,
+        schoolYear: workspace.studentRecord.schoolYear,
+        grade: workspace.studentRecord.incomingGradeLevel,
+      }));
+  }, [data]);
+  console.log('availableFilters', availableFilters);
 
   const isValidCommonSubject = useMemo(() => {
     if (!data) {
@@ -87,127 +98,107 @@ const Resources = ({
     );
   });
 
-  const availablePlans = useMemo(
-    () =>
-      lessonPlans
-        ?.sort(
-          (a, b) =>
-            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1]),
-        )
-        ?.filter((lessonPlan) => {
-          const isProgramLevelValid = lessonPlan?.program
-            ? availablePrograms.includes(lessonPlan?.program) &&
-              availableSchoolYear.includes(lessonPlan?.schoolYear)
-            : true;
+  const availablePlans = useMemo(() => {
+    return lessonPlans
+      ?.sort(
+        (a, b) =>
+          Number(a?.grade?.split('_')[1] || 0) -
+          Number(b?.grade?.split('_')[1] || 0),
+      )
+      ?.filter((item) => {
+        return availableFilters.some(
+          (f) =>
+            f.grade === item.grade &&
+            f.program === item.program &&
+            f.schoolYear === item.schoolYear,
+        );
+      });
+  }, [availableFilters, lessonPlans]);
 
-          return (
-            availableGrades.includes(lessonPlan?.grade) && isProgramLevelValid
-          );
-        }),
-    [availableGrades, lessonPlans],
-  );
+  const availableBlueprints = useMemo(() => {
+    return blueprints
+      ?.sort(
+        (a, b) =>
+          Number(a?.grade?.split('_')[1] || 0) -
+          Number(b?.grade?.split('_')[1] || 0),
+      )
+      ?.filter((item) => {
+        return availableFilters.some(
+          (f) =>
+            f.grade === item.grade &&
+            f.program === item.program &&
+            f.schoolYear === item.schoolYear,
+        );
+      });
+  }, [availableFilters, blueprints]);
 
-  const availableBlueprints = useMemo(
-    () =>
-      blueprints
-        ?.sort(
-          (a, b) =>
-            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1]),
-        )
-        ?.filter((blueprints) => {
-          const isProgramLevelValid = blueprints?.program
-            ? availablePrograms.includes(blueprints?.program) &&
-              availableSchoolYear.includes(blueprints?.schoolYear)
-            : true;
+  const availableBooklist = useMemo(() => {
+    return booklist
+      ?.sort(
+        (a, b) =>
+          Number(a?.grade?.split('_')[1] || 0) -
+          Number(b?.grade?.split('_')[1] || 0),
+      )
+      ?.filter((item) => {
+        return availableFilters.some(
+          (f) =>
+            f.grade === item.grade &&
+            f.program === item.program &&
+            f.schoolYear === item.schoolYear,
+        );
+      });
+  }, [availableFilters, booklist]);
 
-          return (
-            availableGrades.includes(blueprints?.grade) && isProgramLevelValid
-          );
-        }),
-    [availableGrades, blueprints],
-  );
+  const availableRecitation = useMemo(() => {
+    return recitation
+      ?.sort(
+        (a, b) =>
+          Number(a?.grade?.split('_')[1] || 0) -
+          Number(b?.grade?.split('_')[1] || 0),
+      )
+      ?.filter((item) => {
+        return availableFilters.some(
+          (f) =>
+            f.grade === item.grade &&
+            f.program === item.program &&
+            f.schoolYear === item.schoolYear,
+        );
+      });
+  }, [availableFilters, recitation]);
 
-  const availableBooklist = useMemo(
-    () =>
-      booklist
-        ?.sort(
-          (a, b) =>
-            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1]),
-        )
-        ?.filter((booklist) => {
-          const isProgramLevelValid = booklist?.program
-            ? availablePrograms.includes(booklist?.program) &&
-              availableSchoolYear.includes(booklist?.schoolYear)
-            : true;
+  const availableCommonSubjects = useMemo(() => {
+    return commonSubjects
+      ?.sort(
+        (a, b) =>
+          Number(a?.grade?.split('_')[1] || 0) -
+          Number(b?.grade?.split('_')[1] || 0),
+      )
+      ?.filter((item) => {
+        return availableFilters.some(
+          (f) =>
+            f.grade === item.grade &&
+            f.program === item.program &&
+            f.schoolYear === item.schoolYear,
+        );
+      });
+  }, [availableFilters, commonSubjects]);
 
-          return (
-            availableGrades.includes(booklist?.grade) && isProgramLevelValid
-          );
-        }),
-    [availableGrades, booklist],
-  );
-
-  const availableRecitation = useMemo(
-    () =>
-      recitation
-        ?.sort(
-          (a, b) =>
-            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1]),
-        )
-        ?.filter((recitation) => {
-          const isProgramLevelValid = recitation?.program
-            ? availablePrograms.includes(recitation?.program) &&
-              availableSchoolYear.includes(recitation?.schoolYear)
-            : true;
-
-          return (
-            availableGrades.includes(recitation?.grade) && isProgramLevelValid
-          );
-        }),
-    [availableGrades, recitation],
-  );
-
-  const availableCommonSubjects = useMemo(
-    () =>
-      commonSubjects
-        ?.sort(
-          (a, b) =>
-            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1]),
-        )
-        ?.filter((commonSubjects) => {
-          const isProgramLevelValid = commonSubjects?.program
-            ? availablePrograms.includes(commonSubjects?.program) &&
-              availableSchoolYear.includes(commonSubjects?.schoolYear)
-            : true;
-
-          return (
-            availableGrades.includes(commonSubjects?.grade) &&
-            isProgramLevelValid
-          );
-        }),
-    [availableGrades, commonSubjects],
-  );
-
-  const availableScienceExperiment = useMemo(
-    () =>
-      scienceExperiment
-        ?.sort(
-          (a, b) =>
-            Number(a?.grade?.split('_')[1]) - Number(b?.grade?.split('_')[1]),
-        )
-        ?.filter((scienceExperiment) => {
-          const isProgramLevelValid = scienceExperiment?.program
-            ? availablePrograms.includes(scienceExperiment?.program) &&
-              availableSchoolYear.includes(scienceExperiment?.schoolYear)
-            : true;
-
-          return (
-            availableGrades.includes(scienceExperiment?.grade) &&
-            isProgramLevelValid
-          );
-        }),
-    [availableGrades, scienceExperiment],
-  );
+  const availableScienceExperiment = useMemo(() => {
+    return scienceExperiment
+      ?.sort(
+        (a, b) =>
+          Number(a?.grade?.split('_')[1] || 0) -
+          Number(b?.grade?.split('_')[1] || 0),
+      )
+      ?.filter((item) => {
+        return availableFilters.some(
+          (f) =>
+            f.grade === item.grade &&
+            f.program === item.program &&
+            f.schoolYear === item.schoolYear,
+        );
+      });
+  }, [availableFilters, scienceExperiment]);
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Guides and Resources" />
@@ -266,7 +257,7 @@ const Resources = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
               {availablePlans?.length > 0 &&
                 availablePlans?.map((plan, idx) => {
-                  const bgColor = idx % 2 === 0 ? 'bg-primary' : 'bg-secondary';
+                  const bgColor = 'bg-primary';
                   return (
                     <div key={idx} className="flex justify-center">
                       <a
@@ -289,7 +280,7 @@ const Resources = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
               {availableBlueprints?.length > 0 &&
                 availableBlueprints?.map((blueprint, idx) => {
-                  const bgColor = idx % 2 === 0 ? 'bg-primary' : 'bg-secondary';
+                  const bgColor = 'bg-primary';
                   return (
                     <div key={idx} className="flex justify-center">
                       <a
@@ -334,7 +325,7 @@ const Resources = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
               {availableBooklist?.length > 0 &&
                 availableBooklist?.map((booklist, idx) => {
-                  const bgColor = idx % 2 === 0 ? 'bg-primary' : 'bg-secondary';
+                  const bgColor = 'bg-primary';
                   return (
                     <div key={idx} className="flex justify-center">
                       <a
@@ -357,7 +348,7 @@ const Resources = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
               {availableRecitation?.length > 0 &&
                 availableRecitation?.map((recitation, idx) => {
-                  const bgColor = idx % 2 === 0 ? 'bg-primary' : 'bg-secondary';
+                  const bgColor = 'bg-primary';
                   return (
                     <div key={idx} className="flex justify-center">
                       <a
@@ -380,7 +371,7 @@ const Resources = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
               {availableScienceExperiment?.length > 0 &&
                 availableScienceExperiment?.map((experiment, idx) => {
-                  const bgColor = idx % 2 === 0 ? 'bg-primary' : 'bg-secondary';
+                  const bgColor = 'bg-primary';
                   return (
                     <div key={idx} className="flex justify-center">
                       <a
@@ -403,7 +394,7 @@ const Resources = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
               {availableCommonSubjects?.length > 0 &&
                 availableCommonSubjects?.map((commonSubjects, idx) => {
-                  const bgColor = idx % 2 === 0 ? 'bg-primary' : 'bg-secondary';
+                  const bgColor = 'bg-primary';
                   return (
                     <div key={idx} className="flex justify-center">
                       <a
@@ -436,7 +427,7 @@ const Resources = ({
               </div>
               <div className="flex justify-center">
                 <a
-                  className={`flex items-center justify-center py-2 px-3 rounded bg-secondary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-secondary-500`}
+                  className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600  text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-secondary-500`}
                   href="/files/lp-lingo.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -468,7 +459,7 @@ const Resources = ({
                   </div>
                   <div className="flex justify-center">
                     <a
-                      className={`flex items-center justify-center py-2 px-3 rounded bg-secondary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-secondary-500`}
+                      className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600  text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-secondary-500`}
                       href="/files/lp-notebooks.pdf"
                       target="_blank"
                       rel="noopener noreferrer"
