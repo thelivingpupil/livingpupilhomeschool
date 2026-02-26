@@ -10,23 +10,22 @@ import { ChevronDownIcon } from '@heroicons/react/outline';
 import { getSession } from 'next-auth/react';
 
 const forms = {
-  [GradeLevel.K2]: '252259173067460',
-  [GradeLevel.GRADE_1]: '252259173067460',
-  [GradeLevel.GRADE_2]: '252259173067460',
-  [GradeLevel.GRADE_3]: '252259173067460',
-  [GradeLevel.GRADE_4]: '252259173067460',
-  [GradeLevel.GRADE_5]: '252259173067460',
-  [GradeLevel.GRADE_6]: '252259173067460',
-  [GradeLevel.GRADE_7]: '252259173067460',
-  [GradeLevel.GRADE_8]: '252259173067460',
-  [GradeLevel.GRADE_9]: '252259173067460',
-  [GradeLevel.GRADE_10]: '252259173067460',
+  [GradeLevel.K2]: '260549507424459',
+  [GradeLevel.GRADE_1]: '260549092239462',
+  [GradeLevel.GRADE_2]: '260549092239462',
+  [GradeLevel.GRADE_3]: '260549092239462',
+  [GradeLevel.GRADE_4]: '260548590769472',
+  [GradeLevel.GRADE_5]: '260548590769472',
+  [GradeLevel.GRADE_6]: '260548590769472',
+  [GradeLevel.GRADE_7]: '260549250286460',
+  [GradeLevel.GRADE_8]: '260549250286460',
+  [GradeLevel.GRADE_9]: '260549250286460',
+  [GradeLevel.GRADE_10]: '260549250286460',
 };
 
 const Grades = () => {
   const { workspace } = useWorkspace();
   const [formPage, setFormPage] = useState('');
-
   const handleSelectChange = (event) => {
     setFormPage(event.target.value);
   };
@@ -67,12 +66,11 @@ const Grades = () => {
               workspace &&
               workspace?.studentRecord?.incomingGradeLevel &&
               forms[workspace?.studentRecord?.incomingGradeLevel] && (
-                // <JotFormEmbed
-                //   src={`https://form.jotform.com/${forms[workspace?.studentRecord?.incomingGradeLevel]}`}
-                //   scrolling={true}
-                //   style={{ height: '100%' }}
-                // />
-                <></>
+                <JotFormEmbed
+                  src={`https://form.jotform.com/${forms[workspace?.studentRecord?.incomingGradeLevel]}`}
+                  scrolling={true}
+                  style={{ height: '100%' }}
+                />
               )
             )}
           </Content.Container>
@@ -88,7 +86,9 @@ export const getServerSideProps = async (context) => {
 
   // Redirect to login if not authenticated, preserving the original URL
   if (!session) {
-    const callbackUrl = encodeURIComponent(context.resolvedUrl || context.req.url);
+    const callbackUrl = encodeURIComponent(
+      context.resolvedUrl || context.req.url,
+    );
     return {
       redirect: {
         destination: `/auth/login?callbackUrl=${callbackUrl}`,
