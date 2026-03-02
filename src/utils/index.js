@@ -726,6 +726,11 @@ export const getSenderCredentials = (sender) => {
       email = process.env.ADMIN_EMAIL;
       appPassword = process.env.ADMIN_APP_PASSWORD;
       break;
+    case 'adminofficer':
+      senderName = 'Chanella Venice Giganto';
+      email = 'livingpupilhomeschool.assist@gmail.com';
+      appPassword = null;
+      break;
     case 'finance':
       senderName = 'LP Finance';
       email = process.env.FINANCE_EMAIL;
@@ -770,6 +775,10 @@ export const getSenderDetails = (sender) => {
   switch (sender) {
     case 'admin':
       senderRole = 'Admin';
+      senderFullName = 'Chanella Venice Giganto';
+      break;
+    case 'adminofficer':
+      senderRole = 'LP Admin Officer';
       senderFullName = 'Chanella Venice Giganto';
       break;
     case 'finance':
