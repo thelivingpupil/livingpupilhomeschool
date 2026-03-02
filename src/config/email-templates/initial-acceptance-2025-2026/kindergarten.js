@@ -1,6 +1,4 @@
-const html = ({
-  parentFirstName,
-}) => {
+const html = ({ parentFirstName }) => {
   return `<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
   <head>
     <title></title>
@@ -156,14 +154,16 @@ const html = ({
                               <tr>
                                 <td class="pad">
                                   <div style="color:#ffffff;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:150%;text-align:left;mso-line-height-alt:21px;">
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Dear <strong>${parentFirstName ? parentFirstName : "Parent"}</strong>, </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Dear <strong>${parentFirstName ? parentFirstName : 'Parent'}</strong>, </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> A warm welcome to Living Pupil Homeschool! </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> We are truly delighted to walk alongside you and your family in the School Year 2026–2027. As we begin this new season of learning—formed by truth, nourished by goodness, and inspired by beauty—we hope this guide will help you settle in with confidence and peace. &nbsp; </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Beginning of the School Year </p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> The school year officially begins on June 16, 2025. Before that, we invite you to join us for Pagbukas, our school year kick-off event. Stay tuned for more details coming soon! </p>
+                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">We are aiming to open the School Year 2026–2027 on June 29, 2026, subject to final confirmation from DepED. </p>
+                                     <p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Before classes start, we joyfully invite you to Pagbukas, our school year kick-off gathering. This special event sets the tone for the year and welcomes families into our shared learning community. More details will be sent soon—please watch your email. </p>
                                     <p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Administrative Requirements</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> To complete the enrollment process, please follow these next steps:</p>
@@ -294,10 +294,7 @@ const html = ({
 </html>`;
 };
 
-const text = ({
-  primaryGuardianName,
-  firstName,
-}) => {
+const text = ({ primaryGuardianName, firstName }) => {
   return `
 Dear ${primaryGuardianName},
 
