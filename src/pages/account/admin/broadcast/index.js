@@ -57,6 +57,7 @@ const filterOptions = {
 const emailSenderOptions = [
   { value: 'finance', label: 'Finance' },
   { value: 'admin', label: 'Admin' },
+  { value: 'adminofficer', label: 'LP Admin Officer' },
   { value: 'shop', label: 'Shop' },
   { value: 'coo', label: 'COO' },
   { value: 'directress', label: 'Directress' },
@@ -66,6 +67,15 @@ const emailSenderOptions = [
 
 // Constant for singular email
 const singularEmailOption = { value: 'single', label: 'Single Email' };
+
+// Student status options (Auto mode only)
+const STUDENT_STATUS_OPTIONS = [
+  { value: 'ENROLLED', label: 'Enrolled' },
+  { value: 'INITIALLY_ENROLLED', label: 'Initially Enrolled' },
+  { value: 'PENDING', label: 'Pending' },
+  { value: 'DROPPED', label: 'Dropped' },
+  { value: '__NONE__', label: 'No status' },
+];
 
 const Broadcast = () => {
   const { data: studentsData, isLoading } = useStudents();
@@ -78,6 +88,7 @@ const Broadcast = () => {
   const [emailSubject, setEmailSubject] = useState('');
   const [program, setProgram] = useState([]); // Updated to be an array
   const [accreditation, setAccreditation] = useState([]); // Updated to be an array
+  const [studentStatuses, setStudentStatuses] = useState([]); // Auto only: ENROLLED, INITIALLY_ENROLLED, etc.
   const [emailSendType, setEmailSendType] = useState('auto'); // State to determine single or multiple emails
   const [singularEmail, setSingularEmail] = useState(''); // State for singular email input
   const [singularParent, setSingularParent] = useState('');
@@ -160,6 +171,7 @@ const Broadcast = () => {
     setFilterValues([]);
     setProgram('');
     setAccreditation('');
+    setStudentStatuses([]);
   };
 
   // Filter students based on selected filters
@@ -168,43 +180,44 @@ const Broadcast = () => {
       studentsData &&
       (filterValues.length > 0 ||
         program.length > 0 ||
-        accreditation.length > 0)
+        accreditation.length > 0 ||
+        studentStatuses.length > 0)
     ) {
       let filtered = filterEnrolledStudents(studentsData, schoolYear);
 
-      // Include enrolled or initially enrolled; treat null/undefined as included (e.g. older records)
-      const statusFilter = (student) =>
-        !student.studentStatus ||
-        student.studentStatus === 'INITIALLY_ENROLLED' ||
-        student.studentStatus === 'ENROLLED';
+      // Student Status filter (Auto only): when any status is selected, keep only those statuses
+      if (studentStatuses.length > 0) {
+        filtered = filtered.filter((student) => {
+          const status = student.studentStatus;
+          const hasNoStatus = status == null || status === '';
+          if (studentStatuses.includes('__NONE__') && hasNoStatus) return true;
+          if (status && studentStatuses.includes(status)) return true;
+          return false;
+        });
+      }
 
       if (filterBy === 'gradeLevels') {
         // Filter by Grade Levels
-        filtered = filtered.filter(
-          (student) =>
-            filterValues.includes(student.incomingGradeLevel) &&
-            statusFilter(student)
+        filtered = filtered.filter((student) =>
+          filterValues.includes(student.incomingGradeLevel)
         );
       } else if (filterBy === 'gradeGroups') {
         // Filter by Grade Groups
         const selectedGroups = GRADE_LEVEL_GROUPS.filter((g) =>
           filterValues.includes(g.name)
         );
-        filtered = filtered.filter(
-          (student) =>
-            selectedGroups.some((group) =>
-              group.levels.includes(student.incomingGradeLevel)
-            ) && statusFilter(student)
+        filtered = filtered.filter((student) =>
+          selectedGroups.some((group) =>
+            group.levels.includes(student.incomingGradeLevel)
+          )
         );
       } else if (filterBy === 'gradeForms') {
         // Filter by Grade Forms
         const selectedForms = filterValues.flatMap(
           (form) => GRADE_LEVEL_FORMS[form]
         );
-        filtered = filtered.filter(
-          (student) =>
-            selectedForms.includes(student.incomingGradeLevel) &&
-            statusFilter(student)
+        filtered = filtered.filter((student) =>
+          selectedForms.includes(student.incomingGradeLevel)
         );
       }
 
@@ -231,15 +244,17 @@ const Broadcast = () => {
     filterBy,
     program,
     accreditation,
+    studentStatuses,
     studentsData,
     schoolYear,
   ]);
 
-  // Extract guardian emails after filtering students (any filter: Grade/Form/Group, Program, or Accreditation)
+  // Extract guardian emails after filtering students (any filter: Grade/Form/Group, Program, Accreditation, or Student Status)
   const hasAnyFilter =
     filterValues.length > 0 ||
     program.length > 0 ||
-    accreditation.length > 0;
+    accreditation.length > 0 ||
+    studentStatuses.length > 0;
   useEffect(() => {
     if (!hasAnyFilter || filteredStudents.length === 0) {
       setGuardianEmails([]);
@@ -269,7 +284,7 @@ const Broadcast = () => {
 
       setGuardianEmails(uniqueEmailsAndGuardians);
     }
-  }, [filteredStudents, filterValues, program, accreditation, hasAnyFilter]);
+  }, [filteredStudents, filterValues, program, accreditation, studentStatuses, hasAnyFilter]);
 
   useEffect(() => {
     // Validate form when any related state changes
@@ -279,7 +294,8 @@ const Broadcast = () => {
         schoolYear &&
         (filterValues.length > 0 ||
           program.length > 0 ||
-          accreditation.length > 0) &&
+          accreditation.length > 0 ||
+          studentStatuses.length > 0) &&
         guardianEmails.length > 0 &&
         emailSender &&
         emailSubject &&
@@ -299,6 +315,7 @@ const Broadcast = () => {
     filterValues,
     program,
     accreditation,
+    studentStatuses,
     emailSender,
     emailSubject,
     emailContent,
@@ -541,6 +558,7 @@ const Broadcast = () => {
       setFilterValues([]);
       setProgram([]);
       setAccreditation([]);
+      setStudentStatuses([]);
       setCcEmails([]);
     } catch (error) {
       toast.error('An error occurred while sending emails. Please try again.');
@@ -1310,6 +1328,24 @@ const Broadcast = () => {
                       onChange={(e) =>
                         handleCheckboxChange(e, setAccreditation)
                       } // Use checkbox change handler
+                    />
+                    <span className="ml-2">{label}</span>
+                  </label>
+                ))}
+              </div>
+
+              {/* Student Status (Auto only) */}
+              <div className="mt-2">
+                <div className="text-lg font-bold">Student Status:</div>
+                {STUDENT_STATUS_OPTIONS.map(({ value, label }) => (
+                  <label key={value} className="block">
+                    <input
+                      type="checkbox"
+                      value={value}
+                      checked={studentStatuses.includes(value)}
+                      onChange={(e) =>
+                        handleCheckboxChange(e, setStudentStatuses)
+                      }
                     />
                     <span className="ml-2">{label}</span>
                   </label>

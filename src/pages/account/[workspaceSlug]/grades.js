@@ -9,7 +9,24 @@ import { GradeLevel } from '@prisma/client';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import { getSession } from 'next-auth/react';
 
-const forms = {
+const QUARTERLY_FORM_ID = '252259173067460';
+const quarterlyForms = {
+  [GradeLevel.K2]: QUARTERLY_FORM_ID,
+  [GradeLevel.GRADE_1]: QUARTERLY_FORM_ID,
+  [GradeLevel.GRADE_2]: QUARTERLY_FORM_ID,
+  [GradeLevel.GRADE_3]: QUARTERLY_FORM_ID,
+  [GradeLevel.GRADE_4]: QUARTERLY_FORM_ID,
+  [GradeLevel.GRADE_5]: QUARTERLY_FORM_ID,
+  [GradeLevel.GRADE_6]: QUARTERLY_FORM_ID,
+  [GradeLevel.GRADE_7]: QUARTERLY_FORM_ID,
+  [GradeLevel.GRADE_8]: QUARTERLY_FORM_ID,
+  [GradeLevel.GRADE_9]: QUARTERLY_FORM_ID,
+  [GradeLevel.GRADE_10]: QUARTERLY_FORM_ID,
+};
+
+// Year End Requirements - by grade level
+// K2 | Grades 1-3 | Grades 4-6 | Grades 7-10
+const yearEndForms = {
   [GradeLevel.K2]: '260549507424459',
   [GradeLevel.GRADE_1]: '260549092239462',
   [GradeLevel.GRADE_2]: '260549092239462',
@@ -25,7 +42,8 @@ const forms = {
 
 const Grades = () => {
   const { workspace } = useWorkspace();
-  const [formPage, setFormPage] = useState('');
+  const [formPage, setFormPage] = useState('quarterly');
+
   const handleSelectChange = (event) => {
     setFormPage(event.target.value);
   };
@@ -47,7 +65,6 @@ const Grades = () => {
                 onChange={handleSelectChange}
                 value={formPage}
               >
-                <option value="">Select Form</option>
                 <option value="quarterly">Quarterly Requirements</option>
                 <option value="year-end">Year End Requirements</option>
               </select>
@@ -56,23 +73,29 @@ const Grades = () => {
               </div>
             </div>
 
-            {formPage === 'quarterly' ? (
-              <JotFormEmbed
-                src={`https://form.jotform.com/${forms[workspace?.studentRecord?.incomingGradeLevel]}`}
-                scrolling={true}
-                style={{ height: '100%' }}
-              />
-            ) : (
-              workspace &&
-              workspace?.studentRecord?.incomingGradeLevel &&
-              forms[workspace?.studentRecord?.incomingGradeLevel] && (
-                <JotFormEmbed
-                  src={`https://form.jotform.com/${forms[workspace?.studentRecord?.incomingGradeLevel]}`}
-                  scrolling={true}
-                  style={{ height: '100%' }}
-                />
-              )
-            )}
+            {(formPage === 'quarterly' || formPage === 'year-end') &&
+              (() => {
+                const forms =
+                  formPage === 'quarterly' ? quarterlyForms : yearEndForms;
+                const formId =
+                  forms[workspace?.studentRecord?.incomingGradeLevel];
+                if (!formId)
+                  return (
+                    <p className="mt-4 text-gray-600">
+                      No form available for this grade level.
+                    </p>
+                  );
+                return (
+                  <div className="mt-4 min-h-[600px] w-full">
+                    <JotFormEmbed
+                      key={`${formPage}-${workspace?.studentRecord?.incomingGradeLevel}`}
+                      src={`https://form.jotform.com/${formId}`}
+                      scrolling={true}
+                      style={{ height: '100%', minHeight: 600 }}
+                    />
+                  </div>
+                );
+              })()}
           </Content.Container>
         </>
       ) : null}
