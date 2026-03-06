@@ -59,6 +59,7 @@ const handler = async (req, res) => {
         totalFee,
       } = req.body;
       // Map requestor information from formData2
+
       const requestorInformation = {
         requestorFullName: formData2.requestorName,
         requestorEmail: formData2.email,

@@ -3,7 +3,7 @@ import sanityClient from '@/lib/server/sanity';
 import Footer from '@/sections/footer';
 import Modal from '@/components/Modal';
 import { InboxInIcon } from '@heroicons/react/outline';
-import { useState, useEffect, createRef } from 'react';
+import { useState, useEffect, createRef, useRef } from 'react';
 import {
   GRADE_LEVEL,
   DOCUMENT_DETAILS,
@@ -20,6 +20,7 @@ import { STATUS_CODES } from '@/lib/server/dragonpay';
 import ReCAPTCHA from 'react-google-recaptcha';
 import crypto from 'crypto';
 import format from 'date-fns/format';
+import { ca } from 'date-fns/locale';
 
 const PURPOSE_OPTIONS = [
   { value: '', label: 'Select Purpose' },
@@ -31,8 +32,8 @@ const PURPOSE_OPTIONS = [
 const RegistrarPortal = ({ page }) => {
   const { footer, header } = page;
   const [footerSection] = footer?.sectionType;
-  const recaptchaRef = createRef();
-  const paymentProofRecaptchaRef = createRef();
+  const recaptchaRef = useRef();
+  const paymentProofRecaptchaRef = useRef(null);
   const [captcha, setCaptcha] = useState(null);
   const [paymentProofCaptcha, setPaymentProofCaptcha] = useState(null);
   const [step, setStep] = useState(0); // State to track the current step
@@ -144,14 +145,14 @@ const RegistrarPortal = ({ page }) => {
       selectedDocuments.includes('Permanent Record / Form 137 / SF10')
     ) {
       setSelectedDocuments((prev) =>
-        prev.filter((item) => item !== 'Permanent Record / Form 137 / SF10')
+        prev.filter((item) => item !== 'Permanent Record / Form 137 / SF10'),
       );
     } else {
       setSelectedDocuments(
         (prev) =>
           prev.includes(document)
             ? prev.filter((item) => item !== document) // Remove if already selected
-            : [...prev, document] // Add if not selected
+            : [...prev, document], // Add if not selected
       );
     }
   };
@@ -221,18 +222,30 @@ const RegistrarPortal = ({ page }) => {
       gradesWithLP: formData.gradesWithLP,
       lastSchoolYear: formData.lastSchoolYear,
       selectedDocuments: selectedDocuments,
+      documentsData: selectedDocuments.map((docName) => ({
+        docName: docName,
+        url:
+          docName === 're_form_138'
+            ? affidavit
+            : docName === 'form_137'
+              ? letterRequest137
+              : docName === 'eccd'
+                ? `${letterRequestEccd}, ${eccdForm}`
+                : 'N/A', // Documents will be uploaded separately
+      })),
     };
 
     // Check if a student with the same name already exists
     const existingStudent = students.find(
       (student) =>
-        student.studentName.toLowerCase() === formData.studentName.toLowerCase()
+        student.studentName.toLowerCase() ===
+        formData.studentName.toLowerCase(),
     );
 
     if (existingStudent) {
       // Student with this name already exists, don't add duplicate
       toast.error(
-        `A student named "${formData.studentName}" already exists in your request.`
+        `A student named "${formData.studentName}" already exists in your request.`,
       );
       return;
     }
@@ -263,9 +276,16 @@ const RegistrarPortal = ({ page }) => {
       lastSchoolYear: '',
     });
     setSelectedDocuments([]);
-
+    setAffidavit('');
+    setAffidavitProgress(0);
+    setLetterRequest137('');
+    setLetterRequest137Progress(0);
+    setEccdForm('');
+    setEccdFormProgress(0);
+    setLetterRequestEccd('');
+    setLetterRequestEccdProgress(0);
     // Go back to Step 2 to add the next student
-    setStep(2);
+    setStep(1);
   };
 
   const removeStudent = (index) => {
@@ -312,9 +332,9 @@ const RegistrarPortal = ({ page }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-              new Date(),
-              'yyyy.MM.dd.kk.mm.ss'
-            )}.${extension}`
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss',
+          )}.${extension}`,
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -322,7 +342,7 @@ const RegistrarPortal = ({ page }) => {
           'state_changed',
           (snapshot) => {
             const progress = Math.round(
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
             );
             setAffidavitProgress(progress);
           },
@@ -337,7 +357,7 @@ const RegistrarPortal = ({ page }) => {
                 updateFile('affidavit', downloadURL);
               }
             });
-          }
+          },
         );
       } else {
         toast.error('File too large. Size should not exceed 10 MB.');
@@ -359,9 +379,9 @@ const RegistrarPortal = ({ page }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-              new Date(),
-              'yyyy.MM.dd.kk.mm.ss'
-            )}.${extension}`
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss',
+          )}.${extension}`,
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -369,7 +389,7 @@ const RegistrarPortal = ({ page }) => {
           'state_changed',
           (snapshot) => {
             const progress = Math.round(
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
             );
             setLetterRequestEccdProgress(progress);
           },
@@ -384,7 +404,7 @@ const RegistrarPortal = ({ page }) => {
                 updateFile('ECCD_Letter', downloadURL); // Adjust to remove dependency on studentId
               }
             });
-          }
+          },
         );
       } else {
         toast.error('File too large. Size should not exceed 10 MB.');
@@ -405,9 +425,9 @@ const RegistrarPortal = ({ page }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-              new Date(),
-              'yyyy.MM.dd.kk.mm.ss'
-            )}.${extension}`
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss',
+          )}.${extension}`,
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -415,7 +435,7 @@ const RegistrarPortal = ({ page }) => {
           'state_changed',
           (snapshot) => {
             const progress = Math.round(
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
             );
             setEccdFormProgress(progress);
           },
@@ -430,7 +450,7 @@ const RegistrarPortal = ({ page }) => {
                 updateFile('eccd_form', downloadURL); // Adjust to remove dependency on studentId
               }
             });
-          }
+          },
         );
       } else {
         toast.error('File too large. Size should not exceed 10 MB.');
@@ -459,10 +479,7 @@ const RegistrarPortal = ({ page }) => {
       // Prepare documents data grouped by student
       documentsData = students.map((student, index) => ({
         studentIndex: index,
-        documents: student.selectedDocuments.map((docName) => ({
-          docName: docName,
-          url: 'N/A', // Documents will be uploaded separately
-        })),
+        documents: student.documentsData,
       }));
     } else {
       // Fallback to current form data (single student)
@@ -482,7 +499,14 @@ const RegistrarPortal = ({ page }) => {
           studentIndex: 0,
           documents: selectedDocuments.map((docName) => ({
             docName: docName,
-            url: 'N/A', // Documents will be uploaded separately
+            url:
+              docName === 're_form_138'
+                ? affidavit
+                : docName === 'form_137'
+                  ? letterRequest137
+                  : docName === 'eccd'
+                    ? `${letterRequestEccd}, ${eccdForm}`
+                    : 'N/A', // Documents will be uploaded separately
           })),
         },
       ];
@@ -509,7 +533,7 @@ const RegistrarPortal = ({ page }) => {
 
         if (response.errors) {
           Object.keys(response.errors).forEach((error) =>
-            toast.error(response.errors[error].msg)
+            toast.error(response.errors[error].msg),
           );
         } else {
           // ✅ Document request created successfully
@@ -549,9 +573,9 @@ const RegistrarPortal = ({ page }) => {
             .update(file.name)
             .digest('hex')
             .substring(0, 12)}-${format(
-              new Date(),
-              'yyyy.MM.dd.kk.mm.ss'
-            )}.${extension}`
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss',
+          )}.${extension}`,
         );
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -559,7 +583,7 @@ const RegistrarPortal = ({ page }) => {
           'state_changed',
           (snapshot) => {
             const progress = Math.round(
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
             );
             setLetterRequest137Progress(progress);
           },
@@ -574,7 +598,7 @@ const RegistrarPortal = ({ page }) => {
                 updateFile('137_Letter', downloadURL); // Adjust to remove dependency on studentId
               }
             });
-          }
+          },
         );
       } else {
         toast.error('File too large. Size should not exceed 10 MB.');
@@ -614,6 +638,10 @@ const RegistrarPortal = ({ page }) => {
       toast.error('Please select a file and ensure transaction is available');
       return;
     }
+    if (!paymentProofRecaptchaRef.current) {
+      toast.error('Captcha widget not available. Please refresh.');
+      return;
+    }
 
     // Capture captcha token NOW (before upload) - tokens can expire during upload
     const captchaToken = paymentProofRecaptchaRef.current?.getValue();
@@ -650,13 +678,14 @@ const RegistrarPortal = ({ page }) => {
                 body: {
                   transactionId: transactionId,
                   paymentProofUrl: downloadURL,
-                  captchaToken,
+                  captchaToken: captchaToken, // Send the token captured at click time
                 },
-              }
+              },
             );
 
             if (response.success) {
               toast.success('Payment proof uploaded successfully!');
+              setPaymentLink(response.data);
               setPaymentProofFile(null);
               setShowPaymentModal(false);
             } else {
@@ -665,11 +694,11 @@ const RegistrarPortal = ({ page }) => {
           } catch (apiError) {
             console.error('Error updating payment proof:', apiError);
             toast.error(
-              'Failed to update payment proof. Please contact support.'
+              'Failed to update payment proof. Please contact support.',
             );
           }
           setUploadingProof(false);
-        }
+        },
       );
     } catch (error) {
       console.error('Error uploading payment proof:', error);
@@ -725,10 +754,11 @@ const RegistrarPortal = ({ page }) => {
 
         {step < 6 && step > 0 && (
           <button
-            className={`absolute md:right-0 md:top-1/2 md:transform md:-translate-y-1/2 bottom-4 right-4 flex items-center justify-center w-20 h-10 rounded-full shadow-md ${validateNext
-              ? 'bg-gray-200 hover:bg-gray-300'
-              : 'bg-gray-400 cursor-not-allowed hover:bg-gray-400'
-              } md:mr-5`}
+            className={`absolute md:right-0 md:top-1/2 md:transform md:-translate-y-1/2 bottom-4 right-4 flex items-center justify-center w-20 h-10 rounded-full shadow-md ${
+              validateNext
+                ? 'bg-gray-200 hover:bg-gray-300'
+                : 'bg-gray-400 cursor-not-allowed hover:bg-gray-400'
+            } md:mr-5`}
             style={{ zIndex: 1000 }}
             onClick={() => goToStep(step + 1)} //validateNext &&
             disabled={!validateNext}
@@ -748,80 +778,81 @@ const RegistrarPortal = ({ page }) => {
           {/* Step -1 */}
 
           {documentRequest && (
-            <div class="w-full flex-shrink-0">
-              <div class="relative max-w-xl mx-auto p-10 mt-10 mb-10 shadow-lg rounded-lg overflow-hidden">
-                <div class="flex items-center justify-between mb-4">
-                  <div class="text-gray-800">
+            <div className="w-full flex-shrink-0">
+              <div className="relative max-w-xl mx-auto p-10 mt-10 mb-10 shadow-lg rounded-lg overflow-hidden">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="text-gray-800">
                     <button
-                      class="flex items-center text-gray-600 hover:text-black"
+                      className="flex items-center text-gray-600 hover:text-black"
                       onClick={refreshPage}
                     >
-                      <span class="mr-1 text-xl">&lt;</span> BACK
+                      <span className="mr-1 text-xl">&lt;</span> BACK
                     </button>
                   </div>
-                  <div class="text-gray-800">
-                    <span class="px-2">Tracking Code:</span>
-                    <span class="font-bold">
+                  <div className="text-gray-800">
+                    <span className="px-2">Tracking Code:</span>
+                    <span className="font-bold">
                       LP - {documentRequest?.requestCode}
                     </span>
-                    <span class="ml-1 mr-1">|</span>
+                    <span className="ml-1 mr-1">|</span>
                     <span
-                      class={`text-sm px-2 rounded ${DOC_STATUS_BG_COLOR[documentRequest?.status]
-                        }`}
+                      className={`text-sm px-2 rounded ${
+                        DOC_STATUS_BG_COLOR[documentRequest?.status]
+                      }`}
                     >
                       {DOC_STATUS[documentRequest?.status]}
                     </span>
                   </div>
                 </div>
 
-                <div class="">
-                  <div class="flex items-center space-x-2">
-                    <p class="font-semibold text-gray-800">Requestor:</p>
-                    <p class="text-gray-600">
+                <div className="">
+                  <div className="flex items-center space-x-2">
+                    <p className="font-semibold text-gray-800">Requestor:</p>
+                    <p className="text-gray-600">
                       {documentRequest?.requestorInformation.requestorFullName}
                     </p>
                   </div>
-                  <div class="flex items-center mt-2 space-x-2">
-                    <p class="font-semibold text-gray-800">Email:</p>
-                    <p class="text-gray-600">
+                  <div className="flex items-center mt-2 space-x-2">
+                    <p className="font-semibold text-gray-800">Email:</p>
+                    <p className="text-gray-600">
                       {documentRequest?.requestorInformation.requestorEmail}
                     </p>
                   </div>
                   {/* Students Information */}
-                  <div class="mt-4">
-                    <p class="font-bold text-gray-800 mb-2">Students:</p>
+                  <div className="mt-4">
+                    <p className="font-bold text-gray-800 mb-2">Students:</p>
                     {documentRequest?.studentInformation &&
-                      documentRequest.studentInformation.length > 0 ? (
-                      <div class="space-y-2">
+                    documentRequest.studentInformation.length > 0 ? (
+                      <div className="space-y-2">
                         {documentRequest.studentInformation.map(
                           (student, index) => (
                             <div
                               key={student.id}
-                              class="flex items-center space-x-2"
+                              className="flex items-center space-x-2"
                             >
-                              <span class="font-semibold text-gray-800">
+                              <span className="font-semibold text-gray-800">
                                 Student {index + 1}:
                               </span>
-                              <span class="text-gray-600">
+                              <span className="text-gray-600">
                                 {student.studentFullName || 'N/A'}
                               </span>
                             </div>
-                          )
+                          ),
                         )}
                       </div>
                     ) : (
-                      <p class="text-gray-500 italic">
+                      <p className="text-gray-500 italic">
                         No student information available
                       </p>
                     )}
                   </div>
 
                   {/* Documents Section */}
-                  <div class="mt-6">
-                    <p class="font-bold text-gray-800 mb-2">Documents:</p>
+                  <div className="mt-6">
+                    <p className="font-bold text-gray-800 mb-2">Documents:</p>
                     {documentRequest?.documents &&
-                      documentRequest.documents.length > 0 ? (
-                      <ul class="list-disc list-inside text-gray-600">
+                    documentRequest.documents.length > 0 ? (
+                      <ul className="list-disc list-inside text-gray-600">
                         {documentRequest.documents.map((doc) => (
                           <li key={doc.id}>
                             {DOCUMENT_DETAILS[doc.docName]?.label ||
@@ -831,7 +862,7 @@ const RegistrarPortal = ({ page }) => {
                               href={doc.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              class="text-blue-500 underline"
+                              className="text-blue-500 underline"
                             >
                               {doc.url !== 'N/A' ? 'View Document' : 'N/A'}
                             </a>
@@ -839,19 +870,19 @@ const RegistrarPortal = ({ page }) => {
                         ))}
                       </ul>
                     ) : (
-                      <p class="text-gray-500 italic">
+                      <p className="text-gray-500 italic">
                         No documents uploaded yet
                       </p>
                     )}
                   </div>
                 </div>
 
-                <div class="mt-6">
-                  <div class="flex items-center space-x-2">
-                    <p class="font-semibold text-gray-800">
+                <div className="mt-6">
+                  <div className="flex items-center space-x-2">
+                    <p className="font-semibold text-gray-800">
                       Document Collection:
                     </p>
-                    <p class="text-gray-600">
+                    <p className="text-gray-600">
                       {documentRequest?.documentCollection
                         ?.charAt(0)
                         .toUpperCase() +
@@ -861,27 +892,29 @@ const RegistrarPortal = ({ page }) => {
                     </p>
                   </div>
                   {documentRequest?.deliveryAddress !== '' && (
-                    <div class="flex items-center mt-2 space-x-2">
-                      <p class="font-semibold text-gray-800">
+                    <div className="flex items-center mt-2 space-x-2">
+                      <p className="font-semibold text-gray-800">
                         Delivery Address:
                       </p>
-                      <p class="text-gray-600">
+                      <p className="text-gray-600">
                         {documentRequest?.deliveryAddress}
                       </p>
                     </div>
                   )}
 
                   {documentRequest?.tracking !== null && (
-                    <div class="flex items-center mt-2 space-x-2">
-                      <p class="font-semibold text-gray-800">
+                    <div className="flex items-center mt-2 space-x-2">
+                      <p className="font-semibold text-gray-800">
                         LBC Tracking Number:
                       </p>
-                      <p class="text-gray-600">{documentRequest?.tracking}</p>
+                      <p className="text-gray-600">
+                        {documentRequest?.tracking}
+                      </p>
                     </div>
                   )}
                 </div>
 
-                <div class="mt-6 flex items-center justify-between">
+                <div className="mt-6 flex items-center justify-between">
                   <div className="flex items-center space-x-5">
                     {documentRequest?.transaction.paymentReference ? (
                       <h4 className="text-sm font-bold text-gray-400">
@@ -900,14 +933,15 @@ const RegistrarPortal = ({ page }) => {
                     )}
                     {documentRequest && documentRequest?.transaction && (
                       <span
-                        className={`rounded-full py-0.5 text-sm px-2 text-center ${STATUS_BG_COLOR[
-                          documentRequest?.transaction.paymentStatus
-                        ]
-                          }`}
+                        className={`rounded-full py-0.5 text-sm px-2 text-center ${
+                          STATUS_BG_COLOR[
+                            documentRequest?.transaction.paymentStatus
+                          ]
+                        }`}
                       >
                         {
                           STATUS_CODES[
-                          documentRequest?.transaction.paymentStatus
+                            documentRequest?.transaction.paymentStatus
                           ]
                         }
                       </span>
@@ -915,32 +949,32 @@ const RegistrarPortal = ({ page }) => {
                   </div>
                   {documentRequest?.transaction.paymentStatus !==
                     TransactionStatus.S && (
-                      <div className="flex items-center space-x-5">
-                        <h6>
-                          {new Intl.NumberFormat('en-PH', {
-                            style: 'currency',
-                            currency: 'PHP',
-                          }).format(documentRequest?.transaction?.amount || 0)}
-                        </h6>
-                        <button
-                          className="inline-block px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
-                          disabled={submittingState}
-                          onClick={() => {
-                            // Open payment modal for existing transaction
-                            setPaymentAmount(
-                              documentRequest?.transaction?.amount || 0
-                            );
-                            setTransactionId(documentRequest?.transactionId);
-                            setReferenceNumber(
-                              documentRequest?.transaction?.referenceNumber
-                            );
-                            setShowPaymentModal(true);
-                          }}
-                        >
-                          Pay Now
-                        </button>
-                      </div>
-                    )}
+                    <div className="flex items-center space-x-5">
+                      <h6>
+                        {new Intl.NumberFormat('en-PH', {
+                          style: 'currency',
+                          currency: 'PHP',
+                        }).format(documentRequest?.transaction?.amount || 0)}
+                      </h6>
+                      <button
+                        className="inline-block px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
+                        disabled={submittingState}
+                        onClick={() => {
+                          // Open payment modal for existing transaction
+                          setPaymentAmount(
+                            documentRequest?.transaction?.amount || 0,
+                          );
+                          setTransactionId(documentRequest?.transactionId);
+                          setReferenceNumber(
+                            documentRequest?.transaction?.referenceNumber,
+                          );
+                          setShowPaymentModal(true);
+                        }}
+                      >
+                        Pay Now
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -1040,10 +1074,11 @@ const RegistrarPortal = ({ page }) => {
                     id="purpose"
                     value={selectedPurpose}
                     onChange={handleDropdownChange}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${selectedPurpose.length === 0
-                      ? 'border-red-500 border-2'
-                      : 'border'
-                      }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                      selectedPurpose.length === 0
+                        ? 'border-red-500 border-2'
+                        : 'border'
+                    }`}
                   >
                     {PURPOSE_OPTIONS.map((option, index) => (
                       <option key={index} value={option.value}>
@@ -1098,10 +1133,11 @@ const RegistrarPortal = ({ page }) => {
                     id="studentName"
                     value={formData.studentName}
                     onChange={(e) => handleChange(e, setFormData)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData.studentName
-                      ? 'border-red-500 border-2'
-                      : 'border'
-                      }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                      !formData.studentName
+                        ? 'border-red-500 border-2'
+                        : 'border'
+                    }`}
                     placeholder="Enter full name"
                   />
                 </div>
@@ -1119,8 +1155,9 @@ const RegistrarPortal = ({ page }) => {
                     id="lrn"
                     value={formData.lrn}
                     onChange={(e) => handleChange(e, setFormData)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData.lrn ? 'border-red-500 border-2' : 'border'
-                      }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                      !formData.lrn ? 'border-red-500 border-2' : 'border'
+                    }`}
                     placeholder="Enter LRN"
                   />
                 </div>
@@ -1137,10 +1174,11 @@ const RegistrarPortal = ({ page }) => {
                     id="gradeLevel"
                     value={formData.gradeLevel}
                     onChange={(e) => handleChange(e, setFormData)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData.gradeLevel
-                      ? 'border-red-500 border-2'
-                      : 'border'
-                      }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                      !formData.gradeLevel
+                        ? 'border-red-500 border-2'
+                        : 'border'
+                    }`}
                   >
                     <option value="" disabled>
                       Select grade level
@@ -1176,10 +1214,11 @@ const RegistrarPortal = ({ page }) => {
                     id="currentSchool"
                     value={formData.currentSchool}
                     onChange={(e) => handleChange(e, setFormData)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData.currentSchool
-                      ? 'border-red-500 border-2'
-                      : 'border'
-                      }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                      !formData.currentSchool
+                        ? 'border-red-500 border-2'
+                        : 'border'
+                    }`}
                     placeholder="Enter current school"
                   />
                 </div>
@@ -1197,10 +1236,11 @@ const RegistrarPortal = ({ page }) => {
                     id="gradesWithLP"
                     value={formData.gradesWithLP}
                     onChange={(e) => handleChange(e, setFormData)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData.gradesWithLP
-                      ? 'border-red-500 border-2'
-                      : 'border'
-                      }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                      !formData.gradesWithLP
+                        ? 'border-red-500 border-2'
+                        : 'border'
+                    }`}
                     placeholder="Enter grade levels (e.g., 3, 4, 5)"
                   />
                 </div>
@@ -1218,10 +1258,11 @@ const RegistrarPortal = ({ page }) => {
                     id="lastSchoolYear"
                     value={formData.lastSchoolYear}
                     onChange={(e) => handleChange(e, setFormData)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData.lastSchoolYear
-                      ? 'border-red-500 border-2'
-                      : 'border'
-                      }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                      !formData.lastSchoolYear
+                        ? 'border-red-500 border-2'
+                        : 'border'
+                    }`}
                     placeholder="Enter last school year"
                   />
                 </div>
@@ -1249,10 +1290,11 @@ const RegistrarPortal = ({ page }) => {
                     id="requestorName"
                     value={formData2.requestorName}
                     onChange={(e) => handleChange(e, setFormData2)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData2.requestorName
-                      ? 'border-red-500 border-2'
-                      : 'border'
-                      }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                      !formData2.requestorName
+                        ? 'border-red-500 border-2'
+                        : 'border'
+                    }`}
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -1270,10 +1312,11 @@ const RegistrarPortal = ({ page }) => {
                     id="relationship"
                     value={formData2.relationship}
                     onChange={(e) => handleChange(e, setFormData2)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData2.relationship
-                      ? 'border-red-500 border-2'
-                      : 'border'
-                      }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                      !formData2.relationship
+                        ? 'border-red-500 border-2'
+                        : 'border'
+                    }`}
                     placeholder="Enter your relationship (e.g., parent, guardian)"
                   />
                 </div>
@@ -1291,8 +1334,9 @@ const RegistrarPortal = ({ page }) => {
                     id="email"
                     value={formData2.email}
                     onChange={(e) => handleChange(e, setFormData2)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData2.email ? 'border-red-500 border-2' : 'border'
-                      }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                      !formData2.email ? 'border-red-500 border-2' : 'border'
+                    }`}
                     placeholder="Enter email address"
                   />
                 </div>
@@ -1310,10 +1354,11 @@ const RegistrarPortal = ({ page }) => {
                     id="occupation"
                     value={formData2.occupation}
                     onChange={(e) => handleChange(e, setFormData2)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData2.occupation
-                      ? 'border-red-500 border-2'
-                      : 'border'
-                      }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                      !formData2.occupation
+                        ? 'border-red-500 border-2'
+                        : 'border'
+                    }`}
                     placeholder="Enter occupation"
                   />
                 </div>
@@ -1331,10 +1376,11 @@ const RegistrarPortal = ({ page }) => {
                     id="guardianAddress"
                     value={formData2.guardianAddress}
                     onChange={(e) => handleChange(e, setFormData2)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData2.guardianAddress
-                      ? 'border-red-500 border-2'
-                      : 'border'
-                      }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                      !formData2.guardianAddress
+                        ? 'border-red-500 border-2'
+                        : 'border'
+                    }`}
                     placeholder="Enter address"
                   />
                 </div>
@@ -1352,10 +1398,11 @@ const RegistrarPortal = ({ page }) => {
                     id="guardianMobile"
                     value={formData2.guardianMobile}
                     onChange={(e) => handleChange(e, setFormData2)}
-                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${!formData2.guardianMobile
-                      ? 'border-red-500 border-2'
-                      : 'border'
-                      }`}
+                    className={`mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 ${
+                      !formData2.guardianMobile
+                        ? 'border-red-500 border-2'
+                        : 'border'
+                    }`}
                     placeholder="Enter mobile number"
                   />
                 </div>
@@ -1444,8 +1491,9 @@ const RegistrarPortal = ({ page }) => {
                         <b>Requirements:</b>
                       </p>
                       <div
-                        className={`mt-2 p-1 flex flex-col ${!affidavit ? 'border-red-500 border-2' : 'border'
-                          }`}
+                        className={`mt-2 p-1 flex flex-col ${
+                          !affidavit ? 'border-red-500 border-2' : 'border'
+                        }`}
                       >
                         <label className="text-sm font-medium text-gray-700">
                           {DOCUMENT_DETAILS.re_form_138.requirement}
@@ -1490,10 +1538,11 @@ const RegistrarPortal = ({ page }) => {
                         <b>Requirements:</b>
                       </p>
                       <div
-                        className={`mt-2 p-1 flex flex-col ${!letterRequest137
-                          ? 'border-red-500 border-2'
-                          : 'border'
-                          }`}
+                        className={`mt-2 p-1 flex flex-col ${
+                          !letterRequest137
+                            ? 'border-red-500 border-2'
+                            : 'border'
+                        }`}
                       >
                         <label className="text-sm font-medium text-gray-700">
                           {DOCUMENT_DETAILS.form_137.requirement}
@@ -1520,71 +1569,71 @@ const RegistrarPortal = ({ page }) => {
                 )}
                 {/* Guardian's Address */}
                 {selectedDocuments.some(
-                  (doc) => doc === 'certificate_of_no_financial_obligation'
+                  (doc) => doc === 'certificate_of_no_financial_obligation',
                 ) && (
-                    <div>
-                      <label
-                        htmlFor="guardianAddress"
-                        className="block font-medium text-primary-500"
-                      >
-                        Certificate of No Financial Obligation
-                      </label>
-                      <div className="ml-5 block text-sm font-medium text-gray-700">
-                        <p className="mt-2">
-                          <b>Processing Time:</b>{' '}
-                          {
-                            DOCUMENT_DETAILS
-                              .certificate_of_no_financial_obligation
-                              .processing_time
-                          }
-                        </p>
-                        <p className="mt-2">
-                          <b>Processing Fee:</b> ₱{' '}
-                          {
-                            DOCUMENT_DETAILS
-                              .certificate_of_no_financial_obligation.fee
-                          }
-                        </p>
-                        <p className="mt-2">
-                          <b>Requirements:</b>{' '}
-                          {
-                            DOCUMENT_DETAILS
-                              .certificate_of_no_financial_obligation.requirement
-                          }
-                        </p>
-                      </div>
+                  <div>
+                    <label
+                      htmlFor="guardianAddress"
+                      className="block font-medium text-primary-500"
+                    >
+                      Certificate of No Financial Obligation
+                    </label>
+                    <div className="ml-5 block text-sm font-medium text-gray-700">
+                      <p className="mt-2">
+                        <b>Processing Time:</b>{' '}
+                        {
+                          DOCUMENT_DETAILS
+                            .certificate_of_no_financial_obligation
+                            .processing_time
+                        }
+                      </p>
+                      <p className="mt-2">
+                        <b>Processing Fee:</b> ₱{' '}
+                        {
+                          DOCUMENT_DETAILS
+                            .certificate_of_no_financial_obligation.fee
+                        }
+                      </p>
+                      <p className="mt-2">
+                        <b>Requirements:</b>{' '}
+                        {
+                          DOCUMENT_DETAILS
+                            .certificate_of_no_financial_obligation.requirement
+                        }
+                      </p>
                     </div>
-                  )}
+                  </div>
+                )}
                 {/* Guardian's Mobile Number */}
                 {selectedDocuments.some(
-                  (doc) => doc === 'certificate_of_enrollment'
+                  (doc) => doc === 'certificate_of_enrollment',
                 ) && (
-                    <div>
-                      <label
-                        htmlFor="guardianMobile"
-                        className="block font-medium text-primary-500"
-                      >
-                        Certificate of Enrollment
-                      </label>
-                      <div className="ml-5 block text-sm font-medium text-gray-700">
-                        <p className="mt-2">
-                          <b>Processing Time:</b>{' '}
-                          {
-                            DOCUMENT_DETAILS.certificate_of_enrollment
-                              .processing_time
-                          }
-                        </p>
-                        <p className="mt-2">
-                          <b>Processing Fee:</b> ₱{' '}
-                          {DOCUMENT_DETAILS.certificate_of_enrollment.fee}
-                        </p>
-                        <p className="mt-2">
-                          <b>Requirements:</b>{' '}
-                          {DOCUMENT_DETAILS.certificate_of_enrollment.requirement}
-                        </p>
-                      </div>
+                  <div>
+                    <label
+                      htmlFor="guardianMobile"
+                      className="block font-medium text-primary-500"
+                    >
+                      Certificate of Enrollment
+                    </label>
+                    <div className="ml-5 block text-sm font-medium text-gray-700">
+                      <p className="mt-2">
+                        <b>Processing Time:</b>{' '}
+                        {
+                          DOCUMENT_DETAILS.certificate_of_enrollment
+                            .processing_time
+                        }
+                      </p>
+                      <p className="mt-2">
+                        <b>Processing Fee:</b> ₱{' '}
+                        {DOCUMENT_DETAILS.certificate_of_enrollment.fee}
+                      </p>
+                      <p className="mt-2">
+                        <b>Requirements:</b>{' '}
+                        {DOCUMENT_DETAILS.certificate_of_enrollment.requirement}
+                      </p>
                     </div>
-                  )}
+                  </div>
+                )}
 
                 {/* Render the ECCD file input if ECCD is selected */}
                 {selectedDocuments.some((doc) => doc === 'eccd') && (
@@ -1609,10 +1658,11 @@ const RegistrarPortal = ({ page }) => {
 
                       {/* Letter Input */}
                       <div
-                        className={`mt-2 flex p-1 flex-col ${!letterRequestEccd
-                          ? 'border-red-500 border-2'
-                          : 'border'
-                          }`}
+                        className={`mt-2 flex p-1 flex-col ${
+                          !letterRequestEccd
+                            ? 'border-red-500 border-2'
+                            : 'border'
+                        }`}
                       >
                         <label className="text-sm font-medium text-gray-700">
                           {DOCUMENT_DETAILS.eccd.requirement.letter}
@@ -1637,8 +1687,9 @@ const RegistrarPortal = ({ page }) => {
 
                       {/* Form Input */}
                       <div
-                        className={`mt-2 p-1 flex flex-col mb-4 ${!eccdForm ? 'border-red-500 border-2' : 'border'
-                          }`}
+                        className={`mt-2 p-1 flex flex-col mb-4 ${
+                          !eccdForm ? 'border-red-500 border-2' : 'border'
+                        }`}
                       >
                         <label className="text-sm font-medium text-gray-700">
                           {DOCUMENT_DETAILS.eccd.requirement.form}
@@ -1737,10 +1788,11 @@ const RegistrarPortal = ({ page }) => {
               <div className="mt-4 mb-4">
                 <label
                   htmlFor="deliveryAddress"
-                  className={`block text-sm font-medium ${deliveryOption === 'pickup'
-                    ? 'text-gray-400'
-                    : 'text-gray-700'
-                    }`}
+                  className={`block text-sm font-medium ${
+                    deliveryOption === 'pickup'
+                      ? 'text-gray-400'
+                      : 'text-gray-700'
+                  }`}
                 >
                   Delivery Address
                 </label>
@@ -1758,10 +1810,11 @@ const RegistrarPortal = ({ page }) => {
               {/* Disclaimer Section */}
               <div className="flex flex-col items-start mb-4">
                 <p
-                  className={`mb-2 text-sm ${deliveryOption === 'pickup'
-                    ? 'text-gray-400'
-                    : 'text-gray-700'
-                    }`}
+                  className={`mb-2 text-sm ${
+                    deliveryOption === 'pickup'
+                      ? 'text-gray-400'
+                      : 'text-gray-700'
+                  }`}
                 >
                   <i>
                     Please note that Living Pupil Homeschool is not responsible
@@ -1773,10 +1826,11 @@ const RegistrarPortal = ({ page }) => {
                   </i>
                 </p>
                 <label
-                  className={`flex items-center gap-2 ${deliveryOption === 'pickup'
-                    ? 'text-gray-400'
-                    : 'text-gray-700'
-                    }`}
+                  className={`flex items-center gap-2 ${
+                    deliveryOption === 'pickup'
+                      ? 'text-gray-400'
+                      : 'text-gray-700'
+                  }`}
                 >
                   <input
                     type="radio"
@@ -1892,7 +1946,7 @@ const RegistrarPortal = ({ page }) => {
                             </td>
                           </tr>
                         );
-                      })
+                      }),
                     )}
 
                     {/* Add "Document Collection" fee if Delivery is selected */}
@@ -1956,7 +2010,7 @@ const RegistrarPortal = ({ page }) => {
                 <p>
                   <strong>Purpose:</strong>{' '}
                   {PURPOSE_OPTIONS.find(
-                    (option) => option.value === selectedPurpose
+                    (option) => option.value === selectedPurpose,
                   )?.label || 'Not Selected'}
                 </p>
               </div>
@@ -2091,9 +2145,9 @@ const RegistrarPortal = ({ page }) => {
             </div>
           )}
 
-          {paymentLink ? (
+          {transactionId ? (
             <>
-              {paymentLink !== 'N/A' && (
+              {/* {paymentLink !== 'N/A' && (
                 <a
                   className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25 mb-4"
                   href={paymentLink}
@@ -2101,7 +2155,15 @@ const RegistrarPortal = ({ page }) => {
                 >
                   Pay Now
                 </a>
-              )}
+              )} */}
+              <button
+                className="inline-block w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25 mb-4"
+                onClick={() => {
+                  setShowPaymentModal(true);
+                }}
+              >
+                View Payment Proof
+              </button>
               <button
                 className="inline-block w-full py-2 text-center text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25 mb-4"
                 disabled={submittingState}
@@ -2147,7 +2209,7 @@ const RegistrarPortal = ({ page }) => {
         title="Payment Options"
         toggle={() => {
           setShowPaymentModal(false);
-          // Reset payment proof captcha when closing modal
+          // Reset captcha when closing modal
           setPaymentProofCaptcha(null);
           if (paymentProofRecaptchaRef.current) {
             paymentProofRecaptchaRef.current.reset();
@@ -2267,10 +2329,7 @@ const RegistrarPortal = ({ page }) => {
             <h4 className="font-semibold text-yellow-800 mb-2">
               Upload Payment Proof
             </h4>
-
-            {/* Step 1: Select file first */}
-            <div className="space-y-3 mb-4">
-              <p className="text-sm text-gray-600 font-medium">Step 1: Select your payment proof image</p>
+            <div className="space-y-3">
               <input
                 type="file"
                 accept="image/*"
@@ -2282,45 +2341,51 @@ const RegistrarPortal = ({ page }) => {
                   ✓ {paymentProofFile.name} selected
                 </div>
               )}
-            </div>
-
-            {/* Step 2: Captcha verification */}
-            <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
-              <div className="text-left">
-                <p className="text-sm text-gray-600 mb-2 font-medium">
-                  Step 2: Verify you're human (required)
-                </p>
-                {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
-                  <ReCAPTCHA
-                    ref={paymentProofRecaptchaRef}
-                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                    onChange={onPaymentProofCaptchaChange}
-                    theme="light"
-                    onExpired={() => setPaymentProofCaptcha(null)}
-                    onError={() => setPaymentProofCaptcha(null)}
-                  />
-                ) : (
-                  <p className="text-xs text-amber-600">
-                    ReCAPTCHA is not configured. Contact support to enable uploads.
+              <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                <div className="text-left">
+                  <p className="text-sm text-gray-600 mb-2 font-medium">
+                    Step 2: Verify you're human (required)
                   </p>
-                )}
-                <div className="mt-2 text-xs text-gray-500">
-                  {paymentProofCaptcha ? '✓ Verified' : '✗ Complete the captcha'}
+                  {showPaymentModal &&
+                  process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+                    <ReCAPTCHA
+                      key={`recaptcha-${showPaymentModal}`} // Force re-render
+                      ref={paymentProofRecaptchaRef}
+                      sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                      onChange={onPaymentProofCaptchaChange}
+                      theme="light"
+                      onExpired={() => setPaymentProofCaptcha(null)}
+                      onError={() => setPaymentProofCaptcha(null)}
+                    />
+                  ) : (
+                    <p className="text-xs text-amber-600">
+                      ReCAPTCHA is not configured. Contact support to enable
+                      uploads.
+                    </p>
+                  )}
+                  <div className="mt-2 text-xs text-gray-500">
+                    {paymentProofCaptcha
+                      ? '✓ Verified'
+                      : '✗ Complete the captcha'}
+                  </div>
                 </div>
               </div>
+              <button
+                onClick={handlePaymentProofUpload}
+                disabled={
+                  !paymentProofFile || uploadingProof || !paymentProofCaptcha
+                }
+                className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {uploadingProof
+                  ? 'Uploading...'
+                  : documentRequest?.transaction?.paymentProofLink
+                    ? 'Replace Payment Proof'
+                    : 'Upload Payment Proof'}
+              </button>
             </div>
 
-            <button
-              onClick={handlePaymentProofUpload}
-              disabled={!paymentProofFile || uploadingProof || !paymentProofCaptcha}
-              className="w-full py-2 px-4 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {uploadingProof
-                ? 'Uploading...'
-                : documentRequest?.transaction?.paymentProofLink
-                  ? 'Replace Payment Proof'
-                  : 'Upload Payment Proof'}
-            </button>
+            {/* Captcha verification */}
           </div>
 
           <div className="bg-yellow-50 p-4 rounded-lg">
@@ -2337,8 +2402,6 @@ const RegistrarPortal = ({ page }) => {
                 <span className="font-mono">{referenceNumber}</span>
               </div>
             </div>
-
-            {/* Show uploaded payment proof below reference number */}
             {documentRequest?.transaction?.paymentProofLink && (
               <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
@@ -2346,10 +2409,11 @@ const RegistrarPortal = ({ page }) => {
                     ✓ Payment Proof Already Uploaded
                   </span>
                   <span
-                    className={`text-xs px-2 py-1 rounded-full text-center ${STATUS_BG_COLOR[
-                      documentRequest?.transaction?.paymentStatus
-                    ] || 'bg-gray-200'
-                      }`}
+                    className={`text-xs px-2 py-1 rounded-full text-center ${
+                      STATUS_BG_COLOR[
+                        documentRequest?.transaction?.paymentStatus
+                      ] || 'bg-gray-200'
+                    }`}
                   >
                     {STATUS_CODES[
                       documentRequest?.transaction?.paymentStatus
@@ -2375,7 +2439,7 @@ const RegistrarPortal = ({ page }) => {
                     onClick={() =>
                       window.open(
                         documentRequest.transaction.paymentProofLink,
-                        '_blank'
+                        '_blank',
                       )
                     }
                     className="mt-2 px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
@@ -2418,7 +2482,7 @@ const RegistrarPortal = ({ page }) => {
 export const getStaticProps = async () => {
   const [[header, footer]] = await Promise.all([
     sanityClient.fetch(
-      `*[_type == 'sections' && (name == 'Common Header' || name == 'Common Footer')]`
+      `*[_type == 'sections' && (name == 'Common Header' || name == 'Common Footer')]`,
     ),
   ]);
   return {

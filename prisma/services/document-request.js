@@ -79,6 +79,13 @@ export const createDocumentRequest = async (data) => {
       deliveryOption,
     } = data;
 
+    if (requestorInformation) {
+      await createRequestorInformation(
+        prisma,
+        requestCode,
+        requestorInformation,
+      );
+    }
     // Create the main document request record FIRST (before dependent records)
     const documentRequest = await createDocumentRequestRecord(prisma, {
       requestCode,
@@ -90,13 +97,6 @@ export const createDocumentRequest = async (data) => {
     });
 
     // Create requestor information if it exists (now that DocumentRequest exists)
-    if (requestorInformation) {
-      await createRequestorInformation(
-        prisma,
-        requestCode,
-        requestorInformation
-      );
-    }
 
     // Create student information for each student
     const createdStudents = [];
@@ -105,7 +105,7 @@ export const createDocumentRequest = async (data) => {
         const student = await createStudentInformation(
           prisma,
           requestCode,
-          studentInfo
+          studentInfo,
         );
         createdStudents.push(student);
       }
@@ -123,7 +123,7 @@ export const createDocumentRequest = async (data) => {
         transaction.amount,
         transaction.description,
         transaction.source,
-        transaction.fee
+        transaction.fee,
       );
       transactionId = createdTransactionId;
       referenceNumber = createdReferenceNumber;
@@ -147,7 +147,7 @@ export const createDocumentRequest = async (data) => {
             prisma,
             requestCode,
             studentDoc.documents,
-            createdStudents[studentDoc.studentIndex].id
+            createdStudents[studentDoc.studentIndex].id,
           );
         }
       }
@@ -195,7 +195,7 @@ export const createRequestorInformation = async (prisma, requestCode, data) => {
 export const createStudentInformation = async (
   prisma,
   requestCode,
-  studentInformation
+  studentInformation,
 ) => {
   return await prisma.studentInformation.create({
     data: {
@@ -209,7 +209,7 @@ export const createDocuments = async (
   prisma,
   requestCode,
   documents,
-  studentId = null
+  studentId = null,
 ) => {
   // Ensure documents is always an array
   const documentsArray = Array.isArray(documents) ? documents : [documents];
@@ -224,8 +224,8 @@ export const createDocuments = async (
           studentId: studentId, // Link document to specific student
           createdAt: new Date(),
         },
-      })
-    )
+      }),
+    ),
   );
 };
 
@@ -234,7 +234,7 @@ export const createTransactionForDocumentRequest = async (
   amount,
   description,
   source,
-  fee
+  fee,
 ) => {
   const transactionId = uuidv4();
   const referenceNumber = `DOC-${Date.now()}-${Math.random()
@@ -265,7 +265,7 @@ export const createTransaction = async (
   amount,
   description,
   source,
-  fee
+  fee,
 ) => {
   const transactionId = uuidv4();
   if (amount === 0) {
@@ -299,7 +299,7 @@ export const createTransaction = async (
           Authorization: `${getBasicAuthorization()}`,
         },
         method: 'POST',
-      }
+      },
     );
 
     const {
@@ -336,7 +336,7 @@ export const updateDocumentRequestStatus = async (requestCode, status) => {
 
 export const updateDocumentRequestTrackingCode = async (
   requestCode,
-  tracking
+  tracking,
 ) => {
   await prisma.documentRequest.update({
     data: {
