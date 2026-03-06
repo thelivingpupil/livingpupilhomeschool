@@ -727,7 +727,7 @@ export const getSenderCredentials = (sender) => {
       appPassword = process.env.ADMIN_APP_PASSWORD;
       break;
     case 'adminofficer':
-      senderName = 'Chanella Venice Giganto';
+      senderName = 'LP Admin Officer';
       email = 'livingpupilhomeschool.assist@gmail.com';
       appPassword = null;
       break;
