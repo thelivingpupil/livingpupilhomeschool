@@ -157,7 +157,6 @@ const userUnsettledDues = [
   'switbluejess@gmail.com',
   'aocajayon12@gmail.com',
   'jaymecristineg14@gmail.com',
-  'aningkaye@gmail.com',
   'john.2021reysela.2022@gmail.com',
   'cherry.barrias@yahoo.com.ph',
   'anjelai2013@gmail.com',
@@ -268,7 +267,7 @@ const userUnsettledDues = [
   'meldeetan1990@gmail.com',
   'lspresillas23@gmail.com',
   'lspresillas23@gmail.com',
-  'imee.suarez@gmail.com',
+
   'lopenajenin8@gmail.com',
   'howellcaronan@gmail.com',
   'nalagonivy@yhoo.com',
