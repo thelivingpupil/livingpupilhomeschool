@@ -20,7 +20,7 @@ export const sendMailWithGmail = async ({ sender, to, subject, replyTo, text, ht
         const mailOptions = {
             from: `${senderName} <${email}>`, // Set the sender's name and email
             to,
-            replyTo,
+            replyTo: replyTo ?? process.env.EMAIL_REPLY_TO,
             subject,
             text,
             html,

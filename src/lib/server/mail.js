@@ -18,7 +18,7 @@ export const sendMail = async ({ from, html, subject, text, to, cc = [], attachm
     text,
     html,
     attachments: attachments.length > 0 ? attachments : undefined, // Include attachments only if there are any
-    replyTo: replyTo ?? process.env.EMAIL_REPLY_TO, // Set replyTo if provided or fallback to a default environment variable
+    replyTo: replyTo ?? process.env.EMAIL_REPLY_TO, // Non-Broadcast mail: set EMAIL_REPLY_TO to your no-reply address in production
     cc: cc.length > 0 ? cc : undefined, // Include CC only if there are any addresses
   };
 
