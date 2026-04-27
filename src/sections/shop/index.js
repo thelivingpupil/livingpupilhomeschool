@@ -219,7 +219,7 @@ const Shop = ({ categories, items }) => {
     [items, categories]
   );
 
-  const disableShop = false;
+  const disableShop = true;
 
   const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -310,11 +310,11 @@ const Shop = ({ categories, items }) => {
             Shop Announcement
           </h1>
           <p className="text-center">
-            Our shop is closed today due to maintenance.
+            Our shop is temporarily closed for an ongoing inventory.
           </p>
           <p className="text-center">
-            We apologize for the inconvenience and appreciate your
-            understanding.
+            We will be back on <strong>Thursday</strong>. Thank you for your
+            patience and understanding.
           </p>
           <p className="text-center">— The Living Pupil Homeschool Team</p>
         </div>
@@ -387,9 +387,9 @@ const Shop = ({ categories, items }) => {
                               <p className="text-xs">
                                 {`(${quantity}x) @
                            ${new Intl.NumberFormat('en-US', {
-                             style: 'currency',
-                             currency: 'PHP',
-                           }).format(price)}`}
+                                  style: 'currency',
+                                  currency: 'PHP',
+                                }).format(price)}`}
                               </p>
                             </div>
                           </div>
@@ -539,9 +539,8 @@ const Shop = ({ categories, items }) => {
                   <SignatureCanvas
                     ref={sigCanvas}
                     canvasProps={{
-                      className: `sigCanvas bg-gray-100 border ${
-                        signatureLink ? 'border-gray-400' : 'border-red-500'
-                      }`,
+                      className: `sigCanvas bg-gray-100 border ${signatureLink ? 'border-gray-400' : 'border-red-500'
+                        }`,
                       width: 350, // Set a fixed width, adjust according to your design
                       height: 200, // Set a fixed height
                     }}
@@ -896,16 +895,15 @@ const Shop = ({ categories, items }) => {
                             <option key={value} value={value}>
                               {title}
                               {value !== 'withInCebu' &&
-                                ` ${
-                                  typeof fee === 'function'
-                                    ? new Intl.NumberFormat('en-US', {
-                                        style: 'currency',
-                                        currency: 'PHP',
-                                      }).format(fee(itemCount))
-                                    : new Intl.NumberFormat('en-US', {
-                                        style: 'currency',
-                                        currency: 'PHP',
-                                      }).format(fee)
+                                ` ${typeof fee === 'function'
+                                  ? new Intl.NumberFormat('en-US', {
+                                    style: 'currency',
+                                    currency: 'PHP',
+                                  }).format(fee(itemCount))
+                                  : new Intl.NumberFormat('en-US', {
+                                    style: 'currency',
+                                    currency: 'PHP',
+                                  }).format(fee)
                                 }`}
                             </option>
                           )
@@ -1118,9 +1116,9 @@ const Shop = ({ categories, items }) => {
                                 <p className="text-xs">
                                   {`(${quantity}x) @
                            ${new Intl.NumberFormat('en-US', {
-                             style: 'currency',
-                             currency: 'PHP',
-                           }).format(price)}`}
+                                    style: 'currency',
+                                    currency: 'PHP',
+                                  }).format(price)}`}
                                 </p>
                               </div>
                             </div>
@@ -1163,16 +1161,15 @@ const Shop = ({ categories, items }) => {
                               <option key={value} value={value}>
                                 {title}
                                 {value !== 'withInCebu' &&
-                                  ` ${
-                                    typeof fee === 'function'
-                                      ? new Intl.NumberFormat('en-US', {
-                                          style: 'currency',
-                                          currency: 'PHP',
-                                        }).format(fee(itemCount))
-                                      : new Intl.NumberFormat('en-US', {
-                                          style: 'currency',
-                                          currency: 'PHP',
-                                        }).format(fee)
+                                  ` ${typeof fee === 'function'
+                                    ? new Intl.NumberFormat('en-US', {
+                                      style: 'currency',
+                                      currency: 'PHP',
+                                    }).format(fee(itemCount))
+                                    : new Intl.NumberFormat('en-US', {
+                                      style: 'currency',
+                                      currency: 'PHP',
+                                    }).format(fee)
                                   }`}
                               </option>
                             )
