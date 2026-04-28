@@ -313,7 +313,7 @@ const Shop = ({ categories, items }) => {
             Our shop is temporarily closed for an ongoing inventory.
           </p>
           <p className="text-center">
-            We will be back on <strong>Thursday</strong>. Thank you for your
+            We will be back on <strong>Friday, May 1, 2026</strong>. Thank you for your
             patience and understanding.
           </p>
           <p className="text-center">— The Living Pupil Homeschool Team</p>
