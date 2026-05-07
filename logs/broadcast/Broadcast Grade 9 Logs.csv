@@ -1,0 +1,7 @@
+timestamp,sender,subject,broadcastSchoolYear,recipientEmail,recipientType,studentId,studentName,incomingGradeLevel,schoolYear,accreditation
+2026-04-16T11:22:32.530Z,finance,Test,2025-2026,meriamclo032@gmail.com,primary,cmc1ruu7o003tl5043cx6w77b,Sabian Ghea Cloma,GRADE_9,2025-2026,LOCAL
+2026-04-16T11:22:32.530Z,finance,Test,2025-2026,meriamclo032@gmail.com,secondary,cmc1ruu7o003tl5043cx6w77b,Sabian Ghea Cloma,GRADE_9,2025-2026,LOCAL
+2026-04-16T11:22:32.530Z,finance,Test,2025-2026,arnich2002@gmail.com,primary,cmbbpnex50003lb04rzpqfnv1,Psalmeah Arian Solatorio,GRADE_9,2025-2026,LOCAL
+2026-04-16T11:22:32.530Z,finance,Test,2025-2026,djordianms@gmail.com,secondary,cmbbpnex50003lb04rzpqfnv1,Psalmeah Arian Solatorio,GRADE_9,2025-2026,LOCAL
+2026-04-16T11:22:32.530Z,finance,Test,2025-2026,airien.limbaga@gmail.com,primary,cm7od6h6u1442203lhszo65utq,Ethan Gabriel Limbaga,GRADE_9,2025-2026,LOCAL
+2026-04-16T11:22:32.530Z,finance,Test,2025-2026,airien.limbaga@gmail.com,secondary,cm7od6h6u1442203lhszo65utq,Ethan Gabriel Limbaga,GRADE_9,2025-2026,LOCAL

@@ -1,0 +1,87 @@
+timestamp,sender,subject,broadcastSchoolYear,recipientEmail,recipientType,studentId,studentName,incomingGradeLevel,schoolYear,accreditation
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,imee.suarez@gmail.com,primary,cmkr46bvq0005jm043roxsje4,Kalista Brielle Bigdili Khamsah,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,NA,secondary,cmkr46bvq0005jm043roxsje4,Kalista Brielle Bigdili Khamsah,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,annabel.canadora@gmail.com,primary,cmecn7ti30003ia04wu0bik8x,Yossef Cañadora,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,anncanadora051983@gmail.com,secondary,cmecn7ti30003ia04wu0bik8x,Yossef Cañadora,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,emzqco@gmail.com,primary,cmdrydu330003jo0431aw0til,Alessandra Kendra Quioco,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,emzqco@gmail.com,secondary,cmdrydu330003jo0431aw0til,Alessandra Kendra Quioco,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,jlemonier20@gmail.com,primary,cmdqzn1k80007ie04c0vplamm,Michael Geoffrey Jr Lemonier,GRADE_4,2025-2026,INTERNATIONAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,jlemonier@qq.com,secondary,cmdqzn1k80007ie04c0vplamm,Michael Geoffrey Jr Lemonier,GRADE_4,2025-2026,INTERNATIONAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,onikun5@gmail.com,primary,cmd2tu5o40003ii044ziilnyw,Ivo Makrae Ybanez,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,onikun5@gmail.com,secondary,cmd2tu5o40003ii044ziilnyw,Ivo Makrae Ybanez,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,amaraagravante@gmail.com,primary,cmcf1rg8i0003l2041e3rp549,Amara Cassandra  Agravante,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,personalaxlagrav@gmail.com,secondary,cmcf1rg8i0003l2041e3rp549,Amara Cassandra  Agravante,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,cmnseverino@gmail.com,primary,cmcb65ryw0005l404qlmh74b2,Carine Joelle Severino,GRADE_4,2025-2026,DUAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,che_nadela@yahoo.com,secondary,cmcb65ryw0005l404qlmh74b2,Carine Joelle Severino,GRADE_4,2025-2026,DUAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,bridges.homeschoollp@gmail.com,primary,cmc9y4tgz001ll504diljwvco,Sebastian De Guzman,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,Bridgescdptc@gmail.com,secondary,cmc9y4tgz001ll504diljwvco,Sebastian De Guzman,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,joylanoy703@gmail.com,primary,cmc22by4v0003l404u9zsjsls,Zoe Poiema Lanoy,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,joylanoy703@gmail.com,secondary,cmc22by4v0003l404u9zsjsls,Zoe Poiema Lanoy,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,jhane.cu0116@gmail.com,primary,cmc1bmmaj0003jt04vcrgr0kr,Ysabella Danielle Cu,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,charleston.cu@gmail.com,secondary,cmc1bmmaj0003jt04vcrgr0kr,Ysabella Danielle Cu,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,rosecelldiana@gmail.com,primary,cmbuljfbw000njr04kjchqgpd,Madeline Roxx Diana,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,princebernarddiana@gmail.com,secondary,cmbuljfbw000njr04kjchqgpd,Madeline Roxx Diana,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,tinneyolmedo@gmail.com,primary,cmbufa23j0003kz043ky60ft1,Candice Lois Fajardo,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,tinneyolmedo@gmail.com,secondary,cmbufa23j0003kz043ky60ft1,Candice Lois Fajardo,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,jewelfire_05@live.com,primary,cmbrwf83w0013l704j9mrnw4h,Adam Markgraph,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,plukfatima.markgraph@gmail.com,secondary,cmbrwf83w0013l704j9mrnw4h,Adam Markgraph,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,janvincent.buhion@gmail.com,primary,cmbq3dn870003jr04qrfp0fsu,Kiefer Javin Buhion,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,janvincent.buhion@gmail.com,secondary,cmbq3dn870003jr04qrfp0fsu,Kiefer Javin Buhion,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,victoriasgcotejar@gmail.com,primary,cmbpvj3rt001djp04ibq8kiy2,Sonja Adelaine Cotejar,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,paolomiguel.cotejar@gmail.com,secondary,cmbpvj3rt001djp04ibq8kiy2,Sonja Adelaine Cotejar,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,josielacego@gmail.com,primary,cmbl52ggb0003lb04w0b9alaz,Freya Go,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,josielacego@gmail.com,secondary,cmbl52ggb0003lb04w0b9alaz,Freya Go,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,airiposadas@gmail.com,primary,cmbjnkbad0003jp04isa1q0d0,Jacob Connor Dy,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,airiposadas@gmail.com,secondary,cmbjnkbad0003jp04isa1q0d0,Jacob Connor Dy,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,jensismar3@gmail.com,primary,clm3e0cdv2417108l9xnq58k32,Ellie Katrielle Sismar,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,fsismar@yahoo.com,secondary,clm3e0cdv2417108l9xnq58k32,Ellie Katrielle Sismar,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,jabezpowerflores@gmail.com,primary,cmbhpqh6g000di804wy1vgyqh,Jabez Power Flores,GRADE_4,2025-2026,DUAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,jacky.ace2020@gmail.com,secondary,cmbhpqh6g000di804wy1vgyqh,Jabez Power Flores,GRADE_4,2025-2026,DUAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,ninzalamares@yahoo.com,primary,cmbf8zbzi0003la04k8yk7exo,Ella Amiah Dominguiano,GRADE_4,2025-2026,INTERNATIONAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,ninzalamares28@gmail.com,secondary,cmbf8zbzi0003la04k8yk7exo,Ella Amiah Dominguiano,GRADE_4,2025-2026,INTERNATIONAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,richlacuesta@gmail.com,primary,cmbc2nkzc0003l5041lfrncxz,Simon Paul Diamante,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,Josephdiamante777@gmail.com ,secondary,cmbc2nkzc0003l5041lfrncxz,Simon Paul Diamante,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,julieann.diano@gmail.com,primary,cmagllvop463504k12m2i7xd9,Emmanuel Eoin Diano,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,wbdiano@gmail.com,secondary,cmagllvop463504k12m2i7xd9,Emmanuel Eoin Diano,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,anasvari@yahoo.com,primary,cmb4nxljw0003jp047abbtmb6,Kyle Vergara,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,vergaraedsel07@gmail.com,secondary,cmb4nxljw0003jp047abbtmb6,Kyle Vergara,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,joylinagabunilas@gmail.com,primary,cmb07x4pg0003l8048sm2sphk,Alrhey Miguel Gabunilas Gabunilas,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,joylinagabunilas@gmail.com,secondary,cmb07x4pg0003l8048sm2sphk,Alrhey Miguel Gabunilas Gabunilas,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,flornavacilla@gmail.com,primary,cmaxxog29000djm0b7sbqud3m,Christoph Jon Navacilla,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,jonathan_navacilla@hotmail.com,secondary,cmaxxog29000djm0b7sbqud3m,Christoph Jon Navacilla,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,rachelagadier7@gmail.com,primary,cmatmv3bd0003l204ls0bdqw2,Ickey Marcus Aurelius II Agadier,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,rachelagadier7@gmail.com,secondary,cmatmv3bd0003l204ls0bdqw2,Ickey Marcus Aurelius II Agadier,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,jeasylbc@gmail.com,primary,cmaon0gs70003l404srfkjzal,Adaiah Carillo,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,jedox.ccmc@yahoo.com,secondary,cmaon0gs70003l404srfkjzal,Adaiah Carillo,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,inociandreablythe@gmail.com,primary,cmafawzw61471404jvd3id1o2m,Drea Blythe Inocian,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,inocianmay@gmail.com,secondary,cmafawzw61471404jvd3id1o2m,Drea Blythe Inocian,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,adahclaire@gmail.com,primary,cma2avjyq661704jvxo43omeh,Marsha Zmone Azranox Diamada,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,mzazranox@gmail.com,secondary,cma2avjyq661704jvxo43omeh,Marsha Zmone Azranox Diamada,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,mjabalsomo@gmail.com,primary,cma28pqk9110590akywx0z4kgb,Cyan Grey Balsomo,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,mjabalsomo@gmail.com,secondary,cma28pqk9110590akywx0z4kgb,Cyan Grey Balsomo,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,ourfamilim2014@gmail.com,primary,cm9qmlt54745304l4tm5cvzx1,Xian Matthew Lim,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,sheillamaeguevara@ymail.com,secondary,cm9qmlt54745304l4tm5cvzx1,Xian Matthew Lim,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,diannecerzo@gmail.com,primary,cm8slprnk065003leqbtkqta5,Jan Daniel Songsong,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,diana.songsong@dlsu.edu.ph,secondary,cm8slprnk065003leqbtkqta5,Jan Daniel Songsong,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,joanejaranillaadvento@gmail.com,primary,cm8hozlma295103lbyn1t2z5f,Felix Matteo Advento,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,joanejaranillaadvento@gmail.com,secondary,cm8hozlma295103lbyn1t2z5f,Felix Matteo Advento,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,bezalelescobido1987@gmail.com,primary,cm7v7557z607803iew6i86usg,BEZALEL ESCOBIDO,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,geraldescobido1987@gmail.com,secondary,cm7v7557z607803iew6i86usg,BEZALEL ESCOBIDO,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,jocelynmedico@gmail.com,primary,cm7oy5dc53082603kybp23jzta,Andrew Jansen Candia,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,jomedico127@gmail.com,secondary,cm7oy5dc53082603kybp23jzta,Andrew Jansen Candia,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,kglndz@gmail.com,primary,cm7ot7cax2041003k199n9iwsn,Samuel Kayden Jim,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,kglndz@gmail.com,secondary,cm7ot7cax2041003k199n9iwsn,Samuel Kayden Jim,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,epj16epj16@gmail.com,primary,cm7o58fq71367903kv6wkg5oka,EJ Lee Matthieu  Esperanza,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,ejesuarez@gmail.com,secondary,cm7o58fq71367903kv6wkg5oka,EJ Lee Matthieu  Esperanza,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,twinkle_please@yahoo.com,primary,cm7kr845s1487103joyk3qr1rm,Sky Clemente,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,CARMELOPOLENTISIMA@GMAIL.COM,secondary,cm7kr845s1487103joyk3qr1rm,Sky Clemente,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,kristinadabusolis@gmail.com,primary,cm75xxzj2566303l7wyj3dv4b,Noah Markus Solis,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,inadsolis@gmail.com,secondary,cm75xxzj2566303l7wyj3dv4b,Noah Markus Solis,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,beedontamarra@gmail.com,primary,cm7etnxjs164303k1luciott0,Seth Dmitri Tamarra,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,beedontamarra@gmail.com,secondary,cm7etnxjs164303k1luciott0,Seth Dmitri Tamarra,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,jebriones1988@gmail.com,primary,cm79qdaai332203l7ffpeoj91,Jalree Shawn Briones,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,stacyannegee@gmail.com,secondary,cm79qdaai332203l7ffpeoj91,Jalree Shawn Briones,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,cj.g.abadies@gmail.com,primary,cm743aokx144403l8hgoyfcm2,Zander Kyrie  Abadies,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,cherry_gindang@yahoo.com,secondary,cm743aokx144403l8hgoyfcm2,Zander Kyrie  Abadies,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,alanabear0304@gmail.com,primary,cm6klqmuf1077103jjbl1p8bji,Janna Alana Mostafa,GRADE_4,2025-2026,LOCAL
+2026-04-16T11:12:11.116Z,admin,Test,2025-2026,meregypt@gmail.com,secondary,cm6klqmuf1077103jjbl1p8bji,Janna Alana Mostafa,GRADE_4,2025-2026,LOCAL

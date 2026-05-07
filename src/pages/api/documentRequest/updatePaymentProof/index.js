@@ -1,4 +1,5 @@
 import prisma from '@/prisma/index';
+import { mirrorTransactionV2FromLegacyUpdate } from '@/prisma/services/student-v2';
 
 const handler = async (req, res) => {
     const { method } = req;
@@ -70,6 +71,10 @@ const handler = async (req, res) => {
                     updatedAt: new Date(),
                 },
             });
+
+            await mirrorTransactionV2FromLegacyUpdate(transactionId, {
+                paymentProofLink: paymentProofUrl,
+            }).catch(() => {});
 
             res.status(200).json({
                 success: true,

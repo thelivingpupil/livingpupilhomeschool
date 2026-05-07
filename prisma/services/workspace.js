@@ -1,3 +1,9 @@
+/**
+ * @file **OBSOLETE for new product work** — legacy `Workspace` (student portal container).
+ * Prefer [`student-v2.js`](./student-v2.js) for `WorkspaceV2` linked to `StudentV2`.
+ * Kept for routes still keyed by legacy workspace id/slug.
+ */
+
 import { InvitationStatus, TeamRole } from '@prisma/client';
 import slugify from 'slugify';
 import {
@@ -82,6 +88,7 @@ export const createWorkspace = async (creatorId, email, name, slug) => {
     text: createText({ code: workspace.inviteCode, name }),
     to: email,
   });
+  return workspace;
 };
 
 // import { html, text } from './emailTemplates';
@@ -230,6 +237,7 @@ export const getSiteWorkspace = async (slug, customDomain) =>
 export const getSingleWorkspace = async (id, email, slug) =>
   await prisma.workspace.findFirst({
     select: {
+      id: true,
       createdAt: true,
       creator: {
         select: {

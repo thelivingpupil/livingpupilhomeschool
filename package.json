@@ -7,7 +7,15 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma migrate deploy && prisma generate"
+    "postinstall": "prisma migrate deploy && prisma generate",
+    "db:migrate": "npx dotenv-cli -e .env --override -- prisma migrate dev",
+    "db:deploy": "npx dotenv-cli -e .env --override -- prisma migrate deploy",
+    "db:studio": "npx dotenv-cli -e .env --override -- prisma studio",
+    "db:migrate-legacy-v2": "npx dotenv-cli -e .env --override -- node scripts/migrate-legacy-to-v2.js",
+    "test:api-smoke": "node scripts/api-smoke-test.mjs",
+    "db:drift-diff": "npx dotenv-cli -e .env --override -- node scripts/prisma-drift-diff.mjs",
+    "db:drift-diff:sql": "npx dotenv-cli -e .env --override -- node scripts/prisma-drift-diff.mjs --script",
+    "db:migrate-resolve-rolled-v2": "prisma migrate resolve --rolled-back 20260405184209_add_student_v2_multi_year"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -70,6 +78,7 @@
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "autoprefixer": "^10.4.1",
+    "dotenv-cli": "^7.4.4",
     "eslint": "8.6.0",
     "eslint-config-next": "^0.2.4",
     "postcss": "^8.4.5",

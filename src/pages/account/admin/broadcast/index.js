@@ -259,30 +259,41 @@ const Broadcast = () => {
     if (!hasAnyFilter || filteredStudents.length === 0) {
       setGuardianEmails([]);
     } else if (Array.isArray(filteredStudents) && filteredStudents.length > 0) {
-      const emailsAndGuardians = filteredStudents
-        .map((student) => {
-          const guardianInfo = student.student?.creator;
-          if (guardianInfo) {
-            return {
-              email: guardianInfo?.email,
-              secondaryEmail:
-                student.student?.creator?.guardianInformation?.anotherEmail,
-              primaryGuardianName:
-                guardianInfo?.guardianInformation?.primaryGuardianName,
-            };
-          }
-          return null;
-        })
-        .filter((info) => info !== null); // Filter out any null results
+      // Group students by guardian email so the server can log exactly
+      // which student ids + grade levels were included in the broadcast.
+      const guardianMap = new Map();
 
-      // Filter out duplicates based on email
-      const uniqueEmailsAndGuardians = Array.from(
-        new Set(emailsAndGuardians.map((info) => info.email))
-      ).map((email) => {
-        return emailsAndGuardians.find((info) => info.email === email);
+      filteredStudents.forEach((studentRecord) => {
+        const guardianInfo = studentRecord.student?.creator;
+        const email = guardianInfo?.email;
+        if (!email) return;
+
+        const entry = guardianMap.get(email) || {
+          email,
+          secondaryEmail: guardianInfo?.guardianInformation?.anotherEmail || null,
+          primaryGuardianName:
+            guardianInfo?.guardianInformation?.primaryGuardianName || '',
+          students: [],
+        };
+
+        // Prefer keeping secondary email if any record has it
+        if (!entry.secondaryEmail && guardianInfo?.guardianInformation?.anotherEmail) {
+          entry.secondaryEmail = guardianInfo.guardianInformation.anotherEmail;
+        }
+
+        entry.students.push({
+          studentId: studentRecord.studentId,
+          firstName: studentRecord.firstName,
+          lastName: studentRecord.lastName,
+          incomingGradeLevel: studentRecord.incomingGradeLevel,
+          schoolYear: studentRecord.schoolYear,
+          accreditation: studentRecord.accreditation,
+        });
+
+        guardianMap.set(email, entry);
       });
 
-      setGuardianEmails(uniqueEmailsAndGuardians);
+      setGuardianEmails(Array.from(guardianMap.values()));
     }
   }, [filteredStudents, filterValues, program, accreditation, studentStatuses, hasAnyFilter]);
 
@@ -527,6 +538,7 @@ const Broadcast = () => {
             emailContent: processedEmailContent, // Use processed content with Firebase URLs
             sender: emailSender,
             subject: emailSubject,
+            schoolYear, // Track the selected SY for logging/CSV
             guardianEmails: batch, // Send the current batch
             ccEmails, // Add ccEmails to the request payload
             attachmentUrls, // Include attachment URLs in the JSON payload

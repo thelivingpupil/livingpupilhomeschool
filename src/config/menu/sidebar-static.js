@@ -8,7 +8,7 @@ const sidebarMenu = () => [
         showDefault: true,
       },
       {
-        name: 'Dashboard',
+        name: 'Students',
         path: `/account`,
         showDefault: true,
       },

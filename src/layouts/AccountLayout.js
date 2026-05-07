@@ -138,7 +138,6 @@ const AccountLayout = ({ children }) => {
   }, [router.isReady, workspaceSlug, workspace, setWorkspace]);
 
   // Determine if we should show workspace menu (only on workspace routes with a valid workspace)
-  // Only show if we have a workspaceSlug in the route AND a matching workspace
   const shouldShowWorkspaceMenu = workspaceSlug &&
     workspace?.slug === workspaceSlug &&
     router.pathname !== '/account' &&

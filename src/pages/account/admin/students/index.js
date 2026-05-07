@@ -1687,7 +1687,7 @@ const Students = ({ schoolFees, programs }) => {
             <div className="flex flex-col p-3 space-y-2 border rounded">
               <h4 className="font-bold text-gray-600">Student ID</h4>
               <h3 className="font-mono font-medium text-gray-400">
-                {student.studentId.toUpperCase()}
+                {student.studentId}
               </h3>
               <hr className="border-gray-400 border-dashed" />
               <h4 className="font-bold text-gray-600">

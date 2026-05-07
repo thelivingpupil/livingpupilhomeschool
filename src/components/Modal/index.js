@@ -2,14 +2,24 @@ import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 
-const Modal = ({ children, show, title, toggle }) => {
+const PANEL_BASE =
+  'relative w-full min-w-0 p-10 my-10 space-y-5 overflow-hidden text-left align-middle transition-all transform bg-white rounded shadow-xl';
+
+const Modal = ({
+  children,
+  show,
+  title,
+  toggle,
+  /** Tailwind max-width class so all modals share one width; override for rare compact dialogs. */
+  maxWidthClass = 'max-w-3xl',
+}) => {
   return (
     <Transition appear as={Fragment} show={show}>
       <Dialog
         className="fixed inset-0 z-50 text-gray-800"
         onClose={toggle}
       >
-        <div className="flex items-center justify-center overflow-y-auto max-h-screen p-5">
+        <div className="flex min-h-0 w-full items-center justify-center overflow-y-auto max-h-screen p-5">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -33,7 +43,7 @@ const Modal = ({ children, show, title, toggle }) => {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <div className="relative inline-block p-10 my-10 space-y-5 overflow-hidden text-left align-middle transition-all transform bg-white rounded shadow-xl">
+            <div className={`${PANEL_BASE} ${maxWidthClass}`}>
               <Dialog.Title as="h2" className="text-2xl font-bold leading-5">
                 {title}
               </Dialog.Title>

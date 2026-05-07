@@ -1,6 +1,7 @@
 import validateAddDomain from './add-domain';
 import validateCreateInquiry from './create-inquiry';
 import validateCreateWorkspace from './create-workspace';
+import validateCreateWorkspaceWithStudent from './create-workspace-with-student';
 import validateSession from './session';
 import validateUpdateEmail from './update-email';
 import validateUpdateName from './update-name';
@@ -12,6 +13,7 @@ export {
   validateAddDomain,
   validateCreateInquiry,
   validateCreateWorkspace,
+  validateCreateWorkspaceWithStudent,
   validateSession,
   validateUpdateName,
   validateUpdateEmail,

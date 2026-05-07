@@ -22,7 +22,7 @@ export default NextAuth({
         session.user.userType = user.userType;
         session.user.userCode = user.userCode;
         session.user.deletedAt = user.deletedAt;
-        session.user.studentRecords = await prisma.workspace.count({
+        const legacyWorkspaceCount = await prisma.workspace.count({
           where: {
             members: {
               some: {
@@ -34,6 +34,13 @@ export default NextAuth({
             deletedAt: null,
           },
         });
+        const studentV2Count = await prisma.studentV2.count({
+          where: {
+            userId: user.id,
+            deletedAt: null,
+          },
+        });
+        session.user.studentRecords = Math.max(legacyWorkspaceCount, studentV2Count);
       }
 
       return session;

@@ -1,3 +1,9 @@
+/**
+ * @file **OBSOLETE for new product work** — legacy `SchoolFee` + `Transaction` tuition flows.
+ * Prefer [`student-v2.js`](./student-v2.js) for StudentV2 / SchoolFeesV2 / TransactionV2.
+ * This file remains for backwards compatibility until all callers use V2-aware paths.
+ */
+
 import {
   Accreditation,
   GradeLevel,
@@ -16,6 +22,9 @@ import {
   PROGRAM,
 } from '@/utils/constants';
 import { createTransaction } from './transaction';
+import { ensureV2EnrollmentStackForLegacyWorkspace } from './student-v2';
+
+// --- V2 sync: after legacy fees exist, mirror to EnrollmentV2 / SchoolFeesV2 / TransactionV2 ---
 
 export const createSchoolFees = async (
   userId,
@@ -638,6 +647,11 @@ export const createSchoolFees = async (
     };
   }
   console.log('Exiting createSchoolFees function...');
+  try {
+    await ensureV2EnrollmentStackForLegacyWorkspace(workspaceId);
+  } catch (e) {
+    console.error('[ensureV2EnrollmentStackForLegacyWorkspace]', e);
+  }
   return result;
 };
 
@@ -694,6 +708,11 @@ export const createPayAllFees = async (
     };
   }
   console.log('Exiting createSchoolFees function...');
+  try {
+    await ensureV2EnrollmentStackForLegacyWorkspace(workspaceId);
+  } catch (e) {
+    console.error('[ensureV2EnrollmentStackForLegacyWorkspace]', e);
+  }
   return result;
 };
 

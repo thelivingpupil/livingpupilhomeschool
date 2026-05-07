@@ -1,5 +1,6 @@
 import { validateSession } from '@/config/api-validation';
 import prisma from '@/prisma/index';
+import { mirrorTransactionV2FromLegacyUpdate } from '@/prisma/services/student-v2';
 
 const handler = async (req, res) => {
     const { method } = req;
@@ -34,6 +35,10 @@ const handler = async (req, res) => {
                     referenceNumber: true
                 }
             });
+
+            await mirrorTransactionV2FromLegacyUpdate(transactionId, {
+                paymentStatus,
+            }).catch(() => {});
 
             res.status(200).json({
                 data: {

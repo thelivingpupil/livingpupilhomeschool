@@ -1,5 +1,10 @@
+/**
+ * @file **OBSOLETE for new product work** — legacy `Transaction` (enrollment + store).
+ * Prefer [`student-v2.js`](./student-v2.js) for `TransactionV2` mirrors and multi-year fees.
+ * This file remains for backwards compatibility and gateway integration.
+ */
+
 import {
-  CottageType,
   Currency,
   Fees,
   TransactionSource,
@@ -12,6 +17,13 @@ import { getBasicAuthorization } from '@/lib/server/dragonpay';
 import prisma from '@/prisma/index';
 import { getDeadline, groupBy } from '@/utils/index';
 import { v4 as uuidv4 } from 'uuid';
+
+import {
+  mirrorTransactionV2FromLegacyUpdate,
+  replaceTransactionV2AfterRenew,
+} from './student-v2';
+
+// --- V2 mirror calls (TransactionV2) follow legacy Transaction updates ---
 
 const modes = { [Fees.ONLINE]: 1, [Fees.OTC]: 2, [Fees.PAYMENT_CENTERS]: 4 };
 
@@ -245,6 +257,10 @@ export const cancelTransaction = async (transactionId) => {
       },
       where: { transactionId },
     });
+    await mirrorTransactionV2FromLegacyUpdate(transactionId, {
+      message,
+      transactionStatus: TransactionStatus.V,
+    }).catch(() => {});
   }
 };
 
@@ -515,6 +531,7 @@ export const renewTransaction = async (
     },
     where: { transactionId },
   });
+  await replaceTransactionV2AfterRenew(transactionId, newTransactionId).catch(() => {});
   return { url, referenceNumber };
 };
 
@@ -567,6 +584,8 @@ export const renewOldTransaction = async (
     where: { transactionId: originalTransactionId },
   });
 
+  await replaceTransactionV2AfterRenew(originalTransactionId, newTransactionId).catch(() => {});
+
   // Return the new URL and reference number
   return { url, referenceNumber };
 };
@@ -606,6 +625,15 @@ export const updateTransaction = async (
     where: { transactionId },
   });
 
+  await mirrorTransactionV2FromLegacyUpdate(transactionId, {
+    paymentReference,
+    paymentStatus,
+    message,
+    balance,
+    payment,
+    amount,
+  }).catch(() => {});
+
   return {
     ...transaction,
     amount: transaction?.amount?.toNumber() || 0,
@@ -643,6 +671,13 @@ export const changeTransactionAmount = async (
     },
     where: { transactionId },
   });
+
+  await mirrorTransactionV2FromLegacyUpdate(transactionId, {
+    amount,
+    balance,
+    payment,
+  }).catch(() => {});
+
   return {
     ...transaction,
     amount: transaction?.amount?.toNumber() || 0,

@@ -1,0 +1,61 @@
+timestamp,sender,subject,broadcastSchoolYear,recipientEmail,recipientType,studentId,studentName,incomingGradeLevel,schoolYear,accreditation
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,khendyz85@gmail.com,primary,cmddx8lmt0003js04k5u4sl3y,kael Mackenzie Modina,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,khendyz85@gmail.com,secondary,cmddx8lmt0003js04k5u4sl3y,kael Mackenzie Modina,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,dejecacionangela@gmail.com,primary,cmcurwrdb0003jo04x6icfl7m,Andrea Luz Dejecacion,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,angela.dejecacion06@gmail.com,secondary,cmcurwrdb0003jo04x6icfl7m,Andrea Luz Dejecacion,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,bridges.homeschoollp@gmail.com,primary,cmc9xt5ao0003l4041s2sg1vi,Jose Miguel Quintilla,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,Bridgescdptc@gmail.com,secondary,cmc9xt5ao0003l4041s2sg1vi,Jose Miguel Quintilla,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,hanahpuerteyu@gmail.com,primary,cllauiyc8090308mfbjoxr10q,Luis Angelo Yu,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,luis.casayas.yu@gmail.com,secondary,cllauiyc8090308mfbjoxr10q,Luis Angelo Yu,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,kk_salinas@icloud.com,primary,cmbxsqfla0003ld04hhs63l5r,Eoin Blythe Salinas,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,lalumasag@gmail.com,secondary,cmbxsqfla0003ld04hhs63l5r,Eoin Blythe Salinas,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,queenpeanuts2019@gmail.com,primary,cmbx9um8o000cjo044keg0pig,Theo Nephael  Galdo,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,queenpeanuts2019@gmail.com,secondary,cmbx9um8o000cjo044keg0pig,Theo Nephael  Galdo,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,peachyglaze93@gmail.com,primary,cmbwonj6f0003lc04x2p2we61,brianna yssabhela ong,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,peachyglazeong@icloud.com,secondary,cmbwonj6f0003lc04x2p2we61,brianna yssabhela ong,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,czvillena@gmail.com,primary,cmbuvkf3d0003l704z3z6jyh9,Zoefia Catriona Simblante,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,redstorm130121@gmail.com,secondary,cmbuvkf3d0003l704z3z6jyh9,Zoefia Catriona Simblante,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,michachecosocorpuz@gmail.com,primary,cmbrhpr180003l504b309gmdx,Miguel Corpuz,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,michellecorpuz2018@gmail.com,secondary,cmbrhpr180003l504b309gmdx,Miguel Corpuz,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,gachecoso@gmail.com,primary,cmbqeb0um0003l704k8hozpjr,Yuel Samuel Oliver Fernandez,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,geraldine.achecoso@gmail.com,secondary,cmbqeb0um0003l704k8hozpjr,Yuel Samuel Oliver Fernandez,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,ameline.cabardo@gmail.com,primary,cmbq4ksbr0007jx04zy9k8hd5,Chesqa Isabella Baran,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,kentbaran1208@gmail.com,secondary,cmbq4ksbr0007jx04zy9k8hd5,Chesqa Isabella Baran,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,rabbianne03@gmail.com,primary,cmbpziazn0003l704h5rzbcvo,Kezhale Dawnielle Villarosa,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,silvosarabbi@gmail.com,secondary,cmbpziazn0003l704h5rzbcvo,Kezhale Dawnielle Villarosa,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,queenlacson25@gmail.com,primary,cmbari2db0003lb04l78xwt3s,ASH KYEILL NAVARRO,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,lovekeanna97@gmail.com,secondary,cmbari2db0003lb04l78xwt3s,ASH KYEILL NAVARRO,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,plurrehmi@gmail.com,primary,cmb62k2jp0005l2048j9c9oak,Ardea Zafyr Mendoza,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,floriemaykho@yahoo.com,secondary,cmb62k2jp0005l2048j9c9oak,Ardea Zafyr Mendoza,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,chloe.bacalso@gmail.com,primary,cmaukjyky0003l104o3c9ewru,Lara Isabel Bacalso,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,teof.bacalso@gmail.com,secondary,cmaukjyky0003l104o3c9ewru,Lara Isabel Bacalso,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,kennethjoyconcepcion@gmail.com,primary,cmaricjx90003jy04xd7b6lbg,Erin Nicole Concepcion,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,donaldconcepcionfoac@gmail.com,secondary,cmaricjx90003jy04xd7b6lbg,Erin Nicole Concepcion,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,lindsayquinnzel@gmail.com,primary,cmal7lmmt0003ky0472qfn5dk,Quinnzel Adeline Bucao,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,LindsayQuinnzel@gmail.com,secondary,cmal7lmmt0003ky0472qfn5dk,Quinnzel Adeline Bucao,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,cre.nalejandro@gmail.com,primary,cm9uewodx225304jvhgsunqzc,TOBIAS ROMEO ALEJANDRO,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,cre.nadela@yahoo.com,secondary,cm9uewodx225304jvhgsunqzc,TOBIAS ROMEO ALEJANDRO,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,iraguedan@gmail.com,primary,cm8zbug4h2409103jr7bc38yyr,Jasmine Brielle Aguedan,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,iraguedan@gmail.com,secondary,cm8zbug4h2409103jr7bc38yyr,Jasmine Brielle Aguedan,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,thezus16@gmail.com,primary,cm7oq1t5e977103l8ow5r6hcl,Francis Kyle  Herrera,GRADE_3,2025-2026,INTERNATIONAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,None,secondary,cm7oq1t5e977103l8ow5r6hcl,Francis Kyle  Herrera,GRADE_3,2025-2026,INTERNATIONAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,mjmdrodriguez@gmail.com,primary,cm7ol4bb1157803kzealf03mg,Maria Zeithea Rodriguez,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,mjmdrodriguez.cpa@gmail.com,secondary,cm7ol4bb1157803kzealf03mg,Maria Zeithea Rodriguez,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,ejes.joenas@gmail.com,primary,cm7o8ke921463003l864e2w35v,Jozyl Vivianne Ejes,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,vanizaejes@gmail.com,secondary,cm7o8ke921463003l864e2w35v,Jozyl Vivianne Ejes,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,jasmin.deato@gmail.com,primary,cm7o5sm8r229003jtvr38htjl,Jabez Daniel Deato,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,jasmin_fernando_27@yahoo.com,secondary,cm7o5sm8r229003jtvr38htjl,Jabez Daniel Deato,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,j.ramz@yahoo.com,primary,cm7m01yk1204503l1q0ztrf6d,MATEO SEBASTIAN RAMIREZ,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,shineeramirez777@gmail.com,secondary,cm7m01yk1204503l1q0ztrf6d,MATEO SEBASTIAN RAMIREZ,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,mayumi.wahiman@gmail.com,primary,cm7lvj2fm290603ib3xp5nvwb,Hardem Wahiman,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,edmywahiman@gmail.com,secondary,cm7lvj2fm290603ib3xp5nvwb,Hardem Wahiman,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,herzlcaragan@gmail.com,primary,cm7kp9b6l303403l4coou7oki,Raphael Haden Noval,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,rgnoval@gmail.com,secondary,cm7kp9b6l303403l4coou7oki,Raphael Haden Noval,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,rolfinej07@gmail.com,primary,cm7jre89w778803l9fbrn4z6v,La Hannah  Mortel,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,morteld04@gmail.com,secondary,cm7jre89w778803l9fbrn4z6v,La Hannah  Mortel,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,aocajayon12@gmail.com,primary,cm7jpoqdy1036503juqwsvozt0,Zele Veilleur Cajayon,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,aocajayon12@gmail.com,secondary,cm7jpoqdy1036503juqwsvozt0,Zele Veilleur Cajayon,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,dduets@gmail.com,primary,cm6uan286399503jydxnw38zl,Franz Cynric Lapera,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,dduets@gmail.com,secondary,cm6uan286399503jydxnw38zl,Franz Cynric Lapera,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,eloisecimafranca@gmail.com,primary,cm56805x3004203l5hfpdsdgj,Ely Jotham Cimafranca,GRADE_3,2025-2026,LOCAL
+2026-04-16T11:10:55.319Z,admin,Test,2025-2026,eloisecimafranca@gmail.com,secondary,cm56805x3004203l5hfpdsdgj,Ely Jotham Cimafranca,GRADE_3,2025-2026,LOCAL
