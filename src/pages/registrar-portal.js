@@ -1771,6 +1771,7 @@ const RegistrarPortal = ({ page }) => {
                     />
                     Delivery
                   </label>
+                  {/* Pickup option temporarily disabled
                   <label>
                     <input
                       type="radio"
@@ -1781,6 +1782,7 @@ const RegistrarPortal = ({ page }) => {
                     />
                     Pickup
                   </label>
+                  */}
                 </div>
               </div>
 

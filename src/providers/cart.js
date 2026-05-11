@@ -67,12 +67,13 @@ const calculateShippingFee = (shippingType, itemCount) => {
 };
 
 export const SHOP_SHIPPING = {
-  pickup: {
-    title: 'Pick Up',
-    fee: 0,
-    key: ShippingType.PICK_UP,
-    value: 'pickup',
-  },
+  // Pickup option temporarily disabled
+  // pickup: {
+  //   title: 'Pick Up',
+  //   fee: 0,
+  //   key: ShippingType.PICK_UP,
+  //   value: 'pickup',
+  // },
   withInCebu: {
     title: 'Within Cebu',
     fee: (location) => {
