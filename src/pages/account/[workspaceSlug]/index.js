@@ -680,10 +680,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              if (!auto) {
-                setBirthCertificateLink(downloadURL);
-              } else {
+              if (studentId) {
                 updateFile(studentId, 'birth', downloadURL);
+              } else {
+                setBirthCertificateLink(downloadURL);
               }
             });
           },
@@ -3630,7 +3630,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                                   onChange={(e) =>
                                     handleBirthCertificateUpload(
                                       e,
-                                      false,
+                                      true,
                                       workspace.studentRecord.studentId,
                                     )
                                   }
