@@ -159,6 +159,7 @@ const CartProvider = ({ children }) => {
   const [isEmptyCanvas, setIsEmptyCanvas] = useState(true); //initiated
   const [showSignCanvas, setShowSignCanvas] = useState(false);
   const [paymentBreakdown, setPaymentBreakdown] = useState([]); //initiated
+  const checkoutInFlight = useRef(false);
 
   //initiated
   const clearSignature = () => {
@@ -293,6 +294,10 @@ const CartProvider = ({ children }) => {
     setPaymentLinkVisibility((state) => !state);
 
   const checkoutCart = () => {
+    if (checkoutInFlight.current) {
+      return;
+    }
+    checkoutInFlight.current = true;
     setSubmitting(true);
 
     api('/api/shop', {
@@ -305,26 +310,29 @@ const CartProvider = ({ children }) => {
         signatureLink,
       },
       method: 'POST',
-    }).then((response) => {
-      setSubmitting(false);
-
-      if (response.errors) {
-        Object.keys(response.errors).forEach((error) =>
-          toast.error(response.errors[error].msg)
-        );
-      } else {
-        toggleCartVisibility();
-        setPaymentLink(response.data.paymentLink);
-        setPaymentAmount(response.data.amount || total);
-        setTotalPayment(response.data.totalPayment || 0);
-        setTransactionId(response.data.transactionId);
-        setPaymentBreakdown(response.data.payments || []); // Store payment breakdown
-        togglePaymentLinkVisibility();
-        setCart([]);
-        localStorage.setItem(LPH_CART_KEY, JSON.stringify([]));
-        toast.success('Posted items for purchase!');
-      }
-    });
+    })
+      .then((response) => {
+        if (response.errors) {
+          Object.keys(response.errors).forEach((error) =>
+            toast.error(response.errors[error].msg)
+          );
+        } else {
+          toggleCartVisibility();
+          setPaymentLink(response.data.paymentLink);
+          setPaymentAmount(response.data.amount || total);
+          setTotalPayment(response.data.totalPayment || 0);
+          setTransactionId(response.data.transactionId);
+          setPaymentBreakdown(response.data.payments || []);
+          togglePaymentLinkVisibility();
+          setCart([]);
+          localStorage.setItem(LPH_CART_KEY, JSON.stringify([]));
+          toast.success('Posted items for purchase!');
+        }
+      })
+      .finally(() => {
+        checkoutInFlight.current = false;
+        setSubmitting(false);
+      });
   };
 
   const addToCart = (item) => {

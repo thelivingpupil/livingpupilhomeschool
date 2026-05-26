@@ -20,9 +20,8 @@ import prisma from '@/prisma/index';
 import { sendMail } from '@/lib/server/mail';
 import { getGuardianInformation } from '@/prisma/services/user';
 import { getParentFirstName } from '@/utils/index';
-import { sendMailWithGmail } from '@/lib/server/gmail';
 import sanityClient from '@/lib/server/sanity';
-import { cancelOrder } from '@/prisma/services/shop';
+import { cancelOrder, findRecentDuplicateOrder } from '@/prisma/services/shop';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -50,6 +49,27 @@ const handler = async (req, res) => {
         0
       );
       const totalWithShipping = total + shippingFee.fee;
+
+      const existingOrder = await findRecentDuplicateOrder({
+        userId,
+        items,
+        deliveryAddress,
+        contactNumber,
+        paymentType,
+        totalAmount: totalWithShipping,
+        skipTotalCheck: paymentType === 'INSTALLMENT',
+      });
+
+      if (existingOrder) {
+        res.status(200).json({
+          data: {
+            paymentLink: existingOrder.paymentLink,
+            amount: existingOrder.amount || totalWithShipping,
+            transactionId: existingOrder.transactionId,
+          },
+        });
+        return;
+      }
       let installmentAmount = 0;
       let totalPayment = 0;
       let firstPayment = 0;
@@ -209,18 +229,18 @@ const handler = async (req, res) => {
           to: email,
         });
 
-        await sendMailWithGmail({
-          sender: 'shop', // Dynamically select the account based on sender
-          to: email,
-          subject: `[Action Needed] Confirmation of ${uniqueOrderCode} from LP Shop`,
-          text: orderText({ parentFirstName }), // Generate text content from the template
+        await sendMail({
+          from: process.env.EMAIL_FROM,
           html: orderHtml({
             parentName: parentFirstName,
             orderCode: uniqueOrderCode,
             reciever: parentFullName,
             deliveryAddress: deliveryAddress,
             contactNumber: contactNumber,
-          }), // Generate HTML content from the template
+          }),
+          subject: `[Action Needed] Confirmation of ${uniqueOrderCode} from LP Shop`,
+          text: orderText({ parentFirstName }),
+          to: email,
         });
 
         res.status(200).json({

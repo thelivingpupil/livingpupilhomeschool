@@ -136,6 +136,88 @@ export const getUserOrderFees = async (id) =>
     where: { id },
   });
 
+const DUPLICATE_ORDER_WINDOW_MS = 5 * 60 * 1000;
+
+const buildItemFingerprint = (items, keyFn) =>
+  items
+    .map((item) => `${keyFn(item)}:${item.quantity}`)
+    .sort()
+    .join('|');
+
+/** Returns an existing in-flight order when the same checkout is submitted again. */
+export const findRecentDuplicateOrder = async ({
+  userId,
+  items,
+  deliveryAddress,
+  contactNumber,
+  paymentType,
+  totalAmount,
+  skipTotalCheck = false,
+}) => {
+  const windowStart = new Date(Date.now() - DUPLICATE_ORDER_WINDOW_MS);
+  const newFingerprint = buildItemFingerprint(items, (item) => item.name);
+
+  const recentOrders = await prisma.orderFee.findMany({
+    where: {
+      userId,
+      order: 0,
+      deletedAt: null,
+      paymentType,
+      orderStatus: 'Order_Placed',
+      createdAt: { gte: windowStart },
+    },
+    select: {
+      orderCode: true,
+      transaction: {
+        select: {
+          transactionId: true,
+          url: true,
+          amount: true,
+          purchaseHistory: {
+            select: {
+              total: true,
+              deliveryAddress: true,
+              contactNumber: true,
+              orderItems: {
+                select: { name: true, quantity: true },
+              },
+            },
+          },
+        },
+      },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  for (const order of recentOrders) {
+    const purchase = order.transaction?.purchaseHistory;
+    if (!purchase) continue;
+    if (purchase.deliveryAddress !== deliveryAddress) continue;
+    if (purchase.contactNumber !== contactNumber) continue;
+    if (
+      !skipTotalCheck &&
+      Number(purchase.total) !== Number(totalAmount)
+    ) {
+      continue;
+    }
+
+    const existingFingerprint = buildItemFingerprint(
+      purchase.orderItems,
+      (item) => item.name
+    );
+    if (existingFingerprint !== newFingerprint) continue;
+
+    return {
+      orderCode: order.orderCode,
+      transactionId: order.transaction.transactionId,
+      paymentLink: order.transaction.url,
+      amount: Number(order.transaction.amount),
+    };
+  }
+
+  return null;
+};
+
 export const createOrderFee = async ({
   email,
   userId,
