@@ -159,7 +159,7 @@ const html = ({
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> We are delighted to have you and your child join our homeschool community for the School Year 2025-2026. &nbsp; </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Start of the School Year 2025-2026 </p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> The school year officially begins on June 16, 2025. Before that, we invite you to join us for Pagbukas, our school year kick-off event. Stay tuned for more details coming soon! </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> The school year officially begins on June 19, 2026. Before that, we invite you to join us for Pagbukas, our school year kick-off event. Stay tuned for more details coming soon! </p>
                                     <p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
                                         <b>Select your Academic Strand.</b> When selecting your Senior High School strand, kindly choose only one (1) strand that best fits your academic and career goals. Kindly accomplish this form: <a style="text-decoration: underline; color: #ffffff;" target="_blank" href="https://bit.ly/SHSStrand">https://bit.ly/SHSStrand</a>.
