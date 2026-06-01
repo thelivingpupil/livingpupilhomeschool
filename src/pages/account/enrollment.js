@@ -1235,7 +1235,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               <span className="ml-1 text-red-600">*</span>
             </label>
 
-            <div className="relative flex flex-row space-x-5">
+            <div
+              className={`relative flex flex-row space-x-5 rounded px-3 py-2 md:w-40 ${!specialRadio ? 'border-red-500 border-2' : ''
+                }`}
+            >
               <label>
                 <input
                   type="radio"
