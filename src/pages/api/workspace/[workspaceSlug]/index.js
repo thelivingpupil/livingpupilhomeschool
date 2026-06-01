@@ -27,7 +27,7 @@ const handler = async (req, res) => {
         if (workspace.studentRecord.birthDate) {
           workspace.studentRecord.birthDate =
             workspace.studentRecord.birthDate instanceof Date
-              ? workspace.studentRecord.birthDate.toDateString()
+              ? workspace.studentRecord.birthDate.toISOString()
               : workspace.studentRecord.birthDate;
         }
         if (workspace.studentRecord.createdAt) {
