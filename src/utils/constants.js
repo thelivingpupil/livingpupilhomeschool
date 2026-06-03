@@ -573,6 +573,16 @@ export const PARENT_TRAINING_CODES = {
     code: '250721126530445',
     sequence: 'Parent Training 4',
   },
+  PT42025A: {
+    name: 'Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education - Part 1',
+    code: '250721126530445',
+    sequence: 'Parent Training 2',
+  },
+  PT42025B: {
+    name: 'Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education - Part 2',
+    code: '250721126530445',
+    sequence: 'Parent Training 3',
+  },
   PT52025: {
     name: 'Language Arts: Copywork, Transcription, Dictation, Oral Narration, Written Narration, Grammar',
     code: '250721217308449',
@@ -620,27 +630,25 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   },
   K1: {
     PT12025:
-      'The Heart of Learning: Cultivating Atmosphere, Discipline, and Life',
-    PT22025A: 'The Feast (Kindergarten)',
-    PT42025:
-      'Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education',
+      '1. The Heart of Learning: Cultivating Atmosphere, Discipline, and Life',
+    PT42025A:
+      '2. Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education - Part 1',
+    PT42025B:
+      '3. Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education - Part 2',
     PT62025:
-      'The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study',
-    PT82025: 'The Blueprint',
-    PT92025: 'The Timetable',
-    PT102025: 'Developing a Rhytmn: Education is Life',
+      '4. The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study',
+    PT102025: '5. Developing a Rhytmn: Education is Life',
   },
   K2: {
     PT12025:
-      'The Heart of Learning: Cultivating Atmosphere, Discipline, and Life',
-    PT22025A: '2. The Feast (Kindergarten)',
-    PT42025:
-      'Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education',
+      '1. The Heart of Learning: Cultivating Atmosphere, Discipline, and Life',
+    PT42025A:
+      '2. Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education - Part 1',
+    PT42025B:
+      '3. Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education - Part 2',
     PT62025:
-      'The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study',
-    PT82025: 'The Blueprint',
-    PT92025: 'The Timetable',
-    PT102025: 'Developing a Rhytmn: Education is Life',
+      '4. The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study',
+    PT102025: '5. Developing a Rhytmn: Education is Life',
   },
   GRADE_1: {
     PT12025:

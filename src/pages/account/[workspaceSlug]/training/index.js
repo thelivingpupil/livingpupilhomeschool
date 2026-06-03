@@ -5,11 +5,18 @@ import AccountLayout from '@/layouts/AccountLayout';
 import sanityClient from '@/lib/server/sanity';
 import { useWorkspace } from '@/providers/workspace';
 import Link from 'next/link';
-import { PARENT_TRAINING_CODES } from '@/utils/constants';
+import {
+  PARENT_TRAINING_CODES,
+  PARENT_TRAINING_PER_GRADE_LEVEL,
+} from '@/utils/constants';
 
 const Training = ({ courses }) => {
   const { workspace } = useWorkspace();
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+  const gradeLevel = workspace?.studentRecord?.incomingGradeLevel;
+  const gradeTrainingOrder = gradeLevel
+    ? Object.keys(PARENT_TRAINING_PER_GRADE_LEVEL[gradeLevel] || {})
+    : null;
 
   return (
     <AccountLayout>
@@ -30,13 +37,25 @@ const Training = ({ courses }) => {
                   .filter(
                     (course) =>
                       course.gradeLevel?.includes(workspace.studentRecord?.incomingGradeLevel) &&
-                      course.curriculum?.includes(workspace.studentRecord.program)
+                      course.curriculum?.includes(workspace.studentRecord.program) &&
+                      (!gradeTrainingOrder?.length ||
+                        gradeTrainingOrder.includes(course.code))
                   )
-                  .sort((a, b) => collator.compare(a.code, b.code))
+                  .sort((a, b) => {
+                    if (gradeTrainingOrder?.length) {
+                      return (
+                        gradeTrainingOrder.indexOf(a.code) -
+                        gradeTrainingOrder.indexOf(b.code)
+                      );
+                    }
+                    return collator.compare(a.code, b.code);
+                  })
                   .map((course, index) => (
                     <Card key={index}>
                       <h1 className="text-lg font-bold text-center">
-                        {PARENT_TRAINING_CODES[course.code]?.sequence}
+                        {gradeTrainingOrder?.length
+                          ? `Parent Training ${gradeTrainingOrder.indexOf(course.code) + 1}`
+                          : PARENT_TRAINING_CODES[course.code]?.sequence}
                       </h1>
                       <Card.Body
                         title={course.title}
