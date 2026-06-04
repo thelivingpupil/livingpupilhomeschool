@@ -5,7 +5,7 @@ import Card from '@/components/Card';
 import { useWorkspaces } from '@/hooks/data';
 import sanityClient from '@/lib/server/sanity';
 import { useMemo } from 'react';
-import { PROGRAM } from '@/utils/constants';
+import { PROGRAM, SCHOOL_YEAR } from '@/utils/constants';
 import { useState } from 'react';
 
 const formGradeLevels = {
@@ -14,6 +14,9 @@ const formGradeLevels = {
   FORM_2: ['GRADE_4', 'GRADE_5', 'GRADE_6'],
   FORM_3: ['GRADE_7', 'GRADE_8', 'GRADE_9', 'GRADE_10'],
 };
+
+/** Science experiment PDFs exist only for this school year (not SY 2026-2027). */
+const SCIENCE_EXPERIMENT_SCHOOL_YEARS = [SCHOOL_YEAR.SY_2025_2026];
 
 const Resources = ({
   lessonPlans,
@@ -65,7 +68,6 @@ const Resources = ({
         grade: workspace.studentRecord.incomingGradeLevel,
       }));
   }, [data]);
-  console.log('availableFilters', availableFilters);
 
   const isValidCommonSubject = useMemo(() => {
     if (!data) {
@@ -190,14 +192,16 @@ const Resources = ({
           Number(a?.grade?.split('_')[1] || 0) -
           Number(b?.grade?.split('_')[1] || 0),
       )
-      ?.filter((item) => {
-        return availableFilters.some(
+      ?.filter((item) => SCIENCE_EXPERIMENT_SCHOOL_YEARS.includes(item.schoolYear))
+      ?.filter((item) =>
+        availableFilters.some(
           (f) =>
+            SCIENCE_EXPERIMENT_SCHOOL_YEARS.includes(f.schoolYear) &&
             f.grade === item.grade &&
             f.program === item.program &&
             f.schoolYear === item.schoolYear,
-        );
-      });
+        ),
+      );
   }, [availableFilters, scienceExperiment]);
   return (
     <AccountLayout>
@@ -513,12 +517,15 @@ export const getServerSideProps = async () => {
     'fileUrl': commonSubjectsFile.asset->url
   }`);
 
-  const scienceExperiment = await sanityClient.fetch(`*[_type == 'experiment']{
+  const scienceExperiment = await sanityClient.fetch(
+    `*[_type == 'experiment' && schoolYear == $schoolYear]{
     'schoolYear': schoolYear,
     'grade': gradeLevel,
     'program': programType,
     'fileUrl': experimentFile.asset->url
-  }`);
+  }`,
+    { schoolYear: SCHOOL_YEAR.SY_2025_2026 },
+  );
 
   return {
     props: {
