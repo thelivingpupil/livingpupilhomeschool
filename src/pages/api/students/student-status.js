@@ -4,6 +4,10 @@ import { updateStudentStatus } from '@/prisma/services/student-record';
 import { sendMail } from '@/lib/server/mail';
 import { html, text } from '@/config/email-templates/initial-acceptance';
 import {
+  html as acceptanceHtml,
+  text as acceptanceText,
+} from '@/config/email-templates/letter-of-acceptance';
+import {
   html as initialAcceptance2025Html,
   text as initialAcceptance2025Text,
 } from '@/config/email-templates/initial-acceptance2025';
@@ -181,8 +185,25 @@ const handler = async (req, res) => {
           res.status(500).json({ error: 'School Year invalid' });
         }
       } else if (studentStatus === 'ENROLLED') {
-        // Letter of Acceptance automation is disabled.
-        // The student status is still updated, but no acceptance email is sent automatically.
+        await sendMail({
+          html: acceptanceHtml({
+            primaryGuardianName,
+            firstName,
+            middleName,
+            lastName,
+            incomingGradeLevel,
+            program,
+            accreditation,
+            enrollmentType,
+            cottageType,
+          }),
+          subject: `[Living Pupil Homeschool] Letter of Acceptance for ${firstName}`,
+          text: acceptanceText({
+            primaryGuardianName,
+            firstName,
+          }),
+          to: [email],
+        });
       } else {
         res.status(500).json({ error: 'No action taken' });
       }

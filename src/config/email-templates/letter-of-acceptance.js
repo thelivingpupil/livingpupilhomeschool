@@ -202,7 +202,7 @@ const html = ({
 																<div style="color:#2e3494;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
 																	<p style="margin: 0; margin-bottom: 16px;">Dear ${primaryGuardianName},</p>
 																	<p style="margin: 0; margin-bottom: 16px;">&nbsp;</p>
-																	<p style="margin: 0; margin-bottom: 16px;">On behalf of Living Pupil Homeschool, I am pleased to congratulate you on the acceptance of your student, <strong><em>${firstName} ${middleName} ${lastName}</em></strong>, into our homeschool program for SY 2025-2026.</p>
+																	<p style="margin: 0; margin-bottom: 16px;">On behalf of Living Pupil Homeschool, I am pleased to congratulate you on the acceptance of your student, <strong><em>${firstName} ${middleName} ${lastName}</em></strong>, into our homeschool program for SY 2026-2027.</p>
 																	<p style="margin: 0; margin-bottom: 16px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 16px;">Through your submitted documents, we have confirmed that your child is an ideal candidate as incoming <strong><em>${GRADE_LEVEL[incomingGradeLevel]}</em></strong> student.</p>
 																	<p style="margin: 0; margin-bottom: 16px;">&nbsp;</p>
@@ -405,16 +405,18 @@ const html = ({
 </html>`;
 };
 
-const text = ({ email }) => {
+const text = ({ primaryGuardianName, firstName }) => {
 	return `
-Welcome! You are logging in with ${email}
+Dear ${primaryGuardianName},
 
-If you did not request this email you can safely ignore it.
+On behalf of Living Pupil Homeschool, we are pleased to congratulate you on the acceptance of your student, ${firstName}, into our homeschool program.
 
-In case you need any assistance, just hit reply.
+Please view the full Letter of Acceptance in the HTML version of this email.
 
-Cheers,
-${process.env.EMAIL_FROM}
+If you need any assistance, please reply to this email.
+
+Warm regards,
+Living Pupil Homeschool
 `;
 };
 
