@@ -7,6 +7,7 @@ import { useState, useEffect, createRef, useRef } from 'react';
 import {
   GRADE_LEVEL,
   DOCUMENT_DETAILS,
+  REGISTRAR_SCHOOL_YEARS,
   STATUS_BG_COLOR,
   DOC_STATUS_BG_COLOR,
   DOC_STATUS,
@@ -1253,8 +1254,7 @@ const RegistrarPortal = ({ page }) => {
                   >
                     Last School Year with Living Pupil
                   </label>
-                  <input
-                    type="text"
+                  <select
                     id="lastSchoolYear"
                     value={formData.lastSchoolYear}
                     onChange={(e) => handleChange(e, setFormData)}
@@ -1263,8 +1263,16 @@ const RegistrarPortal = ({ page }) => {
                         ? 'border-red-500 border-2'
                         : 'border'
                     }`}
-                    placeholder="Enter last school year"
-                  />
+                  >
+                    <option value="" disabled>
+                      Select school year
+                    </option>
+                    {REGISTRAR_SCHOOL_YEARS.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
