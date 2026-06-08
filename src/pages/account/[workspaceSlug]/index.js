@@ -405,6 +405,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const validateNext =
     (step === 0 &&
       firstName.length > 0 &&
+      middleName.length > 0 &&
       lastName.length > 0 &&
       reason.length > 0 &&
       specialRadio.length > 0 &&
@@ -1128,9 +1129,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 value={firstName}
               />
               <input
-                className="px-3 py-2 border rounded md:w-1/3"
+                className={`px-3 py-2 rounded md:w-1/3 ${
+                  middleName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                }`}
                 onChange={(e) => setMiddleName(e.target.value)}
-                placeholder="Middle Name (Optional)"
+                placeholder="Middle Name"
                 value={middleName}
               />
               <input
@@ -1437,7 +1440,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const renderFileUpload = () => {
     return (
       <div className="flex flex-col p-5 space-y-5 overflow-auto">
-        {(!firstName || !lastName) && (
+        {(!firstName || !middleName || !lastName) && (
           <div className="px-3 py-3 text-sm border-2 rounded text-amber-500 border-amber-600 bg-amber-50">
             <p>
               Please provide the student information first before uploading any
@@ -1467,7 +1470,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 <input
                   className="text-xs cursor-pointer"
                   accept=".jpeg,.jpg,.png"
-                  disabled={!firstName || !lastName}
+                  disabled={!firstName || !middleName || !lastName}
                   onChange={handlePictureUpload}
                   type="file"
                 />
@@ -1522,7 +1525,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 <input
                   className="text-xs cursor-pointer"
                   accept=".gif,.jpeg,.jpg,.png,.pdf"
-                  disabled={!firstName || !lastName}
+                  disabled={!firstName || !middleName || !lastName}
                   onChange={handleBirthCertificateUpload}
                   type="file"
                 />
@@ -1568,6 +1571,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   accept=".gif,.jpeg,.jpg,.png,.pdf"
                   disabled={
                     !firstName ||
+                    !middleName ||
                     !lastName ||
                     enrollmentType === Enrollment.CONTINUING
                   }

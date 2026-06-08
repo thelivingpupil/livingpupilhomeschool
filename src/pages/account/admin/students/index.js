@@ -1817,9 +1817,11 @@ const Students = ({ schoolFees, programs }) => {
                   value={firstName}
                 />
                 <input
-                  className="px-3 py-2 border rounded md:w-1/3"
+                  className={`px-3 py-2 rounded md:w-1/3 ${
+                    middleName.length <= 0 ? 'border-red-500 border-2' : 'border'
+                  }`}
                   onChange={(e) => setMiddleName(e.target.value)}
-                  placeholder="Middle Name (Optional)"
+                  placeholder="Middle Name"
                   value={middleName}
                 />
                 <input
@@ -1922,7 +1924,12 @@ const Students = ({ schoolFees, programs }) => {
                 editStudentRecord(studentId);
                 //generateNewSchoolFees(studentId);
               }}
-              disabled={isSubmitting}
+              disabled={
+                isSubmitting ||
+                !firstName ||
+                !middleName ||
+                !lastName
+              }
             >
               Save Changes
             </button>
