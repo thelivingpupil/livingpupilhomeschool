@@ -1,5 +1,5 @@
 import { PortableText } from '@portabletext/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Card from '@/components/Card';
 import Content from '@/components/Content';
 import Meta from '@/components/Meta';
@@ -12,7 +12,7 @@ import JotFormEmbed from 'react-jotform-embed';
 import { PARENT_TRAINING_CODES } from '@/utils/constants';
 
 const Course = ({ course }) => {
-  const { workspace } = useWorkspace();
+  const { workspace, setWorkspace } = useWorkspace();
   const parentCourses = workspace?.creator?.guardianInformation?.parentTraining?.map(
     (training) => training?.courseCode ?? ''
   ) ?? [];
@@ -20,6 +20,7 @@ const Course = ({ course }) => {
   const guardianId = workspace?.creator?.guardianInformation?.id ?? null;
   const schoolYear = workspace?.studentRecord?.schoolYear ?? '';
   const [isSubmitting, setSubmittingState] = useState(false);
+  const [isTrainingFinished, setTrainingFinishedState] = useState(false);
 
   const filteredTraining = workspace?.creator?.guardianInformation?.parentTraining
     ? workspace.creator.guardianInformation.parentTraining.find(
@@ -28,6 +29,10 @@ const Course = ({ course }) => {
         training.schoolYear === schoolYear
     )
     : null;
+
+  useEffect(() => {
+    setTrainingFinishedState(filteredTraining?.status === 'FINISHED');
+  }, [filteredTraining?.status]);
 
   const courseComplete = () => {
     setSubmittingState(true);
@@ -47,6 +52,26 @@ const Course = ({ course }) => {
             toast.error(response.errors[error].msg)
           );
         } else {
+          setTrainingFinishedState(true);
+          if (workspace?.creator?.guardianInformation?.parentTraining) {
+            setWorkspace({
+              ...workspace,
+              creator: {
+                ...workspace.creator,
+                guardianInformation: {
+                  ...workspace.creator.guardianInformation,
+                  parentTraining:
+                    workspace.creator.guardianInformation.parentTraining.map(
+                      (training) =>
+                        training.courseCode === courseCode &&
+                        training.schoolYear === schoolYear
+                          ? { ...training, status: 'FINISHED' }
+                          : training
+                    ),
+                },
+              },
+            });
+          }
           toast.success('Update training status success');
         }
       })
@@ -116,14 +141,22 @@ const Course = ({ course }) => {
               </Card>
 
               {parentCourses.includes(course.code) ? (
-                filteredTraining?.status !== 'FINISHED' ? (
-                  <Card>
-                    <Card.Body title="Course Assessment">
+                <Card>
+                  <Card.Body title="Course Assessment">
+                    {!isTrainingFinished && PARENT_TRAINING_CODES[course.code] ? (
                       <JotFormEmbed
                         src={`https://form.jotform.com/${PARENT_TRAINING_CODES[course.code].code}`}
                         scrolling={true}
                         style={{ height: '100%' }}
                       />
+                    ) : null}
+                    {isTrainingFinished ? (
+                      <div className="flex justify-center mt-3">
+                        <span className="bg-green-500 text-white px-3 py-1 rounded-full">
+                          COURSE FINISHED
+                        </span>
+                      </div>
+                    ) : (
                       <div className="flex justify-center space-x-3 mt-3">
                         <button
                           onClick={courseComplete}
@@ -133,15 +166,9 @@ const Course = ({ course }) => {
                           Mark Course as Complete
                         </button>
                       </div>
-                    </Card.Body>
-                  </Card>
-                ) : (
-                  <div className="flex justify-center mt-3">
-                    <span className="bg-green-500 text-white px-3 py-1 rounded-full">
-                      COURSE {filteredTraining?.status}
-                    </span>
-                  </div>
-                )
+                    )}
+                  </Card.Body>
+                </Card>
               ) : null}
 
             </Content.Container>
