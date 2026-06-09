@@ -166,6 +166,13 @@ export const COTTAGE_TYPE = {
   FIVE_DAYS_A_WEEK: '5 days a week',
 };
 
+export const isCottageEligibleGradeLevel = (gradeLevel) =>
+  gradeLevel !== GradeLevel.PRESCHOOL;
+
+export const shouldShowTuitionFees = (program, gradeLevel) =>
+  program !== 'HOMESCHOOL_COTTAGE' ||
+  !GRADE_LEVEL_FORMS.SENIOR_HIGH.includes(gradeLevel);
+
 export const PAYMENT_TYPE = {
   ANNUAL: 'Full Payment',
   SEMI_ANNUAL: 'Three (3) Term Payment',
@@ -640,16 +647,7 @@ const GRADES_1_TO_10_PARENT_TRAINING = {
 
 export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   PRESCHOOL: {
-    PT12025:
-      'The Heart of Learning: Cultivating Atmosphere, Discipline, and Life',
-    PT22025: '2. The Feast (K, Form 1,2,3)',
-    PT42025:
-      'Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education',
-    PT62025:
-      'The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study',
-    PT82025: 'The Blueprint',
-    PT92025: 'The Timetable',
-    PT102025: 'Developing a Rhytmn: Education is Life',
+    PT102025: '1. Developing a Rhytmn: Education is Life',
   },
   K1: {
     PT12025:
