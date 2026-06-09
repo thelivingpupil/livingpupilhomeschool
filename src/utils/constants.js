@@ -630,6 +630,18 @@ export const PARENT_TRAINING_CODES = {
   },
 };
 
+const KINDERGARTEN_PARENT_TRAINING = {
+  PT12025:
+    '1. The Heart of Learning: Cultivating Atmosphere, Discipline, and Life',
+  PT42025A:
+    '2. Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education - Part 1',
+  PT42025B:
+    '3. Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education - Part 2',
+  PT62025:
+    '4. The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study',
+  PT102025: '5. Developing a Rhytmn: Education is Life',
+};
+
 const GRADES_1_TO_10_PARENT_TRAINING = {
   PT12025:
     '1. The Heart of Learning: Cultivating Atmosphere, Discipline, and Life',
@@ -658,28 +670,8 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
     PT92025: 'The Timetable',
     PT102025: 'Developing a Rhytmn: Education is Life',
   },
-  K1: {
-    PT12025:
-      '1. The Heart of Learning: Cultivating Atmosphere, Discipline, and Life',
-    PT42025A:
-      '2. Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education - Part 1',
-    PT42025B:
-      '3. Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education - Part 2',
-    PT62025:
-      '4. The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study',
-    PT102025: '5. Developing a Rhytmn: Education is Life',
-  },
-  K2: {
-    PT12025:
-      '1. The Heart of Learning: Cultivating Atmosphere, Discipline, and Life',
-    PT42025A:
-      '2. Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education - Part 1',
-    PT42025B:
-      '3. Wonder and Wisdom: The Importance of Nature Study in Charlotte Mason Education - Part 2',
-    PT62025:
-      '4. The riches in Common Subjects: Recitation, Hymn, Folksongs, Composer Study, Artist Study',
-    PT102025: '5. Developing a Rhytmn: Education is Life',
-  },
+  K1: KINDERGARTEN_PARENT_TRAINING,
+  K2: KINDERGARTEN_PARENT_TRAINING,
   GRADE_1: GRADES_1_TO_10_PARENT_TRAINING,
   GRADE_2: GRADES_1_TO_10_PARENT_TRAINING,
   GRADE_3: GRADES_1_TO_10_PARENT_TRAINING,
