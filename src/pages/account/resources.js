@@ -100,6 +100,11 @@ const Resources = ({
     );
   });
 
+  const hasPreschool = useMemo(
+    () => availableGrades?.includes('PRESCHOOL'),
+    [availableGrades],
+  );
+
   const availablePlans = useMemo(() => {
     return lessonPlans
       ?.sort(
@@ -439,6 +444,18 @@ const Resources = ({
                   Charlotte Mason LINGO
                 </a>
               </div>
+              {hasPreschool && (
+                <div className="flex justify-center">
+                  <a
+                    className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-primary-500`}
+                    href="/files/preschool-for-3s-notebook.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Preschool for 3&apos;s Notebook
+                  </a>
+                </div>
+              )}
               {isValidCommonSubject && (
                 <>
                   {/* <div className="flex justify-center">
