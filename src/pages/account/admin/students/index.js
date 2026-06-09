@@ -16,6 +16,7 @@ import {
   PROGRAM,
   RELIGION,
   COTTAGE_TYPE,
+  isCottageEligibleGradeLevel,
   FEES,
   GRADE_LEVEL_GROUPS,
   GRADE_LEVEL_TYPES,
@@ -879,7 +880,15 @@ const Students = ({ schoolFees, programs }) => {
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
                   onChange={(e) => {
-                    setIncomingGradeLevel(e.target.value);
+                    const newGradeLevel = e.target.value;
+                    setIncomingGradeLevel(newGradeLevel);
+                    if (
+                      program === Program.HOMESCHOOL_COTTAGE &&
+                      !isCottageEligibleGradeLevel(newGradeLevel)
+                    ) {
+                      setProgram(Program.HOMESCHOOL_PROGRAM);
+                      setCottageType(null);
+                    }
                     // setAccreditation(null);
                   }}
                   value={incomingGradeLevel}
@@ -966,7 +975,7 @@ const Students = ({ schoolFees, programs }) => {
                     key={index}
                     disabled={
                       entry === Program.HOMESCHOOL_COTTAGE &&
-                      incomingGradeLevel === GradeLevel.PRESCHOOL
+                      !isCottageEligibleGradeLevel(incomingGradeLevel)
                     }
                     value={entry}
                   >
