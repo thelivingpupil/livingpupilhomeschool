@@ -19,7 +19,7 @@ import Actions from './actions';
 import Menus from './menus';
 import { useWorkspaces } from '@/hooks/data';
 import { useWorkspace } from '@/providers/workspace';
-import { TransactionStatus } from '@prisma/client';
+import { hasPaidSchoolFees } from '@/utils/workspace';
 
 const Header = ({ menu }) => {
   const router = useRouter();
@@ -55,12 +55,7 @@ const Header = ({ menu }) => {
           isLoading={isLoading}
           menuCondition={!!workspace?.studentRecord}
           showMenu={true}
-          validate={
-            workspace?.schoolFees?.length > 0 &&
-            workspace?.schoolFees?.filter(
-              (fee) => fee.transaction.paymentStatus === TransactionStatus.S
-            )?.length > 0
-          }
+          validate={hasPaidSchoolFees(workspace)}
           workspace={workspace}
         />
       ))

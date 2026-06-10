@@ -7,7 +7,7 @@ import sidebarMenu from '@/config/menu/sidebar-static';
 import { useWorkspaces } from '@/hooks/data';
 import { useWorkspace } from '@/providers/workspace';
 import { MenuIcon } from '@heroicons/react/outline';
-import { TransactionStatus } from '@prisma/client';
+import { hasPaidSchoolFees } from '@/utils/workspace';
 
 const staticMenu = sidebarMenu();
 
@@ -26,12 +26,7 @@ const Sidebar = ({ menu, showModal }) => {
           isLoading={isLoading}
           menuCondition={!!workspace?.studentRecord}
           showMenu={data?.workspaces.length > 0 || isLoading}
-          validate={
-            workspace?.schoolFees?.length > 0 &&
-            workspace?.schoolFees?.filter(
-              (fee) => fee.transaction.paymentStatus === TransactionStatus.S
-            )?.length > 0
-          }
+          validate={hasPaidSchoolFees(workspace)}
           workspace={workspace}
         />
       ))
@@ -47,11 +42,7 @@ const Sidebar = ({ menu, showModal }) => {
         showMenu={true}
         validate={data?.workspaces?.some(
           (workspace) =>
-            workspace?.schoolFees?.length > 0 &&
-            workspace?.schoolFees?.filter(
-              (fee) => fee.transaction.paymentStatus === TransactionStatus.S
-            )?.length > 0 &&
-            !!workspace?.studentRecord
+            hasPaidSchoolFees(workspace) && !!workspace?.studentRecord
         )}
       />
     ));

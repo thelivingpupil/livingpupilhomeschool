@@ -312,6 +312,9 @@ export const getSingleWorkspace = async (id, email, slug) =>
         },
         where: {
           deletedAt: null,
+          transaction: {
+            deletedAt: null,
+          },
         },
       },
     },
@@ -444,6 +447,9 @@ export const getWorkspace = async (id, email, slug) =>
         },
         where: {
           deletedAt: null,
+          transaction: {
+            deletedAt: null,
+          },
         },
       },
     },
@@ -565,6 +571,12 @@ export const getWorkspaces = async (id, email) => {
           },
           createdAt: true,
           deletedAt: true,
+        },
+        where: {
+          deletedAt: null,
+          transaction: {
+            deletedAt: null,
+          },
         },
       },
     },
