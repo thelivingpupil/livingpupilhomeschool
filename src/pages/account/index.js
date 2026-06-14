@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
+import { mutate } from 'swr';
 
 import Button from '@/components/Button/index';
 import Card from '@/components/Card/index';
@@ -9,7 +10,6 @@ import Meta from '@/components/Meta/index';
 import { useInvitations, useWorkspaces } from '@/hooks/data/index';
 import { AccountLayout } from '@/layouts/index';
 import api from '@/lib/common/api';
-import { useWorkspace } from '@/providers/workspace';
 import { PlusIcon } from '@heroicons/react/outline';
 import Modal from '@/components/Modal';
 import {
@@ -28,7 +28,6 @@ const Welcome = () => {
   const { data: workspacesData, isLoading: isFetchingWorkspaces } =
     useWorkspaces();
 
-  const { setWorkspace } = useWorkspace();
   const [name, setName] = useState('');
   const [isSubmitting, setSubmittingState] = useState(false);
   const [showModal, setModalState] = useState(false);
@@ -101,7 +100,7 @@ const Welcome = () => {
       workspace?.studentRecord?.schoolYear === '2026-2027' ||
       workspace?.studentRecord === null
     ) {
-      setWorkspace(workspace);
+      mutate(`/api/workspace/${workspace.slug}`);
       router.replace(`/account/${workspace.slug}`);
     } else {
       setIsModalOpen(true);

@@ -116,26 +116,43 @@ const AccountLayout = ({ children }) => {
   // Extract workspaceSlug from route - wait for router to be ready
   const workspaceSlug = router.isReady ? router.query.workspaceSlug : null;
 
-  // Fetch workspace if not available and we have a workspaceSlug
-  const shouldFetchWorkspace = !workspace && workspaceSlug && status === 'authenticated' && router.isReady;
+  // Fetch workspace when slug is missing from context or does not match the route
+  const shouldFetchWorkspace =
+    workspaceSlug &&
+    status === 'authenticated' &&
+    router.isReady &&
+    (!workspace || workspace.slug !== workspaceSlug);
   const { data: workspaceData, error: workspaceError, isLoading: isLoadingWorkspace } = useSWR(
-    shouldFetchWorkspace ? `/api/workspace/${workspaceSlug}` : null
+    shouldFetchWorkspace ? `/api/workspace/${workspaceSlug}` : null,
+    null,
+    { revalidateOnMount: true }
   );
 
-  // Set workspace when data is fetched
+  // Keep workspace context in sync with fetched data for the active slug
   useEffect(() => {
-    if (workspaceData?.data?.workspace && !workspace) {
-      setWorkspace(workspaceData.data.workspace);
-    }
-  }, [workspaceData, workspace, setWorkspace]);
+    const fetchedWorkspace = workspaceData?.data?.workspace;
 
-  // Clear workspace when navigating to a route without workspaceSlug
-  useEffect(() => {
-    if (router.isReady && !workspaceSlug && workspace) {
-      // We're on a route without workspaceSlug (like /account), clear the workspace
-      setWorkspace(null);
+    if (fetchedWorkspace?.slug === workspaceSlug) {
+      setWorkspace(fetchedWorkspace);
     }
-  }, [router.isReady, workspaceSlug, workspace, setWorkspace]);
+  }, [workspaceData, workspaceSlug, setWorkspace]);
+
+  // Clear workspace after navigating back to the dashboard
+  useEffect(() => {
+    const handleRouteChangeComplete = (url) => {
+      const pathname = url.split('?')[0];
+
+      if (pathname === '/account') {
+        setWorkspace(null);
+      }
+    };
+
+    router.events.on('routeChangeComplete', handleRouteChangeComplete);
+
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChangeComplete);
+    };
+  }, [router.events, setWorkspace]);
 
   // Determine if we should show workspace menu (only on workspace routes with a valid workspace)
   // Only show if we have a workspaceSlug in the route AND a matching workspace
@@ -147,7 +164,12 @@ const AccountLayout = ({ children }) => {
   // Show loading state while fetching workspace on direct access
   // Show loading if: we're on a workspace route, workspace is not loaded, and either fetching or waiting for router
   // BUT don't show loading if there's an error (let error page show instead)
-  const isWaitingForWorkspace = isWorkspaceRoute && !workspace && status === 'authenticated' && !workspaceError && (isLoadingWorkspace || !router.isReady || shouldFetchWorkspace);
+  const isWaitingForWorkspace =
+    isWorkspaceRoute &&
+    status === 'authenticated' &&
+    !workspaceError &&
+    (!workspace || workspace.slug !== workspaceSlug) &&
+    (isLoadingWorkspace || !router.isReady || shouldFetchWorkspace);
 
   const handleCallback = (data) => {
     const { type } = data;

@@ -563,7 +563,9 @@ const Students = ({ schoolFees, programs }) => {
             setIdPictureFrontProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -610,7 +612,9 @@ const Students = ({ schoolFees, programs }) => {
             setIdPictureBackProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {

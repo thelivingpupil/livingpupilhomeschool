@@ -648,7 +648,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             setPictureProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -694,7 +696,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             setBirthCertificateProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -706,9 +710,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             });
           },
         );
+      } else {
+        toast.error('File too large. Size should not exceed 5 MB.');
       }
-    } else {
-      toast.error('File too large. Size should not exceed 10 MB.');
     }
   };
 
@@ -741,7 +745,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             setReportCardProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {

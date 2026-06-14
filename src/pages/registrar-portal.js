@@ -348,7 +348,9 @@ const RegistrarPortal = ({ page }) => {
             setAffidavitProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -395,7 +397,9 @@ const RegistrarPortal = ({ page }) => {
             setLetterRequestEccdProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -441,7 +445,9 @@ const RegistrarPortal = ({ page }) => {
             setEccdFormProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -589,7 +595,9 @@ const RegistrarPortal = ({ page }) => {
             setLetterRequest137Progress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {

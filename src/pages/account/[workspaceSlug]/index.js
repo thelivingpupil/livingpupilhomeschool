@@ -631,7 +631,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             setPictureProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -677,7 +679,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             setBirthCertificateProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -689,9 +693,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             });
           },
         );
+      } else {
+        toast.error('File too large. Size should not exceed 5 MB.');
       }
-    } else {
-      toast.error('File too large. Size should not exceed 10 MB.');
     }
   };
 
@@ -724,7 +728,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             setReportCardProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -771,7 +777,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             setIdPictureProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -818,7 +826,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             setIdPictureFrontProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -865,7 +875,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             setIdPictureBackProgress(progress);
           },
           (error) => {
-            toast.error(error);
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {

@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
+import { mutate } from 'swr';
 import { useWorkspaces } from '@/hooks/data/index';
 import { useWorkspace } from '@/providers/workspace';
 
@@ -11,6 +12,7 @@ const Actions = ({ show }) => {
   const router = useRouter();
 
   const handleWorkspaceChange = (workspace) => {
+    mutate(`/api/workspace/${workspace?.slug}`);
     setWorkspace(workspace);
     router.replace(`/account/${workspace?.slug}`);
   };
@@ -26,7 +28,7 @@ const Actions = ({ show }) => {
                 ? 'Fetching students...'
                 : data?.workspaces.length === 0
                 ? 'No records found'
-                : workspace === null
+                : !workspace
                 ? 'Select a student record...'
                 : workspace.name}
             </span>
