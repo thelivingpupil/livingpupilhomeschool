@@ -132,9 +132,8 @@ const html = ({ parentName }) => {
                                                                     </p>
 																	<p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
 																	<p style="margin: 0; margin-bottom: 3px; color:#ffffff;">
-                                                                        Attached, you will find a copy of your signed <strong> Homeschool Agreement </strong>
-                                                                        and the <strong>Payment Policy</strong> for SY 2026-2027. These documents outline the 
-                                                                        terms and conditions of our homeschool program as well as the financial obligations 
+                                                                        Attached, you will find a copy of your signed <strong>General Policies on Payment of Tuition Fees, Refund and Withdrawal or Transfer Policy</strong> for SY 2026-2027. These documents outline the
+                                                                        terms and conditions of our homeschool program as well as the financial obligations
                                                                         and procedures.
                                                                     </p>
                                                                     <p style="margin: 0; margin-bottom: 3px;">&nbsp;</p>
@@ -217,7 +216,7 @@ Dear ${parentName},
 
 I hope this email finds you well.
 
-Attached, you will find a copy of your signed Homeschool Agreement and the Payment Policy for SY 2024-2025. These documents outline the terms and conditions of our homeschool program as well as the financial obligations and procedures.
+Attached, you will find a copy of your signed General Policies on Payment of Tuition Fees, Refund and Withdrawal or Transfer Policy for SY 2024-2025. These documents outline the terms and conditions of our homeschool program as well as the financial obligations and procedures.
 
 Please review the attached files carefully and keep them for your records. Should you have any questions or need further clarification on any points, do not hesitate to reach out.
 

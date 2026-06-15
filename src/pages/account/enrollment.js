@@ -40,6 +40,13 @@ import Card from '@/components/Card';
 import Content from '@/components/Content/index';
 import Meta from '@/components/Meta/index';
 import Modal from '@/components/Modal';
+import { PaymentPoliciesText, PaymentPolicySignatureSection } from '@/components/PaymentPolicies';
+import AgreementReadGate from '@/components/AgreementReadGate';
+import {
+  EnrollmentAgreementSignatureSection,
+  MediaConsentSection,
+  ParentPartnershipAgreementContent,
+} from '@/components/ParentPartnershipAgreement';
 import { AccountLayout } from '@/layouts/index';
 import { storage } from '@/lib/client/firebase';
 import api from '@/lib/common/api';
@@ -91,7 +98,18 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const [isSubmitting, setSubmittingState] = useState(false);
   const [review, setReviewVisibility] = useState(false);
   const [agree, setAgree] = useState(false);
+  const [mediaConsent, setMediaConsent] = useState(null);
+  const [hasReadPartnershipAgreement, setHasReadPartnershipAgreement] =
+    useState(false);
+  const [partnershipAgreementReadAt, setPartnershipAgreementReadAt] =
+    useState(null);
+  const [partnershipAgreementModalOpen, setPartnershipAgreementModalOpen] =
+    useState(false);
+  const [hasReadPaymentPolicies, setHasReadPaymentPolicies] = useState(false);
+  const [paymentPoliciesReadAt, setPaymentPoliciesReadAt] = useState(null);
+  const [paymentPoliciesModalOpen, setPaymentPoliciesModalOpen] = useState(false);
   const sigCanvas = useRef({});
+  const enrollmentSigCanvas = useRef({});
   const clearSignature = () => {
     sigCanvas.current.clear();
   };
@@ -148,6 +166,12 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
     student?.reportCard || null,
   );
   const [signatureLink, setSignatureLink] = useState(null);
+  const [enrollmentAgreementSignatureLink, setEnrollmentAgreementSignatureLink] =
+    useState(null);
+  const [enrollmentAgreementSignatureDate, setEnrollmentAgreementSignatureDate] =
+    useState(null);
+  const [enrollmentSignatureProgress, setEnrollmentSignatureProgress] =
+    useState(0);
   const [discountCode, setDiscountCode] = useState('');
   const [discount, setDiscount] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -193,7 +217,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   );
   const [address1, setAddress1] = useState('');
   const [address2, setAddress2] = useState('');
-  const [internationAddress, setInternationalAddress] = useState('');
+  const [isInternationalAddress, setIsInternationalAddress] = useState(null);
+  const [internationalAddressCountry, setInternationalAddressCountry] =
+    useState('');
+  const [internationalAddressFull, setInternationalAddressFull] = useState('');
   const [primaryTeacherName, setPrimaryTeacherName] = useState('');
   const [primaryTeacherAge, setPrimaryTeacherAge] = useState('');
   const [primaryTeacherEducation, setPrimaryTeacherEducation] = useState('');
@@ -242,8 +269,18 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   const handleAnotherEmail = (event) => setAnotherEmail(event.target.value);
   const handleAddress1 = (event) => setAddress1(event.target.value);
   const handleAddress2 = (event) => setAddress2(event.target.value);
-  const handleInternationalAddress = (event) =>
-    setInternationalAddress(event.target.value);
+  const handleInternationalAddressToggle = (event) => {
+    const hasInternationalAddress = event.target.value === 'true';
+    setIsInternationalAddress(hasInternationalAddress);
+    if (!hasInternationalAddress) {
+      setInternationalAddressCountry('');
+      setInternationalAddressFull('');
+    }
+  };
+  const handleInternationalAddressCountry = (event) =>
+    setInternationalAddressCountry(event.target.value);
+  const handleInternationalAddressFull = (event) =>
+    setInternationalAddressFull(event.target.value);
   const handlePrimaryTeacherName = (event) =>
     setPrimaryTeacherName(event.target.value);
   const handlePrimaryTeacherAge = (event) =>
@@ -425,6 +462,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       reason.length > 0 &&
       gender.length > 0 &&
       specialRadio.length > 0 &&
+      isInternationalAddress !== null &&
+      (isInternationalAddress !== true ||
+        (internationalAddressCountry.trim().length > 0 &&
+          internationalAddressFull.trim().length > 0)) &&
       schoolYear.length > 0 &&
       formerSchoolName.length > 0 &&
       formerSchoolAddress.length > 0 &&
@@ -451,12 +492,17 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
       (enrollmentType === 'NEW' ? formerRegistrarNumber.length > 0 : true)) ||
     //birthCertificateLink > 0 &&
     //birthCertificateLink?.length > 0
-    (step === 1 && accreditation !== null) ||
+    (step === 1 &&
+      accreditation !== null &&
+      hasReadPartnershipAgreement &&
+      mediaConsent !== null &&
+      enrollmentAgreementSignatureLink?.length > 0) ||
     (step === 2 &&
       payment !== null &&
       paymentMethod &&
+      hasReadPaymentPolicies &&
       agree &&
-      //signatureLink?.length > 0 &&
+      signatureLink?.length > 0 &&
       !isSubmittingCode);
 
   const programFee = programs.find((programFee) => {
@@ -765,11 +811,6 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
     }
   };
 
-  const saveSignature = () => {
-    const dataUrl = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
-    uploadSignature(dataUrl);
-  };
-
   const dataURLToBlob = (dataURL) => {
     const arr = dataURL.split(',');
     const mime = arr[0].match(/:(.*?);/)[1];
@@ -782,10 +823,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
     return new Blob([u8arr], { type: mime });
   };
 
-  const uploadSignature = (dataUrl) => {
+  const uploadSignature = (dataUrl, filePrefix, onProgress, onComplete) => {
     const blob = dataURLToBlob(dataUrl);
     const extension = 'png';
-    const fileName = `signature-${crypto
+    const fileName = `${filePrefix}-${crypto
       .createHash('md5')
       .update(dataUrl)
       .digest('hex')
@@ -803,15 +844,44 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         const progress = Math.round(
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
         );
-        setSignatureProgress(progress);
+        onProgress(progress);
       },
       (error) => {
         toast.error(error.message);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setSignatureLink(downloadURL);
+          onComplete(downloadURL);
         });
+      },
+    );
+  };
+
+  const saveSignature = () => {
+    const dataUrl = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
+    uploadSignature(
+      dataUrl,
+      'signature',
+      setSignatureProgress,
+      setSignatureLink,
+    );
+  };
+
+  const clearEnrollmentSignature = () => {
+    enrollmentSigCanvas.current.clear();
+  };
+
+  const saveEnrollmentSignature = () => {
+    const dataUrl = enrollmentSigCanvas.current
+      .getTrimmedCanvas()
+      .toDataURL('image/png');
+    uploadSignature(
+      dataUrl,
+      'enrollment-agreement-signature',
+      setEnrollmentSignatureProgress,
+      (downloadURL) => {
+        setEnrollmentAgreementSignatureLink(downloadURL);
+        setEnrollmentAgreementSignatureDate(new Date());
       },
     );
   };
@@ -877,6 +947,12 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         anotherEmail,
         address1,
         address2,
+        isInternationalAddress,
+        studentInternationalAddress:
+          isInternationalAddress === true
+            ? `${internationalAddressCountry.trim()}${internationalAddressFull.trim()}` ||
+              null
+            : null,
         discountCode,
         primaryTeacherName,
         primaryTeacherAge,
@@ -890,6 +966,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
         formerRegistrar,
         formerRegistrarEmail,
         formerRegistrarNumber,
+        mediaConsent,
+        enrollmentAgreementSignature: enrollmentAgreementSignatureLink,
+        enrollmentAgreementSignatureDate:
+          enrollmentAgreementSignatureDate?.toISOString() || null,
       },
       method: 'POST',
     })
@@ -1401,21 +1481,75 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             </div>
           </div>
           <div className="flex flex-col">
-            <label className="text-lg font-bold" htmlFor="txtMother">
-              International Address{' '}
-              <span className="ml-1 text-gray-600">
-                <i>(if the student is residing abroad)</i>
-              </span>
+            <label className="text-lg font-bold" htmlFor="isInternationalAddress">
+              Is the student currently residing abroad?{' '}
+              <span className="ml-1 text-red-600">*</span>
             </label>
-            <div className="flex flex-row space-x-5">
-              <input
-                className={`px-3 py-2 rounded md:w-3/4 border`}
-                placeholder="House No. St. Name, Village/Subdivision"
-                onChange={handleInternationalAddress}
-                value={internationAddress}
-              />
+            <div
+              className={`relative flex flex-row space-x-5 rounded px-3 py-2 md:w-40 ${
+                isInternationalAddress === null ? 'border-red-500 border-2' : ''
+              }`}
+            >
+              <label>
+                <input
+                  type="radio"
+                  name="isInternationalAddress"
+                  value="true"
+                  checked={isInternationalAddress === true}
+                  onChange={handleInternationalAddressToggle}
+                />
+                Yes
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="isInternationalAddress"
+                  value="false"
+                  checked={isInternationalAddress === false}
+                  onChange={handleInternationalAddressToggle}
+                />
+                No
+              </label>
             </div>
           </div>
+          {isInternationalAddress === true && (
+            <div className="flex flex-col space-y-5">
+              <div className="flex flex-col">
+                <label className="text-lg font-bold" htmlFor="internationalAddressCountry">
+                  Country of Residence{' '}
+                  <span className="ml-1 text-red-600">*</span>
+                </label>
+                <input
+                  id="internationalAddressCountry"
+                  className={`px-3 py-2 rounded md:w-3/4 ${
+                    internationalAddressCountry.trim().length <= 0
+                      ? 'border-red-500 border-2'
+                      : 'border'
+                  }`}
+                  placeholder="Country of Residence"
+                  onChange={handleInternationalAddressCountry}
+                  value={internationalAddressCountry}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-lg font-bold" htmlFor="internationalAddressFull">
+                  Complete foreign address{' '}
+                  <span className="ml-1 text-red-600">*</span>
+                </label>
+                <input
+                  id="internationalAddressFull"
+                  className={`px-3 py-2 rounded md:w-3/4 ${
+                    internationalAddressFull.trim().length <= 0
+                      ? 'border-red-500 border-2'
+                      : 'border'
+                  }`}
+                  placeholder="Complete foreign address"
+                  onChange={handleInternationalAddressFull}
+                  value={internationalAddressFull}
+                />
+              </div>
+            </div>
+          )}
         </div>
         <Card.Body title="Files and Documents">{renderFileUpload()}</Card.Body>
         <Card.Body title="Educational Background">
@@ -2462,99 +2596,37 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             </>
           )} */}
         </div>
-        <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded">
-          <h3 className="text-sm font-bold">
-            General Policies and Guidelines:
-          </h3>
-          <ol className="px-5 list-decimal">
-            <li>
-              Parents intending to enroll must watch our "HOMESCHOOL
-              FUNDAMENTALS" videos.
-            </li>
-            <li>
-              If choosing to use Pure Charlotte Mason or a CM-inspired
-              Curriculum, parents must faithfully attend the CM
-              training/workshop.
-            </li>
-            <li>
-              Parents are expected to promptly fulfill all financial
-              obligations, including annual, bi-annual, or quarterly dues for
-              their children.
-            </li>
-          </ol>
-          <p>As a Parent-Teacher, I Acknowledge My Responsibility to:</p>
-          <ol className="px-5 list-disc">
-            <li>
-              Dedicate time to plan, study, and organize our homeschool
-              curriculum.
-            </li>
-            <li>
-              Intentionally attend/watch the self-paced training and live LP
-              parent-teacher training.
-            </li>
-            <li>
-              Participate in scheduled coaching sessions with LP homeschool
-              advisers/coaches whenever available.
-            </li>
-            <li>
-              Administer quarterly assessments using the full CM or CM-inspired
-              approach.
-            </li>
-            <li>
-              Submit quarterly and final grades (with averages) at the end of
-              the school year according to Living Pupil Homeschool's
-              instructions (for K2 to Grade 10 students only).
-            </li>
-            <li>
-              Inform the school of any concerns or issues that might affect
-              my/our child's academic performance or behavior.
-            </li>
-            <li>
-              Comply with DepEd's requirement of at least 205 school days per
-              school year, following the DepEd calendar for school records.
-            </li>
-          </ol>
-          <p>
-            As Part of the Living Pupil Family, I Acknowledge My Responsibility
-            to:
-          </p>
-          <ol className="px-5 list-disc">
-            <li>
-              Support and encourage Living Pupil Homeschool's values central to
-              the philosophy and mission of Charlotte Mason.
-            </li>
-            <li>
-              Stay informed by regularly checking emails, the Living Pupil
-              Facebook Page, LP FB groups, LP FB chat room, and other
-              communication platforms used by the school.
-            </li>
-            <li>Fulfill my financial obligations to the school on time.</li>
-            <li>
-              Understand the importance of participating in LP events and
-              activities.
-            </li>
-            <li>
-              Permit the use of photographs/videos of my family and information
-              obtained through personal interviews in Living Pupil's
-              publications, social media platforms, marketing materials, or
-              virtual events.
-            </li>
-            <li>
-              Agree not to reproduce, distribute, or display lecture notes,
-              parent training recordings, or course materials in any
-              form—whether or not a fee is charged—without express written
-              consent.
-            </li>
-          </ol>
-          <p>Enrollment Agreement</p>
-          <ul className="px-5 list-disc">
-            <li>
-              Parents are initially regarded as temporarily enrolled in Living
-              Pupil Homeschool. However, they must actively complete the
-              self-paced training to attain full enrollment status.
-            </li>
-          </ul>
-        </div>
+        <AgreementReadGate
+          title="Parent Partnership Agreement"
+          buttonLabel="Click here to read the Parent Partnership Agreement"
+          hasRead={hasReadPartnershipAgreement}
+          readAt={partnershipAgreementReadAt}
+          modalOpen={partnershipAgreementModalOpen}
+          onOpen={() => setPartnershipAgreementModalOpen(true)}
+          onClose={() => setPartnershipAgreementModalOpen(false)}
+          onAcknowledge={() => {
+            setHasReadPartnershipAgreement(true);
+            setPartnershipAgreementReadAt(new Date());
+            setPartnershipAgreementModalOpen(false);
+          }}
+        >
+          <ParentPartnershipAgreementContent inModal />
+        </AgreementReadGate>
+        <MediaConsentSection
+          mediaConsent={mediaConsent}
+          onChange={setMediaConsent}
+          disabled={!hasReadPartnershipAgreement}
+        />
+        <EnrollmentAgreementSignatureSection
+          primaryGuardianName={primaryGuardianName}
+          enrollmentSigCanvas={enrollmentSigCanvas}
+          enrollmentAgreementSignatureLink={enrollmentAgreementSignatureLink}
+          enrollmentSignatureProgress={enrollmentSignatureProgress}
+          enrollmentAgreementSignatureDate={enrollmentAgreementSignatureDate}
+          onClear={clearEnrollmentSignature}
+          onSave={saveEnrollmentSignature}
+          disabled={!hasReadPartnershipAgreement}
+        />
       </div>
     );
   };
@@ -2925,101 +2997,37 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             )}
           </div>
 
-          <div className="p-5 space-y-5 text-xs leading-relaxed bg-gray-100 rounded">
-            <h3 className="text-sm font-bold">Payment Policies:</h3>
-            <ol className="px-5 list-decimal">
-              <li>
-                ALL payment transactions must be processed via our payment
-                partner, dragon pay (online link provided by our finance or LP
-                website). This is to ensure a safe, real-time one-day processing
-                and posting of successful transactions. This means no payment
-                proof submission is required from you, and there is no need to
-                input our LP bank details upon payment. Payments NOT MADE
-                through this channel may not be recognized or recorded.
-              </li>
-              <li>
-                A 3% interest will be added to the school fee when the parents
-                are not able to pay on time.
-              </li>
-              <li>
-                For Post-dated checks, bounced or delayed payments will be
-                subjected to 5% monthly interest.
-              </li>
-              <li>
-                All school records will be released after the student has been
-                cleared of financial and academic obligations from LPHS.
-              </li>
-              <li>
-                In case of non-compliance with LPHS requirements and/or the
-                student decides to withdraw/ drop out, the tuition fee and
-                miscellaneous fees will not be carried over to the next school
-                year.
-              </li>
-              <li>
-                Living Pupil Homeschool's foundation is built on trust and
-                relationships with our families. We, therefore, require our
-                Parent-Teachers to do their task with honesty & commitment.
-                Should there be homeschool concerns, please communicate directly
-                with our team.
-              </li>
-            </ol>
-            <h3 className="text-sm font-bold">
-              Refund on Tuition Fees and other fees:
-            </h3>
-            <ol className="px-5 list-decimal">
-              <li>
-                The down payment upon enrollment is a nonrefundable deposit.
-              </li>
-              <li>
-                In the event that the parent (enrolled or temporarily enrolled
-                status) wishes to transfer or withdraw their child's enrollment
-                from LPHS and they paid the tuition fee in full or an amount
-                greater than the required down payment, the parent is entitled
-                to a tuition refund provided: (1) they submit a letter of
-                withdrawal/transfer (2) has already paid the tuition and other
-                fees in full. The amount of the refund depends on the following:
-                <ul className="py-5 list-disc">
-                  <li>
-                    When the student withdraws a week after enrollment, LP
-                    Finance will charge 10% of the amount paid plus the
-                    nonrefundable down payment.
-                  </li>
-                  <li>
-                    When the student withdraws two (2) weeks after enrollment,
-                    LP finance will charge 20% of the amount paid plus the
-                    nonrefundable down payment.
-                  </li>
-                  <li>
-                    No refund will be given when the student withdraws one (1)
-                    month after enrollment.
-                  </li>
-                  <li>
-                    There will be no refund for books and other learning
-                    materials.
-                  </li>
-                </ul>
-              </li>
-              <li>
-                When the student withdraws before the school year ends, the
-                parent will pay the annual tuition fee for the school records to
-                be released.
-              </li>
-              <li>
-                All students must participate in the year-end PAGSAULOG
-                (Graduation, Moving-up, and Recognition Celebration) either
-                online or face-to-face and are subject to a registration fee of
-                P1300 - P3500 per family. This is part of their clearance
-                requirement.
-              </li>
-            </ol>
-          </div>
+          <AgreementReadGate
+            title="General Policies on Payment of Tuition Fees, Refund and Withdrawal or Transfer Policy"
+            buttonLabel="Click here to read the Payment, Refund and Withdrawal Policy"
+            hasRead={hasReadPaymentPolicies}
+            readAt={paymentPoliciesReadAt}
+            modalOpen={paymentPoliciesModalOpen}
+            onOpen={() => setPaymentPoliciesModalOpen(true)}
+            onClose={() => setPaymentPoliciesModalOpen(false)}
+            onAcknowledge={() => {
+              setHasReadPaymentPolicies(true);
+              setPaymentPoliciesReadAt(new Date());
+              setPaymentPoliciesModalOpen(false);
+            }}
+          >
+            <PaymentPoliciesText inModal />
+          </AgreementReadGate>
+          <PaymentPolicySignatureSection
+            sigCanvas={sigCanvas}
+            signatureLink={signatureLink}
+            signatureProgress={signatureProgress}
+            onClear={clearSignature}
+            onSave={saveSignature}
+            disabled={!hasReadPaymentPolicies}
+          />
           <div>
             <p>
               By completing and submitting this form, we agree to follow the
-              terms listed above in the Living Pupil Homeschool Agreement. We
-              understand that this agreement is bona fide and will be enforced.
-              Living Pupil Homeschool reserves the right to amend this
-              Agreement.
+              terms listed above in the General Policies on Payment of Tuition
+              Fees, Refund and Withdrawal or Transfer Policy. We understand that
+              this agreement is bona fide and will be enforced. Living Pupil
+              Homeschool reserves the right to amend this Agreement.
             </p>
             <hr className="my-5 border border-dashed" />
             <div className="flex flex-col mt-5 space-x-0 space-y-5 md:flex-row md:justify-between md:space-x-5 md:space-y-0">
@@ -3339,68 +3347,18 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                 </div>
               </div>
             </div>
-            <label className="flex items-center mt-10 space-x-3 font-medium cursor-pointer">
-              <input
-                checked={agree}
-                type="checkbox"
-                onChange={() => setAgree(!agree)}
-              />
-              <span>
-                Yes, I agree. My responses will be saved in Living Pupil
-                Homeschool's Database
-              </span>
-            </label>
-            <div className="flex flex-col items-center mt-5">
-              <p className="text-center text-xs mb-3">
-                By signing, you are agreeing to the Homeschool Agreement and
-                Payment Policy.
-              </p>
-              <SignatureCanvas
-                ref={sigCanvas}
-                canvasProps={{
-                  className: `sigCanvas bg-gray-100 border ${
-                    signatureLink ? 'border-gray-400' : 'border-red-500'
-                  } w-full h-40 sm:h-48 md:h-56 lg:h-64`, // Conditional border color
-                }}
-              />
-              <div className="flex space-x-3 mt-3">
-                <button
-                  onClick={clearSignature}
-                  className="bg-red-500 text-white px-3 py-1 rounded"
-                >
-                  Clear
-                </button>
-                <button
-                  onClick={saveSignature}
-                  className="bg-blue-500 text-white px-3 py-1 rounded"
-                >
-                  Save
-                </button>
-              </div>
-              <div className="w-full mt-2 rounded-full shadow bg-grey-light">
-                <div
-                  className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
-                  style={{ width: `${signatureProgress}%` }}
-                >
-                  <span className="px-3">{signatureProgress}%</span>
-                </div>
-              </div>
-              <div className="flex flex-col items-center justify-center space-y-3">
-                {signatureLink ? (
-                  <Link href={signatureLink}>
-                    <a
-                      className="text-sm text-blue-600 underline"
-                      target="_blank"
-                    >
-                      Preview Image
-                    </a>
-                  </Link>
-                ) : (
-                  <p>No signature uploaded</p>
-                )}
-              </div>
-            </div>
           </div>
+          <label className="flex items-center mt-10 space-x-3 font-medium cursor-pointer">
+            <input
+              checked={agree}
+              type="checkbox"
+              onChange={() => setAgree(!agree)}
+            />
+            <span>
+              Yes, I agree. My responses will be saved in Living Pupil
+              Homeschool&apos;s Database
+            </span>
+          </label>
         </div>
       )
     );

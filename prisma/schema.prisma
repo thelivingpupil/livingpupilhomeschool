@@ -241,16 +241,20 @@ model StudentRecord {
   primaryTeacherRelationship  String?
   scholarship                 String?
   studentStatus               String?
-  signature                   String?
-  policyAgreement             Boolean       @default(true)
-  formerRegistrar             String?
-  formerRegistrarEmail        String?
-  formerRegistrarNumber       String?
-  specialNeedSpecific         String?
-  specialNeeds                String?
-  studentAddress1             String?
-  studentAddress2             String?
-  studentInternationalAddress String?
+  signature                       String?
+  policyAgreement                 Boolean       @default(true)
+  mediaConsent                    Boolean?
+  enrollmentAgreementSignature    String?
+  enrollmentAgreementSignatureDate DateTime?
+  formerRegistrar                 String?
+  formerRegistrarEmail            String?
+  formerRegistrarNumber           String?
+  specialNeedSpecific             String?
+  specialNeeds                    String?
+  studentAddress1                 String?
+  studentAddress2                 String?
+  studentInternationalAddress     String?
+  isInternationalAddress          Boolean?
   idPictureBack               String?
   idPictureFront              String?
   student                     Workspace     @relation(fields: [studentId], references: [id], onDelete: Cascade)
@@ -312,6 +316,14 @@ model User {
   sessions            Session[]
   transaction         Transaction[]
   createdWorkspace    Workspace[]
+  schoolYear          SchoolYearV2[]  @relation("SchoolYearCreatedBy")
+  enrollment          EnrollmentV2[]  @relation("EnrollmentCreatedBy")
+  student             StudentV2[]
+  transactionV2       TransactionV2[]
+  orderFeeV2          OrderFeeV2[]
+  orderV2             OrderV2[]
+  orderItemV2         OrderItemV2[]
+  createdWorkspaceV2  WorkspaceV2[]
 
   @@unique([userCode, email])
   @@map("users")
@@ -416,6 +428,221 @@ model Documents {
 
   @@index([studentId], map: "idx_documents_studentId")
   @@map("documents")
+}
+
+// Multi-year student model (one StudentV2, many EnrollmentV2 per SchoolYearV2)
+model SchoolYearV2 {
+  id              String         @id @default(cuid())
+  name            String
+  startDate       DateTime
+  endDate         DateTime
+  earlyEnrollDate DateTime?
+  isOpenEarly     Boolean        @default(false)
+  createdAt       DateTime?      @default(now())
+  updatedAt       DateTime?      @updatedAt
+  deletedAt       DateTime?
+  createdById     String
+  createdBy       User           @relation("SchoolYearCreatedBy", fields: [createdById], references: [id])
+  enrollment      EnrollmentV2[]
+
+  @@map("schoolYearV2")
+}
+
+model StudentV2 {
+  id                            String         @id @default(cuid())
+  studentId                     String         @unique @default(cuid())
+  lrn                           String?
+  firstName                     String
+  middleName                    String
+  lastName                      String
+  birthDate                     DateTime
+  gender                        Gender
+  religion                      Religion
+  liveBirthCertificate          String
+  idPictureBack                 String
+  idPictureFront                String
+  studentAddress1               String
+  studentAddress2               String
+  studentInternationalAddress   String
+  specialNeeds                  String
+  specialNeedsSpecific          String
+  studentStatus                 String?
+  userId                        String
+  createdAt                     DateTime?      @default(now())
+  updatedAt                     DateTime?      @updatedAt
+  deletedAt                     DateTime?
+  workspace                     WorkspaceV2?
+  enrollment                    EnrollmentV2[]
+  user                          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("studentV2")
+}
+
+model WorkspaceV2 {
+  id            String         @id @default(cuid())
+  workspaceId   String         @unique @default(cuid())
+  workspaceCode String         @unique @default(cuid())
+  inviteCode    String
+  name          String
+  slug          String
+  createdAt     DateTime?      @default(now())
+  updatedAt     DateTime?      @updatedAt
+  deletedAt     DateTime?
+  creatorId     String
+  studentId     String         @unique
+  enrollment    EnrollmentV2[]
+  student       StudentV2      @relation(fields: [studentId], references: [id])
+  creator       User           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@map("workspaceV2")
+}
+
+model EnrollmentV2 {
+  id                    String               @id @default(cuid())
+  enrollmentCode        String               @unique
+  enrollmentType        EnrollmentTypeV2
+  gradeLevel            GradeLevel
+  program               Program
+  cottageType           CottageType?
+  accreditation         Accreditation
+  reportCard            String?
+  discount              String?
+  enrollmentStatus      EnrollmentStatusV2   @default(PENDING)
+  scholarship           String?
+  signature             String?
+  policyAgreement       Boolean              @default(true)
+  formerRegistrar       String?
+  formerRegistrarEmail  String?
+  formerRegistrarNumber String?
+  createdAt             DateTime?            @default(now())
+  updatedAt             DateTime?            @updatedAt
+  deletedAt             DateTime?
+  workspaceId           String
+  studentId             String
+  createdById           String
+  schoolYearId          String
+  schoolFees            SchoolFeesV2[]
+  createdBy             User                 @relation("EnrollmentCreatedBy", fields: [createdById], references: [id])
+  student               StudentV2            @relation(fields: [studentId], references: [studentId])
+  schoolYear            SchoolYearV2         @relation(fields: [schoolYearId], references: [id])
+  workspace             WorkspaceV2          @relation(fields: [workspaceId], references: [workspaceId], onDelete: Cascade)
+
+  @@unique([studentId, schoolYearId])
+  @@index([workspaceId])
+  @@index([studentId])
+  @@index([schoolYearId])
+  @@map("enrollmentV2")
+}
+
+model SchoolFeesV2 {
+  id            String        @id @default(cuid())
+  order         Int
+  createdAt     DateTime?     @default(now())
+  updatedAt     DateTime?     @updatedAt
+  deletedAt     DateTime?     @updatedAt
+  transactionId String        @unique
+  enrollmentId  String
+  enrollment    EnrollmentV2  @relation(fields: [enrollmentId], references: [id])
+  transaction   TransactionV2 @relation(fields: [transactionId], references: [transactionId])
+
+  @@map("schoolFeesV2")
+}
+
+model TransactionV2 {
+  id                 String            @id @default(cuid())
+  transactionId      String            @unique
+  referenceNumber    String            @unique
+  paymentReference   String?
+  amount             Decimal           @default(0)
+  currency           Currency          @default(PHP)
+  fee                Fees              @default(ONLINE)
+  payment            Decimal?
+  balance            Decimal?
+  paymentProofLink   String?
+  paymentType        PaymentType
+  transactionStatus  TransactionStatus @default(U)
+  paymentStatus      TransactionStatus @default(U)
+  description        String?
+  message            String?
+  url                String?
+  source             TransactionSource @default(ENROLLMENT)
+  createdAt          DateTime?         @default(now())
+  updatedAt          DateTime?         @updatedAt
+  deletedAt          DateTime?
+  userId             String?
+  user               User?             @relation(fields: [userId], references: [id])
+  schoolFees         SchoolFeesV2?
+  orderFee           OrderFeeV2?
+
+  @@map("transactionV2")
+}
+
+model OrderV2 {
+  orderId         String        @id @default(cuid())
+  total           Decimal       @default(0)
+  deliveryAddress String?
+  shippingType    ShippingType?
+  contactNumber   String?
+  paymentType     PaymentType
+  createdAt       DateTime?     @default(now())
+  updatedAt       DateTime?     @updatedAt
+  deletedAt       DateTime?
+  userId          String?
+  orderItems      OrderItemV2[]
+  orderFees       OrderFeeV2[]
+  user            User?         @relation(fields: [userId], references: [id])
+
+  @@map("orderV2")
+}
+
+model OrderItemV2 {
+  orderItemId String    @id @default(cuid())
+  code        String
+  name        String
+  image       String
+  basePrice   Decimal   @default(0)
+  totalPrice  Decimal   @default(0)
+  quantity    Int       @default(0)
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime?
+  deletedAt   DateTime?
+  orderedById String
+  userId      String
+  order       OrderV2   @relation(fields: [orderedById], references: [orderId], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("orderItemV2")
+}
+
+model OrderFeeV2 {
+  orderFeeId    String        @id @default(cuid())
+  order         Int
+  orderCode     String?
+  createdAt     DateTime?     @default(now())
+  updatedAt     DateTime?
+  deletedAt     DateTime?
+  signatureLink String?
+  orderFeeStatus String?
+  orderId       String
+  transactionId String        @unique
+  userId        String
+  transaction   TransactionV2 @relation(fields: [transactionId], references: [transactionId], onDelete: Cascade)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders        OrderV2       @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
+
+  @@map("orderFeeV2")
+}
+
+enum EnrollmentTypeV2 {
+  CONTINUING
+  NEW
+}
+
+enum EnrollmentStatusV2 {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
 }
 
 enum Accreditation {

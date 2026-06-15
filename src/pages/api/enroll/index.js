@@ -60,6 +60,8 @@ const handler = async (req, res) => {
       anotherEmail,
       address1,
       address2,
+      isInternationalAddress,
+      studentInternationalAddress,
       discountCode,
       primaryTeacherName,
       primaryTeacherAge,
@@ -73,6 +75,9 @@ const handler = async (req, res) => {
       formerRegistrar,
       formerRegistrarEmail,
       formerRegistrarNumber,
+      mediaConsent,
+      enrollmentAgreementSignature,
+      enrollmentAgreementSignatureDate,
     } = req.body;
     const guardianInformation = {
       primaryGuardianName,
@@ -139,7 +144,22 @@ const handler = async (req, res) => {
         formerRegistrarEmail,
         formerRegistrarNumber,
         address1,
-        address2
+        address2,
+        isInternationalAddress === true || isInternationalAddress === 'true'
+          ? true
+          : isInternationalAddress === false || isInternationalAddress === 'false'
+            ? false
+            : null,
+        studentInternationalAddress || null,
+        mediaConsent === true || mediaConsent === 'true'
+          ? true
+          : mediaConsent === false || mediaConsent === 'false'
+            ? false
+            : null,
+        enrollmentAgreementSignature || null,
+        enrollmentAgreementSignatureDate
+          ? new Date(enrollmentAgreementSignatureDate)
+          : null
       ),
       createSchoolFees(
         session.user.userId,
@@ -193,7 +213,8 @@ const handler = async (req, res) => {
         path: 'https://livingpupilhomeschool.com/files/Payment_Policies.pdf',
       },
       {
-        filename: 'Homeschool Agreement.pdf',
+        filename:
+          'General Policies on Payment of Tuition Fees, Refund and Withdrawal or Transfer Policy.pdf',
         path: 'https://livingpupilhomeschool.com/files/Homeschool_Agreement.pdf',
       },
     ];
@@ -201,7 +222,7 @@ const handler = async (req, res) => {
       html: policiesHtml({
         parentName,
       }),
-      subject: `[Living Pupil Homeschool] Signed Homeschool Agreement and Payment Policy`,
+      subject: `[Living Pupil Homeschool] Signed General Policies on Payment of Tuition Fees, Refund and Withdrawal or Transfer Policy`,
       text: policiesText({
         parentName,
       }),
