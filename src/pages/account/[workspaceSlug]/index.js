@@ -3904,7 +3904,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                         <h3 className="text-sm text-gray-400">
                           <span className="font-bold">Student Record ID: </span>
                           <span>
-                            {workspace.studentRecord.studentId.toUpperCase()}
+                            {workspace.studentRecord.studentId}
                           </span>
                         </h3>
                       </div>
