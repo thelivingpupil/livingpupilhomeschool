@@ -231,6 +231,7 @@ model StudentRecord {
   image                       String?
   liveBirthCertificate        String?
   reportCard                  String?
+  schoolYearReportCard        String?
   discount                    String?
   cottageType                 CottageType?
   schoolYear                  String?

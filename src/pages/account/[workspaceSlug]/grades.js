@@ -177,6 +177,8 @@ const userUnsettledDues = [
   'fudge_wik3@yahoo.com',
 ];
 
+const isImageUrl = (url) => /\.(jpe?g|png|gif|webp)(\?|$)/i.test(url || '');
+
 const Grades = () => {
   const { workspace } = useWorkspace();
   const [formPage, setFormPage] = useState('quarterly');
@@ -188,6 +190,8 @@ const Grades = () => {
   const isInUnsettleDuesList = userUnsettledDues.includes(
     workspace?.creator.email,
   );
+  const schoolYearReportCardUrl =
+    workspace?.studentRecord?.schoolYearReportCard;
   return (
     <AccountLayout>
       {workspace ? (
@@ -217,6 +221,7 @@ const Grades = () => {
                 >
                   <option value="quarterly">Quarterly Requirements</option>
                   <option value="year-end">Year End Requirements</option>
+                  <option value="card">Card</option>
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                   <ChevronDownIcon className="w-5 h-5" />
@@ -246,6 +251,43 @@ const Grades = () => {
                     </div>
                   );
                 })()}
+
+              {formPage === 'card' && (
+                <div className="mt-4 space-y-4">
+                  {schoolYearReportCardUrl ? (
+                    <>
+                      <div className="w-full min-h-[600px] border rounded overflow-hidden bg-gray-50">
+                        {isImageUrl(schoolYearReportCardUrl) ? (
+                          <img
+                            alt="School Year Report Card"
+                            className="w-full h-auto"
+                            src={schoolYearReportCardUrl}
+                          />
+                        ) : (
+                          <iframe
+                            className="w-full min-h-[600px]"
+                            src={schoolYearReportCardUrl}
+                            title="School Year Report Card"
+                          />
+                        )}
+                      </div>
+                      <a
+                        className="inline-block px-4 py-2 text-sm text-white rounded bg-primary-500 hover:bg-primary-400"
+                        download
+                        href={schoolYearReportCardUrl}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        Download Report Card
+                      </a>
+                    </>
+                  ) : (
+                    <p className="text-gray-600">
+                      No school year report card has been uploaded yet.
+                    </p>
+                  )}
+                </div>
+              )}
             </Content.Container>
           )}
         </>

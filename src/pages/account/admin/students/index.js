@@ -119,6 +119,8 @@ const Students = ({ schoolFees, programs }) => {
   const [showModal, setModalVisibility] = useState(false);
   const [showModal2, setModalVisibility2] = useState(false);
   const [showModal3, setModalVisibility3] = useState(false);
+  const [showSchoolYearReportCardModal, setSchoolYearReportCardModalVisibility] =
+    useState(false);
   const [showUpdateStudentStatusModal, setUpdateStudentStatusModalVisibility] =
     useState(false);
   const [filter, setFilter] = useState(['', '']);
@@ -146,11 +148,15 @@ const Students = ({ schoolFees, programs }) => {
   const [pictureProgress, setPictureProgress] = useState(0);
   const [birthCertificateProgress, setBirthCertificateProgress] = useState(0);
   const [reportCardProgress, setReportCardProgress] = useState(0);
+  const [schoolYearReportCardProgress, setSchoolYearReportCardProgress] =
+    useState(0);
   const [idPictureFrontProgress, setIdPictureFrontProgress] = useState(0);
   const [idPictureBackProgress, setIdPictureBackProgress] = useState(0);
   const [pictureLink, setPictureLink] = useState(null);
   const [birthCertificateLink, setBirthCertificateLink] = useState(null);
   const [reportCardLink, setReportCardLink] = useState(null);
+  const [schoolYearReportCardLink, setSchoolYearReportCardLink] =
+    useState(null);
   const [idPictureFrontLink, setIdPictureFrontLink] = useState(null);
   const [idPictureBackLink, setIdPictureBackLink] = useState(null);
   const [discountCode, setDiscountCode] = useState('');
@@ -199,6 +205,12 @@ const Students = ({ schoolFees, programs }) => {
   const toggleModal = () => setModalVisibility(!showModal);
   const toggleModal2 = () => setModalVisibility2(!showModal2);
   const toggleModal3 = () => setModalVisibility3(!showModal3);
+  const toggleSchoolYearReportCardModal = () => {
+    if (showSchoolYearReportCardModal) {
+      setSchoolYearReportCardProgress(0);
+    }
+    setSchoolYearReportCardModalVisibility(!showSchoolYearReportCardModal);
+  };
   const toggleUpdateStudentStatusModal = () =>
     setUpdateStudentStatusModalVisibility(!showUpdateStudentStatusModal);
   const toggleConfirmChangeModal = () => {
@@ -299,6 +311,7 @@ const Students = ({ schoolFees, programs }) => {
     setStudentId(student.studentId);
     setIdPictureFrontLink(student.idPictureFront);
     setIdPictureBackLink(student.idPictureBack);
+    setSchoolYearReportCardLink(student.schoolYearReportCard);
     //setInviteCode(student.studentId)
     if (isWorkspaceDataFetched) {
       const workspaceContainingStudent = workspaceData.workspaces.find(
@@ -583,6 +596,50 @@ const Students = ({ schoolFees, programs }) => {
     }
   };
 
+  const handleSchoolYearReportCardUpload = (e, studentId) => {
+    const file = e.target?.files[0];
+
+    if (file) {
+      if (file.size < 10485760) {
+        const extension = file.name.split('.').pop();
+        const storageRef = ref(
+          storage,
+          `files/admin/schoolYearReportCard-${crypto
+            .createHash('md5')
+            .update(file.name)
+            .digest('hex')
+            .substring(0, 12)}-${format(
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}.${extension}`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            setSchoolYearReportCardProgress(progress);
+          },
+          (error) => {
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              updateFile(studentId, 'schoolYearReportCard', downloadURL);
+            });
+          }
+        );
+      } else {
+        toast.error('File too large. Size should not exceed 10 MB.');
+      }
+    }
+  };
+
   const handleIdPictureBackUpload = (e, auto, studentId) => {
     const file = e.target?.files[0];
 
@@ -655,8 +712,20 @@ const Students = ({ schoolFees, programs }) => {
             setIdPictureBackLink(url);
             break;
           }
+          case 'schoolYearReportCard': {
+            setSchoolYearReportCardLink(url);
+            setStudent((prev) =>
+              prev ? { ...prev, schoolYearReportCard: url } : prev
+            );
+            toggleSchoolYearReportCardModal();
+            break;
+          }
         }
-        toast.success('ID Picture uploaded successfully!');
+        toast.success(
+          type === 'schoolYearReportCard'
+            ? 'School year report card uploaded successfully!'
+            : 'ID Picture uploaded successfully!'
+        );
       }
     });
   };
@@ -1590,6 +1659,31 @@ const Students = ({ schoolFees, programs }) => {
             ) : (
               <p className="text-sm">- No Report Card Uploaded</p>
             )}
+            <div className="flex flex-col p-3 space-y-2 border rounded">
+              <h3 className="text-2xl font-medium">School Year Report Card</h3>
+              {student.schoolYearReportCard || schoolYearReportCardLink ? (
+                <div className="flex items-center space-x-3">
+                  <Link
+                    href={
+                      schoolYearReportCardLink || student.schoolYearReportCard
+                    }
+                  >
+                    <a className="underline text-primary-500" target="_blank">
+                      View Uploaded Document
+                    </a>
+                  </Link>
+                </div>
+              ) : (
+                <p className="text-sm">- No School Year Report Card Uploaded</p>
+              )}
+              <button
+                className="self-start px-3 py-1 text-sm text-white rounded bg-primary-500 hover:bg-primary-400"
+                onClick={toggleSchoolYearReportCardModal}
+                type="button"
+              >
+                Upload School Year Report Card
+              </button>
+            </div>
             {/* ID Picture Front */}
             {student.idPictureFront ? (
               <div className="flex flex-col p-3 space-y-2 border rounded">
@@ -1805,6 +1899,48 @@ const Students = ({ schoolFees, programs }) => {
             >
               No
             </button>
+          </div>
+        </CenteredModal>
+      )}
+      {student && (
+        <CenteredModal
+          show={showSchoolYearReportCardModal}
+          toggle={toggleSchoolYearReportCardModal}
+          title="Upload School Year Report Card"
+        >
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">
+              Upload the school year report card for {student.firstName}{' '}
+              {student.lastName}. Accepted formats: PDF, JPEG, PNG (max 10 MB).
+            </p>
+            <input
+              className="w-full text-xs cursor-pointer"
+              accept=".pdf,.jpeg,.jpg,.png"
+              onChange={(e) =>
+                handleSchoolYearReportCardUpload(e, student.studentId)
+              }
+              type="file"
+            />
+            <div className="w-full rounded-full shadow bg-grey-light">
+              <div
+                className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
+                style={{ width: `${schoolYearReportCardProgress}%` }}
+              >
+                <span className="px-3">{schoolYearReportCardProgress}%</span>
+              </div>
+            </div>
+            {(schoolYearReportCardLink || student.schoolYearReportCard) && (
+              <Link
+                href={schoolYearReportCardLink || student.schoolYearReportCard}
+              >
+                <a
+                  className="text-sm text-blue-600 underline"
+                  target="_blank"
+                >
+                  Preview uploaded document
+                </a>
+              </Link>
+            )}
           </div>
         </CenteredModal>
       )}
