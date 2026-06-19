@@ -5,7 +5,7 @@ import Card from '@/components/Card';
 import { useWorkspaces } from '@/hooks/data';
 import sanityClient from '@/lib/server/sanity';
 import { useMemo } from 'react';
-import { PROGRAM, SCHOOL_YEAR } from '@/utils/constants';
+import { GRADE_LEVEL, PROGRAM, SCHOOL_YEAR } from '@/utils/constants';
 import { useState } from 'react';
 
 const formGradeLevels = {
@@ -267,17 +267,36 @@ const Resources = ({
               {availablePlans?.length > 0 &&
                 availablePlans?.map((plan, idx) => {
                   const bgColor = 'bg-primary';
+                  const gradeLabel =
+                    GRADE_LEVEL[plan?.grade] ||
+                    plan?.grade?.replace('_', ' ');
+                  const planKey = `${plan?.schoolYear}-${plan?.grade}-${plan?.program}`;
+
                   return (
-                    <div key={idx} className="flex justify-center">
-                      <a
-                        className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
-                        href={`${
-                          plan?.fileUrl
-                        }?dl=${plan?.grade?.toLowerCase()}-lesson_plan.pdf`}
-                      >
-                        {plan?.grade?.replace('_', ' ')} -{' '}
-                        {plan?.program?.replace('_', ' ')}
-                      </a>
+                    <div
+                      key={planKey || idx}
+                      className="flex flex-col gap-2 justify-center items-center"
+                    >
+                      {plan?.fileUrl && (
+                        <a
+                          className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
+                          href={`${
+                            plan.fileUrl
+                          }?dl=${plan?.grade?.toLowerCase()}-time_table.pdf`}
+                        >
+                          Time Table - {gradeLabel}
+                        </a>
+                      )}
+                      {plan?.dailyLessonPlanFileUrl && (
+                        <a
+                          className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
+                          href={`${
+                            plan.dailyLessonPlanFileUrl
+                          }?dl=${plan?.grade?.toLowerCase()}-daily_lesson_plan.pdf`}
+                        >
+                          Daily Lesson Plan - {gradeLabel}
+                        </a>
+                      )}
                     </div>
                   );
                 })}
@@ -503,7 +522,8 @@ export const getServerSideProps = async () => {
     'schoolYear': schoolYear,
     'grade': gradeLevel,
     'program': programType,
-    'fileUrl': lessonPlanFile.asset->url
+    'fileUrl': lessonPlanFile.asset->url,
+    'dailyLessonPlanFileUrl': dailyLessonPlanFile.asset->url
   }`);
 
   const blueprints = await sanityClient.fetch(`*[_type == 'blueprints']{
