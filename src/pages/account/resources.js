@@ -280,9 +280,11 @@ const Resources = ({
                       {plan?.fileUrl && (
                         <a
                           className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
-                          href={`${
-                            plan.fileUrl
-                          }?dl=${plan?.grade?.toLowerCase()}-time_table.xlsx`}
+                          href={
+                            plan.fileName
+                              ? `${plan.fileUrl}?dl=${encodeURIComponent(plan.fileName)}`
+                              : plan.fileUrl
+                          }
                         >
                           Time Table - {gradeLabel}
                         </a>
@@ -290,9 +292,11 @@ const Resources = ({
                       {plan?.dailyLessonPlanFileUrl && (
                         <a
                           className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
-                          href={`${
-                            plan.dailyLessonPlanFileUrl
-                          }?dl=${plan?.grade?.toLowerCase()}-daily_lesson_plan.xlsx`}
+                          href={
+                            plan.dailyLessonPlanFileName
+                              ? `${plan.dailyLessonPlanFileUrl}?dl=${encodeURIComponent(plan.dailyLessonPlanFileName)}`
+                              : plan.dailyLessonPlanFileUrl
+                          }
                         >
                           Daily Lesson Plan - {gradeLabel}
                         </a>
@@ -523,7 +527,9 @@ export const getServerSideProps = async () => {
     'grade': gradeLevel,
     'program': programType,
     'fileUrl': lessonPlanFile.asset->url,
-    'dailyLessonPlanFileUrl': dailyLessonPlanFile.asset->url
+    'fileName': lessonPlanFile.asset->originalFilename,
+    'dailyLessonPlanFileUrl': dailyLessonPlanFile.asset->url,
+    'dailyLessonPlanFileName': dailyLessonPlanFile.asset->originalFilename
   }`);
 
   const blueprints = await sanityClient.fetch(`*[_type == 'blueprints']{
