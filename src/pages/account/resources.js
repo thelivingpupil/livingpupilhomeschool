@@ -282,7 +282,7 @@ const Resources = ({
                           className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
                           href={`${
                             plan.fileUrl
-                          }?dl=${plan?.grade?.toLowerCase()}-time_table.pdf`}
+                          }?dl=${plan?.grade?.toLowerCase()}-time_table.xlsx`}
                         >
                           Time Table - {gradeLabel}
                         </a>
@@ -292,7 +292,7 @@ const Resources = ({
                           className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
                           href={`${
                             plan.dailyLessonPlanFileUrl
-                          }?dl=${plan?.grade?.toLowerCase()}-daily_lesson_plan.pdf`}
+                          }?dl=${plan?.grade?.toLowerCase()}-daily_lesson_plan.xlsx`}
                         >
                           Daily Lesson Plan - {gradeLabel}
                         </a>
