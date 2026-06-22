@@ -467,6 +467,15 @@ const Resources = ({
                   Charlotte Mason LINGO
                 </a>
               </div>
+              <div className="flex justify-center">
+                <a
+                  className={`flex items-center justify-center py-2 px-3 rounded bg-primary-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:bg-primary-500`}
+                  href="/files/SY2026-2027%20Printables.pdf"
+                  download="SY2026-2027 Printables.pdf"
+                >
+                  SY 2026-2027 Printables
+                </a>
+              </div>
               {hasPreschool && (
                 <div className="flex justify-center">
                   <a
