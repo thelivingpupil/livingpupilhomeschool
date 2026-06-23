@@ -68,6 +68,7 @@ import {
   getMonthIndexForSchoolYear,
   calculateMonthlyPayment,
   GRADE_TO_FORM_MAP,
+  isCottageEligibleGradeLevel,
 } from '@/utils/constants';
 import { PortableText } from '@portabletext/react';
 import { event } from 'react-ga';
@@ -1801,7 +1802,15 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
                   onChange={(e) => {
-                    setIncomingGradeLevel(e.target.value);
+                    const newGradeLevel = e.target.value;
+                    setIncomingGradeLevel(newGradeLevel);
+                    if (
+                      program === Program.HOMESCHOOL_COTTAGE &&
+                      !isCottageEligibleGradeLevel(newGradeLevel)
+                    ) {
+                      setProgram(Program.HOMESCHOOL_PROGRAM);
+                      setCottageType(null);
+                    }
                     // setAccreditation(null);
                   }}
                   value={incomingGradeLevel}
@@ -2231,7 +2240,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
                   key={index}
                   disabled={
                     entry === Program.HOMESCHOOL_COTTAGE &&
-                    incomingGradeLevel === GradeLevel.PRESCHOOL
+                    !isCottageEligibleGradeLevel(incomingGradeLevel)
                   }
                   value={entry}
                 >

@@ -66,6 +66,7 @@ import {
   getMonthIndexForSchoolYear,
   calculateMonthlyPayment,
   GRADE_TO_FORM_MAP,
+  isCottageEligibleGradeLevel,
 } from '@/utils/constants';
 import Image from 'next/image';
 import { getSession } from 'next-auth/react';
@@ -1845,7 +1846,15 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 <select
                   className="w-full px-3 py-2 capitalize rounded appearance-none"
                   onChange={(e) => {
-                    setIncomingGradeLevel(e.target.value);
+                    const newGradeLevel = e.target.value;
+                    setIncomingGradeLevel(newGradeLevel);
+                    if (
+                      program === Program.HOMESCHOOL_COTTAGE &&
+                      !isCottageEligibleGradeLevel(newGradeLevel)
+                    ) {
+                      setProgram(Program.HOMESCHOOL_PROGRAM);
+                      setCottageType(null);
+                    }
                     // setAccreditation(null);
                   }}
                   value={incomingGradeLevel}
@@ -2264,7 +2273,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   key={index}
                   disabled={
                     entry === Program.HOMESCHOOL_COTTAGE &&
-                    incomingGradeLevel === GradeLevel.PRESCHOOL
+                    !isCottageEligibleGradeLevel(incomingGradeLevel)
                   }
                   value={entry}
                 >

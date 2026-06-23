@@ -168,6 +168,7 @@ export const COTTAGE_TYPE = {
 
 export const isCottageEligibleGradeLevel = (gradeLevel) =>
   gradeLevel !== GradeLevel.PRESCHOOL &&
+  !GRADE_LEVEL_FORMS.FORM_3.includes(gradeLevel) &&
   !GRADE_LEVEL_FORMS.SENIOR_HIGH.includes(gradeLevel);
 
 export const shouldShowTuitionFees = (program, gradeLevel) =>
