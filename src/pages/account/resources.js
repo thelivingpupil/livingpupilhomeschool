@@ -5,7 +5,11 @@ import Card from '@/components/Card';
 import { useWorkspaces } from '@/hooks/data';
 import sanityClient from '@/lib/server/sanity';
 import { useMemo } from 'react';
-import { GRADE_LEVEL, PROGRAM, SCHOOL_YEAR } from '@/utils/constants';
+import {
+  GRADE_LEVEL,
+  PROGRAM,
+  SCHOOL_YEAR,
+} from '@/utils/constants';
 import { useState } from 'react';
 
 const formGradeLevels = {
@@ -18,10 +22,56 @@ const formGradeLevels = {
 /** Science experiment PDFs exist only for this school year (not SY 2026-2027). */
 const SCIENCE_EXPERIMENT_SCHOOL_YEARS = [SCHOOL_YEAR.SY_2025_2026];
 
+const gradeSortValue = (grade) => {
+  if (!grade) return 0;
+  if (grade === 'K1') return 0;
+  if (grade === 'K2') return 1;
+  const num = Number(grade.split('_')[1]);
+  return Number.isNaN(num) ? 0 : num;
+};
+
+const narrationGuideMatchesFilter = (guide, filter) => {
+  if (guide.schoolYear !== filter.schoolYear) return false;
+  if (guide.program && guide.program !== filter.program) return false;
+
+  const { grade } = filter;
+  if (guide.targetingMode === 'SINGLE_GRADE') return guide.grade === grade;
+  if (guide.targetingMode === 'MULTIPLE_GRADES') {
+    return guide.grades?.includes(grade);
+  }
+  if (guide.targetingMode === 'FORM') {
+    return formGradeLevels[guide.form]?.includes(grade);
+  }
+  return false;
+};
+
+const getMatchingGradesForGuide = (guide, filters) => {
+  const grades = filters
+    .filter((f) => narrationGuideMatchesFilter(guide, f))
+    .map((f) => f.grade);
+
+  return [...new Set(grades)].sort(
+    (a, b) => gradeSortValue(a) - gradeSortValue(b),
+  );
+};
+
+const getNarrationGuideLabel = (guide, matchingGrades) => {
+  const levelLabel = matchingGrades
+    .map((grade) => GRADE_LEVEL[grade] || grade?.replace('_', ' '))
+    .join(', ');
+
+  const programLabel = guide.program
+    ? PROGRAM[guide.program] || guide.program?.replace('_', ' ')
+    : null;
+
+  return programLabel ? `${levelLabel} - ${programLabel.trim()}` : levelLabel;
+};
+
 const Resources = ({
   lessonPlans,
   blueprints,
   booklist,
+  narrationGuides,
   recitation,
   commonSubjects,
   scienceExperiment,
@@ -155,6 +205,22 @@ const Resources = ({
         );
       });
   }, [availableFilters, booklist]);
+
+  const availableNarrationGuides = useMemo(() => {
+    return narrationGuides
+      ?.filter((item) =>
+        availableFilters.some((f) => narrationGuideMatchesFilter(item, f)),
+      )
+      ?.map((guide) => ({
+        ...guide,
+        matchingGrades: getMatchingGradesForGuide(guide, availableFilters),
+      }))
+      ?.sort(
+        (a, b) =>
+          gradeSortValue(a.matchingGrades[0]) -
+          gradeSortValue(b.matchingGrades[0]),
+      );
+  }, [availableFilters, narrationGuides]);
 
   const availableRecitation = useMemo(() => {
     return recitation
@@ -376,6 +442,32 @@ const Resources = ({
           </Card.Body>
         </Card>
         <Card>
+          <Card.Body title="Narration Guide">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
+              {availableNarrationGuides?.length > 0 &&
+                availableNarrationGuides?.map((guide, idx) => {
+                  const bgColor = 'bg-primary';
+                  const guideKey = `${guide?.schoolYear}-${guide?.targetingMode}-${guide?.grade || guide?.form || guide?.grades?.join(',')}-${guide?.program || 'both'}`;
+
+                  return (
+                    <div key={guideKey || idx} className="flex justify-center">
+                      <a
+                        className={`flex items-center justify-center py-2 px-3 rounded ${bgColor}-600 text-white w-full md:w-4/5 text-sm cursor-pointer hover:${bgColor}-500`}
+                        href={
+                          guide.fileName
+                            ? `${guide.fileUrl}?dl=${encodeURIComponent(guide.fileName)}`
+                            : `${guide.fileUrl}?dl=narration-guide.pdf`
+                        }
+                      >
+                        {getNarrationGuideLabel(guide, guide.matchingGrades)}
+                      </a>
+                    </div>
+                  );
+                })}
+            </div>
+          </Card.Body>
+        </Card>
+        <Card>
           <Card.Body title="Recitation">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10">
               {availableRecitation?.length > 0 &&
@@ -555,6 +647,17 @@ export const getServerSideProps = async () => {
     'fileUrl': booklistFile.asset->url
   }`);
 
+  const narrationGuides = await sanityClient.fetch(`*[_type == 'narrationGuides']{
+    'schoolYear': schoolYear,
+    'program': programType,
+    'targetingMode': targetingMode,
+    'grade': gradeLevel,
+    'grades': gradeLevels,
+    'form': formLevel,
+    'fileUrl': narrationGuideFile.asset->url,
+    'fileName': narrationGuideFile.asset->originalFilename
+  }`);
+
   const recitation = await sanityClient.fetch(`*[_type == 'recitation']{
     'schoolYear': schoolYear,
     'grade': gradeLevel,
@@ -584,6 +687,7 @@ export const getServerSideProps = async () => {
       lessonPlans,
       blueprints,
       booklist,
+      narrationGuides,
       recitation,
       commonSubjects,
       scienceExperiment,
