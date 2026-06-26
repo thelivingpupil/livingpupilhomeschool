@@ -36,6 +36,7 @@ const CottageSlotsAdmin = () => {
   const { data, isLoading, mutate } = useCottageSlots();
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [editingSlot, setEditingSlot] = useState(null);
   const [form, setForm] = useState(emptyForm);
 
@@ -114,15 +115,21 @@ const CottageSlotsAdmin = () => {
     }
   };
 
-  const handleDelete = async (slot) => {
-    if (!window.confirm(`Delete "${slot.cottageSlotName}"?`)) {
+  const handleDelete = async () => {
+    if (!editingSlot) {
       return;
     }
+
+    if (!window.confirm(`Delete "${editingSlot.cottageSlotName}"?`)) {
+      return;
+    }
+
+    setIsDeleting(true);
 
     try {
       const response = await api('/api/admin/cottage-slots', {
         method: 'DELETE',
-        body: { id: slot.id },
+        body: { id: editingSlot.id },
       });
 
       if (response.status >= 400) {
@@ -131,8 +138,11 @@ const CottageSlotsAdmin = () => {
 
       toast.success('Cottage slot deleted successfully');
       await mutate();
+      closeModal();
     } catch (error) {
       toast.error(error.message || 'Failed to delete cottage slot');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -203,22 +213,17 @@ const CottageSlotsAdmin = () => {
             {
               field: 'actions',
               headerName: 'Actions',
-              width: 180,
+              width: 120,
               sortable: false,
               filterable: false,
               renderCell: (params) => (
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <Button size="small" onClick={() => openEditModal(params.row)}>
-                    Edit
-                  </Button>
-                  <Button
-                    size="small"
-                    color="error"
-                    onClick={() => handleDelete(params.row)}
-                  >
-                    Delete
-                  </Button>
-                </Box>
+                <button
+                  type="button"
+                  className="px-3 py-1 text-xs text-white rounded-md bg-primary-500 hover:bg-primary-400"
+                  onClick={() => openEditModal(params.row)}
+                >
+                  Edit
+                </button>
               ),
             },
           ]}
@@ -349,21 +354,37 @@ const CottageSlotsAdmin = () => {
             />
           </div>
 
-          <div className="flex justify-end space-x-2 pt-4">
-            <button
-              className="px-4 py-2 border rounded"
-              onClick={closeModal}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </button>
-            <button
-              className="px-4 py-2 text-white rounded bg-primary-500 disabled:opacity-50"
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Saving...' : editingSlot ? 'Update' : 'Create'}
-            </button>
+          <div className="flex items-center justify-between pt-4">
+            {editingSlot ? (
+              <button
+                type="button"
+                className="px-4 py-2 text-white rounded bg-red-600 hover:bg-red-400 disabled:opacity-50"
+                onClick={handleDelete}
+                disabled={isSubmitting || isDeleting}
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </button>
+            ) : (
+              <span />
+            )}
+            <div className="flex space-x-2">
+              <button
+                type="button"
+                className="px-4 py-2 border rounded"
+                onClick={closeModal}
+                disabled={isSubmitting || isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 text-white rounded bg-primary-500 disabled:opacity-50"
+                onClick={handleSubmit}
+                disabled={isSubmitting || isDeleting}
+              >
+                {isSubmitting ? 'Saving...' : editingSlot ? 'Update' : 'Create'}
+              </button>
+            </div>
           </div>
         </div>
       </SideModal>
