@@ -177,8 +177,6 @@ const userUnsettledDues = [
   'fudge_wik3@yahoo.com',
 ];
 
-const isImageUrl = (url) => /\.(jpe?g|png|gif|webp)(\?|$)/i.test(url || '');
-
 const Grades = () => {
   const { workspace } = useWorkspace();
   const [formPage, setFormPage] = useState('quarterly');
@@ -257,19 +255,13 @@ const Grades = () => {
                   {schoolYearReportCardUrl ? (
                     <>
                       <div className="w-full min-h-[600px] border rounded overflow-hidden bg-gray-50">
-                        {isImageUrl(schoolYearReportCardUrl) ? (
-                          <img
-                            alt="School Year Report Card"
-                            className="w-full h-auto"
-                            src={schoolYearReportCardUrl}
-                          />
-                        ) : (
-                          <iframe
-                            className="w-full min-h-[600px]"
-                            src={schoolYearReportCardUrl}
-                            title="School Year Report Card"
-                          />
-                        )}
+                        <iframe
+                          className="w-full min-h-[600px] border-0"
+                          src={`https://docs.google.com/gview?url=${encodeURIComponent(
+                            schoolYearReportCardUrl,
+                          )}&embedded=true`}
+                          title="School Year Report Card"
+                        />
                       </div>
                       <a
                         className="inline-block px-4 py-2 text-sm text-white rounded bg-primary-500 hover:bg-primary-400"

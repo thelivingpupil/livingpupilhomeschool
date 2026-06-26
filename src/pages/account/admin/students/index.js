@@ -642,6 +642,11 @@ const Students = ({ schoolFees, programs }) => {
     const file = e.target?.files[0];
 
     if (file) {
+      if (file.type !== 'application/pdf') {
+        toast.error('Only PDF files are allowed.');
+        return;
+      }
+
       if (file.size < 10485760) {
         const extension = file.name.split('.').pop();
         const storageRef = ref(
@@ -655,7 +660,9 @@ const Students = ({ schoolFees, programs }) => {
               'yyyy.MM.dd.kk.mm.ss'
             )}.${extension}`
         );
-        const uploadTask = uploadBytesResumable(storageRef, file);
+        const uploadTask = uploadBytesResumable(storageRef, file, {
+          contentType: 'application/pdf',
+        });
 
         uploadTask.on(
           'state_changed',
@@ -1953,11 +1960,11 @@ const Students = ({ schoolFees, programs }) => {
           <div className="space-y-4">
             <p className="text-sm text-gray-600">
               Upload the school year report card for {student.firstName}{' '}
-              {student.lastName}. Accepted formats: PDF, JPEG, PNG (max 10 MB).
+              {student.lastName}. PDF only (max 10 MB).
             </p>
             <input
               className="w-full text-xs cursor-pointer"
-              accept=".pdf,.jpeg,.jpg,.png"
+              accept=".pdf,application/pdf"
               onChange={(e) =>
                 handleSchoolYearReportCardUpload(e, student.studentId)
               }
