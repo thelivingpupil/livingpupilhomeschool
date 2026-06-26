@@ -49,6 +49,12 @@ const adminSidebarMenu = () => [
         showDefault: true,
       },
       {
+        name: 'Cottage Slots',
+        icon: AdjustmentsIcon,
+        path: `/account/admin/cottage-slots`,
+        showDefault: true,
+      },
+      {
         name: 'Shop',
         icon: ShoppingCartIcon,
         path: `/account/admin/shop`,

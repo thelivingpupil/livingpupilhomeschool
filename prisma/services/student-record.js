@@ -194,9 +194,11 @@ export const createStudentRecord = async (
   studentInternationalAddress,
   mediaConsent,
   enrollmentAgreementSignature,
-  enrollmentAgreementSignatureDate
+  enrollmentAgreementSignatureDate,
+  cottageSlotId = null,
+  client = prisma,
 ) =>
-  await prisma.studentRecord.create({
+  await client.studentRecord.create({
     data: {
       studentId: id,
       firstName,
@@ -209,6 +211,7 @@ export const createStudentRecord = async (
       enrollmentType,
       program,
       cottageType,
+      cottageSlotId,
       accreditation,
       schoolYear,
       reason,

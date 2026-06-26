@@ -166,10 +166,41 @@ export const COTTAGE_TYPE = {
   FIVE_DAYS_A_WEEK: '5 days a week',
 };
 
-export const isCottageEligibleGradeLevel = (gradeLevel) =>
-  gradeLevel !== GradeLevel.PRESCHOOL &&
-  !GRADE_LEVEL_FORMS.FORM_3.includes(gradeLevel) &&
-  !GRADE_LEVEL_FORMS.SENIOR_HIGH.includes(gradeLevel);
+export const COTTAGE_SLOT_GRADE_TARGETS = [
+  'K2',
+  'GRADE_1',
+  'GRADE_2',
+  'GRADE_3',
+  'GRADE_4',
+  'GRADE_5',
+  'GRADE_6',
+  'GRADE_7',
+  'GRADE_8',
+  'GRADE_9',
+  'GRADE_10',
+];
+
+export const COTTAGE_SLOT_FORM_TARGETS = ['FORM_1', 'FORM_2', 'FORM_3'];
+
+export const cottageSlotMatchesGrade = (gradeTarget, incomingGradeLevel) =>
+  gradeTarget === incomingGradeLevel ||
+  gradeTarget === GRADE_TO_FORM_MAP[incomingGradeLevel];
+
+export const getCottageSlotQueryTargets = (incomingGradeLevel) => {
+  const formTarget = GRADE_TO_FORM_MAP[incomingGradeLevel];
+  const targets = [incomingGradeLevel];
+  if (formTarget && formTarget !== incomingGradeLevel) {
+    targets.push(formTarget);
+  }
+  return targets.filter(
+    (target) =>
+      COTTAGE_SLOT_GRADE_TARGETS.includes(target) ||
+      COTTAGE_SLOT_FORM_TARGETS.includes(target),
+  );
+};
+
+export const gradeCanHaveCottageSlots = (incomingGradeLevel) =>
+  getCottageSlotQueryTargets(incomingGradeLevel).length > 0;
 
 export const shouldShowTuitionFees = (program, gradeLevel) =>
   program !== 'HOMESCHOOL_COTTAGE' ||

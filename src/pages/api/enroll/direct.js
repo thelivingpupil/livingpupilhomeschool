@@ -9,6 +9,10 @@ import {
   text as policiesText,
 } from '@/config/email-templates/policies';
 import { sendMail } from '@/lib/server/mail';
+import {
+  CottageSlotError,
+  enrollStudentWithCottageSlot,
+} from '@/prisma/services/cottage-slot';
 import { createSchoolFees } from '@/prisma/services/school-fee';
 import { createStudentRecord } from '@/prisma/services/student-record';
 import { updateGuardianInformation } from '@/prisma/services/user';
@@ -36,6 +40,7 @@ const handler = async (req, res) => {
       formerSchoolAddress,
       program,
       cottageType,
+      cottageSlotId,
       accreditation,
       birthDate,
       payment,
@@ -107,58 +112,79 @@ const handler = async (req, res) => {
       `${firstName} ${lastName} ${schoolYear}`,
       slug
     );
-    const [studentRecord, schoolFee] = await Promise.all([
-      createStudentRecord(
-        workspace.id,
-        firstName,
-        middleName,
-        lastName,
-        birthDate,
-        gender,
-        religion,
-        incomingGradeLevel,
-        enrollmentType,
+
+    const studentRecordArgs = [
+      workspace.id,
+      firstName,
+      middleName,
+      lastName,
+      birthDate,
+      gender,
+      religion,
+      incomingGradeLevel,
+      enrollmentType,
+      program,
+      cottageType,
+      accreditation,
+      schoolYear,
+      reason,
+      formerSchoolName,
+      formerSchoolAddress,
+      pictureLink,
+      birthCertificateLink,
+      reportCardLink,
+      discountCode,
+      primaryTeacherName,
+      primaryTeacherAge,
+      primaryTeacherRelationship,
+      primaryTeacherEducation,
+      primaryTeacherProfile,
+      STUDENT_STATUS.PENDING,
+      signatureLink,
+      specialRadio,
+      specialNeeds,
+      formerRegistrar,
+      formerRegistrarEmail,
+      formerRegistrarNumber,
+      address1,
+      address2,
+      isInternationalAddress === true || isInternationalAddress === 'true'
+        ? true
+        : isInternationalAddress === false || isInternationalAddress === 'false'
+          ? false
+          : null,
+      studentInternationalAddress || null,
+      mediaConsent === true || mediaConsent === 'true'
+        ? true
+        : mediaConsent === false || mediaConsent === 'false'
+          ? false
+          : null,
+      enrollmentAgreementSignature || null,
+      enrollmentAgreementSignatureDate
+        ? new Date(enrollmentAgreementSignatureDate)
+        : null,
+      cottageSlotId || null,
+    ];
+
+    let studentRecord;
+    try {
+      studentRecord = await enrollStudentWithCottageSlot(
         program,
-        cottageType,
-        accreditation,
+        cottageSlotId,
+        incomingGradeLevel,
         schoolYear,
-        reason,
-        formerSchoolName,
-        formerSchoolAddress,
-        pictureLink,
-        birthCertificateLink,
-        reportCardLink,
-        discountCode,
-        primaryTeacherName,
-        primaryTeacherAge,
-        primaryTeacherRelationship,
-        primaryTeacherEducation,
-        primaryTeacherProfile,
-        STUDENT_STATUS.PENDING,
-        signatureLink,
-        specialRadio,
-        specialNeeds,
-        formerRegistrar,
-        formerRegistrarEmail,
-        formerRegistrarNumber,
-        address1,
-        address2,
-        isInternationalAddress === true || isInternationalAddress === 'true'
-          ? true
-          : isInternationalAddress === false || isInternationalAddress === 'false'
-            ? false
-            : null,
-        studentInternationalAddress || null,
-        mediaConsent === true || mediaConsent === 'true'
-          ? true
-          : mediaConsent === false || mediaConsent === 'false'
-            ? false
-            : null,
-        enrollmentAgreementSignature || null,
-        enrollmentAgreementSignatureDate
-          ? new Date(enrollmentAgreementSignatureDate)
-          : null
-      ),
+        (tx) => createStudentRecord(...studentRecordArgs, tx),
+      );
+    } catch (error) {
+      if (error instanceof CottageSlotError) {
+        return res.status(error.statusCode).json({
+          errors: { error: { msg: error.message } },
+        });
+      }
+      throw error;
+    }
+
+    const [schoolFee] = await Promise.all([
       createSchoolFees(
         session.user.userId,
         session.user.email,

@@ -16,7 +16,6 @@ import {
   PROGRAM,
   RELIGION,
   COTTAGE_TYPE,
-  isCottageEligibleGradeLevel,
   FEES,
   GRADE_LEVEL_GROUPS,
   GRADE_LEVEL_TYPES,
@@ -141,6 +140,7 @@ const Students = ({ schoolFees, programs }) => {
   const [schoolYear, setSchoolYear] = useState('');
   const [program, setProgram] = useState(Program.HOMESCHOOL_PROGRAM);
   const [cottageType, setCottageType] = useState(null);
+  const [cottageSlotsAvailable, setCottageSlotsAvailable] = useState(false);
   const [accreditation, setAccreditation] = useState(null);
   const [payment, setPayment] = useState(null);
   const [fee, setFee] = useState(null);
@@ -172,6 +172,48 @@ const Students = ({ schoolFees, programs }) => {
   const age = differenceInYears(new Date(), birthDate) || 0;
   const [showConfirmChange, setShowConfirmChange] = useState(false);
   const [isUpdatingRecord, setUpdatingRecord] = useState(false);
+
+  useEffect(() => {
+    if (!incomingGradeLevel || !schoolYear) {
+      setCottageSlotsAvailable(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    api(
+      `/api/cottage-slots?gradeLevel=${incomingGradeLevel}&schoolYear=${encodeURIComponent(schoolYear)}`,
+      {
+        method: 'GET',
+      },
+    )
+      .then((response) => {
+        if (cancelled) return;
+        if (response.status >= 400) {
+          setCottageSlotsAvailable(false);
+          return;
+        }
+        setCottageSlotsAvailable(Boolean(response?.data?.hasAvailable));
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setCottageSlotsAvailable(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [incomingGradeLevel, schoolYear]);
+
+  useEffect(() => {
+    if (
+      program === Program.HOMESCHOOL_COTTAGE &&
+      !cottageSlotsAvailable
+    ) {
+      setProgram(Program.HOMESCHOOL_PROGRAM);
+      setCottageType(null);
+    }
+  }, [program, cottageSlotsAvailable]);
 
   const processedStudents = useMemo(() => {
     if (!data?.students) return [];
@@ -957,7 +999,7 @@ const Students = ({ schoolFees, programs }) => {
                     setIncomingGradeLevel(newGradeLevel);
                     if (
                       program === Program.HOMESCHOOL_COTTAGE &&
-                      !isCottageEligibleGradeLevel(newGradeLevel)
+                      !cottageSlotsAvailable
                     ) {
                       setProgram(Program.HOMESCHOOL_PROGRAM);
                       setCottageType(null);
@@ -1048,7 +1090,7 @@ const Students = ({ schoolFees, programs }) => {
                     key={index}
                     disabled={
                       entry === Program.HOMESCHOOL_COTTAGE &&
-                      !isCottageEligibleGradeLevel(incomingGradeLevel)
+                      !cottageSlotsAvailable
                     }
                     value={entry}
                   >

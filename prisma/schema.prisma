@@ -258,9 +258,26 @@ model StudentRecord {
   isInternationalAddress          Boolean?
   idPictureBack               String?
   idPictureFront              String?
+  cottageSlotId               String?
+  cottageSlot                 CottageSlot?  @relation(fields: [cottageSlotId], references: [id], onDelete: Restrict)
   student                     Workspace     @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("studentRecord")
+}
+
+model CottageSlot {
+  id              String                 @id @default(cuid())
+  cottageSlotName String
+  schoolYear      String
+  gradeTarget     CottageSlotGradeTarget
+  timeslot        String
+  slots           Int                    @default(0)
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  students        StudentRecord[]
+
+  @@unique([schoolYear, gradeTarget, cottageSlotName])
+  @@map("cottageSlots")
 }
 
 model Transaction {
@@ -704,6 +721,23 @@ enum GuardianType {
 enum CottageType {
   THREE_DAYS_A_WEEK
   FIVE_DAYS_A_WEEK
+}
+
+enum CottageSlotGradeTarget {
+  K2
+  GRADE_1
+  GRADE_2
+  GRADE_3
+  GRADE_4
+  GRADE_5
+  GRADE_6
+  GRADE_7
+  GRADE_8
+  GRADE_9
+  GRADE_10
+  FORM_1
+  FORM_2
+  FORM_3
 }
 
 enum ShippingType {

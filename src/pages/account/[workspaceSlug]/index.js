@@ -66,7 +66,7 @@ import {
   getMonthIndexForSchoolYear,
   calculateMonthlyPayment,
   GRADE_TO_FORM_MAP,
-  isCottageEligibleGradeLevel,
+  gradeCanHaveCottageSlots,
 } from '@/utils/constants';
 import Image from 'next/image';
 import { getSession } from 'next-auth/react';
@@ -134,6 +134,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const [formerSchoolAddress, setFormerSchoolAddress] = useState('');
   const [program, setProgram] = useState(Program.HOMESCHOOL_PROGRAM);
   const [cottageType, setCottageType] = useState(null);
+  const [cottageSlotId, setCottageSlotId] = useState(null);
+  const [cottageSlots, setCottageSlots] = useState([]);
+  const [cottageSlotsAvailable, setCottageSlotsAvailable] = useState(false);
   const [accreditation, setAccreditation] = useState(null);
   const [payment, setPayment] = useState(null);
   const [fee, setFee] = useState(null);
@@ -440,6 +443,65 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     );
   }, [zipCode]);
 
+  useEffect(() => {
+    if (
+      !incomingGradeLevel ||
+      !schoolYear ||
+      !gradeCanHaveCottageSlots(incomingGradeLevel)
+    ) {
+      setCottageSlots([]);
+      setCottageSlotsAvailable(false);
+      setCottageSlotId(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    api(
+      `/api/cottage-slots?gradeLevel=${incomingGradeLevel}&schoolYear=${encodeURIComponent(schoolYear)}`,
+      {
+        method: 'GET',
+      },
+    )
+      .then((response) => {
+        if (cancelled) return;
+        if (response.status >= 400) {
+          setCottageSlots([]);
+          setCottageSlotsAvailable(false);
+          setCottageSlotId(null);
+          return;
+        }
+        const data = response?.data || {};
+        const slots = data.slots || [];
+        setCottageSlots(slots);
+        setCottageSlotsAvailable(Boolean(data.hasAvailable));
+        setCottageSlotId((current) =>
+          current && slots.some((slot) => slot.id === current) ? current : null,
+        );
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setCottageSlots([]);
+        setCottageSlotsAvailable(false);
+        setCottageSlotId(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [incomingGradeLevel, schoolYear]);
+
+  useEffect(() => {
+    if (
+      program === Program.HOMESCHOOL_COTTAGE &&
+      !cottageSlotsAvailable
+    ) {
+      setProgram(Program.HOMESCHOOL_PROGRAM);
+      setCottageType(null);
+      setCottageSlotId(null);
+    }
+  }, [program, cottageSlotsAvailable]);
+
   const age = differenceInYears(new Date(), birthDate) || 0;
   const validateNext =
     (step === 0 &&
@@ -481,13 +543,15 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       accreditation !== null &&
       hasReadPartnershipAgreement &&
       mediaConsent !== null &&
-      enrollmentAgreementSignatureLink?.length > 0) ||
+      enrollmentAgreementSignatureLink?.length > 0 &&
+      (program !== Program.HOMESCHOOL_COTTAGE || cottageSlotId)) ||
     (step === 2 &&
       payment !== null &&
       paymentMethod &&
       hasReadPaymentPolicies &&
       agree &&
       signatureLink?.length > 0 &&
+      (program !== Program.HOMESCHOOL_COTTAGE || cottageSlotId) &&
       !isSubmittingCode);
 
   const programFee = programs.find((programFee) => {
@@ -1049,6 +1113,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         formerSchoolAddress,
         program,
         cottageType,
+        cottageSlotId,
         accreditation,
         payment,
         birthDate,
@@ -1850,10 +1915,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                     setIncomingGradeLevel(newGradeLevel);
                     if (
                       program === Program.HOMESCHOOL_COTTAGE &&
-                      !isCottageEligibleGradeLevel(newGradeLevel)
+                      !cottageSlotsAvailable
                     ) {
                       setProgram(Program.HOMESCHOOL_PROGRAM);
                       setCottageType(null);
+                      setCottageSlotId(null);
                     }
                     // setAccreditation(null);
                   }}
@@ -1892,9 +1958,6 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               <option value="">Please select School year...</option>
               <option value={SCHOOL_YEAR.SY_2026_2027}>
                 {SCHOOL_YEAR.SY_2026_2027}
-              </option>
-              <option value={SCHOOL_YEAR.SY_2025_2026}>
-                {SCHOOL_YEAR.SY_2025_2026}
               </option>
 
               {/* {Object.keys(SCHOOL_YEAR).map((entry, index) => (
@@ -2264,6 +2327,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               className="w-full px-3 py-2 capitalize rounded appearance-none"
               onChange={(e) => {
                 setProgram(e.target.value);
+                if (e.target.value !== Program.HOMESCHOOL_COTTAGE) {
+                  setCottageSlotId(null);
+                }
                 // setAccreditation(null);
               }}
               value={program}
@@ -2273,7 +2339,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   key={index}
                   disabled={
                     entry === Program.HOMESCHOOL_COTTAGE &&
-                    !isCottageEligibleGradeLevel(incomingGradeLevel)
+                    !cottageSlotsAvailable
                   }
                   value={entry}
                 >
@@ -2286,6 +2352,52 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </div>
           </div>
         </div>
+        {!cottageSlotsAvailable && (
+          <p className="text-sm text-gray-600">
+            Homeschool Cottage is unavailable for{' '}
+            {GRADE_LEVEL[incomingGradeLevel]?.toLowerCase() || 'the selected'}{' '}
+            grade
+            {schoolYear ? ` in school year ${schoolYear}` : ''} — no open time
+            slots. Go back to Student Information and choose a school year and
+            grade that match an available cottage slot (e.g. Grades 1–3 for Form
+            1 slots).
+          </p>
+        )}
+        {program === Program.HOMESCHOOL_COTTAGE && cottageSlots.length > 0 && (
+          <>
+            <hr className="border border-dashed" />
+            <label className="text-lg font-bold" htmlFor="cottageSlot">
+              Select a Cottage Time Slot
+              <span className="ml-1 text-red-600">*</span>
+            </label>
+            <div className="flex flex-row">
+              <div
+                className={`relative inline-block w-full rounded ${
+                  !cottageSlotId ? 'border-red-500 border-2' : 'border'
+                }`}
+              >
+                <select
+                  id="cottageSlot"
+                  className="w-full px-3 py-2 rounded appearance-none"
+                  onChange={(e) => {
+                    setCottageSlotId(e.target.value || null);
+                  }}
+                  value={cottageSlotId || ''}
+                >
+                  <option value="">Please select a time slot...</option>
+                  {cottageSlots.map((slot) => (
+                    <option key={slot.id} value={slot.id}>
+                      {`${slot.cottageSlotName} — ${slot.timeslot} (${slot.slots} left)`}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
         {program === Program.HOMESCHOOL_COTTAGE && (
           <>
             <hr className="border border-dashed" />
