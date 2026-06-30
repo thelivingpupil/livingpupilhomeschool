@@ -67,7 +67,7 @@ const Training = ({ courses }) => {
 
 export const getServerSideProps = async () => {
   const courses = await sanityClient.fetch(
-    `*[_type == 'courses'] | order(name asc)`
+    `*[_type == 'courses' && !(_id in path("drafts.**"))] | order(name asc)`
   );
   return { props: { courses } };
 };

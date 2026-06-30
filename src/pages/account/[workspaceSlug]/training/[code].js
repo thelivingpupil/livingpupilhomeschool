@@ -64,7 +64,7 @@ const Course = ({ course }) => {
                     workspace.creator.guardianInformation.parentTraining.map(
                       (training) =>
                         training.courseCode === courseCode &&
-                        training.schoolYear === schoolYear
+                          training.schoolYear === schoolYear
                           ? { ...training, status: 'FINISHED' }
                           : training
                     ),
@@ -189,9 +189,14 @@ const Course = ({ course }) => {
 export const getServerSideProps = async ({ params }) => {
   const { code } = params;
   const course = await sanityClient.fetch(
-    `*[_type == 'courses' && code == $code][0]{...}`,
+    `*[_type == 'courses' && code == $code && !(_id in path("drafts.**"))][0]{...}`,
     { code }
   );
+
+  if (!course) {
+    return { notFound: true };
+  }
+
   return { props: { course } };
 };
 
