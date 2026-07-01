@@ -121,8 +121,8 @@ export const requestWorkspaceDeletion = async (id, email, slug) => {
 
   const studentName = detailed?.studentRecord
     ? [detailed.studentRecord.firstName, detailed.studentRecord.middleName, detailed.studentRecord.lastName]
-        .filter(Boolean)
-        .join(' ')
+      .filter(Boolean)
+      .join(' ')
     : '';
 
   const gradeLevel = detailed?.studentRecord?.incomingGradeLevel || '';
@@ -601,7 +601,7 @@ export const getWorkspaces = async (id, email) => {
         deletedAt: null,
         createdAt: {
           gte: new Date(`01/01/2023`),
-          lte: new Date(`06/30/2026`),
+          lte: new Date(`06/30/2027`),
         },
       },
     },
