@@ -122,7 +122,7 @@ const Course = ({ course }) => {
               </Card>
               {course.courseFile?.url ? (
                 <Card>
-                  <Card.Body title="Course File">
+                  <Card.Body title="Training Manual">
                     <a
                       className="inline-flex items-center self-start py-2 px-3 rounded bg-primary-600 text-white text-sm cursor-pointer hover:bg-primary-500"
                       href={
@@ -133,7 +133,7 @@ const Course = ({ course }) => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Download Course File
+                      Download Training Manual
                     </a>
                   </Card.Body>
                 </Card>
