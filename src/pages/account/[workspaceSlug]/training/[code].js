@@ -120,6 +120,24 @@ const Course = ({ course }) => {
                   </div>
                 </Card.Body>
               </Card>
+              {course.courseFile?.url ? (
+                <Card>
+                  <Card.Body title="Course File">
+                    <a
+                      className="inline-flex items-center self-start py-2 px-3 rounded bg-primary-600 text-white text-sm cursor-pointer hover:bg-primary-500"
+                      href={
+                        course.courseFile.fileName
+                          ? `${course.courseFile.url}?dl=${encodeURIComponent(course.courseFile.fileName)}`
+                          : course.courseFile.url
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Download Course File
+                    </a>
+                  </Card.Body>
+                </Card>
+              ) : null}
               <Card>
                 <Card.Body title="Course Lessons">
                   {course.lessons?.map((lesson, index) => (
@@ -189,7 +207,13 @@ const Course = ({ course }) => {
 export const getServerSideProps = async ({ params }) => {
   const { code } = params;
   const course = await sanityClient.fetch(
-    `*[_type == 'courses' && code == $code && !(_id in path("drafts.**"))][0]{...}`,
+    `*[_type == 'courses' && code == $code && !(_id in path("drafts.**"))][0]{
+      ...,
+      courseFile {
+        'url': asset->url,
+        'fileName': asset->originalFilename
+      }
+    }`,
     { code }
   );
 
