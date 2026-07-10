@@ -21,7 +21,7 @@
     "@portabletext/react": "^1.0.6",
     "@prisma/client": "^4.3.1",
     "@sanity/client": "^6.29.1",
-    "@sanity/image-url": "^1.0.1",
+    "@sanity/image-url": "^2.1.1",
     "@splidejs/react-splide": "^0.7.5",
     "@stripe/stripe-js": "^1.23.0",
     "better-react-carousel": "^1.1.1",

@@ -1,11 +1,8 @@
 import { useState } from 'react';
-import imageUrlBuilder from '@sanity/image-url';
 import Title from '../sectionTitle';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 
-import sanityClient from '@/lib/server/sanity';
-
-const builder = imageUrlBuilder(sanityClient);
+import { imageBuilder as builder } from '@/lib/server/sanity';
 
 const Gallery = ({ title, items }) => {
   const [showSlideshow, setShowSlideshow] = useState(false);

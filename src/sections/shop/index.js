@@ -4,7 +4,6 @@ import {
   ChevronUpIcon,
   XIcon,
 } from '@heroicons/react/outline';
-import imageUrlBuilder from '@sanity/image-url';
 import crypto from 'crypto';
 import debounce from 'lodash.debounce';
 import Image from 'next/image';
@@ -16,7 +15,7 @@ import { storage } from '@/lib/client/firebase';
 import Modal from '@/components/Modal';
 import Item from '@/components/Shop/item';
 
-import sanityClient from '@/lib/server/sanity';
+import { imageBuilder as builder } from '@/lib/server/sanity';
 import {
   SHOP_SHIPPING,
   useCartContext,
@@ -25,8 +24,6 @@ import {
 import useUser from '@/hooks/data/useUser';
 import SignatureCanvas from 'react-signature-canvas';
 import api from '@/lib/common/api';
-
-const builder = imageUrlBuilder(sanityClient);
 
 const CebuLocations = {
   Liloan: 130,

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import Image from 'next/image';
-import imageUrlBuilder from '@sanity/image-url';
 import { PortableText } from '@portabletext/react';
 import { format } from 'date-fns';
 
@@ -8,10 +7,8 @@ import Content from '@/components/Content/index';
 import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
-import sanityClient from '@/lib/server/sanity';
+import sanityClient, { imageBuilder } from '@/lib/server/sanity';
 import ImageModal from '@/components/Modal/Image-Modal';
-
-const imageBuilder = imageUrlBuilder(sanityClient);
 
 const types = {
   FACETOFACE: 'Face To Face',

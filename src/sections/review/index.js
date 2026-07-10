@@ -1,12 +1,9 @@
 import { StarIcon } from '@heroicons/react/solid';
 import { StarIcon as StarIconOutline } from '@heroicons/react/outline';
-import imageUrlBuilder from '@sanity/image-url';
 import Link from 'next/link';
 import Image from 'next/image';
 
-import sanityClient from '@/lib/server/sanity';
-
-const builder = imageUrlBuilder(sanityClient);
+import { imageBuilder as builder } from '@/lib/server/sanity';
 
 const Review = ({ items, more }) => {
   return (

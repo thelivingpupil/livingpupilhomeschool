@@ -400,6 +400,21 @@ const Students = ({ schoolFees, programs }) => {
   };
 
   const viewEditSchoolFees = (student) => {
+    setPaymentMethod('ONLINE');
+    setStudentId(student.studentId);
+    setUserId(student.student?.creator?.guardianInformation?.userId ?? '');
+    setEmail(student.student?.creator?.email ?? '');
+
+    if (isWorkspaceDataFetched) {
+      const workspaceContainingStudent = workspaceData.workspaces.find(
+        (workspace) =>
+          workspace.studentRecord?.studentId === student.studentId
+      );
+      if (workspaceContainingStudent) {
+        setWorkspaceId(workspaceContainingStudent.id);
+      }
+    }
+
     toggleModal3();
     setStudent(student);
     setFirstName(student.firstName);
@@ -418,9 +433,6 @@ const Students = ({ schoolFees, programs }) => {
     setAccreditation(student.accreditation);
     setPayment(student.student.schoolFees[0].paymentType);
     setScholarship(student.scholarship);
-    setUserId(student.student.creator.guardianInformation.userId);
-    setPaymentMethod('ONLINE');
-    setEmail(student.student.creator.email);
   };
 
   const viewUpdateStudentStatus = (student) => {
@@ -486,6 +498,11 @@ const Students = ({ schoolFees, programs }) => {
   };
 
   const generateNewSchoolFees = (studentId) => {
+    if (!userId) {
+      toast.error('Student has no linked guardian account');
+      return;
+    }
+
     setSubmittingState(true);
     api('/api/transactions', {
       body: {
@@ -498,7 +515,7 @@ const Students = ({ schoolFees, programs }) => {
         program,
         cottageType,
         accreditation,
-        paymentMethod,
+        paymentMethod: paymentMethod || 'ONLINE',
         discountCode,
         scholarshipCode,
         studentId,
@@ -2153,7 +2170,7 @@ const Students = ({ schoolFees, programs }) => {
                 });
                 generateNewSchoolFees(studentId);
               }}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !userId}
             >
               Save Changes
             </button>

@@ -40,39 +40,10 @@ const handler = async (req, res) => {
       });
     }
   } else if (method === 'POST') {
-    const {
-      userId,
-      email,
-      workspaceId,
-      payment,
-      enrollmentType,
-      incomingGradeLevel,
-      program,
-      cottageType,
-      accreditation,
-      paymentMethod,
-      discountCode,
-      scholarshipCode,
-      studentId,
-      monthIndex,
-    } = req.body;
-    // Delete existing school fees
-    await deleteStudentSchoolFees(studentId);
-    const [studentRecord, schoolFee] = await Promise.all([
-      updateStudentRecordForSchoolFees(
-        studentId,
-        incomingGradeLevel,
-        enrollmentType,
-        accreditation,
-        discountCode,
-        scholarshipCode,
-        program,
-        cottageType
-      ),
-      createSchoolFees(
+    try {
+      const {
         userId,
         email,
-        studentId,
         payment,
         enrollmentType,
         incomingGradeLevel,
@@ -81,16 +52,63 @@ const handler = async (req, res) => {
         accreditation,
         paymentMethod,
         discountCode,
+        scholarshipCode,
+        studentId,
         monthIndex,
-        scholarshipCode
-      ),
-    ]);
-    res
-      .status(200)
-      .json(
-        { message: 'School fees generated successfully' },
-        { data: { studentRecord, schoolFee } }
-      );
+      } = req.body;
+
+      if (!studentId) {
+        return res.status(400).json({ error: 'studentId is required' });
+      }
+
+      if (!userId) {
+        return res
+          .status(400)
+          .json({ error: 'Student has no linked guardian account' });
+      }
+
+      const resolvedPaymentMethod = paymentMethod || 'ONLINE';
+
+      // Delete existing school fees
+      await deleteStudentSchoolFees(studentId);
+      const [studentRecord, schoolFee] = await Promise.all([
+        updateStudentRecordForSchoolFees(
+          studentId,
+          incomingGradeLevel,
+          enrollmentType,
+          accreditation,
+          discountCode,
+          scholarshipCode,
+          program,
+          cottageType
+        ),
+        createSchoolFees(
+          userId,
+          email,
+          studentId,
+          payment,
+          enrollmentType,
+          incomingGradeLevel,
+          program,
+          cottageType,
+          accreditation,
+          resolvedPaymentMethod,
+          discountCode,
+          monthIndex,
+          scholarshipCode
+        ),
+      ]);
+      res.status(200).json({
+        message: 'School fees generated successfully',
+        data: { studentRecord, schoolFee },
+      });
+    } catch (error) {
+      console.error('Error generating school fees:', error);
+      res.status(500).json({
+        error: 'Failed to generate school fees',
+        message: error.message,
+      });
+    }
   } else {
     res.status(405).json({ error: `${method} method unsupported` });
   }

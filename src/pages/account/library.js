@@ -1,15 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import Content from '@/components/Content/index';
 import LibraryItem from '@/components/Library';
-import imageUrlBuilder from '@sanity/image-url';
 import Meta from '@/components/Meta';
 import { AccountLayout } from '@/layouts/index';
-import sanityClient from '@/lib/server/sanity';
+import sanityClient, { imageBuilder } from '@/lib/server/sanity';
 import Carousel from 'better-react-carousel';
-import Image from 'next/image';
-import slugify from 'slugify';
-
-const imageBuilder = imageUrlBuilder(sanityClient);
 
 const Library = ({ books }) => {
   const [search, useSearch] = useState('');

@@ -7,20 +7,17 @@ import {
   XIcon,
 } from '@heroicons/react/outline';
 import { PortableText } from '@portabletext/react';
-import imageUrlBuilder from '@sanity/image-url';
 import crypto from 'crypto';
 import toast from 'react-hot-toast';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/client/firebase';
 
-import sanityClient from '@/lib/server/sanity';
+import { imageBuilder } from '@/lib/server/sanity';
 import { useEffect, useState } from 'react';
 import { SHOP_SHIPPING, useCartContext } from '@/providers/cart';
 import Modal from '@/components/Modal';
 import useUser from '@/hooks/data/useUser';
 import api from '@/lib/common/api';
-
-const imageBuilder = imageUrlBuilder(sanityClient);
 
 const ShopItem = ({ item }) => {
   const { data } = useUser();

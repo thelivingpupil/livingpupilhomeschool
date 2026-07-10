@@ -1,9 +1,6 @@
-import imageUrlBuilder from '@sanity/image-url';
 import Image from 'next/image';
 
-import sanityClient from '@/lib/server/sanity';
-
-const builder = imageUrlBuilder(sanityClient);
+import { imageBuilder as builder } from '@/lib/server/sanity';
 
 const Partners = ({ logos, name }) => {
   return (

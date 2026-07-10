@@ -1,11 +1,8 @@
 import { Fragment } from 'react';
 import { PortableText } from '@portabletext/react';
-import imageUrlBuilder from '@sanity/image-url';
 import Image from 'next/image';
 
-import sanityClient from '@/lib/server/sanity';
-
-const builder = imageUrlBuilder(sanityClient);
+import { imageBuilder as builder } from '@/lib/server/sanity';
 
 const Info = ({ title, description, highlight, image }) => {
   const imageAsset = builder.image(image.asset);

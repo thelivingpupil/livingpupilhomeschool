@@ -32,6 +32,7 @@ export const createSchoolFees = async (
   monthIndex,
   scholarshipCode = ''
 ) => {
+  paymentMethod = paymentMethod || 'ONLINE';
   let gradeLevel = incomingGradeLevel;
   const miscellaneousFee = 500;
 
@@ -584,6 +585,9 @@ export const createSchoolFees = async (
     const purchaseHistoryPromises = payments.map((payment, index) => {
       const total =
         payment + FEES[paymentMethod] - (index > 0 ? calculatedScholarship : 0); // Apply scholarship only from the second payment onwards
+      if (typeof total !== 'number' || isNaN(total)) {
+        throw new Error('Invalid total value');
+      }
       return prisma.purchaseHistory.create({
         data: { total },
         select: { id: true, transactionId: true },
