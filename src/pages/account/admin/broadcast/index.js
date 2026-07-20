@@ -56,13 +56,15 @@ const filterOptions = {
 // Email sender options
 const emailSenderOptions = [
   { value: 'finance', label: 'Finance' },
-  { value: 'admin', label: 'Admin' },
-  { value: 'adminofficer', label: 'LP Admin Officer' },
+  { value: 'registrar', label: 'Registrar' },
   { value: 'shop', label: 'Shop' },
-  { value: 'coo', label: 'COO' },
+  { value: 'ruchel', label: 'Ruchel' },
+  { value: 'events', label: 'Events' },
+  { value: 'admin', label: 'Admin' },
   { value: 'directress', label: 'Directress' },
   { value: 'cottage', label: 'Cottage Coordinator' },
-  { value: 'international', label: 'International Coordinator' },
+  { value: 'stella', label: 'Marie Stella' },
+  { value: 'coo', label: 'COO' },
 ];
 
 // Constant for singular email

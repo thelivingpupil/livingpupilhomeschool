@@ -718,54 +718,54 @@ export const getParentFirstName = (fullName) => {
 
 // Function to get email credentials for each sender
 export const getSenderCredentials = (sender) => {
-  let senderName, email, appPassword;
+  let senderName, email;
 
   switch (sender) {
     case 'admin':
       senderName = 'LP Admin';
       email = process.env.ADMIN_EMAIL;
-      appPassword = process.env.ADMIN_APP_PASSWORD;
-      break;
-    case 'adminofficer':
-      senderName = 'LP Admin Officer';
-      email = 'livingpupilhomeschool.assist@gmail.com';
-      appPassword = null;
       break;
     case 'finance':
       senderName = 'LP Finance';
       email = process.env.FINANCE_EMAIL;
-      appPassword = process.env.FINANCE_APP_PASSWORD;
+      break;
+    case 'registrar':
+      senderName = 'LP Registrar';
+      email = process.env.REGISTRAR_EMAIL;
       break;
     case 'shop':
       senderName = 'LP Shop';
       email = process.env.SHOP_EMAIL;
-      appPassword = process.env.SHOP_APP_PASSWORD;
+      break;
+    case 'ruchel':
+      senderName = 'LP Cottage Teacher';
+      email = process.env.RUCHEL_EMAIL;
+      break;
+    case 'events':
+      senderName = 'LP Events';
+      email = process.env.EVENTS_EMAIL;
       break;
     case 'coo':
       senderName = 'LP COO';
       email = process.env.COO_EMAIL;
-      appPassword = process.env.COO_APP_PASSWORD;
       break;
     case 'directress':
       senderName = 'LP Directress';
       email = process.env.DIRECTRESS_EMAIL;
-      appPassword = process.env.DIRECTRESS_APP_PASSWORD;
       break;
     case 'cottage':
       senderName = 'LP Cottage Coordinator';
       email = process.env.COTTAGE_EMAIL;
-      appPassword = process.env.COTTAGE_APP_PASSWORD;
       break;
-    case 'international':
-      senderName = 'LP International Coordinator';
-      email = 'livingpupilinternational@gmail.com';
-      appPassword = null;
+    case 'stella':
+      senderName = 'LP Cottage Teacher';
+      email = process.env.STELLA_EMAIL;
       break;
     default:
       throw new Error(`Unknown sender: ${sender}`);
   }
 
-  return { senderName, email, appPassword };
+  return { senderName, email };
 };
 
 // Function to get sender details
@@ -774,23 +774,31 @@ export const getSenderDetails = (sender) => {
 
   switch (sender) {
     case 'admin':
-      senderRole = 'Admin';
-      senderFullName = 'Chanella Venice Giganto';
-      break;
-    case 'adminofficer':
-      senderRole = 'LP Admin Officer';
+      senderRole = 'Admin Assistant';
       senderFullName = 'Chanella Venice Giganto';
       break;
     case 'finance':
       senderRole = 'Finance Officer';
       senderFullName = 'Karen Yap';
       break;
+    case 'registrar':
+      senderRole = 'Registrar';
+      senderFullName = 'Mynelyn';
+      break;
     case 'shop':
-      senderRole = '';
-      senderFullName = 'Living Pupil Homeschool Team';
+      senderRole = 'Shop Coordinator';
+      senderFullName = 'Dez';
+      break;
+    case 'ruchel':
+      senderRole = 'Cottage Teacher';
+      senderFullName = 'Ruchel';
+      break;
+    case 'events':
+      senderRole = 'Events Operations Coordinator';
+      senderFullName = 'Annie Simacas';
       break;
     case 'coo':
-      senderRole = 'Chief Operations Officer';
+      senderRole = 'Chief Operating Officer';
       senderFullName = 'Arjeli Ricarte';
       break;
     case 'directress':
@@ -798,12 +806,12 @@ export const getSenderDetails = (sender) => {
       senderFullName = 'Azenith Jacalan';
       break;
     case 'cottage':
-      senderRole = 'Homeschool Cottage Coordinator';
+      senderRole = 'Cottage Coordinator';
       senderFullName = 'Joshua Jacalan';
       break;
-    case 'international':
-      senderRole = 'International Coordinator';
-      senderFullName = 'Annie Simacas';
+    case 'stella':
+      senderRole = 'Cottage Teacher';
+      senderFullName = 'Marie Stella';
       break;
     default:
       throw new Error(`Unknown sender: ${sender}`);

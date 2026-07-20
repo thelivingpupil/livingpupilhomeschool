@@ -1,4 +1,3 @@
-import { sendMailWithGmail } from '@/lib/server/gmail';
 import { getSenderDetails, getSenderCredentials } from '@/utils/index';
 import { html as announcementHtml, text as announcementText } from '@/config/email-templates/broadcast/announcement';
 import { getParentFirstName } from '@/utils/index';
