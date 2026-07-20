@@ -499,7 +499,7 @@ const deadlines2026 = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 1, 2],
       [PaymentType.QUARTERLY]: [0, 1, 2],
-      [PaymentType.MONTHLY]: [0, 1, 2, 3],
+      [PaymentType.MONTHLY]: [0, 1, 2], // Jan 5, Feb 5
       [PaymentType.PAY_ALL]: [0],
     },
   ],
@@ -509,7 +509,7 @@ const deadlines2026 = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 1, 2],
       [PaymentType.QUARTERLY]: [0, 1, 2, 3],
-      [PaymentType.MONTHLY]: [0, 1, 2],
+      [PaymentType.MONTHLY]: [0, 1], // Feb 5
       [PaymentType.PAY_ALL]: [0],
     },
     // February 2027
@@ -517,7 +517,7 @@ const deadlines2026 = {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 1, 2],
       [PaymentType.QUARTERLY]: [0, 1, 2, 3],
-      [PaymentType.MONTHLY]: [0, 1],
+      [PaymentType.MONTHLY]: [0],
       [PaymentType.PAY_ALL]: [0],
     },
     // March (End of SY 2026-2027)
