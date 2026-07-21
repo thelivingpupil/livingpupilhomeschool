@@ -19,8 +19,10 @@ const formGradeLevels = {
   FORM_3: ['GRADE_7', 'GRADE_8', 'GRADE_9', 'GRADE_10'],
 };
 
-/** Science experiment PDFs exist only for this school year (not SY 2026-2027). */
-const SCIENCE_EXPERIMENT_SCHOOL_YEARS = [SCHOOL_YEAR.SY_2025_2026];
+const SCIENCE_EXPERIMENT_SCHOOL_YEARS = [
+  SCHOOL_YEAR.SY_2025_2026,
+  SCHOOL_YEAR.SY_2026_2027,
+];
 
 const gradeSortValue = (grade) => {
   if (!grade) return 0;
@@ -673,13 +675,13 @@ export const getServerSideProps = async () => {
   }`);
 
   const scienceExperiment = await sanityClient.fetch(
-    `*[_type == 'experiment' && schoolYear == $schoolYear]{
+    `*[_type == 'experiment' && schoolYear in $schoolYears]{
     'schoolYear': schoolYear,
     'grade': gradeLevel,
     'program': programType,
     'fileUrl': experimentFile.asset->url
   }`,
-    { schoolYear: SCHOOL_YEAR.SY_2025_2026 },
+    { schoolYears: SCIENCE_EXPERIMENT_SCHOOL_YEARS },
   );
 
   return {
