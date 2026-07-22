@@ -83,7 +83,6 @@ const userUnsettledDues = [
   'louviloveamancio02@gmail.com',
   'aocajayon12@gmail.com',
   'cnsanayehr@gmail.com',
-  'meriamclo032@gmail.com',
   'heavencie21@gmail.com',
   'gracebenaro1287@gmail.com',
   'seninfrias24@gmail.com',
