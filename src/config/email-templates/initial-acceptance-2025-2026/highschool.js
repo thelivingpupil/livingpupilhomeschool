@@ -158,81 +158,101 @@ const html = ({
                                   <div style="color:#ffffff;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:150%;text-align:left;mso-line-height-alt:21px;">
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Dear <strong>${parentFirstName ? parentFirstName : "Parent"}</strong>, </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> A warm welcome to Living Pupil Homeschool! </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Greetings from Living Pupil Homeschool! </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> We are truly delighted to walk alongside you and your family in the School Year 2026–2027. As we begin this new season of learning—formed by truth, nourished by goodness, and inspired by beauty—we hope this guide will help you settle in with confidence and peace. &nbsp; </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Welcome to our homeschool community. We are delighted to partner with you and your family for the School Year 2026–2027. As we begin this meaningful journey together, we pray that your homeschool experience will be filled with growth, joy, and countless opportunities for learning. </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Beginning of the School Year </p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> The school year officially begins on June 19, 2026. Before that, we invite you to join us for Pagbukas, our school year kick-off event. Stay tuned for more details coming soon! </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> To help you get started, please take note of the following important information: </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> School Year Opening </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> The School Year 2026–2027 officially began on <strong>June 29, 2026</strong>. You may begin following your child's homeschool program as outlined in the Parent Portal. </p>
                                     <p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Administrative Requirements</p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> To complete the enrollment process, please follow these next steps:</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> To complete the enrollment process, kindly accomplish the following:</p>
                                     <ul style="list-style-type: disc; color:#ffffff;">
                                       <li style="margin: 0 0 10px 0;">
                                         <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                          <b>Upload your child’s report card and birth certificate</b> (for new families).
+                                          Upload your child’s <b>Report Card</b> and <b>Birth Certificate</b> (for new families).
                                         </p>
                                       </li>
                                       <li style="margin: 0 0 10px 0;">
                                         <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                          <b>Submit your child’s school ID entry </b>using this link: <a href="https://form.jotform.com/260150972907459" target="_blank" style="text-decoration: underline; color: #ffffff;">https://form.jotform.com/260150972907459</a>
+                                          Submit your child’s School ID entry through this form: <a href="https://form.jotform.com/260150972907459" target="_blank" style="text-decoration: underline; color: #ffffff;">https://form.jotform.com/260150972907459</a>
                                         </p>
                                       </li>
                                     </ul>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Self-Paced Parent Training </p>
-                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> To support you in your homeschooling journey, we have prepared mandatory self-paced Parent Training sessions, available through our website: <a href="https://livingpupilhomeschool.com/" target="_blank" style="text-decoration: underline; color: #ffffff;"> https://livingpupilhomeschool.com/</a>.</p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> These trainings are thoughtfully designed to help you understand our philosophy and equip you with practical tools for guiding your child’s learning at home. Please take time to watch the videos and complete the accompanying assessments.</p>
-                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> How to access the <i>
-                                        <b>Parent Training Courses: </b>
-                                      </i>
+                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> To support you in your homeschooling journey, we have prepared mandatory self-paced Parent Training sessions available through our website: <a href="https://livingpupilhomeschool.com/" target="_blank" style="text-decoration: underline; color: #ffffff;">https://livingpupilhomeschool.com/</a>.</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> These trainings are thoughtfully designed to help you understand our philosophy and equip you with practical tools for guiding your child’s learning at home. Kindly take time to watch the videos and complete the accompanying assessments.</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> How to Access the Parent Training Courses </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
+                                      <b>1.</b> Visit <a style="text-decoration: underline; color: #ffffff;" target="_blank" href="https://livingpupilhomeschool.com/">https://livingpupilhomeschool.com/</a>.
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                      <b>Step 1: </b> Visit <a style="text-decoration: underline; color: #ffffff;" target="_blank" href="https://livingpupilhomeschool.com/">https://livingpupilhomeschool.com/</a>.
+                                      <b>2.</b> Click <b>“Parent Portal”</b> at the top right corner of the homepage.
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                      <b>Step 2: </b> Click “Parent Portal” at the top right corner of the homepage.
+                                      <b>3.</b> Log in using the email, Facebook, or Gmail account linked to your Living Pupil account.
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                      <b>Step 3: </b> Log in using the email, Facebook, or Gmail account linked to your Living Pupil account.
-                                    </p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                      <b>Step 4: </b> Select “View Record”, then go to “Courses and Training”.
+                                      <b>4.</b> Select <b>“View Record”</b>, then proceed to <b>“Courses and Training.”</b>
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> You may also watch this short video guide on navigating the website: <a style="text-decoration: underline; color: #ffffff;" target="_blank" href="https://youtu.be/OKEW_zsZIIQ">https://youtu.be/OKEW_zsZIIQ</a>. </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp; </p>
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Live Parent Trainings </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                      In addition to the self-paced sessions, we will be hosting live Parent Trainings via Zoom throughout the year. These gatherings allow us to learn together and address common questions. Kindly watch for our email announcements regarding schedules and details.
+                                      In addition to the self-paced sessions, we will also host live Parent Trainings via Zoom throughout the year. These gatherings allow us to learn together and address common questions. Kindly watch for our email announcements regarding schedules and details.
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Homeschool Curriclum  </p>
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Homeschool Curriculum </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                        We are excited to share that your 36-week lesson plan, timetable, blueprint (guide), and other valuable resources will be available on our website’s Parent Portal in May 2026. These tools are designed to support you in guiding your child’s learning journey with joy and ease. Please stay tuned for our email once they are available.
+                                      We are excited to share that your child’s <b>36-week lesson plan, timetable, blueprint (guide), and other valuable resources</b> are now available through the Parent Portal. These tools are designed to support you in guiding your child’s learning journey with joy and ease.
                                     </p>
-                                    
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp; </p>
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Book Ordering </p>
-                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> Most of the books in the curriculum are available for purchase at the Living Pupil Homeschool Shop through our website: <a href="https://livingpupilhomeschool.com/shop">https://livingpupilhomeschool.com/shop</a>.</p>
-                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;">The Booklist is now available on the Parent Portal under “Guides and Resources.” You may log in to access the list and begin planning your book purchases.</p>
-                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;">While we have carefully selected these materials to align with our educational philosophy, we understand that each learner is unique. You may follow the provided list or make adjustments to best suit your child’s learning needs.</p>
+                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> Most of the books in the curriculum are available for purchase through the Living Pupil Homeschool Shop: <a href="https://livingpupilhomeschool.com/shop" target="_blank" style="text-decoration: underline; color: #ffffff;">https://livingpupilhomeschool.com/shop</a>.</p>
+                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;">The Booklist is also available on the Parent Portal under <b>“Guides and Resources.”</b> You may log in to access the list and begin planning your book purchases.</p>
+                                    <p style="margin: 0; margin-bottom: 10px; color:#ffffff;">While we have carefully selected these materials to align with our educational philosophy, we understand that each learner is unique. You may follow the suggested list or make adjustments to best suit your child’s learning needs.</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff; font-size: 16px;">
-                                      <b>LP Parent Group Chat</b>
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> LP Community </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> To stay updated on announcements, school activities, and events, we invite you to join our designated group chats. Please make sure to join the group that matches your child’s grade level and district.</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> You can also stay connected through our official Messenger Community, where important updates will be posted.</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
+                                      <b>Join the Messenger Community here:</b>
                                     </p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> To keep you connected and well-supported, we will be setting up a Messenger group chat for School Year 2026–2027 this March. This will be our space for important announcements and reminders. Please stay tuned for an email with instructions on how to join.</p>
-                                    
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
+                                      <a href="https://www.messenger.com/c/2524424591336703" target="_blank" style="text-decoration: underline; color: #ffffff;">https://www.messenger.com/c/2524424591336703</a> or <a href="https://m.me/cm/AbY6eUmIRyCpTE_a/" target="_blank" style="text-decoration: underline; color: #ffffff;">https://m.me/cm/AbY6eUmIRyCpTE_a/</a>
+                                    </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Official Facebook Group: </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
+                                      <a href="https://www.facebook.com/share/g/1DYtkAnivp/" target="_blank" style="text-decoration: underline; color: #ffffff;">https://www.facebook.com/share/g/1DYtkAnivp/</a>
+                                    </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
+                                      <b>Note:</b> To join the group/community via the link, kindly copy the link, send it to your Messenger, and open it through your Messenger app.
+                                    </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> We also encourage you to follow our official Facebook Page for announcements and updates: <a href="https://www.facebook.com/livingpupilhomeschool" target="_blank" style="text-decoration: underline; color: #ffffff;">https://www.facebook.com/livingpupilhomeschool</a></p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> You may also follow our official blog, <b>The Living Pupil</b>, for homeschool insights, articles, and school-related information: <a href="https://www.facebook.com/thelivingpupil" target="_blank" style="text-decoration: underline; color: #ffffff;">https://www.facebook.com/thelivingpupil</a></p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Join our exclusive Marketplace community for Living Pupil families, where parents can buy, sell, exchange, or share homeschool-related resources and items.</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Living Pupil Marketplace: <a href="https://www.facebook.com/share/g/1KN6AkrB1W/" target="_blank" style="text-decoration: underline; color: #ffffff;">https://www.facebook.com/share/g/1KN6AkrB1W/</a></p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Once again, welcome to Living Pupil Homeschool. We are grateful to partner with you in nurturing a love for learning in your child, and we look forward to a meaningful and life-giving school year together.</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Should you have any questions or need assistance, please do not hesitate to reach out.</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> With warm regards,</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Warm regards,</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                      <strong>Chanella Venice Giganto</strong>
+                                      <strong>Mynelyn C. Namacpacan</strong>
                                     </p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Admin Officer</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Registrar</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Living Pupil Homeschool</p>
-                                    <p style="margin: 0;">0945-647-6682</p>
+                                    <p style="margin: 0;">TM: 0975 908 9311 | Smart: 0968 557 7862</p>
                                   </div>
                                 </td>
                               </tr>

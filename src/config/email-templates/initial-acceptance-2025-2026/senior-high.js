@@ -52,14 +52,11 @@ const html = ({
 
       ul {
         list-style-type: none;
-        /* Remove default bullets */
         padding: 0;
-        /* Remove default padding */
       }
 
       li {
         margin-bottom: 4px;
-        /* Space between list items */
       }
 
       a {
@@ -160,13 +157,59 @@ const html = ({
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Greetings from Living Pupil Homeschool! </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Welcome to our homeschool community. We are delighted to partner with you and your family for the School Year 2026–2027. As we begin this meaningful journey together, we pray that your homeschool experience will be filled with growth, joy, and countless opportunities for learning. </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> We are truly delighted to walk alongside you and your family in School Year 2026–2027. As we begin this new season of learning—formed by truth, nourished by goodness, and inspired by beauty—we hope this guide will help you settle in with confidence and peace. </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> To help you get started, please take note of the following important information: </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Senior High School is a meaningful season of growth and preparation. During these years, students develop greater independence, critical thinking skills, and readiness for future academic and life pathways. As a homeschool community, we are committed to supporting families in shaping learners who are responsible, reflective, and grounded in strong values. </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
-                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> School Year Opening </p>
-                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> The School Year 2026–2027 officially began on <strong>June 29, 2026</strong>. You may begin following your child's homeschool program as outlined in the Parent Portal. </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> To better serve the diverse needs of our Senior High School students, we offer two homeschooling options for Grade 11 and Grade 12: </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Bracket A – With Facilitator </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> This option is designed for learners who benefit from structure, consistent guidance, and regular accountability. </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"><b>Program Features</b></p>
+                                    <ul style="list-style-type: disc; color:#ffffff;">
+                                      <li style="margin: 0 0 6px 0;"><p style="margin: 0; color:#ffffff;">Weekly online meet-up sessions are required</p></li>
+                                      <li style="margin: 0 0 6px 0;"><p style="margin: 0; color:#ffffff;">Weekly submission of written narrations, reflections, and requirements</p></li>
+                                      <li style="margin: 0 0 6px 0;"><p style="margin: 0; color:#ffffff;">Guided support and monitoring from facilitators</p></li>
+                                      <li style="margin: 0 0 6px 0;"><p style="margin: 0; color:#ffffff;">Regular check-ins to help ensure academic progress and completion of tasks</p></li>
+                                      <li style="margin: 0 0 6px 0;"><p style="margin: 0; color:#ffffff;">Opportunities for discussion and collaborative learning</p></li>
+                                    </ul>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"><b>Weekly Meeting Schedule</b></p>
+                                    <ul style="list-style-type: disc; color:#ffffff;">
+                                      <li style="margin: 0 0 6px 0;"><p style="margin: 0; color:#ffffff;"><b>Grade 11</b> – Every Wednesday at 7:00 PM</p></li>
+                                      <li style="margin: 0 0 6px 0;"><p style="margin: 0; color:#ffffff;"><b>Grade 12</b> – Every Thursday at 7:00 PM</p></li>
+                                    </ul>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> This option is ideal for students who perform best with routine, mentorship, and structured learning support. </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Bracket B – Parent-Led / Self-Study (No Facilitator) </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> This option is designed for families who prefer flexibility and independent learning. It is best suited for students who are self-directed and capable of managing their learning with parental guidance. </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"><b>Program Features:</b></p>
+                                    <ul style="list-style-type: disc; color:#ffffff;">
+                                      <li style="margin: 0 0 6px 0;"><p style="margin: 0; color:#ffffff;">No weekly online meetings required</p></li>
+                                      <li style="margin: 0 0 6px 0;"><p style="margin: 0; color:#ffffff;">Weekly submission of written narrations and requirements</p></li>
+                                      <li style="margin: 0 0 6px 0;"><p style="margin: 0; color:#ffffff;">Flexible pacing of lessons based on the learner’s schedule</p></li>
+                                      <li style="margin: 0 0 6px 0;"><p style="margin: 0; color:#ffffff;">Parent-led supervision and monitoring of academic progress</p></li>
+                                      <li style="margin: 0 0 6px 0;"><p style="margin: 0; color:#ffffff;">Strong emphasis on independence, responsibility, and self-discipline</p></li>
+                                    </ul>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Choosing Your Option </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Both options are designed to provide quality education while accommodating different learning styles and family preferences. We encourage you to carefully consider your child’s learning needs, level of independence, and the kind of support structure that will best help them thrive. </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Once you have decided, kindly let us know which option you choose so we can properly align your child’s enrollment and learning setup. </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> Please reply to confirm your selected option: </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> <b>Bracket A (With Facilitator)</b> or <b>Bracket B (Parent-Led / Self-Study)</b> </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+
+                                    <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Beginning of the School Year </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> The School Year <b>2026–2027</b> officially began on <b>July 8–9, 2026</b>. You may now begin following your child's homeschool program. </p>
+                                    <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> A separate email containing your child's <b>Google Classroom invitation link</b> will be sent to you shortly. The Google Classroom serves as your child's online learning hub, where you will find the learning materials and resources for the school year. </p>
                                     <p style="margin: 0; margin-bottom: 4px;">&nbsp;</p>
+
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Administrative Requirements</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> To complete the enrollment process, kindly accomplish the following:</p>
                                     <ul style="list-style-type: disc; color:#ffffff;">
@@ -182,6 +225,7 @@ const html = ({
                                       </li>
                                     </ul>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Self-Paced Parent Training </p>
                                     <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> To support you in your homeschooling journey, we have prepared mandatory self-paced Parent Training sessions available through our website: <a href="https://livingpupilhomeschool.com/" target="_blank" style="text-decoration: underline; color: #ffffff;">https://livingpupilhomeschool.com/</a>.</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> These trainings are thoughtfully designed to help you understand our philosophy and equip you with practical tools for guiding your child’s learning at home. Kindly take time to watch the videos and complete the accompanying assessments.</p>
@@ -201,21 +245,25 @@ const html = ({
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> You may also watch this short video guide on navigating the website: <a style="text-decoration: underline; color: #ffffff;" target="_blank" href="https://youtu.be/OKEW_zsZIIQ">https://youtu.be/OKEW_zsZIIQ</a>. </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp; </p>
+
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Live Parent Trainings </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
                                       In addition to the self-paced sessions, we will also host live Parent Trainings via Zoom throughout the year. These gatherings allow us to learn together and address common questions. Kindly watch for our email announcements regarding schedules and details.
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Homeschool Curriculum </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
                                       We are excited to share that your child’s <b>36-week lesson plan, timetable, blueprint (guide), and other valuable resources</b> are now available through the Parent Portal. These tools are designed to support you in guiding your child’s learning journey with joy and ease.
                                     </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp; </p>
+
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> Book Ordering </p>
                                     <p style="margin: 0; margin-bottom: 10px; color:#ffffff;"> Most of the books in the curriculum are available for purchase through the Living Pupil Homeschool Shop: <a href="https://livingpupilhomeschool.com/shop" target="_blank" style="text-decoration: underline; color: #ffffff;">https://livingpupilhomeschool.com/shop</a>.</p>
                                     <p style="margin: 0; margin-bottom: 10px; color:#ffffff;">The Booklist is also available on the Parent Portal under <b>“Guides and Resources.”</b> You may log in to access the list and begin planning your book purchases.</p>
                                     <p style="margin: 0; margin-bottom: 10px; color:#ffffff;">While we have carefully selected these materials to align with our educational philosophy, we understand that each learner is unique. You may follow the suggested list or make adjustments to best suit your child’s learning needs.</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> &nbsp;</p>
+
                                     <p style="margin: 0; margin-bottom: 2px; color:#ffffff; font-weight: bolder; font-size: 16px;"> LP Community </p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> To stay updated on announcements, school activities, and events, we invite you to join our designated group chats. Please make sure to join the group that matches your child’s grade level and district.</p>
                                     <p style="margin: 0; margin-bottom: 4px; color:#ffffff;"> You can also stay connected through our official Messenger Community, where important updates will be posted.</p>
@@ -321,12 +369,50 @@ Dear ${parentFirstName || 'Parent'},
 
 Greetings from Living Pupil Homeschool!
 
-Welcome to our homeschool community. We are delighted to partner with you and your family for the School Year 2026–2027. As we begin this meaningful journey together, we pray that your homeschool experience will be filled with growth, joy, and countless opportunities for learning.
+We are truly delighted to walk alongside you and your family in School Year 2026–2027. As we begin this new season of learning—formed by truth, nourished by goodness, and inspired by beauty—we hope this guide will help you settle in with confidence and peace.
 
-To help you get started, please take note of the following important information:
+Senior High School is a meaningful season of growth and preparation. During these years, students develop greater independence, critical thinking skills, and readiness for future academic and life pathways. As a homeschool community, we are committed to supporting families in shaping learners who are responsible, reflective, and grounded in strong values.
 
-School Year Opening
-The School Year 2026–2027 officially began on June 29, 2026. You may begin following your child's (${firstName || 'child'}) homeschool program as outlined in the Parent Portal.
+To better serve the diverse needs of our Senior High School students, we offer two homeschooling options for Grade 11 and Grade 12:
+
+Bracket A – With Facilitator
+This option is designed for learners who benefit from structure, consistent guidance, and regular accountability.
+
+Program Features:
+- Weekly online meet-up sessions are required
+- Weekly submission of written narrations, reflections, and requirements
+- Guided support and monitoring from facilitators
+- Regular check-ins to help ensure academic progress and completion of tasks
+- Opportunities for discussion and collaborative learning
+
+Weekly Meeting Schedule:
+- Grade 11 – Every Wednesday at 7:00 PM
+- Grade 12 – Every Thursday at 7:00 PM
+
+This option is ideal for students who perform best with routine, mentorship, and structured learning support.
+
+Bracket B – Parent-Led / Self-Study (No Facilitator)
+This option is designed for families who prefer flexibility and independent learning. It is best suited for students who are self-directed and capable of managing their learning with parental guidance.
+
+Program Features:
+- No weekly online meetings required
+- Weekly submission of written narrations and requirements
+- Flexible pacing of lessons based on the learner’s schedule
+- Parent-led supervision and monitoring of academic progress
+- Strong emphasis on independence, responsibility, and self-discipline
+
+Choosing Your Option
+Both options are designed to provide quality education while accommodating different learning styles and family preferences. We encourage you to carefully consider your child’s learning needs, level of independence, and the kind of support structure that will best help them thrive.
+
+Once you have decided, kindly let us know which option you choose so we can properly align your child’s enrollment and learning setup.
+
+Please reply to confirm your selected option:
+Bracket A (With Facilitator) or Bracket B (Parent-Led / Self-Study)
+
+Beginning of the School Year
+The School Year 2026–2027 officially began on July 8–9, 2026. You may now begin following your child's (${firstName || 'child'}) homeschool program.
+
+A separate email containing your child's Google Classroom invitation link will be sent to you shortly. The Google Classroom serves as your child's online learning hub, where you will find the learning materials and resources for the school year.
 
 Administrative Requirements
 To complete the enrollment process, kindly accomplish the following:

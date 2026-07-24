@@ -33,11 +33,10 @@ import {
   html as initialSenior2025Html,
   text as initialSenior2025Text,
 } from '@/config/email-templates/initial-acceptance-2025-2026/senior-high';
-// TODO: Uncomment when cottage email template is ready for 2026-2027
-// import {
-//     html as initialCottage2025Html,
-//     text as initialCottage2025Text,
-// } from '@/config/email-templates/initial-acceptance-2025-2026/cottage-all';
+import {
+  html as initialCottage2025Html,
+  text as initialCottage2025Text,
+} from '@/config/email-templates/initial-acceptance-2025-2026/cottage-all';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -81,7 +80,7 @@ const handler = async (req, res) => {
                 html: initialPreschool2025Html({
                   parentFirstName,
                 }),
-                subject: `Welcome to Living Pupil Homeschool! Onboarding Guide & Next Steps (SY 2026-2027)`,
+                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2026-2027`,
                 text: initialpreschool2025Text({
                   parentFirstName,
                   firstName,
@@ -96,7 +95,7 @@ const handler = async (req, res) => {
                 html: initialKindergarten2025Html({
                   parentFirstName,
                 }),
-                subject: `Welcome to Living Pupil Homeschool! Onboarding Guide & Next Steps (SY 2026-2027)`,
+                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2026-2027`,
                 text: initialKindergarten2025Text({
                   parentFirstName,
                   firstName,
@@ -115,7 +114,7 @@ const handler = async (req, res) => {
                 html: initialGradeschool2025Html({
                   parentFirstName,
                 }),
-                subject: `Welcome to Living Pupil Homeschool! Onboarding Guide & Next Steps (SY 2026-2027)`,
+                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2026-2027`,
                 text: initialGradeschool2025Text({
                   parentFirstName,
                   firstName,
@@ -132,7 +131,7 @@ const handler = async (req, res) => {
                 html: initialHighschool2025Html({
                   parentFirstName,
                 }),
-                subject: `Welcome to Living Pupil Homeschool! Onboarding Guide & Next Steps (SY 2026-2027)`,
+                subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2026-2027`,
                 text: initialHighschool2025Text({
                   parentFirstName,
                   firstName,
@@ -147,7 +146,7 @@ const handler = async (req, res) => {
                 html: initialSenior2025Html({
                   parentFirstName,
                 }),
-                subject: `Welcome to Living Pupil Homeschool! Onboarding Guide & Next Steps (SY 2026-2027)`,
+                subject: `Welcome to the Senior High School program of Living Pupil Homeschool!`,
                 text: initialSenior2025Text({
                   parentFirstName,
                   firstName,
@@ -158,13 +157,17 @@ const handler = async (req, res) => {
               res.status(500).json({ error: 'Invalid Grade Level' });
             }
           } else if (program === 'HOMESCHOOL_COTTAGE') {
-            // TODO: Cottage email template for 2026-2027 will be updated later
-            res
-              .status(500)
-              .json({
-                error:
-                  'Cottage email template for 2026-2027 is not yet available. Please contact admin.',
-              });
+            await sendMail({
+              html: initialCottage2025Html({
+                parentFirstName,
+              }),
+              subject: `Welcome to Living Pupil Homeschool – Next Steps for SY 2026-2027`,
+              text: initialCottage2025Text({
+                parentFirstName,
+                firstName,
+              }),
+              to: [email],
+            });
           } else {
             res.status(500).json({ error: 'Invalid Program' });
           }
