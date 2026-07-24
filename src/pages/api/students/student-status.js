@@ -29,11 +29,11 @@ import {
   html as initialHighschool2025Html,
   text as initialHighschool2025Text,
 } from '@/config/email-templates/initial-acceptance-2025-2026/highschool';
-// TODO: Uncomment when email templates are ready for 2026-2027
-// import {
-//     html as initialSenior2025Html,
-//     text as initialSenior2025Text,
-// } from '@/config/email-templates/initial-acceptance-2025-2026/senior-high';
+import {
+  html as initialSenior2025Html,
+  text as initialSenior2025Text,
+} from '@/config/email-templates/initial-acceptance-2025-2026/senior-high';
+// TODO: Uncomment when cottage email template is ready for 2026-2027
 // import {
 //     html as initialCottage2025Html,
 //     text as initialCottage2025Text,
@@ -143,13 +143,17 @@ const handler = async (req, res) => {
               incomingGradeLevel === 'GRADE_11' ||
               incomingGradeLevel === 'GRADE_12'
             ) {
-              // TODO: Senior High email template for 2026-2027 will be updated later
-              res
-                .status(500)
-                .json({
-                  error:
-                    'Senior High email template for 2026-2027 is not yet available. Please contact admin.',
-                });
+              await sendMail({
+                html: initialSenior2025Html({
+                  parentFirstName,
+                }),
+                subject: `Welcome to Living Pupil Homeschool! Onboarding Guide & Next Steps (SY 2026-2027)`,
+                text: initialSenior2025Text({
+                  parentFirstName,
+                  firstName,
+                }),
+                to: [email],
+              });
             } else {
               res.status(500).json({ error: 'Invalid Grade Level' });
             }
