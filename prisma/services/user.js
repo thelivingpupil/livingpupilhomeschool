@@ -1,4 +1,8 @@
 import { html, text } from '@/config/email-templates/email-update';
+import {
+  html as adminEmailUpdateHtml,
+  text as adminEmailUpdateText,
+} from '@/config/email-templates/admin-email-update';
 import { sendMail } from '@/lib/server/mail';
 import prisma from '@/prisma/index';
 
@@ -180,6 +184,101 @@ export const updateEmail = async (id, email, previousEmail) => {
     text: text({ email }),
     to: [email, previousEmail],
   });
+};
+
+export const updateEmailAsAdmin = async (id, newEmail, updatedByEmail) => {
+  const email = (newEmail || '').trim().toLowerCase();
+
+  if (!email) {
+    throw new Error('Email address is required');
+  }
+
+  const user = await prisma.user.findUnique({
+    select: { id: true, name: true, email: true },
+    where: { id },
+  });
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  const previousEmail = user.email;
+
+  if (previousEmail && previousEmail.toLowerCase() === email) {
+    throw new Error('The new email address is the same as the current one');
+  }
+
+  const emailOwner = await prisma.user.findUnique({
+    select: { id: true },
+    where: { email },
+  });
+
+  if (emailOwner && emailOwner.id !== id) {
+    throw new Error('Email address is already used by another account');
+  }
+
+  const conflictingPayment = await prisma.customerPayment.findUnique({
+    select: { customerId: true },
+    where: { email },
+  });
+
+  if (conflictingPayment && conflictingPayment.customerId !== id) {
+    throw new Error(
+      'Email address is already linked to another payment account'
+    );
+  }
+
+  // members.email and members.inviter are foreign keys on users.email declared
+  // with ON UPDATE CASCADE, so workspace memberships follow the rename by
+  // themselves. Everything else that copies the address is updated here.
+  await prisma.$transaction(async (tx) => {
+    await tx.user.update({
+      data: { email, emailVerified: null },
+      where: { id },
+    });
+
+    await tx.customerPayment.updateMany({
+      data: { email },
+      where: { customerId: id },
+    });
+
+    if (previousEmail) {
+      await tx.verificationToken.deleteMany({
+        where: { identifier: previousEmail },
+      });
+    }
+
+    // Sessions are keyed on the user id, so they would otherwise stay signed in
+    // under the old address until they expire.
+    await tx.session.deleteMany({ where: { userId: id } });
+  });
+
+  console.log(
+    `[admin] email for user ${id} changed from ${previousEmail} to ${email} by ${updatedByEmail}`
+  );
+
+  const recipients = [email, previousEmail].filter(Boolean);
+
+  try {
+    await sendMail({
+      html: adminEmailUpdateHtml({
+        email,
+        previousEmail,
+        name: user.name,
+      }),
+      subject: `[Living Pupil Homeschool] Email address updated`,
+      text: adminEmailUpdateText({
+        email,
+        previousEmail,
+        name: user.name,
+      }),
+      to: recipients,
+    });
+  } catch (error) {
+    console.error('Error sending admin email update notification:', error);
+  }
+
+  return { id, email, previousEmail };
 };
 
 export const updateGuardianInformation = async (id, guardianInformation) =>

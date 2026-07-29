@@ -15,20 +15,25 @@ import { UserType } from '@prisma/client';
 import formatDistance from 'date-fns/formatDistance';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from '@mui/material';
+import { IconButton, Menu, MenuItem } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Meta from '@/components/Meta';
 import SideModal from '@/components/Modal/side-modal';
 import { AdminLayout } from '@/layouts/index';
 import Content from '@/components/Content';
 import Card from '@/components/Card';
 import { useUsers } from '@/hooks/data';
+import api from '@/lib/common/api';
 import toast from 'react-hot-toast';
 
 const Users = () => {
-  const { data, isLoading } = useUsers();
+  const { data, isLoading, mutate } = useUsers();
   const [showModal, setModalVisibility] = useState(false);
   const [isSubmitting, setSubmittingState] = useState(false);
-  const toggleModal = () => setModalVisibility(!showModal);
+  const [editingUser, setEditingUser] = useState(null);
+  const [newEmail, setNewEmail] = useState('');
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [menuUser, setMenuUser] = useState(null);
 
   function CustomToolbar() {
     return (
@@ -40,66 +45,213 @@ const Users = () => {
     );
   }
 
-  const openMenu = (event) => {
-    setAnchorEl(event.currentTarget);
+  const openActionsMenu = (event, user) => {
+    event.stopPropagation();
+    setMenuAnchorEl(event.currentTarget);
+    setMenuUser(user);
   };
 
-  const closeMenu = () => {
-    setAnchorEl(null);
+  // menuUser is kept on close so the menu labels stay put while the closing
+  // animation plays; opening another row overwrites it.
+  const closeActionsMenu = () => setMenuAnchorEl(null);
+
+  const isMenuOpenFor = (userId) =>
+    Boolean(menuAnchorEl) && menuUser?.id === userId;
+
+  const openEmailModal = (user) => {
+    setEditingUser(user);
+    setNewEmail(user.email || '');
+    setModalVisibility(true);
   };
 
-  const deactivateAccount = async (userId) => {
+  const closeEmailModal = () => {
+    setModalVisibility(false);
+    setEditingUser(null);
+    setNewEmail('');
+  };
+
+  const updateEmail = async () => {
+    const email = newEmail.trim().toLowerCase();
+
+    if (!email) {
+      toast.error('Please enter an email address');
+      return;
+    }
+
+    if (email === (editingUser?.email || '').toLowerCase()) {
+      toast.error('The new email address is the same as the current one');
+      return;
+    }
+
+    if (
+      !window.confirm(
+        `Change the account email of ${
+          editingUser?.name || editingUser?.email
+        } to ${email}? They will need to sign in again using the new address.`
+      )
+    ) {
+      return;
+    }
+
+    setSubmittingState(true);
+
     try {
-      setSubmittingState(true);
-
-      const response = await fetch('/api/users', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId }),
+      const response = await api('/api/admin/users/email', {
+        method: 'PUT',
+        body: { userId: editingUser.id, email },
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to deactivate account');
+      if (response.status >= 400) {
+        throw new Error(
+          response.errors?.error?.msg || 'Failed to update email address'
+        );
       }
 
-      setSubmittingState(false);
-      toast.success('Account has been deactivated!');
+      toast.success('Account email has been updated!');
+      await mutate();
+      closeEmailModal();
     } catch (error) {
+      toast.error(error.message || 'Failed to update email address');
+    } finally {
       setSubmittingState(false);
-      toast.error(`Error deactivating account: ${error.message}`);
     }
   };
 
-  const reactivateAccount = async (userId) => {
-    try {
-      setSubmittingState(true);
+  const deactivateAccount = async (user) => {
+    if (
+      !window.confirm(
+        `Deactivate the account of ${
+          user.name || user.email
+        }? They will no longer be able to use it.`
+      )
+    ) {
+      return;
+    }
 
-      const response = await fetch('/api/users', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId }),
+    setSubmittingState(true);
+
+    try {
+      const response = await api('/api/users', {
+        method: 'DELETE',
+        body: { userId: user.id },
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to reactivate account');
+      if (response.status >= 400) {
+        throw new Error(
+          response.errors?.error?.msg || 'Failed to deactivate account'
+        );
       }
 
-      setSubmittingState(false);
-      toast.success('Account has been reactivated!');
+      toast.success('Account has been deactivated!');
+      await mutate();
     } catch (error) {
+      toast.error(`Error deactivating account: ${error.message}`);
+    } finally {
       setSubmittingState(false);
+    }
+  };
+
+  const reactivateAccount = async (user) => {
+    if (
+      !window.confirm(`Reactivate the account of ${user.name || user.email}?`)
+    ) {
+      return;
+    }
+
+    setSubmittingState(true);
+
+    try {
+      const response = await api('/api/users', {
+        method: 'PUT',
+        body: { userId: user.id },
+      });
+
+      if (response.status >= 400) {
+        throw new Error(
+          response.errors?.error?.msg || 'Failed to reactivate account'
+        );
+      }
+
+      toast.success('Account has been reactivated!');
+      await mutate();
+    } catch (error) {
       toast.error(`Error reactivating account: ${error.message}`);
+    } finally {
+      setSubmittingState(false);
     }
   };
 
   return (
     <AdminLayout>
       <Meta title="Living Pupil Homeschool - Users" />
-      <SideModal show={showModal} toggle={toggleModal} />
+      <SideModal
+        title="Update Account Email"
+        show={showModal}
+        toggle={closeEmailModal}
+      >
+        <div className="space-y-4">
+          <div className="p-3 text-sm bg-gray-100 rounded">
+            <p className="font-medium capitalize">
+              {editingUser?.name || 'Unnamed user'}
+            </p>
+            <p className="text-xs text-gray-600">
+              Current email: {editingUser?.email || '-'}
+            </p>
+          </div>
+
+          <div className="flex flex-col space-y-1">
+            <label className="font-medium">New Email Address *</label>
+            <input
+              type="email"
+              className="px-3 py-2 border rounded"
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
+              placeholder="parent@example.com"
+            />
+          </div>
+
+          <div className="p-3 text-xs text-yellow-900 bg-yellow-50 border border-yellow-200 rounded space-y-1">
+            <p className="font-medium">Please take note:</p>
+            <ul className="list-disc list-inside space-y-1">
+              <li>
+                This is the address the account signs in with. The user will be
+                signed out and must log in again using the new email.
+              </li>
+              <li>
+                Workspace memberships, invites, and payment records are moved to
+                the new address automatically.
+              </li>
+              <li>
+                The account will be marked as unverified until the user signs in
+                with the new email.
+              </li>
+              <li>
+                A notification is sent to both the old and the new email
+                address.
+              </li>
+            </ul>
+          </div>
+
+          <div className="flex justify-end pt-2 space-x-2">
+            <button
+              type="button"
+              className="px-4 py-2 border rounded"
+              onClick={closeEmailModal}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="px-4 py-2 text-white rounded bg-primary-500 hover:bg-primary-600 disabled:opacity-50"
+              onClick={updateEmail}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Updating...' : 'Update Email'}
+            </button>
+          </div>
+        </div>
+      </SideModal>
       <Content.Title
         title="Users List"
         subtitle="View and manage all user details and related data"
@@ -284,34 +436,28 @@ const Users = () => {
                 {
                   field: 'actions',
                   headerName: 'Actions',
-                  flex: 1,
+                  width: 80,
                   headerAlign: 'center',
                   align: 'center',
-                  hide: true,
+                  sortable: false,
+                  filterable: false,
                   renderCell: (params) => (
-                    <div className="h-full flex items-center justify-center">
-                      {params.row.deletedAt !== null ? (
-                        <button
-                          className="px-2 py-0.5 text-xs text-white rounded bg-green-600 hover:bg-green-700"
-                          onClick={() => reactivateAccount(params.row.id)}
-                        >
-                          Reactivate
-                        </button>
-                      ) : (
-                        // <Button onClick={() => reactivateAccount(params.row.id)}>
-                        //   Reactivate
-                        // </Button>
-                        <button
-                          className="px-2 py-0.5 text-xs text-white rounded bg-red-600 hover:bg-red-700"
-                          onClick={() => deactivateAccount(params.row.id)}
-                        >
-                          Deactivate
-                        </button>
-                        // <Button onClick={() => deactivateAccount(params.row.id)}>
-                        //   Deactivate
-                        // </Button>
-                      )}
-                    </div>
+                    <IconButton
+                      size="small"
+                      aria-label="User actions"
+                      aria-controls={
+                        isMenuOpenFor(params.row.id)
+                          ? 'user-actions-menu'
+                          : undefined
+                      }
+                      aria-haspopup="true"
+                      aria-expanded={
+                        isMenuOpenFor(params.row.id) ? 'true' : undefined
+                      }
+                      onClick={(event) => openActionsMenu(event, params.row)}
+                    >
+                      <MoreVertIcon fontSize="small" />
+                    </IconButton>
                   ),
                 },
               ]}
@@ -324,6 +470,46 @@ const Users = () => {
           </div>
         </Card.Body>
       </Card>
+
+      <Menu
+        id="user-actions-menu"
+        anchorEl={menuAnchorEl}
+        open={Boolean(menuAnchorEl)}
+        onClose={closeActionsMenu}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <MenuItem
+          onClick={() => {
+            const user = menuUser;
+            closeActionsMenu();
+            if (user) openEmailModal(user);
+          }}
+        >
+          Change Email
+        </MenuItem>
+        {menuUser?.deletedAt ? (
+          <MenuItem
+            onClick={() => {
+              const user = menuUser;
+              closeActionsMenu();
+              if (user) reactivateAccount(user);
+            }}
+          >
+            Reactivate
+          </MenuItem>
+        ) : (
+          <MenuItem
+            onClick={() => {
+              const user = menuUser;
+              closeActionsMenu();
+              if (user) deactivateAccount(user);
+            }}
+          >
+            Deactivate
+          </MenuItem>
+        )}
+      </Menu>
     </AdminLayout>
   );
 };

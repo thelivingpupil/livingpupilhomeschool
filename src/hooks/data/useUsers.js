@@ -2,11 +2,12 @@ import useSWR from 'swr';
 
 const useUsers = () => {
   const apiRoute = `/api/users`;
-  const { data, error } = useSWR(`${apiRoute}`);
+  const { data, error, mutate } = useSWR(`${apiRoute}`);
   return {
     ...data,
     isLoading: !error && !data,
     isError: error,
+    mutate,
   };
 };
 

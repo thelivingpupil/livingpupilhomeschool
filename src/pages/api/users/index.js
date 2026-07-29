@@ -8,7 +8,12 @@ const handler = async (req, res) => {
   const { method } = req;
 
   if (method === 'GET') {
-    await validateSession(req, res);
+    const session = await validateSession(req, res);
+
+    if (!session || session.user?.userType !== 'ADMIN') {
+      return res.status(403).json({ errors: { error: { msg: 'Forbidden: Admin access required' } } });
+    }
+
     const users = await getUsers();
     res.status(200).json({ data: { users } });
   } else if (method === 'PUT') {
