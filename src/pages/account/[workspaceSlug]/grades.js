@@ -156,7 +156,7 @@ const userUnsettledDues = [
 
 const Grades = () => {
   const { workspace } = useWorkspace();
-  const [formPage, setFormPage] = useState('quarterly');
+  const [formPage, setFormPage] = useState('card');
 
   const handleSelectChange = (event) => {
     setFormPage(event.target.value);
@@ -194,8 +194,10 @@ const Grades = () => {
                   onChange={handleSelectChange}
                   value={formPage}
                 >
+                  {/* Temporarily disabled
                   <option value="quarterly">Quarterly Requirements</option>
                   <option value="year-end">Year End Requirements</option>
+                  */}
                   <option value="card">Card</option>
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -203,6 +205,7 @@ const Grades = () => {
                 </div>
               </div>
 
+              {/* Temporarily disabled
               {(formPage === 'quarterly' || formPage === 'year-end') &&
                 (() => {
                   const forms =
@@ -226,6 +229,7 @@ const Grades = () => {
                     </div>
                   );
                 })()}
+              */}
 
               {formPage === 'card' && (
                 <div className="mt-4 space-y-4">
