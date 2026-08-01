@@ -22,6 +22,11 @@ export const ACCREDITATION = {
   FORM_THREE: 'DepEd Accreditation Form 3 (Grades 7-10)',
 };
 
+export const PARTNER_SCHOOL = {
+  KAIROS: 'Kairos',
+  MANDAUE: 'Mandaue Christian School',
+};
+
 export const ACCREDITATION_NEW = {
   LOCAL: 'DepEd Accreditation (Local)',
   INTERNATIONAL: 'US Accreditation (International)',
@@ -294,6 +299,7 @@ export const DOC_STATUS = {
 export const ORDER_STATUS = {
   Completed: 'Completed',
   In_Transit: 'In Transit',
+  Processing: 'Processing',
   Cancelled: 'Cancelled',
   Order_Placed: 'Pending',
   For_Delivery: 'For Delivery',
@@ -302,6 +308,7 @@ export const ORDER_STATUS = {
 
 export const ORDER_STATUS_BG_COLOR = {
   In_Transit: 'bg-yellow-600 text-white',
+  Processing: 'bg-yellow-600 text-white',
   Completed: 'bg-green-600 text-white',
   Cancelled: 'bg-red-600 text-white',
   Order_Placed: 'bg-gray-600 text-white',

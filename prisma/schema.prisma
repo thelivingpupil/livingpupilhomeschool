@@ -210,57 +210,58 @@ model Session {
 }
 
 model StudentRecord {
-  id                          String        @id @default(cuid())
-  studentId                   String        @unique @default(cuid())
-  firstName                   String
-  middleName                  String
-  lastName                    String
-  birthDate                   DateTime
-  gender                      Gender
-  religion                    Religion
-  incomingGradeLevel          GradeLevel
-  enrollmentType              Enrollment    @default(NEW)
-  program                     Program       @default(HOMESCHOOL_PROGRAM)
-  accreditation               Accreditation @default(LOCAL)
-  reason                      String?
-  formerSchoolName            String
-  formerSchoolAddress         String
-  createdAt                   DateTime?     @default(now())
-  deletedAt                   DateTime?
-  updatedAt                   DateTime?     @updatedAt
-  image                       String?
-  liveBirthCertificate        String?
-  reportCard                  String?
-  schoolYearReportCard        String?
-  discount                    String?
-  cottageType                 CottageType?
-  schoolYear                  String?
-  primaryTeacherAge           String?
-  primaryTeacherEducation     String?
-  primaryTeacherName          String?
-  primaryTeacherProfile       String?
-  primaryTeacherRelationship  String?
-  scholarship                 String?
-  studentStatus               String?
-  signature                       String?
-  policyAgreement                 Boolean       @default(true)
-  mediaConsent                    Boolean?
-  enrollmentAgreementSignature    String?
+  id                               String        @id @default(cuid())
+  studentId                        String        @unique @default(cuid())
+  firstName                        String
+  middleName                       String
+  lastName                         String
+  birthDate                        DateTime
+  gender                           Gender
+  religion                         Religion
+  incomingGradeLevel               GradeLevel
+  enrollmentType                   Enrollment    @default(NEW)
+  program                          Program       @default(HOMESCHOOL_PROGRAM)
+  accreditation                    Accreditation @default(LOCAL)
+  reason                           String?
+  formerSchoolName                 String
+  formerSchoolAddress              String
+  createdAt                        DateTime?     @default(now())
+  deletedAt                        DateTime?
+  updatedAt                        DateTime?     @updatedAt
+  image                            String?
+  liveBirthCertificate             String?
+  reportCard                       String?
+  schoolYearReportCard             String?
+  discount                         String?
+  cottageType                      CottageType?
+  partnerSchool                    PartnerSchool?
+  schoolYear                       String?
+  primaryTeacherAge                String?
+  primaryTeacherEducation          String?
+  primaryTeacherName               String?
+  primaryTeacherProfile            String?
+  primaryTeacherRelationship       String?
+  scholarship                      String?
+  studentStatus                    String?
+  signature                        String?
+  policyAgreement                  Boolean       @default(true)
+  mediaConsent                     Boolean?
+  enrollmentAgreementSignature     String?
   enrollmentAgreementSignatureDate DateTime?
-  formerRegistrar                 String?
-  formerRegistrarEmail            String?
-  formerRegistrarNumber           String?
-  specialNeedSpecific             String?
-  specialNeeds                    String?
-  studentAddress1                 String?
-  studentAddress2                 String?
-  studentInternationalAddress     String?
-  isInternationalAddress          Boolean?
-  idPictureBack               String?
-  idPictureFront              String?
-  cottageSlotId               String?
-  cottageSlot                 CottageSlot?  @relation(fields: [cottageSlotId], references: [id], onDelete: Restrict)
-  student                     Workspace     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  formerRegistrar                  String?
+  formerRegistrarEmail             String?
+  formerRegistrarNumber            String?
+  specialNeedSpecific              String?
+  specialNeeds                     String?
+  studentAddress1                  String?
+  studentAddress2                  String?
+  studentInternationalAddress      String?
+  isInternationalAddress           Boolean?
+  idPictureBack                    String?
+  idPictureFront                   String?
+  cottageSlotId                    String?
+  cottageSlot                      CottageSlot?  @relation(fields: [cottageSlotId], references: [id], onDelete: Restrict)
+  student                          Workspace     @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("studentRecord")
 }
@@ -334,13 +335,12 @@ model User {
   sessions            Session[]
   transaction         Transaction[]
   createdWorkspace    Workspace[]
-  schoolYear          SchoolYearV2[]  @relation("SchoolYearCreatedBy")
-  enrollment          EnrollmentV2[]  @relation("EnrollmentCreatedBy")
+  schoolYear          SchoolYearV2[]       @relation("SchoolYearCreatedBy")
+  enrollment          EnrollmentV2[]       @relation("EnrollmentCreatedBy")
   student             StudentV2[]
   transactionV2       TransactionV2[]
-  orderFeeV2          OrderFeeV2[]
   orderV2             OrderV2[]
-  orderItemV2         OrderItemV2[]
+  inventoryMovements  InventoryMovement[]
   createdWorkspaceV2  WorkspaceV2[]
 
   @@unique([userCode, email])
@@ -397,24 +397,24 @@ model DocumentRequest {
 }
 
 model RequestorInformation {
-  id                    String    @id @default(cuid())
-  requestCode           String    @unique
+  id                    String           @id @default(cuid())
+  requestCode           String           @unique
   requestorFullName     String
   requestorEmail        String
   relationshipToStudent String
   occupation            String
   requestorAddress      String
   requestorMobileNumber String
-  createdAt             DateTime? @default(now())
+  createdAt             DateTime?        @default(now())
   deletedAt             DateTime?
-  updatedAt             DateTime? @updatedAt
+  updatedAt             DateTime?        @updatedAt
   DocumentRequest       DocumentRequest?
 
   @@map("requestorInformation")
 }
 
 model StudentInformation {
-  id                   String      @id @default(cuid())
+  id                   String          @id @default(cuid())
   requestCode          String
   studentFullName      String
   lrn                  String
@@ -422,9 +422,9 @@ model StudentInformation {
   currentSchool        String
   gradeLevelsWithLp    String
   lastSchoolYearWithLp String
-  createdAt            DateTime?   @default(now())
+  createdAt            DateTime?       @default(now())
   deletedAt            DateTime?
-  updatedAt            DateTime?   @updatedAt
+  updatedAt            DateTime?       @updatedAt
   documents            Documents[]
   DocumentRequest      DocumentRequest @relation(fields: [requestCode], references: [requestCode], onDelete: Cascade)
 
@@ -433,16 +433,16 @@ model StudentInformation {
 }
 
 model Documents {
-  id          String              @id @default(cuid())
-  requestCode String
-  docName     String
-  createdAt   DateTime?           @default(now())
-  deletedAt   DateTime?
-  updatedAt   DateTime?
-  url         String
-  studentId   String?
-  student     StudentInformation? @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  DocumentRequest DocumentRequest @relation(fields: [requestCode], references: [requestCode], onDelete: Cascade)
+  id              String              @id @default(cuid())
+  requestCode     String
+  docName         String
+  createdAt       DateTime?           @default(now())
+  deletedAt       DateTime?
+  updatedAt       DateTime?
+  url             String
+  studentId       String?
+  student         StudentInformation? @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  DocumentRequest DocumentRequest     @relation(fields: [requestCode], references: [requestCode], onDelete: Cascade)
 
   @@index([studentId], map: "idx_documents_studentId")
   @@map("documents")
@@ -467,31 +467,31 @@ model SchoolYearV2 {
 }
 
 model StudentV2 {
-  id                            String         @id @default(cuid())
-  studentId                     String         @unique @default(cuid())
-  lrn                           String?
-  firstName                     String
-  middleName                    String
-  lastName                      String
-  birthDate                     DateTime
-  gender                        Gender
-  religion                      Religion
-  liveBirthCertificate          String
-  idPictureBack                 String
-  idPictureFront                String
-  studentAddress1               String
-  studentAddress2               String
-  studentInternationalAddress   String
-  specialNeeds                  String
-  specialNeedsSpecific          String
-  studentStatus                 String?
-  userId                        String
-  createdAt                     DateTime?      @default(now())
-  updatedAt                     DateTime?      @updatedAt
-  deletedAt                     DateTime?
-  workspace                     WorkspaceV2?
-  enrollment                    EnrollmentV2[]
-  user                          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                          String         @id @default(cuid())
+  studentId                   String         @unique @default(cuid())
+  lrn                         String?
+  firstName                   String
+  middleName                  String
+  lastName                    String
+  birthDate                   DateTime
+  gender                      Gender
+  religion                    Religion
+  liveBirthCertificate        String
+  idPictureBack               String
+  idPictureFront              String
+  studentAddress1             String
+  studentAddress2             String
+  studentInternationalAddress String
+  specialNeeds                String
+  specialNeedsSpecific        String
+  studentStatus               String?
+  userId                      String
+  createdAt                   DateTime?      @default(now())
+  updatedAt                   DateTime?      @updatedAt
+  deletedAt                   DateTime?
+  workspace                   WorkspaceV2?
+  enrollment                  EnrollmentV2[]
+  user                        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("studentV2")
 }
@@ -516,8 +516,8 @@ model WorkspaceV2 {
 }
 
 model EnrollmentV2 {
-  id                    String               @id @default(cuid())
-  enrollmentCode        String               @unique
+  id                    String             @id @default(cuid())
+  enrollmentCode        String             @unique
   enrollmentType        EnrollmentTypeV2
   gradeLevel            GradeLevel
   program               Program
@@ -525,25 +525,25 @@ model EnrollmentV2 {
   accreditation         Accreditation
   reportCard            String?
   discount              String?
-  enrollmentStatus      EnrollmentStatusV2   @default(PENDING)
+  enrollmentStatus      EnrollmentStatusV2 @default(PENDING)
   scholarship           String?
   signature             String?
-  policyAgreement       Boolean              @default(true)
+  policyAgreement       Boolean            @default(true)
   formerRegistrar       String?
   formerRegistrarEmail  String?
   formerRegistrarNumber String?
-  createdAt             DateTime?            @default(now())
-  updatedAt             DateTime?            @updatedAt
+  createdAt             DateTime?          @default(now())
+  updatedAt             DateTime?          @updatedAt
   deletedAt             DateTime?
   workspaceId           String
   studentId             String
   createdById           String
   schoolYearId          String
   schoolFees            SchoolFeesV2[]
-  createdBy             User                 @relation("EnrollmentCreatedBy", fields: [createdById], references: [id])
-  student               StudentV2            @relation(fields: [studentId], references: [studentId])
-  schoolYear            SchoolYearV2         @relation(fields: [schoolYearId], references: [id])
-  workspace             WorkspaceV2          @relation(fields: [workspaceId], references: [workspaceId], onDelete: Cascade)
+  createdBy             User               @relation("EnrollmentCreatedBy", fields: [createdById], references: [id])
+  student               StudentV2          @relation(fields: [studentId], references: [studentId])
+  schoolYear            SchoolYearV2       @relation(fields: [schoolYearId], references: [id])
+  workspace             WorkspaceV2        @relation(fields: [workspaceId], references: [workspaceId], onDelete: Cascade)
 
   @@unique([studentId, schoolYearId])
   @@index([workspaceId])
@@ -567,88 +567,157 @@ model SchoolFeesV2 {
 }
 
 model TransactionV2 {
-  id                 String            @id @default(cuid())
-  transactionId      String            @unique
-  referenceNumber    String            @unique
-  paymentReference   String?
-  amount             Decimal           @default(0)
-  currency           Currency          @default(PHP)
-  fee                Fees              @default(ONLINE)
-  payment            Decimal?
-  balance            Decimal?
-  paymentProofLink   String?
-  paymentType        PaymentType
-  transactionStatus  TransactionStatus @default(U)
-  paymentStatus      TransactionStatus @default(U)
-  description        String?
-  message            String?
-  url                String?
-  source             TransactionSource @default(ENROLLMENT)
-  createdAt          DateTime?         @default(now())
-  updatedAt          DateTime?         @updatedAt
-  deletedAt          DateTime?
-  userId             String?
-  user               User?             @relation(fields: [userId], references: [id])
-  schoolFees         SchoolFeesV2?
-  orderFee           OrderFeeV2?
+  id                String            @id @default(cuid())
+  transactionId     String            @unique
+  referenceNumber   String            @unique
+  paymentReference  String?
+  amount            Decimal           @default(0)
+  currency          Currency          @default(PHP)
+  fee               Fees              @default(ONLINE)
+  payment           Decimal?
+  balance           Decimal?
+  paymentProofLink  String?
+  paymentType       PaymentType
+  transactionStatus TransactionStatus @default(U)
+  paymentStatus     TransactionStatus @default(U)
+  description       String?
+  message           String?
+  url               String?
+  source            TransactionSource @default(ENROLLMENT)
+  createdAt         DateTime?         @default(now())
+  updatedAt         DateTime?         @updatedAt
+  deletedAt         DateTime?
+  userId            String?
+  user              User?             @relation(fields: [userId], references: [id])
+  schoolFees        SchoolFeesV2?
+  orderFee          OrderFeeV2?
 
   @@map("transactionV2")
 }
 
 model OrderV2 {
-  orderId         String        @id @default(cuid())
-  total           Decimal       @default(0)
-  deliveryAddress String?
-  shippingType    ShippingType?
-  contactNumber   String?
-  paymentType     PaymentType
-  createdAt       DateTime?     @default(now())
-  updatedAt       DateTime?     @updatedAt
-  deletedAt       DateTime?
-  userId          String?
-  orderItems      OrderItemV2[]
-  orderFees       OrderFeeV2[]
-  user            User?         @relation(fields: [userId], references: [id])
+  orderId            String          @id @default(cuid())
+  orderCode          String          @unique
+  total              Decimal         @default(0)
+  deliveryAddress    String?
+  shippingType       ShippingType?
+  contactNumber      String?
+  paymentType        ShopPaymentType
+  status             OrderV2Status   @default(ORDER_PLACED)
+  cancelRequestedAt  DateTime?
+  cancelReason       String?
+  createdAt          DateTime?       @default(now())
+  updatedAt          DateTime?       @updatedAt
+  deletedAt          DateTime?
+  userId             String
+  orderItems         OrderItemV2[]
+  orderFees          OrderFeeV2[]
+  user               User            @relation(fields: [userId], references: [id])
 
+  @@index([userId])
+  @@index([status])
+  @@index([deletedAt])
+  @@index([cancelRequestedAt])
   @@map("orderV2")
 }
 
 model OrderItemV2 {
-  orderItemId String    @id @default(cuid())
+  orderItemId String              @id @default(cuid())
   code        String
   name        String
   image       String
-  basePrice   Decimal   @default(0)
-  totalPrice  Decimal   @default(0)
-  quantity    Int       @default(0)
-  createdAt   DateTime? @default(now())
-  updatedAt   DateTime?
+  basePrice   Decimal             @default(0)
+  totalPrice  Decimal             @default(0)
+  quantity    Int                 @default(0)
+  remarks     String?
+  createdAt   DateTime?           @default(now())
+  updatedAt   DateTime?           @updatedAt
   deletedAt   DateTime?
-  orderedById String
-  userId      String
-  order       OrderV2   @relation(fields: [orderedById], references: [orderId], onDelete: Cascade)
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId     String
+  productId   String?
+  order       OrderV2             @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
+  product     Product?            @relation(fields: [productId], references: [productId], onDelete: Restrict)
+  movements   InventoryMovement[]
 
+  @@index([orderId])
+  @@index([productId])
   @@map("orderItemV2")
 }
 
 model OrderFeeV2 {
   orderFeeId    String        @id @default(cuid())
-  order         Int
-  orderCode     String?
+  installment   Int
   createdAt     DateTime?     @default(now())
-  updatedAt     DateTime?
+  updatedAt     DateTime?     @updatedAt
   deletedAt     DateTime?
   signatureLink String?
-  orderFeeStatus String?
+  status        OrderV2Status @default(ORDER_PLACED)
   orderId       String
   transactionId String        @unique
-  userId        String
-  transaction   TransactionV2 @relation(fields: [transactionId], references: [transactionId], onDelete: Cascade)
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orders        OrderV2       @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
+  transaction   TransactionV2 @relation(fields: [transactionId], references: [transactionId], onDelete: Restrict)
+  order         OrderV2       @relation(fields: [orderId], references: [orderId], onDelete: Restrict)
 
+  @@unique([orderId, installment])
+  @@index([orderId])
+  @@index([status])
   @@map("orderFeeV2")
+}
+
+model Product {
+  productId   String              @id @default(cuid())
+  code        String              @unique
+  name        String
+  description String?
+  price       Decimal             @default(0)
+  imageUrl    String?
+  imagePath   String?
+  isActive    Boolean             @default(true)
+  createdAt   DateTime?           @default(now())
+  updatedAt   DateTime?           @updatedAt
+  deletedAt   DateTime?
+  inventory   InventoryItem?
+  orderItems  OrderItemV2[]
+  movements   InventoryMovement[]
+
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("product")
+}
+
+model InventoryItem {
+  inventoryItemId  String              @id @default(cuid())
+  productId        String              @unique
+  quantityOnHand   Int                 @default(0)
+  quantityReserved Int                 @default(0)
+  reorderLevel     Int                 @default(0)
+  createdAt        DateTime?           @default(now())
+  updatedAt        DateTime?           @updatedAt
+  product          Product             @relation(fields: [productId], references: [productId], onDelete: Cascade)
+  movements        InventoryMovement[]
+
+  @@map("inventoryItem")
+}
+
+model InventoryMovement {
+  movementId      String                @id @default(cuid())
+  inventoryItemId String
+  productId       String
+  orderItemId     String?
+  userId          String?
+  type            InventoryMovementType
+  quantity        Int
+  reason          String?
+  createdAt       DateTime?             @default(now())
+  inventoryItem   InventoryItem         @relation(fields: [inventoryItemId], references: [inventoryItemId], onDelete: Restrict)
+  product         Product               @relation(fields: [productId], references: [productId], onDelete: Restrict)
+  orderItem       OrderItemV2?          @relation(fields: [orderItemId], references: [orderItemId], onDelete: SetNull)
+  user            User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([inventoryItemId])
+  @@index([productId])
+  @@index([orderItemId])
+  @@index([createdAt])
+  @@map("inventoryMovement")
 }
 
 enum EnrollmentTypeV2 {
@@ -723,6 +792,11 @@ enum CottageType {
   FIVE_DAYS_A_WEEK
 }
 
+enum PartnerSchool {
+  KAIROS
+  MANDAUE
+}
+
 enum CottageSlotGradeTarget {
   K2
   GRADE_1
@@ -763,6 +837,27 @@ enum PaymentType {
   QUARTERLY
   MONTHLY
   PAY_ALL
+}
+
+enum ShopPaymentType {
+  FULL_PAYMENT
+  INSTALLMENT
+}
+
+enum OrderV2Status {
+  ORDER_PLACED
+  PROCESSING
+  SHIPPED
+  COMPLETED
+  CANCELLED
+}
+
+enum InventoryMovementType {
+  RESERVE
+  COMMIT
+  RELEASE
+  RESTOCK
+  ADJUST
 }
 
 enum Program {

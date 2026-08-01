@@ -5,40 +5,46 @@ import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
 import { useWorkspace } from '@/providers/workspace';
 import JotFormEmbed from 'react-jotform-embed';
-import { GradeLevel } from '@prisma/client';
+import { GradeLevel, PartnerSchool } from '@prisma/client';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import { getSession } from 'next-auth/react';
-import { is } from 'date-fns/locale';
+import { PARTNER_SCHOOL } from '@/utils/constants';
 
-const QUARTERLY_FORM_ID = '252259173067460';
-const quarterlyForms = {
-  [GradeLevel.K2]: QUARTERLY_FORM_ID,
-  [GradeLevel.GRADE_1]: QUARTERLY_FORM_ID,
-  [GradeLevel.GRADE_2]: QUARTERLY_FORM_ID,
-  [GradeLevel.GRADE_3]: QUARTERLY_FORM_ID,
-  [GradeLevel.GRADE_4]: QUARTERLY_FORM_ID,
-  [GradeLevel.GRADE_5]: QUARTERLY_FORM_ID,
-  [GradeLevel.GRADE_6]: QUARTERLY_FORM_ID,
-  [GradeLevel.GRADE_7]: QUARTERLY_FORM_ID,
-  [GradeLevel.GRADE_8]: QUARTERLY_FORM_ID,
-  [GradeLevel.GRADE_9]: QUARTERLY_FORM_ID,
-  [GradeLevel.GRADE_10]: QUARTERLY_FORM_ID,
+// S.Y. 2026-2027 Term Requirements - by partner school
+const termForms = {
+  [PartnerSchool.KAIROS]: '262088747216464',
+  [PartnerSchool.MANDAUE]: '262098951793472',
 };
 
-// Year End Requirements - by grade level
+// S.Y. 2026-2027 Year End Requirements - by partner school and grade band
 // K2 | Grades 1-3 | Grades 4-6 | Grades 7-10
 const yearEndForms = {
-  [GradeLevel.K2]: '260549507424459',
-  [GradeLevel.GRADE_1]: '260549092239462',
-  [GradeLevel.GRADE_2]: '260549092239462',
-  [GradeLevel.GRADE_3]: '260549092239462',
-  [GradeLevel.GRADE_4]: '260548590769472',
-  [GradeLevel.GRADE_5]: '260548590769472',
-  [GradeLevel.GRADE_6]: '260548590769472',
-  [GradeLevel.GRADE_7]: '260549250286460',
-  [GradeLevel.GRADE_8]: '260549250286460',
-  [GradeLevel.GRADE_9]: '260549250286460',
-  [GradeLevel.GRADE_10]: '260549250286460',
+  [PartnerSchool.KAIROS]: {
+    [GradeLevel.K2]: '261957952103461',
+    [GradeLevel.GRADE_1]: '261958436762470',
+    [GradeLevel.GRADE_2]: '261958436762470',
+    [GradeLevel.GRADE_3]: '261958436762470',
+    [GradeLevel.GRADE_4]: '261958956818479',
+    [GradeLevel.GRADE_5]: '261958956818479',
+    [GradeLevel.GRADE_6]: '261958956818479',
+    [GradeLevel.GRADE_7]: '261958599117474',
+    [GradeLevel.GRADE_8]: '261958599117474',
+    [GradeLevel.GRADE_9]: '261958599117474',
+    [GradeLevel.GRADE_10]: '261958599117474',
+  },
+  [PartnerSchool.MANDAUE]: {
+    [GradeLevel.K2]: '262097919231462',
+    [GradeLevel.GRADE_1]: '262098072330453',
+    [GradeLevel.GRADE_2]: '262098072330453',
+    [GradeLevel.GRADE_3]: '262098072330453',
+    [GradeLevel.GRADE_4]: '262098587041463',
+    [GradeLevel.GRADE_5]: '262098587041463',
+    [GradeLevel.GRADE_6]: '262098587041463',
+    [GradeLevel.GRADE_7]: '262098100048451',
+    [GradeLevel.GRADE_8]: '262098100048451',
+    [GradeLevel.GRADE_9]: '262098100048451',
+    [GradeLevel.GRADE_10]: '262098100048451',
+  },
 };
 
 const userUnsettledDues = [
@@ -167,6 +173,26 @@ const Grades = () => {
   );
   const schoolYearReportCardUrl =
     workspace?.studentRecord?.schoolYearReportCard;
+  const gradeLevel = workspace?.studentRecord?.incomingGradeLevel;
+  const partnerSchool = workspace?.studentRecord?.partnerSchool;
+  const showPartnerForms = formPage === 'term' || formPage === 'year-end';
+
+  const getFormId = () => {
+    if (!partnerSchool) return null;
+
+    if (formPage === 'term') {
+      return termForms[partnerSchool];
+    }
+
+    if (formPage === 'year-end') {
+      return yearEndForms[partnerSchool]?.[gradeLevel];
+    }
+
+    return null;
+  };
+
+  const formId = getFormId();
+
   return (
     <AccountLayout>
       {workspace ? (
@@ -194,10 +220,8 @@ const Grades = () => {
                   onChange={handleSelectChange}
                   value={formPage}
                 >
-                  {/* Temporarily disabled
-                  <option value="quarterly">Quarterly Requirements</option>
+                  <option value="term">Term Requirements</option>
                   <option value="year-end">Year End Requirements</option>
-                  */}
                   <option value="card">Card</option>
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -205,31 +229,33 @@ const Grades = () => {
                 </div>
               </div>
 
-              {/* Temporarily disabled
-              {(formPage === 'quarterly' || formPage === 'year-end') &&
-                (() => {
-                  const forms =
-                    formPage === 'quarterly' ? quarterlyForms : yearEndForms;
-                  const formId =
-                    forms[workspace?.studentRecord?.incomingGradeLevel];
-                  if (!formId)
-                    return (
-                      <p className="mt-4 text-gray-600">
-                        No form available for this grade level.
-                      </p>
-                    );
-                  return (
+              {showPartnerForms && !partnerSchool && (
+                <p className="mt-4 text-gray-600">
+                  Partner school not assigned. Please contact Living Pupil.
+                </p>
+              )}
+
+              {showPartnerForms && partnerSchool && (
+                <>
+                  <p className="mt-3 text-sm text-gray-600">
+                    Partner School: {PARTNER_SCHOOL[partnerSchool]}
+                  </p>
+                  {formId ? (
                     <div className="mt-4 min-h-[600px] w-full">
                       <JotFormEmbed
-                        key={`${formPage}-${workspace?.studentRecord?.incomingGradeLevel}`}
+                        key={`${formPage}-${partnerSchool}-${gradeLevel}`}
                         src={`https://form.jotform.com/${formId}`}
                         scrolling={true}
                         style={{ height: '100%', minHeight: 600 }}
                       />
                     </div>
-                  );
-                })()}
-              */}
+                  ) : (
+                    <p className="mt-4 text-gray-600">
+                      No form available for this grade level.
+                    </p>
+                  )}
+                </>
+              )}
 
               {formPage === 'card' && (
                 <div className="mt-4 space-y-4">
