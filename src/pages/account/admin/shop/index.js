@@ -965,8 +965,8 @@ const Shop = () => {
       )}
 
       <Content.Title
-        title="Shop Purchases"
-        subtitle="View and manage all shop orders and purchases"
+        title="Legacy Orders"
+        subtitle="View and manage V1 shop orders and purchases"
       />
       <Content.Divider />
       <Content.Container>

@@ -1,8 +1,5 @@
-import { ShippingType, TransactionSource } from '@prisma/client';
+import { ShippingType } from '@prisma/client';
 import { validateSession } from '@/config/api-validation';
-import { createPurchase } from '@/prisma/services/purchase-history';
-import { createOrderFee } from '@/prisma/services/shop';
-import { createTransaction } from '@/prisma/services/transaction';
 import {
   html as fullHtml,
   text as fullText,
@@ -15,13 +12,19 @@ import {
   html as orderHtml,
   text as orderText,
 } from '@/config/email-templates/shop/orderPlacedFull';
-import crypto from 'crypto';
-import prisma from '@/prisma/index';
 import { sendMail } from '@/lib/server/mail';
 import { getGuardianInformation } from '@/prisma/services/user';
 import { getParentFirstName } from '@/utils/index';
-import sanityClient from '@/lib/server/sanity';
-import { cancelOrder, findRecentDuplicateOrder } from '@/prisma/services/shop';
+import { cancelOrder } from '@/prisma/services/shop';
+import { restockCancelledOrderItems } from '@/prisma/services/inventory';
+import {
+  cancelShopOrderV2,
+  createShopOrderV2,
+  findRecentDuplicateOrderV2,
+  getShopOrderV2ByCode,
+  requestCancelShopOrderV2,
+} from '@/prisma/services/order-v2';
+import { renderInvoicePdf } from '@/lib/server/shop-invoice-pdf';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -43,14 +46,13 @@ const handler = async (req, res) => {
       const parentFullName = guardian.primaryGuardianName;
       const parentFirstName = getParentFirstName(parentFullName);
 
-      let result;
       const total = items.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
       );
       const totalWithShipping = total + shippingFee.fee;
 
-      const existingOrder = await findRecentDuplicateOrder({
+      const existingOrder = await findRecentDuplicateOrderV2({
         userId,
         items,
         deliveryAddress,
@@ -70,10 +72,12 @@ const handler = async (req, res) => {
         });
         return;
       }
+
       let installmentAmount = 0;
-      let totalPayment = 0;
-      let firstPayment = 0;
-      let payments;
+      let totalPayment = totalWithShipping;
+      let firstPayment = totalWithShipping;
+      let payments = [totalWithShipping];
+
       if (paymentType === 'INSTALLMENT') {
         const interestRate = 0.1;
         installmentAmount = (total * (1 + interestRate)) / 5;
@@ -86,22 +90,48 @@ const handler = async (req, res) => {
           payments = Array(5).fill(installmentAmount);
         } else {
           payments = [
-            shippingFee.fee, // shipping as its own first payment
-            ...Array(5).fill(installmentAmount), // then 5 installments
+            shippingFee.fee,
+            ...Array(5).fill(installmentAmount),
           ];
         }
         totalPayment = installmentAmount * 5 + shippingFee.fee;
-        result = await createOrderFee({
-          userId,
-          email,
-          items,
-          shippingFee,
-          deliveryAddress,
-          contactNumber,
-          paymentType,
-          payments,
-          signatureLink,
-        });
+      }
+
+      const result = await createShopOrderV2({
+        userId,
+        email,
+        items,
+        shippingFee,
+        deliveryAddress,
+        contactNumber,
+        paymentType,
+        signatureLink,
+        payments,
+      });
+
+      if (result?.errors) {
+        res.status(400).json(result);
+        return;
+      }
+
+      let invoiceAttachments = [];
+      try {
+        const orderForInvoice = await getShopOrderV2ByCode(result.orderCode);
+        if (orderForInvoice) {
+          const pdfBuffer = await renderInvoicePdf(orderForInvoice);
+          invoiceAttachments = [
+            {
+              filename: `invoice-${result.orderCode}.pdf`,
+              content: pdfBuffer,
+              contentType: 'application/pdf',
+            },
+          ];
+        }
+      } catch (pdfError) {
+        console.error('Shop invoice PDF generation failed:', pdfError);
+      }
+
+      if (paymentType === 'INSTALLMENT') {
         await sendMail({
           from: process.env.EMAIL_FROM,
           html: installmentHtml({
@@ -119,153 +149,54 @@ const handler = async (req, res) => {
             parentFirstName,
           }),
           to: email,
-        });
-
-        await sendMail({
-          from: process.env.EMAIL_FROM,
-          html: orderHtml({
-            parentName: parentFirstName,
-            orderCode: result.orderCode,
-            reciever: parentFullName,
-            deliveryAddress: deliveryAddress,
-            contactNumber: contactNumber,
-          }),
-          subject: `[Action Needed] Confirmation of ${result.orderCode} from LP Shop`,
-          text: orderText({
-            parentFirstName,
-          }),
-          to: email,
+          attachments: invoiceAttachments,
         });
       } else {
-        // Process FULL_PAYMENT
-        result = await createPurchase({
-          items,
-          shippingFee,
-          deliveryAddress,
-          contactNumber,
-          paymentType,
-        });
-
-        if (result.errors) {
-          throw new Error(result.errors.error.msg);
-        }
-
-        const { id, transactionId, total } = result;
-        const totalAmountDue = Number(total); // Removed +20 gateway fee
-        const transaction = await createTransaction(
-          session.user.userId,
-          session.user.email,
-          transactionId,
-          totalAmountDue,
-          'STORE',
-          id,
-          TransactionSource.STORE,
-          'ONLINE'
-        );
-
-        // Function to generate a unique order code
-        async function generateUniqueOrderCode(prisma) {
-          let uniqueOrderCode;
-          let isUnique = false;
-
-          while (!isUnique) {
-            uniqueOrderCode = `ORDER-${crypto
-              .createHash('md5')
-              .update(Date.now().toString() + Math.random().toString())
-              .digest('hex')
-              .substring(0, 6)
-              .toUpperCase()}`;
-
-            const existingOrder = await prisma.orderFee.findFirst({
-              where: { orderCode: uniqueOrderCode },
-            });
-
-            if (!existingOrder) {
-              isUnique = true;
-            }
-          }
-
-          return uniqueOrderCode;
-        }
-
-        // Generate the unique order code
-        const uniqueOrderCode = await generateUniqueOrderCode(prisma);
-
-        // Create the order fee record in the database
-        await prisma.orderFee.create({
-          data: {
-            order: 0,
-            paymentType,
-            orderCode: uniqueOrderCode,
-            orderStatus: 'Order_Placed',
-            transaction: {
-              connect: {
-                transactionId: transactionId,
-              },
-            },
-            user: {
-              connect: {
-                id: session.user.userId,
-              },
-            },
-          },
-        });
-
         await sendMail({
           from: process.env.EMAIL_FROM,
           html: fullHtml({
             parentName: parentFirstName,
-            orderCode: uniqueOrderCode,
+            orderCode: result.orderCode,
             orderDate: new Date().toLocaleDateString('en-US'),
             shipping: shippingFee.fee,
-            subTotal: total - shippingFee.fee,
+            subTotal: total,
             total: totalWithShipping,
             paymentType,
           }),
-          subject: `[Living Pupil Homeschool] Invoice for ${uniqueOrderCode}`,
+          subject: `[Living Pupil Homeschool] Invoice for ${result.orderCode}`,
           text: fullText({
             parentFirstName,
           }),
           to: email,
+          attachments: invoiceAttachments,
         });
-
-        await sendMail({
-          from: process.env.EMAIL_FROM,
-          html: orderHtml({
-            parentName: parentFirstName,
-            orderCode: uniqueOrderCode,
-            reciever: parentFullName,
-            deliveryAddress: deliveryAddress,
-            contactNumber: contactNumber,
-          }),
-          subject: `[Action Needed] Confirmation of ${uniqueOrderCode} from LP Shop`,
-          text: orderText({ parentFirstName }),
-          to: email,
-        });
-
-        res.status(200).json({
-          data: {
-            paymentLink: transaction?.url,
-            amount: totalWithShipping,
-            transactionId: transactionId,
-          },
-        });
-        return;
       }
 
-      // Handle any errors from createOrderFee or createPurchase
-      if (result.errors) {
-        res.status(400).json(result);
-        return;
-      }
-      // For successful INSTALLMENT processing
+      await sendMail({
+        from: process.env.EMAIL_FROM,
+        html: orderHtml({
+          parentName: parentFirstName,
+          orderCode: result.orderCode,
+          reciever: parentFullName,
+          deliveryAddress: deliveryAddress,
+          contactNumber: contactNumber,
+        }),
+        subject: `[Action Needed] Confirmation of ${result.orderCode} from LP Shop`,
+        text: orderText({
+          parentFirstName,
+        }),
+        to: email,
+      });
+
       res.status(200).json({
         data: {
           paymentLink: result.paymentLink,
           amount: firstPayment,
-          totalPayment: totalPayment,
+          totalPayment:
+            paymentType === 'INSTALLMENT' ? totalPayment : undefined,
           transactionId: result.transactionId,
-          payments: payments,
+          payments: paymentType === 'INSTALLMENT' ? payments : undefined,
+          orderCode: result.orderCode,
         },
       });
     } catch (error) {
@@ -273,63 +204,99 @@ const handler = async (req, res) => {
       res.status(500).json({ errors: { error: { msg: error.message } } });
     }
   } else if (method === 'PATCH') {
-    const { patch, order } = req.body;
+    const { patch, order, orderCode, reason } = req.body;
+
+    if (patch === 'requestCancel') {
+      try {
+        const session = await validateSession(req, res);
+        if (!orderCode) {
+          return res.status(400).json({
+            errors: { error: { msg: 'orderCode is required' } },
+          });
+        }
+        await requestCancelShopOrderV2({
+          orderCode,
+          userId: session.user.userId,
+          reason,
+        });
+        return res.status(200).json({ success: true });
+      } catch (error) {
+        console.error('Request cancel error:', error);
+        const statusCode =
+          error.code === 'FORBIDDEN'
+            ? 403
+            : error.code === 'ORDER_NOT_FOUND'
+              ? 404
+              : error.code === 'REASON_REQUIRED' ||
+                  error.code === 'REQUEST_EXISTS' ||
+                  error.code === 'ALREADY_PAID' ||
+                  error.code === 'ORDER_CANCELLED'
+                ? 400
+                : 500;
+        return res.status(statusCode).json({
+          errors: {
+            error: { msg: error.message || 'Failed to request cancellation' },
+          },
+        });
+      }
+    }
 
     if (patch === 'cancel') {
       try {
-        // Step 1: Find the order with `order: 0`
-        const orderIndex = order.filter((o) => o.order === 0);
-        const orderItems =
-          orderIndex[0]?.transaction.purchaseHistory?.orderItems || [];
+        const session = await validateSession(req, res);
 
-        // Step 2: Extract item names
-        const itemNames = orderItems.map((item) => item.name);
-
-        // Step 3: Fetch current inventory from Sanity
-        const currentInventory = await sanityClient.fetch(
-          `*[_type == "shopItems" && name in $itemNames]`,
-          { itemNames }
-        );
-
-        // Step 4: Prepare inventory restock patches
-        const inventoryUpdates = orderItems
-          .map((purchasedItem) => {
-            const inventoryItem = currentInventory.find(
-              (item) => item.name === purchasedItem.name
-            );
-            if (inventoryItem) {
-              const newQuantity =
-                inventoryItem.inventory + purchasedItem.quantity;
-              return {
-                id: inventoryItem._id,
-                patch: {
-                  set: { inventory: newQuantity },
+        // V2 cancel by orderCode — admin only for hard cancel
+        if (orderCode && !order) {
+          if (session?.user?.userType !== 'ADMIN') {
+            return res.status(403).json({
+              errors: {
+                error: {
+                  msg: 'Parents must use Request to cancel',
                 },
-              };
-            }
-            return null;
-          })
-          .filter(Boolean);
-
-        // Step 5: Commit inventory changes
-        const transaction = sanityClient.transaction();
-        inventoryUpdates.forEach((update) => {
-          transaction.patch(update.id, update.patch);
-        });
-
-        const result = await transaction.commit();
-
-        // Step 6: Update order status in your DB
-        const orderCode = orderIndex[0]?.orderCode;
-        if (orderCode) {
-          await cancelOrder(orderCode);
+              },
+            });
+          }
+          await cancelShopOrderV2({
+            orderCode,
+            userId: session?.user?.userId,
+            enforceOwner: false,
+          });
+          res.status(200).json({ success: true });
+          return;
         }
 
-        // Step 7: Respond with success
-        res.status(200).json({ success: true, updated: result });
+        // Legacy V1 cancel
+        const orderIndex = (order || []).filter((o) => o.order === 0);
+        const orderItems =
+          orderIndex[0]?.transaction.purchaseHistory?.orderItems || [];
+        const legacyOrderCode = orderIndex[0]?.orderCode;
+
+        await restockCancelledOrderItems({
+          orderItems,
+          userId: session?.user?.userId,
+          orderCode: legacyOrderCode,
+        });
+
+        if (legacyOrderCode) {
+          await cancelOrder(legacyOrderCode);
+        }
+
+        res.status(200).json({ success: true });
       } catch (error) {
         console.error('Cancel order error:', error);
-        res.status(500).json({ errors: { error: { msg: 'Patch unkown' } } });
+        const statusCode =
+          error.code === 'FORBIDDEN'
+            ? 403
+            : error.code === 'ORDER_NOT_FOUND'
+              ? 404
+              : error.code === 'ALREADY_PAID'
+                ? 400
+                : 500;
+        res.status(statusCode).json({
+          errors: {
+            error: { msg: error.message || 'Failed to cancel order' },
+          },
+        });
       }
     } else {
       res.status(500).json({ errors: { error: { msg: 'Unknown Patch' } } });

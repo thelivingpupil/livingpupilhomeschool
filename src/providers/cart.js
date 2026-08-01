@@ -67,7 +67,9 @@ const calculateShippingFee = (shippingType, itemCount) => {
 };
 
 export const SHOP_SHIPPING = {
-  // Pickup option temporarily disabled
+  // Pick Up temporarily disabled on the customer shop UI.
+  // Backend + admin still support ShippingType.PICK_UP / SHOP_SHIPPING_TYPE.PICK_UP
+  // — uncomment below to re-enable for parents soon.
   // pickup: {
   //   title: 'Pick Up',
   //   fee: 0,
@@ -152,7 +154,7 @@ const CartProvider = ({ children }) => {
   const [shippingFee, setShippingFee] = useState({});
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [contactNumber, setContactNumber] = useState('');
-  const [paymentType, setPaymentType] = useState({});
+  const [paymentType, setPaymentType] = useState('');
   const [signatureLink, setSignatureLink] = useState(null); //initiated
   const [signatureProgress, setSignatureProgress] = useState(0); //initiated
   const sigCanvas = useRef(null); //initiated

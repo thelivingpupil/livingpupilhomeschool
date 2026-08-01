@@ -1,30 +1,50 @@
 import { validateSession } from '@/config/api-validation';
-import { getUserOrderFees } from '@/prisma/services/shop';
-import { updateOrderFeeStatus } from '@/prisma/services/shop';
+import { getUserOrderFees, updateOrderFeeStatus } from '@/prisma/services/shop';
+import { getUserShopOrdersV2AsLegacyFees } from '@/prisma/services/order-v2';
+
 const handler = async (req, res) => {
   const { method } = req;
 
   if (method === 'GET') {
     const session = await validateSession(req, res);
-    const orderFees = await getUserOrderFees(session.user.userId);
-    res.status(200).json({ data: { orderFees } });
-  } else if (method === 'PATCH') {
-    // Require authentication for updating order status
+    const userId = session.user.userId;
+
+    const [orderFees, v2Fees] = await Promise.all([
+      getUserOrderFees(userId),
+      getUserShopOrdersV2AsLegacyFees(userId),
+    ]);
+
+    const legacyFees = orderFees?.orderFee || [];
+    // V2 first so newest checkouts appear ahead of old V1 fees when grouped
+    const mergedFees = [...v2Fees, ...legacyFees];
+
+    return res.status(200).json({
+      data: {
+        orderFees: {
+          email: orderFees?.email,
+          name: orderFees?.name,
+          userCode: orderFees?.userCode,
+          orderFee: mergedFees,
+        },
+      },
+    });
+  }
+
+  if (method === 'PATCH') {
     const session = await validateSession(req, res);
 
-    // Only ADMIN users can update order status
     if (!session || session.user?.userType !== 'ADMIN') {
       return res.status(403).json({
-        errors: { error: { msg: 'Forbidden: Admin access required' } }
+        errors: { error: { msg: 'Forbidden: Admin access required' } },
       });
     }
 
     const { orderCode, orderStatus } = req.body;
     await updateOrderFeeStatus(orderCode, orderStatus);
-    res.status(200).json({ data: { orderCode, orderStatus } });
-  } else {
-    res.status(405).json({ error: `${method} method unsupported` });
+    return res.status(200).json({ data: { orderCode, orderStatus } });
   }
+
+  return res.status(405).json({ error: `${method} method unsupported` });
 };
 
 export default handler;

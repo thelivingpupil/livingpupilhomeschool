@@ -14,8 +14,10 @@ import { storage } from '@/lib/client/firebase';
 
 import Modal from '@/components/Modal';
 import Item from '@/components/Shop/item';
+import AgreementScrollModal from '@/components/AgreementScrollModal';
+import ShopCancellationPolicyText from '@/components/ShopCancellationPolicy';
+import format from 'date-fns/format';
 
-import { imageBuilder as builder } from '@/lib/server/sanity';
 import {
   SHOP_SHIPPING,
   useCartContext,
@@ -44,6 +46,9 @@ const Shop = ({ categories, items }) => {
   const [shopItems, setShopItems] = useState(items);
   const [, setQuery] = useState('');
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  const [hasReadShopPolicy, setHasReadShopPolicy] = useState(false);
+  const [shopPolicyReadAt, setShopPolicyReadAt] = useState(null);
+  const [shopPolicyModalOpen, setShopPolicyModalOpen] = useState(false);
 
   const {
     cart,
@@ -469,25 +474,59 @@ const Shop = ({ categories, items }) => {
                     checkout request.
                   </p>
                 </div>
-                <div className="flex items-center space-x-2 mb-4">
-                  <input
-                    type="radio"
-                    id="termsAccepted"
-                    checked={isTermsAccepted}
-                    onChange={() => setIsTermsAccepted(!isTermsAccepted)}
-                    className="form-radio"
-                  />
-                  <label htmlFor="termsAccepted" className="text-sm">
-                    I agree to the{' '}
-                    <a
-                      href="/files/lp-shop-cancellation-policy.pdf" // Replace with the actual path to your PDF
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline"
+                <div className="mb-4 space-y-3">
+                  <div
+                    className={`p-5 space-y-4 rounded border-2 ${
+                      hasReadShopPolicy
+                        ? 'border-green-500 bg-green-50'
+                        : 'border-amber-500 bg-amber-50'
+                    }`}
+                  >
+                    <div>
+                      <h3 className="text-base font-bold">
+                        Bookshop Cancellation &amp; Order Policy{' '}
+                        <span className="text-red-600">*</span>
+                      </h3>
+                      <p className="mt-1 text-sm text-gray-700">
+                        {hasReadShopPolicy
+                          ? 'You have read this policy. You may open it again to review.'
+                          : 'Please read the full policy before agreeing and checkout.'}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShopPolicyModalOpen(true)}
+                      className="px-4 py-2 text-sm font-medium text-white rounded bg-primary-500 hover:bg-primary-400"
                     >
-                      bookshop cancellation policy.
-                    </a>
-                  </label>
+                      Click here to read the bookshop cancellation policy
+                    </button>
+                    {hasReadShopPolicy && shopPolicyReadAt && (
+                      <p className="text-sm font-medium text-green-700">
+                        Read on {format(shopPolicyReadAt, 'MMMM d, yyyy')}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="termsAccepted"
+                      checked={isTermsAccepted}
+                      disabled={!hasReadShopPolicy}
+                      onChange={() =>
+                        hasReadShopPolicy &&
+                        setIsTermsAccepted(!isTermsAccepted)
+                      }
+                      className="form-checkbox disabled:opacity-50"
+                    />
+                    <label
+                      htmlFor="termsAccepted"
+                      className={`text-sm ${
+                        !hasReadShopPolicy ? 'text-gray-400' : ''
+                      }`}
+                    >
+                      I agree to the bookshop cancellation &amp; order policy.
+                    </label>
+                  </div>
                 </div>
                 <button
                   className="w-full py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25 disabled:cursor-not-allowed"
@@ -498,6 +537,7 @@ const Shop = ({ categories, items }) => {
                     shippingFee?.fee < 0 ||
                     !deliveryAddress ||
                     !contactNumber ||
+                    !hasReadShopPolicy ||
                     !isTermsAccepted
                   }
                   onClick={proceed}
@@ -515,6 +555,21 @@ const Shop = ({ categories, items }) => {
                   </Link>
                 )}
               </Modal>
+              {shopPolicyModalOpen ? (
+                <AgreementScrollModal
+                  show={shopPolicyModalOpen}
+                  title="Bookshop Cancellation & Order Policy"
+                  onClose={() => setShopPolicyModalOpen(false)}
+                  onAcknowledge={() => {
+                    setHasReadShopPolicy(true);
+                    setShopPolicyReadAt(new Date());
+                    setIsTermsAccepted(true);
+                    setShopPolicyModalOpen(false);
+                  }}
+                >
+                  <ShopCancellationPolicyText inModal />
+                </AgreementScrollModal>
+              ) : null}
               <Modal
                 show={showSignCanvas}
                 title=""
@@ -522,16 +577,11 @@ const Shop = ({ categories, items }) => {
               >
                 <div className="flex flex-col  items-center mt-5">
                   <p className="text-center text-xs mb-3">
-                    By signing, you are agreeing to the{' '}
-                    <a
-                      href="/files/lp-shop-cancellation-policy.pdf"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline"
-                    >
-                      bookshop cancellation policy
-                    </a>
-                    .
+                    By signing, you are agreeing to the bookshop cancellation
+                    &amp; order policy
+                    {hasReadShopPolicy
+                      ? ' (already read).'
+                      : '. Please read the policy from the checkout cart first.'}
                   </p>
                   <SignatureCanvas
                     ref={sigCanvas}
@@ -589,13 +639,19 @@ const Shop = ({ categories, items }) => {
                     shippingFee?.fee < 0 ||
                     !deliveryAddress ||
                     !contactNumber ||
-                    !isTermsAccepted
-                    //!signatureLink
+                    !hasReadShopPolicy ||
+                    !isTermsAccepted ||
+                    !signatureLink
                   }
                   onClick={checkoutCart}
                 >
                   {isSubmitting ? 'Processing...' : 'Proceed Checkout'}
                 </button>
+                {!signatureLink && (
+                  <p className="mt-2 text-xs text-center text-amber-700">
+                    Sign and save your signature before proceeding.
+                  </p>
+                )}
               </Modal>
               <Modal
                 show={showPaymentLink}
@@ -949,7 +1005,7 @@ const Shop = ({ categories, items }) => {
                       <select
                         className="w-full px-3 py-2 capitalize rounded appearance-none"
                         onChange={(e) => setPaymentType(e.target.value)}
-                        value={paymentType}
+                        value={paymentType || ''}
                       >
                         <option value="">-</option>
                         {Object.entries(SHOP_PAYMENT_TYPE).map(
@@ -976,6 +1032,12 @@ const Shop = ({ categories, items }) => {
                     Review Cart
                   </button>
                 </div>
+                {isReviewDisabled && (
+                  <p className="text-xs text-amber-700">
+                    Select shipping, payment type, and ensure delivery address
+                    and contact number are filled to review your cart.
+                  </p>
+                )}
               </div>
               <div className="w-full space-y-5 md:w-2/3">
                 <div className="flex space-x-5 space-between">
@@ -1002,23 +1064,25 @@ const Shop = ({ categories, items }) => {
                       <ChevronDownIcon className="w-5 h-5" />
                     </div>
                   </div>
-                  <div className="relative inline-block w-1/2 border rounded">
-                    <select
-                      className="w-full py-2 pl-3 pr-10 capitalize rounded appearance-none"
-                      onChange={onChangeFilter}
-                      value={categoryFilter}
-                    >
-                      <option value="all">All Categories</option>
-                      {categories.map((c, index) => (
-                        <option key={index} value={c}>
-                          {c}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                      <ChevronDownIcon className="w-5 h-5" />
+                  {categories?.length > 0 && (
+                    <div className="relative inline-block w-1/2 border rounded">
+                      <select
+                        className="w-full py-2 pl-3 pr-10 capitalize rounded appearance-none"
+                        onChange={onChangeFilter}
+                        value={categoryFilter}
+                      >
+                        <option value="all">All Categories</option>
+                        {categories.map((c, index) => (
+                          <option key={index} value={c}>
+                            {c}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                        <ChevronDownIcon className="w-5 h-5" />
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
                 <div className="flex space-x-5 space-between">
                   <input
@@ -1028,28 +1092,29 @@ const Shop = ({ categories, items }) => {
                   />
                 </div>
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-                  {shopItems ? (
+                  {shopItems?.length ? (
                     shopItems.map(
                       (
                         {
                           _id,
+                          id,
                           code,
                           image,
                           name,
                           price,
-                          categories,
+                          categories: itemCategories,
                           description,
                           inventory,
                         },
                         index
                       ) => {
-                        const imageAsset = builder.image(image?.asset);
+                        const productId = id || _id;
                         return price ? (
                           <Item
-                            key={index}
-                            id={_id}
+                            key={productId || index}
+                            id={productId}
                             addToCart={addToCart}
-                            categories={categories}
+                            categories={itemCategories}
                             code={
                               code ||
                               `CODE-${crypto
@@ -1060,13 +1125,12 @@ const Shop = ({ categories, items }) => {
                                 .toUpperCase()}`
                             }
                             count={
-                              cart.find((x) => x.id === _id)?.quantity || 0
+                              cart.find((x) => x.id === productId)?.quantity ||
+                              0
                             }
                             description={description}
                             image={
-                              imageAsset.options.source
-                                ? imageAsset?.url()
-                                : null
+                              typeof image === 'string' ? image : null
                             }
                             name={name}
                             price={price}
@@ -1208,7 +1272,7 @@ const Shop = ({ categories, items }) => {
                         <select
                           className="w-full px-3 py-2 capitalize rounded appearance-none"
                           onChange={(e) => setPaymentType(e.target.value)}
-                          value={paymentType}
+                          value={paymentType || ''}
                         >
                           <option value="">-</option>
                           {Object.entries(SHOP_PAYMENT_TYPE).map(

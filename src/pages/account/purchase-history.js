@@ -7,10 +7,13 @@ import Card from '@/components/Card';
 import Link from 'next/link';
 import crypto from 'crypto';
 import formatDistance from 'date-fns/formatDistance';
+import { IconButton, Menu, MenuItem } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
   STATUS_BG_COLOR,
   ORDER_STATUS,
   ORDER_STATUS_BG_COLOR,
+  SHOP_SHIPPING_TYPE,
 } from '@/utils/constants';
 import { STATUS_CODES } from '@/lib/server/dragonpay';
 import Image from 'next/image';
@@ -29,7 +32,7 @@ import { storage } from '@/lib/client/firebase';
 
 const PurchaseHistory = () => {
   const { data, isLoading } = usePurchaseHistory();
-  const { orderFeeData, orderFeeDataIsLoading } = useOrderFees();
+  const { orderFeeData, orderFeeDataIsLoading, mutate } = useOrderFees();
   const [isSubmitting, setSubmittingState] = useState(false);
   const [sortedOrderFees, setSortedOrderFees] = useState([]);
   const [table, setTable] = useState('NEW');
@@ -37,6 +40,29 @@ const PurchaseHistory = () => {
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [paymentProofFile, setPaymentProofFile] = useState(null);
   const [uploadingProof, setUploadingProof] = useState(false);
+  const [cancelTarget, setCancelTarget] = useState(null);
+  const [cancelReason, setCancelReason] = useState('');
+  const [isRequestingCancel, setIsRequestingCancel] = useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [menuOrder, setMenuOrder] = useState(null);
+  const [expandedOrderDetails, setExpandedOrderDetails] = useState({});
+  const [expandedPayments, setExpandedPayments] = useState({});
+
+  const isSectionOpen = (map, orderCode) => map[orderCode] === true;
+
+  const toggleOrderDetails = (orderCode) => {
+    setExpandedOrderDetails((prev) => ({
+      ...prev,
+      [orderCode]: !isSectionOpen(prev, orderCode),
+    }));
+  };
+
+  const togglePayments = (orderCode) => {
+    setExpandedPayments((prev) => ({
+      ...prev,
+      [orderCode]: !isSectionOpen(prev, orderCode),
+    }));
+  };
 
   useEffect(() => {
     // Run this effect when orderFeeDataIsLoading changes and is false
@@ -51,9 +77,9 @@ const PurchaseHistory = () => {
           return acc;
         }, {});
 
-        // Sort items within each group by orderNumber
+        // Sort items within each group by installment / order index
         for (const key in grouped) {
-          grouped[key].sort((a, b) => a.orderNumber - b.orderNumber);
+          grouped[key].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
         }
 
         // Convert the grouped object into an array of arrays
@@ -75,13 +101,15 @@ const PurchaseHistory = () => {
     transactionId,
     referenceNumber,
     amount,
-    total
+    total,
+    paymentProofLink = null
   ) => {
     setSelectedTransaction({
       transactionId,
       referenceNumber,
       amount,
       total,
+      paymentProofLink,
     });
     setShowBankModal(true);
   };
@@ -90,6 +118,100 @@ const PurchaseHistory = () => {
     setShowBankModal(!showBankModal);
     if (!showBankModal) {
       setPaymentProofFile(null);
+    }
+  };
+
+  const canRequestCancel = (fees) => {
+    if (!fees?.length) return false;
+    if (fees[0].orderStatus === 'Cancelled') return false;
+    if (fees[0].orderSource !== 'V2') return false;
+    if (fees[0].cancelRequestedAt) return false;
+    const firstFee = [...fees].sort(
+      (a, b) => (a.order ?? 0) - (b.order ?? 0)
+    )[0];
+    return firstFee?.transaction?.paymentStatus !== TransactionStatus.S;
+  };
+
+  const hasSuccessfulPayment = (fees) =>
+    (fees || []).some(
+      (fee) =>
+        fee.transaction?.paymentStatus === TransactionStatus.S ||
+        fee.transaction?.paymentStatus === 'S'
+    );
+
+  const canShowOrderMenu = (fees) =>
+    fees?.[0]?.orderSource === 'V2' &&
+    (canRequestCancel(fees) || hasSuccessfulPayment(fees));
+
+  const openOrderMenu = (event, fees) => {
+    event.stopPropagation();
+    setMenuAnchorEl(event.currentTarget);
+    setMenuOrder(fees);
+  };
+
+  const closeOrderMenu = () => {
+    setMenuAnchorEl(null);
+    setMenuOrder(null);
+  };
+
+  const handlePrintInvoice = async (fees) => {
+    const orderCode = fees?.[0]?.orderCode;
+    if (!orderCode) return;
+    closeOrderMenu();
+    try {
+      const response = await fetch(
+        `/api/shop/invoice?orderCode=${encodeURIComponent(orderCode)}`
+      );
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => null);
+        throw new Error(
+          errorBody?.errors?.error?.msg || 'Failed to download invoice'
+        );
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `invoice-${orderCode}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      toast.error(error.message || 'Failed to download invoice');
+    }
+  };
+
+  const handleRequestCancel = async () => {
+    if (!cancelTarget?.orderCode) return;
+    const reason = cancelReason.trim();
+    if (!reason) {
+      toast.error('Please enter a reason for cancellation');
+      return;
+    }
+    setIsRequestingCancel(true);
+    try {
+      const response = await api('/api/shop', {
+        method: 'PATCH',
+        body: {
+          patch: 'requestCancel',
+          orderCode: cancelTarget.orderCode,
+          reason,
+        },
+      });
+      if (response.errors) {
+        throw new Error(
+          response.errors?.error?.msg || 'Request failed'
+        );
+      }
+      toast.success('Cancellation request submitted');
+      setCancelTarget(null);
+      setCancelReason('');
+      mutate();
+    } catch (error) {
+      toast.error(error.message || 'Failed to request cancellation');
+    } finally {
+      setIsRequestingCancel(false);
     }
   };
 
@@ -133,6 +255,12 @@ const PurchaseHistory = () => {
           } else {
             toast.success('Payment proof uploaded successfully!');
             setPaymentProofFile(null);
+            setSelectedTransaction((prev) =>
+              prev
+                ? { ...prev, paymentProofLink: downloadURL }
+                : prev
+            );
+            mutate();
             toggleBankModal();
           }
           setUploadingProof(false);
@@ -316,20 +444,36 @@ const PurchaseHistory = () => {
               <Card key={index}>
                 <Card.Body
                   title={
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-3">
                       <span>{order[0].orderCode}</span>
 
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium">
                           Order Status:
                         </span>
-                        <span
-                          className={`rounded-full py-0.5 px-2 text-xs font-semibold text-white ${
-                            ORDER_STATUS_BG_COLOR[order[0].orderStatus]
-                          }`}
-                        >
-                          {ORDER_STATUS[order[0].orderStatus]}
-                        </span>
+                        {order[0].cancelRequestedAt &&
+                        order[0].orderStatus !== 'Cancelled' ? (
+                          <span className="rounded-full py-0.5 px-2 text-xs font-semibold text-white bg-amber-600">
+                            Cancel requested
+                          </span>
+                        ) : (
+                          <span
+                            className={`rounded-full py-0.5 px-2 text-xs font-semibold text-white ${
+                              ORDER_STATUS_BG_COLOR[order[0].orderStatus]
+                            }`}
+                          >
+                            {ORDER_STATUS[order[0].orderStatus]}
+                          </span>
+                        )}
+                        {canShowOrderMenu(order) && (
+                            <IconButton
+                              size="small"
+                              aria-label="Order actions"
+                              onClick={(event) => openOrderMenu(event, order)}
+                            >
+                              <MoreVertIcon fontSize="small" />
+                            </IconButton>
+                          )}
                       </div>
                     </div>
                   }
@@ -340,55 +484,108 @@ const PurchaseHistory = () => {
                   )}`}
                 >
                   <hr />
-                  {order
-                    .filter((order) => order.order === 0)
-                    .map((order, orderIndex) => (
-                      <div
-                        key={orderIndex}
-                        className="flex flex-col p-3 space-y-4"
-                      >
-                        {order.transaction.purchaseHistory.orderItems.map(
-                          (item, itemIndex) => (
-                            <div
-                              key={itemIndex}
-                              className="flex items-center space-x-5 p-3 border rounded"
-                            >
-                              <div className="relative w-20 h-20 flex-shrink-0">
-                                <Image
-                                  alt={item.name}
-                                  layout="fill"
-                                  loading="lazy"
-                                  objectFit="contain"
-                                  src={
-                                    item.image ||
-                                    '/images/livingpupil-homeschool-logo.png'
-                                  }
-                                />
-                              </div>
-                              <div>
-                                <h3 className="text-2xl font-medium text-primary-500">
-                                  {item.name} (x{item.quantity})
-                                </h3>
-                                <p>
-                                  Price:{' '}
-                                  {new Intl.NumberFormat('en-US', {
-                                    style: 'currency',
-                                    currency: 'PHP',
-                                  }).format(item.basePrice)}
+                  <button
+                    type="button"
+                    className="flex items-center justify-between w-full py-2 text-left"
+                    onClick={() => toggleOrderDetails(order[0].orderCode)}
+                    aria-expanded={isSectionOpen(
+                      expandedOrderDetails,
+                      order[0].orderCode
+                    )}
+                  >
+                    <h4 className="font-semibold text-primary-500">
+                      Order Details
+                    </h4>
+                    <ChevronDownIcon
+                      className={`w-5 h-5 text-gray-500 transition-transform ${
+                        isSectionOpen(
+                          expandedOrderDetails,
+                          order[0].orderCode
+                        )
+                          ? 'rotate-180'
+                          : ''
+                      }`}
+                    />
+                  </button>
+                  {isSectionOpen(expandedOrderDetails, order[0].orderCode) &&
+                    order
+                      .filter((fee) => fee.order === 0)
+                      .map((fee, orderIndex) => {
+                        const history = fee.transaction?.purchaseHistory;
+                        return (
+                          <div
+                            key={orderIndex}
+                            className="flex flex-col p-3 space-y-4"
+                          >
+                            <div className="space-y-1 text-sm">
+                              <p>
+                                <span className="font-medium">Shipping:</span>{' '}
+                                {SHOP_SHIPPING_TYPE[history?.shippingType] ||
+                                  history?.shippingType ||
+                                  '—'}
+                              </p>
+                              <p>
+                                <span className="font-medium">
+                                  Delivery Address:
+                                </span>{' '}
+                                {history?.deliveryAddress || '—'}
+                              </p>
+                              <p>
+                                <span className="font-medium">Contact:</span>{' '}
+                                {history?.contactNumber || '—'}
+                              </p>
+                              {order[0].cancelRequestedAt ? (
+                                <p className="pt-1 text-amber-700">
+                                  <span className="font-medium">
+                                    Cancel request:
+                                  </span>{' '}
+                                  {order[0].cancelReason || '—'}
                                 </p>
-                                <p className="text-xs font-bold">
-                                  Subtotal:{' '}
-                                  {new Intl.NumberFormat('en-US', {
-                                    style: 'currency',
-                                    currency: 'PHP',
-                                  }).format(item.totalPrice)}
-                                </p>
-                              </div>
+                              ) : null}
                             </div>
-                          )
-                        )}
-                      </div>
-                    ))}
+                            {(history?.orderItems || []).map(
+                              (item, itemIndex) => (
+                                <div
+                                  key={itemIndex}
+                                  className="flex items-center space-x-5 p-3 border rounded"
+                                >
+                                  <div className="relative w-20 h-20 flex-shrink-0">
+                                    <Image
+                                      alt={item.name}
+                                      layout="fill"
+                                      loading="lazy"
+                                      objectFit="contain"
+                                      src={
+                                        item.image ||
+                                        '/images/livingpupil-homeschool-logo.png'
+                                      }
+                                    />
+                                  </div>
+                                  <div>
+                                    <h3 className="text-2xl font-medium text-primary-500">
+                                      {item.name} (x{item.quantity})
+                                    </h3>
+                                    <p>
+                                      Price:{' '}
+                                      {new Intl.NumberFormat('en-US', {
+                                        style: 'currency',
+                                        currency: 'PHP',
+                                      }).format(item.basePrice)}
+                                    </p>
+                                    <p className="text-xs font-bold">
+                                      Subtotal:{' '}
+                                      {new Intl.NumberFormat('en-US', {
+                                        style: 'currency',
+                                        currency: 'PHP',
+                                      }).format(item.totalPrice)}
+                                    </p>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        );
+                      })}
 
                   <hr className="border-2 border-gray-600" />
                   <div className="flex items-center justify-between">
@@ -413,7 +610,28 @@ const PurchaseHistory = () => {
                 </Card.Body>
                 <Card.Footer>
                   <div className="flex flex-col space-y-4 w-full">
-                    {order
+                    <button
+                      type="button"
+                      className="flex items-center justify-between w-full text-left"
+                      onClick={() => togglePayments(order[0].orderCode)}
+                      aria-expanded={isSectionOpen(
+                        expandedPayments,
+                        order[0].orderCode
+                      )}
+                    >
+                      <h4 className="font-semibold text-primary-500">
+                        Payments
+                      </h4>
+                      <ChevronDownIcon
+                        className={`w-5 h-5 text-gray-500 transition-transform ${
+                          isSectionOpen(expandedPayments, order[0].orderCode)
+                            ? 'rotate-180'
+                            : ''
+                        }`}
+                      />
+                    </button>
+                    {isSectionOpen(expandedPayments, order[0].orderCode) &&
+                      order
                       .slice() // Create a copy of the array to avoid mutating the original array
                       .sort((a, b) => a.order - b.order) // Sort the array based on `order` property
                       .map((feeWrapper, feeIndex) => {
@@ -514,13 +732,12 @@ const PurchaseHistory = () => {
                                 </div>
                                 {order[0].orderStatus === 'Order_Placed' ||
                                 order[0].orderStatus === 'In_Transit' ||
+                                order[0].orderStatus === 'Processing' ||
                                 order[0].orderStatus === 'For_Delivery' ||
                                 order[0].orderStatus === 'For_Pickup' ||
                                 order[0].orderStatus === 'Completed' ||
                                 order[0].orderStatus === null ? (
-                                  // ✅ If there’s a delivery fee
                                   order.length === 6 ? (
-                                    // If the delivery fee is unpaid AND this is NOT the delivery fee row
                                     isDeliveryFeeUnpaid &&
                                     label !== 'Delivery Fee' ? (
                                       <button
@@ -540,7 +757,9 @@ const PurchaseHistory = () => {
                                             feeWrapper.transaction
                                               .referenceNumber,
                                             feeWrapper.transaction.amount,
-                                            feeWrapper.transaction.amount
+                                            feeWrapper.transaction.amount,
+                                            feeWrapper.transaction
+                                              .paymentProofLink
                                           )
                                         }
                                       >
@@ -548,7 +767,6 @@ const PurchaseHistory = () => {
                                       </button>
                                     )
                                   ) : (
-                                    // No delivery fee case
                                     <button
                                       className="ml-auto px-3 py-2 text-white rounded bg-primary-500 hover:bg-primary-400 disabled:opacity-25"
                                       disabled={isSubmitting}
@@ -558,7 +776,9 @@ const PurchaseHistory = () => {
                                           feeWrapper.transaction
                                             .referenceNumber,
                                           feeWrapper.transaction.amount,
-                                          feeWrapper.transaction.amount
+                                          feeWrapper.transaction.amount,
+                                          feeWrapper.transaction
+                                            .paymentProofLink
                                         )
                                       }
                                     >
@@ -589,8 +809,8 @@ const PurchaseHistory = () => {
           ) : (
             <Card>
               <Card.Body
-                title="You haven't purchased anything from the Living Pupil Homeschool Shop yet or the order you're looking for is in the Old Purchases..."
-                subtitle="You may select the Old Purchases above or visit the shop the in link below to start seeing your purchases here"
+                title="You haven't purchased anything from the Living Pupil Homeschool Shop yet or the order you're looking for is in Old Purchases..."
+                subtitle="You may select Old Purchases above, or visit the shop via the link below to start seeing your purchases here."
               >
                 <Link href="/shop">
                   <a
@@ -605,6 +825,81 @@ const PurchaseHistory = () => {
           )}
         </Content.Container>
       )}
+
+      <Menu
+        id="parent-order-actions-menu"
+        anchorEl={menuAnchorEl}
+        open={Boolean(menuAnchorEl)}
+        onClose={closeOrderMenu}
+      >
+        {hasSuccessfulPayment(menuOrder) && (
+          <MenuItem onClick={() => handlePrintInvoice(menuOrder)}>
+            Print invoice
+          </MenuItem>
+        )}
+        {menuOrder?.[0]?.orderStatus !== 'Cancelled' && (
+          <MenuItem
+            disabled={!canRequestCancel(menuOrder)}
+            onClick={() => {
+              setCancelTarget({ orderCode: menuOrder?.[0]?.orderCode });
+              setCancelReason('');
+              closeOrderMenu();
+            }}
+          >
+            Request to cancel
+          </MenuItem>
+        )}
+      </Menu>
+
+      <Modal
+        show={Boolean(cancelTarget)}
+        title="Request to cancel"
+        toggle={() => {
+          if (!isRequestingCancel) {
+            setCancelTarget(null);
+            setCancelReason('');
+          }
+        }}
+      >
+        <p className="mb-3 text-sm">
+          Submit a cancellation request for{' '}
+          <b>{cancelTarget?.orderCode}</b>. Living Pupil Homeschool will review
+          it. Inventory is released only after approval.
+        </p>
+        <label className="block mb-1 text-sm font-medium" htmlFor="cancelReason">
+          Reason <span className="text-red-600">*</span>
+        </label>
+        <textarea
+          id="cancelReason"
+          className="w-full px-3 py-2 mb-4 border rounded"
+          rows={4}
+          value={cancelReason}
+          onChange={(e) => setCancelReason(e.target.value)}
+          placeholder="Please tell us why you want to cancel this order..."
+          disabled={isRequestingCancel}
+        />
+        <div className="flex justify-end space-x-2">
+          <button
+            type="button"
+            className="px-3 py-2 border rounded"
+            disabled={isRequestingCancel}
+            onClick={() => {
+              setCancelTarget(null);
+              setCancelReason('');
+            }}
+          >
+            Keep order
+          </button>
+          <button
+            type="button"
+            className="px-3 py-2 text-white bg-red-600 rounded disabled:opacity-50"
+            disabled={isRequestingCancel || !cancelReason.trim()}
+            onClick={handleRequestCancel}
+          >
+            {isRequestingCancel ? 'Submitting...' : 'Submit request'}
+          </button>
+        </div>
+      </Modal>
 
       {/* Payment QR Modal */}
       <Modal
@@ -727,6 +1022,32 @@ const PurchaseHistory = () => {
             <h4 className="font-semibold text-yellow-800 mb-2">
               Upload Payment Proof
             </h4>
+            {selectedTransaction?.paymentProofLink ? (
+              <div className="mb-4 p-3 space-y-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm font-medium text-green-800">
+                  ✓ Payment proof already uploaded
+                </p>
+                <div className="relative w-full h-48 overflow-hidden bg-white border rounded">
+                  <Image
+                    src={selectedTransaction.paymentProofLink}
+                    alt="Uploaded payment proof"
+                    layout="fill"
+                    objectFit="contain"
+                  />
+                </div>
+                <a
+                  href={selectedTransaction.paymentProofLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-3 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-700"
+                >
+                  View full size
+                </a>
+                <p className="text-xs text-green-700 border-t border-green-200 pt-2">
+                  You can upload a new file below to replace the existing proof.
+                </p>
+              </div>
+            ) : null}
             <div className="space-y-3">
               <input
                 type="file"

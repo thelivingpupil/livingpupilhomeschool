@@ -12,6 +12,7 @@ const Item = ({
   image,
   name,
   price,
+  code,
   categories,
   description,
   inventory
@@ -72,7 +73,11 @@ const Item = ({
         {showDescription
           ? description && (
             <div className="flex flex-col items-start justify-center py-2 space-y-3 text-sm">
-              <PortableText value={description} />
+              {typeof description === 'string' ? (
+                <p className="whitespace-pre-wrap">{description}</p>
+              ) : Array.isArray(description) ? (
+                <PortableText value={description} />
+              ) : null}
             </div>
           )
           : null}
@@ -101,7 +106,9 @@ const Item = ({
         <button
           className="w-full py-2 text-white rounded-lg bg-primary-500 hover:bg-secondary-600 disabled:opacity-25"
           disabled={quantity === 0}
-          onClick={() => addToCart({ id, image, name, price, quantity })}
+          onClick={() =>
+            addToCart({ id, image, name, price, quantity, code })
+          }
         >
           Add to Cart
         </button>

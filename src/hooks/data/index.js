@@ -21,6 +21,9 @@ import useSchoolFees from './useSchoolFees';
 import useDocuments from './useDocuments';
 import useParentTrainings from './useParentTraining';
 import useCottageSlots from './useCottageSlots';
+import useProducts from './useProducts';
+import useInventoryMovements from './useInventoryMovements';
+import useShopOrdersV2 from './useShopOrdersV2';
 
 export {
   useAffiliates,
@@ -46,4 +49,7 @@ export {
   useSchoolFees,
   useParentTrainings,
   useCottageSlots,
+  useProducts,
+  useInventoryMovements,
+  useShopOrdersV2,
 };

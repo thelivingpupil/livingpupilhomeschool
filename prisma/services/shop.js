@@ -1,8 +1,8 @@
 import { TransactionSource, ShippingType } from '@prisma/client';
-import sanityClient from '@/lib/server/sanity';
 import prisma from '@/prisma/index';
 import crypto from 'crypto';
 import { createTransaction } from './transaction';
+import { commitShopOrderInventory } from './inventory';
 
 //get all order fees from shop
 export const getStoreOrders = async () =>
@@ -111,6 +111,8 @@ export const getUserOrderFees = async (id) =>
                   total: true,
                   createdAt: true,
                   shippingType: true,
+                  deliveryAddress: true,
+                  contactNumber: true,
                   orderItems: {
                     select: {
                       code: true,
@@ -230,82 +232,21 @@ export const createOrderFee = async ({
   signatureLink,
 }) => {
   let result = null;
-  // Step 1: Fetch current inventory
-  const itemIds = items.map((item) => item.id);
-  const currentInventory = await sanityClient.fetch(
-    `*[_type == "shopItems" && _id in $itemIds]`,
-    { itemIds }
-  );
-  console.log(currentInventory);
 
-  // Step 2: Check and prepare inventory updates
-  const inventoryIssues = items
-    .map((purchasedItem) => {
-      const inventoryItem = currentInventory.find(
-        (item) => item._id === purchasedItem.id
-      );
-      if (inventoryItem) {
-        const newQuantity = inventoryItem.inventory - purchasedItem.quantity;
-        if (newQuantity < 0) {
-          return {
-            name: inventoryItem.name,
-            id: inventoryItem._id,
-            requestedQuantity: purchasedItem.quantity,
-            availableQuantity: inventoryItem.inventory,
-          };
-        }
-      }
-      return null;
-    })
-    .filter(Boolean);
-
-  // Return errors if any inventory issues
-  if (inventoryIssues.length > 0) {
-    const errorMessage = inventoryIssues
-      .map(
-        (item) =>
-          `Insufficient inventory for item "${item.name}". Requested: ${item.requestedQuantity}, Available: ${item.availableQuantity}`
-      )
-      .join(', ');
-    return { errors: { error: { msg: errorMessage } } };
-  }
-
-  // Proceed with inventory updates if no issues
-  const inventoryUpdates = items
-    .map((purchasedItem) => {
-      const inventoryItem = currentInventory.find(
-        (item) => item._id === purchasedItem.id
-      );
-      if (inventoryItem) {
-        const newQuantity = inventoryItem.inventory - purchasedItem.quantity;
-        return {
-          id: inventoryItem._id,
-          patch: {
-            set: { inventory: newQuantity },
-          },
-        };
-      }
-      return null;
-    })
-    .filter(Boolean);
-
-  // Log the inventory updates to inspect
-  console.log('Inventory Updates:', JSON.stringify(inventoryUpdates, null, 2));
-
-  // Step 3: Batch update inventory
   try {
-    const transaction = sanityClient.transaction();
-    inventoryUpdates.forEach((update) => {
-      transaction.patch(update.id, update.patch);
-    });
-
-    const result = await transaction.commit();
-    console.log('Batch mutation result:', result);
+    await commitShopOrderInventory({ items, userId });
   } catch (error) {
-    console.error('Batch mutation error:', error);
+    console.error('Inventory commit error:', error);
+    return {
+      errors: {
+        error: {
+          msg: error.message || 'Failed to reserve shop inventory',
+        },
+      },
+    };
   }
 
-  // Step 4: Create the initial purchase entry (Payment 0)
+  // Create the initial purchase entry (Payment 0)
   const orderItems = items.map(({ code, image, name, price, quantity }) => ({
     code:
       code ||

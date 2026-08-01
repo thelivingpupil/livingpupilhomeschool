@@ -12,12 +12,14 @@ import toast from 'react-hot-toast';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/client/firebase';
 
-import { imageBuilder } from '@/lib/server/sanity';
 import { useEffect, useState } from 'react';
 import { SHOP_SHIPPING, useCartContext } from '@/providers/cart';
 import Modal from '@/components/Modal';
+import AgreementScrollModal from '@/components/AgreementScrollModal';
+import ShopCancellationPolicyText from '@/components/ShopCancellationPolicy';
 import useUser from '@/hooks/data/useUser';
 import api from '@/lib/common/api';
+import format from 'date-fns/format';
 
 const ShopItem = ({ item }) => {
   const { data } = useUser();
@@ -57,11 +59,13 @@ const ShopItem = ({ item }) => {
     }
   }, [data]);
 
-  const imageAsset = imageBuilder.image(item?.image?.asset);
-
   const [quantity, setQuantity] = useState(0);
   const [paymentProofFile, setPaymentProofFile] = useState(null);
   const [uploadingProof, setUploadingProof] = useState(false);
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  const [hasReadShopPolicy, setHasReadShopPolicy] = useState(false);
+  const [shopPolicyReadAt, setShopPolicyReadAt] = useState(null);
+  const [shopPolicyModalOpen, setShopPolicyModalOpen] = useState(false);
 
   const decrease = () => setQuantity((state) => state - 1);
   const increase = () => setQuantity((state) => state + 1);
@@ -144,7 +148,7 @@ const ShopItem = ({ item }) => {
     }
   };
 
-  const image = imageAsset?.options?.source ? imageAsset?.url() : null;
+  const image = typeof item?.image === 'string' ? item.image : null;
 
   return (
     <>
@@ -288,6 +292,59 @@ const ShopItem = ({ item }) => {
                 checkout request.
               </p>
             </div>
+            <div className="mb-4 space-y-3">
+              <div
+                className={`p-5 space-y-4 rounded border-2 ${
+                  hasReadShopPolicy
+                    ? 'border-green-500 bg-green-50'
+                    : 'border-amber-500 bg-amber-50'
+                }`}
+              >
+                <div>
+                  <h3 className="text-base font-bold">
+                    Bookshop Cancellation &amp; Order Policy{' '}
+                    <span className="text-red-600">*</span>
+                  </h3>
+                  <p className="mt-1 text-sm text-gray-700">
+                    {hasReadShopPolicy
+                      ? 'You have read this policy. You may open it again to review.'
+                      : 'Please read the full policy before agreeing and checkout.'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShopPolicyModalOpen(true)}
+                  className="px-4 py-2 text-sm font-medium text-white rounded bg-primary-500 hover:bg-primary-400"
+                >
+                  Click here to read the bookshop cancellation policy
+                </button>
+                {hasReadShopPolicy && shopPolicyReadAt && (
+                  <p className="text-sm font-medium text-green-700">
+                    Read on {format(shopPolicyReadAt, 'MMMM d, yyyy')}
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="termsAcceptedItem"
+                  checked={isTermsAccepted}
+                  disabled={!hasReadShopPolicy}
+                  onChange={() =>
+                    hasReadShopPolicy && setIsTermsAccepted(!isTermsAccepted)
+                  }
+                  className="form-checkbox disabled:opacity-50"
+                />
+                <label
+                  htmlFor="termsAcceptedItem"
+                  className={`text-sm ${
+                    !hasReadShopPolicy ? 'text-gray-400' : ''
+                  }`}
+                >
+                  I agree to the bookshop cancellation &amp; order policy.
+                </label>
+              </div>
+            </div>
             <button
               className="w-full py-2 text-lg rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25 disabled:cursor-not-allowed"
               disabled={
@@ -296,7 +353,9 @@ const ShopItem = ({ item }) => {
                 !cart.length ||
                 !shippingFee?.fee ||
                 !deliveryAddress ||
-                !contactNumber
+                !contactNumber ||
+                !hasReadShopPolicy ||
+                !isTermsAccepted
               }
               onClick={checkoutCart}
             >
@@ -313,6 +372,21 @@ const ShopItem = ({ item }) => {
               </Link>
             )}
           </Modal>
+          {shopPolicyModalOpen ? (
+            <AgreementScrollModal
+              show={shopPolicyModalOpen}
+              title="Bookshop Cancellation & Order Policy"
+              onClose={() => setShopPolicyModalOpen(false)}
+              onAcknowledge={() => {
+                setHasReadShopPolicy(true);
+                setShopPolicyReadAt(new Date());
+                setIsTermsAccepted(true);
+                setShopPolicyModalOpen(false);
+              }}
+            >
+              <ShopCancellationPolicyText inModal />
+            </AgreementScrollModal>
+          ) : null}
           <Modal
             show={showPaymentLink}
             title="Payment Options"
@@ -604,7 +678,11 @@ const ShopItem = ({ item }) => {
                 )}
               </div>
               <div className="text-sm py-2 space-y-3 justify-center text-justify">
-                <PortableText value={item.description} />
+                {typeof item.description === 'string' ? (
+                  <p className="whitespace-pre-wrap">{item.description}</p>
+                ) : Array.isArray(item.description) ? (
+                  <PortableText value={item.description} />
+                ) : null}
               </div>
               <div className="w-full md:w-1/4 flex flex-row mt-4">
                 <button
@@ -631,7 +709,7 @@ const ShopItem = ({ item }) => {
                   disabled={quantity === 0}
                   onClick={() =>
                     addToCart({
-                      id: item._id,
+                      id: item.id || item._id,
                       image,
                       code:
                         item.code ||
