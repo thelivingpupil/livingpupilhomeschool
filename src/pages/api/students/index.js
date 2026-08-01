@@ -68,40 +68,22 @@ const handler = async (req, res) => {
         idPictureFront,
         idPictureBack,
       };
-      // update student records
-      const [studentRecord] = await Promise.all([
-        updateStudentRecord(studentId, studentNewData),
-      ]);
-      await sendMail({
-        html: html({
-          accreditation,
-          birthCertificateLink,
-          enrollmentType,
-          firstName,
-          incomingGradeLevel,
-          payment,
-          paymentMethod,
-          pictureLink,
-          program,
-          reportCardLink,
-          schoolFee,
-        }),
-        subject: `[Living Pupil Homeschool] Updated ${firstName}'s Student Record`,
-        text: text({
-          accreditation,
-          birthCertificateLink,
-          enrollmentType,
-          firstName,
-          incomingGradeLevel,
-          payment,
-          paymentMethod,
-          pictureLink,
-          program,
-          reportCardLink,
-          schoolFee,
-        }),
-        to: [email],
-      });
+      await updateStudentRecord(studentId, studentNewData);
+
+      // Notify guardian; do not fail the update if email sending breaks
+      if (email) {
+        try {
+          await sendMail({
+            html: html({ name: firstName }),
+            subject: `[Living Pupil Homeschool] Updated ${firstName}'s Student Record`,
+            text: text({ name: firstName }),
+            to: [email],
+          });
+        } catch (mailError) {
+          console.error('Failed to send student update email:', mailError);
+        }
+      }
+
       res.status(200).json({ message: 'Student record updated successfully' });
     } catch (error) {
       console.error('Error updating student record:', error);
