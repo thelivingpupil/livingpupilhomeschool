@@ -19,6 +19,7 @@ import {
   FEES,
   GRADE_LEVEL_GROUPS,
   GRADE_LEVEL_TYPES,
+  PARTNER_SCHOOL,
   PAYMENT_TYPE,
   SCHOOL_YEAR,
   ENROLLMENT_STATUS_BG_COLOR,
@@ -35,6 +36,7 @@ import {
   Gender,
   GradeLevel,
   GuardianType,
+  PartnerSchool,
   PaymentType,
   Program,
   Religion,
@@ -142,6 +144,7 @@ const Students = ({ schoolFees, programs }) => {
   const [cottageType, setCottageType] = useState(null);
   const [cottageSlotsAvailable, setCottageSlotsAvailable] = useState(false);
   const [accreditation, setAccreditation] = useState(null);
+  const [partnerSchool, setPartnerSchool] = useState('');
   const [payment, setPayment] = useState(null);
   const [fee, setFee] = useState(null);
   const [birthDate, setBirthDate] = useState(new Date());
@@ -391,6 +394,7 @@ const Students = ({ schoolFees, programs }) => {
     setPictureLink(student.image);
     setReportCardLink(student.reportCard);
     setAccreditation(student.accreditation);
+    setPartnerSchool(student.partnerSchool || '');
     setPayment(student.student.schoolFees[0].paymentType);
     setScholarship(student.scholarship);
     setUserId(student.student.creator.guardianInformation.userId);
@@ -474,6 +478,7 @@ const Students = ({ schoolFees, programs }) => {
         discountCode,
         scholarshipCode,
         accreditation,
+        partnerSchool: partnerSchool || null,
         email,
         studentStatus,
       },
@@ -2124,6 +2129,30 @@ const Students = ({ schoolFees, programs }) => {
                   <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                     <ChevronDownIcon className="w-5 h-5" />
                   </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col w-full">
+              <label className="text-lg font-bold" htmlFor="partnerSchool">
+                Partner School
+              </label>
+              <div className="relative inline-block w-full border rounded">
+                <select
+                  className="w-full px-3 py-2 rounded appearance-none"
+                  id="partnerSchool"
+                  onChange={(e) => setPartnerSchool(e.target.value)}
+                  value={partnerSchool}
+                >
+                  <option value="">Not assigned</option>
+                  <option value={PartnerSchool.KAIROS}>
+                    {PARTNER_SCHOOL.KAIROS}
+                  </option>
+                  <option value={PartnerSchool.MANDAUE}>
+                    {PARTNER_SCHOOL.MANDAUE}
+                  </option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
                 </div>
               </div>
             </div>
