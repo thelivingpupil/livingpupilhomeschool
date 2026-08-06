@@ -20,7 +20,7 @@ export default async function handler(req, res) {
                 });
             }
 
-            const { emailContent, sender, subject, guardianEmails, ccEmails, attachmentUrls } = req.body;
+            const { emailContent, sender, subject, guardianEmails, ccEmails, bccEmails, attachmentUrls } = req.body;
 
             // Function to download image from URL and return buffer
             const downloadImage = (url) => {
@@ -220,8 +220,9 @@ export default async function handler(req, res) {
             // Combine image attachments (with cid) and file attachments
             const attachments = [...imageAttachments, ...fileAttachments];
 
-            // Validate CC Emails
+            // Validate CC / BCC Emails
             const validCcEmails = (ccEmails || []).filter(isValidEmail);
+            const validBccEmails = (bccEmails || []).filter(isValidEmail);
 
             // Send email to each guardian, but skip if email is invalid
             const promises = guardianEmails.map(async (guardianEmail) => {
@@ -239,7 +240,8 @@ export default async function handler(req, res) {
                         to: guardianEmail.email,
                         attachments, // Attach images with cid and file attachments
                         replyTo: replyEmail,
-                        cc: validCcEmails, // Include CC emails here
+                        cc: validCcEmails,
+                        bcc: validBccEmails,
                     });
 
                     // Increment the counter for each successful email sent
@@ -258,7 +260,8 @@ export default async function handler(req, res) {
                             to: guardianEmail.secondaryEmail,
                             attachments, // Attach images with cid and file attachments
                             replyTo: replyEmail,
-                            cc: validCcEmails, // Include CC emails here
+                            cc: validCcEmails,
+                            bcc: validBccEmails,
                         });
 
                         // Increment the counter for each successful email sent

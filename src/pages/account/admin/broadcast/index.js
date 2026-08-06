@@ -113,6 +113,8 @@ const Broadcast = () => {
   const [attachments, setAttachments] = useState([]);
   const [ccEmails, setCcEmails] = useState([]); // State for CC emails
   const [ccInput, setCcInput] = useState(''); // State for input field
+  const [bccEmails, setBccEmails] = useState([]); // State for BCC emails
+  const [bccInput, setBccInput] = useState(''); // State for BCC input field
   const [schoolYear, setSchoolYear] = useState('');
   const [showPreview, setShowPreview] = useState(false); // State for preview modal
   const [previewContent, setPreviewContent] = useState(''); // State for preview HTML
@@ -582,7 +584,8 @@ const Broadcast = () => {
             sender: emailSender,
             subject: emailSubject,
             guardianEmails: batch, // Send the current batch
-            ccEmails, // Add ccEmails to the request payload
+            ccEmails,
+            bccEmails,
             attachmentUrls, // Include attachment URLs in the JSON payload
           }),
         });
@@ -1207,6 +1210,7 @@ const Broadcast = () => {
           { email: testEmail, primaryGuardianName: 'Test Recipient' },
         ],
         ccEmails: [],
+        bccEmails: [],
         attachmentUrls: attachmentUrls,
       };
 
@@ -1560,6 +1564,47 @@ const Broadcast = () => {
                 <button
                   onClick={() => {
                     setCcEmails(ccEmails.filter((_, i) => i !== index));
+                  }}
+                  className="text-red-500"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 flex flex-col">
+            <label className="text-lg font-bold">BCC Emails:</label>
+            <div className="flex space-x-2">
+              <input
+                type="email"
+                value={bccInput}
+                onChange={(e) => setBccInput(e.target.value)}
+                className="p-2 border rounded w-full md:w-1/2"
+                placeholder="Enter BCC email"
+              />
+              <button
+                onClick={() => {
+                  if (bccInput) {
+                    setBccEmails((prev) => [...prev, bccInput]);
+                    setBccInput('');
+                  }
+                }}
+                className="bg-primary-500 text-white px-4 py-2 rounded"
+              >
+                Add BCC
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <h3 className="font-bold">BCC Emails:</h3>
+            {bccEmails.map((email, index) => (
+              <div key={index} className="flex justify-between mt-2 mb-2">
+                <span>{email}</span>
+                <button
+                  onClick={() => {
+                    setBccEmails(bccEmails.filter((_, i) => i !== index));
                   }}
                   className="text-red-500"
                 >
