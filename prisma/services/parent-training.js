@@ -1,5 +1,5 @@
 import prisma from '@/prisma/index';
-import { PARENT_TRAINING_PER_GRADE_LEVEL } from '@/utils/constants';
+import { PARENT_TRAINING_PER_GRADE_LEVEL, SCHOOL_YEAR } from '@/utils/constants';
 
 export const createParentTrainingsForGrade = async (gradeLevel, guardianId, schoolYear, status) => {
     const trainings = PARENT_TRAINING_PER_GRADE_LEVEL[gradeLevel];
@@ -55,6 +55,10 @@ export const updateParentTrainingStatus = async (courseCode, guardianId, schoolY
 
 export const getParentTrainings = async () =>
     await prisma.parentTraining.findMany({
+        where: {
+            schoolYear: SCHOOL_YEAR.SY_2026_2027,
+            deletedAt: null,
+        },
         select: {
             id: true,
             guardianId: true,

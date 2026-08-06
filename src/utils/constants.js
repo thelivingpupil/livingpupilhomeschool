@@ -588,6 +588,39 @@ export const PARENT_TRAINING_STATUS_BG_COLOR = {
 };
 
 export const PARENT_TRAINING_CODES = {
+  // SY 2026-2027
+  FPT20261: {
+    name: 'Atmosphere of Learning',
+    code: null,
+    sequence: 'Parent Training 1',
+  },
+  FPT20262: {
+    name: 'Preschool and Kinder Foundations',
+    code: null,
+    sequence: 'Parent Training 2',
+  },
+  FPT20263A: {
+    name: 'Foundations Form 1, 2 & 3',
+    code: null,
+    sequence: 'Parent Training 3',
+  },
+  FPT20263B: {
+    name: 'Foundations Form 1, 2 & 3',
+    code: null,
+    sequence: 'Parent Training 3',
+  },
+  FPT20263C: {
+    name: 'Foundations Form 1, 2 & 3',
+    code: null,
+    sequence: 'Parent Training 3',
+  },
+  FPT20264: {
+    name: 'How to do artist and composer study',
+    code: null,
+    sequence: 'Parent Training 4',
+  },
+
+  /* SY 2025-2026 — kept for future reuse
   PT12025: {
     name: 'The Heart of Learning: Cultivating Atmosphere, Discipline, and Life',
     code: '250720838017454',
@@ -668,8 +701,53 @@ export const PARENT_TRAINING_CODES = {
     code: '250721545672457',
     sequence: 'Parent Training 10',
   },
+  */
 };
 
+// SY 2026-2027
+const PRESCHOOL_KINDER_PARENT_TRAINING = {
+  FPT20261: '1. Atmosphere of Learning',
+  FPT20262: '2. Preschool and Kinder Foundations',
+  FPT20264: '3. How to do artist and composer study',
+};
+
+const FORM_1_PARENT_TRAINING = {
+  FPT20261: '1. Atmosphere of Learning',
+  FPT20263A: '2. Foundations Form 1, 2 & 3',
+  FPT20264: '3. How to do artist and composer study',
+};
+
+const FORM_2_PARENT_TRAINING = {
+  FPT20261: '1. Atmosphere of Learning',
+  FPT20263B: '2. Foundations Form 1, 2 & 3',
+  FPT20264: '3. How to do artist and composer study',
+};
+
+const FORM_3_PARENT_TRAINING = {
+  FPT20261: '1. Atmosphere of Learning',
+  FPT20263C: '2. Foundations Form 1, 2 & 3',
+  FPT20264: '3. How to do artist and composer study',
+};
+
+export const PARENT_TRAINING_PER_GRADE_LEVEL = {
+  PRESCHOOL: PRESCHOOL_KINDER_PARENT_TRAINING,
+  K1: PRESCHOOL_KINDER_PARENT_TRAINING,
+  K2: PRESCHOOL_KINDER_PARENT_TRAINING,
+  GRADE_1: FORM_1_PARENT_TRAINING,
+  GRADE_2: FORM_1_PARENT_TRAINING,
+  GRADE_3: FORM_1_PARENT_TRAINING,
+  GRADE_4: FORM_2_PARENT_TRAINING,
+  GRADE_5: FORM_2_PARENT_TRAINING,
+  GRADE_6: FORM_2_PARENT_TRAINING,
+  GRADE_7: FORM_3_PARENT_TRAINING,
+  GRADE_8: FORM_3_PARENT_TRAINING,
+  GRADE_9: FORM_3_PARENT_TRAINING,
+  GRADE_10: FORM_3_PARENT_TRAINING,
+  GRADE_11: {},
+  GRADE_12: {},
+};
+
+/* SY 2025-2026 — kept for future reuse
 const KINDERGARTEN_PARENT_TRAINING = {
   PT12025:
     '1. The Heart of Learning: Cultivating Atmosphere, Discipline, and Life',
@@ -725,3 +803,4 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   GRADE_11: {},
   GRADE_12: {},
 };
+*/

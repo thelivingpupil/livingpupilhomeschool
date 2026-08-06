@@ -161,7 +161,7 @@ const Course = ({ course }) => {
               {parentCourses.includes(course.code) ? (
                 <Card>
                   <Card.Body title="Course Assessment">
-                    {!isTrainingFinished && PARENT_TRAINING_CODES[course.code] ? (
+                    {!isTrainingFinished && PARENT_TRAINING_CODES[course.code]?.code ? (
                       <JotFormEmbed
                         src={`https://form.jotform.com/${PARENT_TRAINING_CODES[course.code].code}`}
                         scrolling={true}
