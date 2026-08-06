@@ -580,6 +580,12 @@ export const updateTransaction = async (
   payment = undefined,
   amount = undefined
 ) => {
+  const existing = await prisma.transaction.findUnique({
+    where: { transactionId },
+    select: { paymentStatus: true },
+  });
+  const wasAlreadyPaid = existing?.paymentStatus === TransactionStatus.S;
+
   const transaction = await prisma.transaction.update({
     data: {
       paymentReference,
@@ -605,6 +611,22 @@ export const updateTransaction = async (
     },
     where: { transactionId },
   });
+
+  // On first successful payment of MONTHLY order-0, create remaining installments
+  // using monthIndex based on payment date (dynamic import avoids circular deps).
+  if (!wasAlreadyPaid && paymentStatus === TransactionStatus.S) {
+    try {
+      const { createRemainingMonthlyInstallments } = await import(
+        './school-fee'
+      );
+      await createRemainingMonthlyInstallments(transactionId);
+    } catch (error) {
+      console.error(
+        `Failed to create remaining monthly installments for ${transactionId}:`,
+        error
+      );
+    }
+  }
 
   return {
     ...transaction,

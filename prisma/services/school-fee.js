@@ -14,6 +14,7 @@ import {
   GRADE_LEVEL,
   GRADE_LEVEL_TYPES,
   PROGRAM,
+  getMonthIndexForSchoolYear,
 } from '@/utils/constants';
 import { createTransaction } from './transaction';
 
@@ -525,101 +526,36 @@ export const createSchoolFees = async (
       amount: payments[0] + FEES[paymentMethod],
     };
   } else if (payment === PaymentType.MONTHLY) {
+    // Only create the down payment at enrollment. Remaining installments are
+    // created when this initial payment succeeds (see createRemainingMonthlyInstallments).
     const fee = schoolFee.paymentTerms[3];
-    // Ensure at least 1 monthly payment to avoid division by zero and wrong payment count
-    const safeMonthIndex =
-      monthIndex != null && monthIndex > 0 && Number.isFinite(monthIndex)
-        ? monthIndex
-        : 1;
+    const downPaymentAmount = fee.downPayment + FEES[paymentMethod];
 
-    scholarshipValue = scholarship
-      ? scholarship.type === 'VALUE'
-        ? scholarship.value
-        : (scholarship.value / 100) * fee.fullPayment
-      : 0;
-
-    const calculatedScholarship = scholarshipValue / safeMonthIndex;
-    const calculatedMisc = miscellaneousFee / safeMonthIndex;
-
-    let payments;
-    if (isPastorsFee) {
-      const discountedPayment =
-        (discount.value - fee.downPayment) / safeMonthIndex;
-      payments = [
-        fee.downPayment,
-        ...Array(safeMonthIndex).fill(discountedPayment),
-      ];
-    } else {
-      // Calculate total payment before applying discount
-      const totalPayment =
-        fee.secondPayment +
-        fee.thirdPayment +
-        fee.fourthPayment +
-        fee.fifthPayment +
-        fee.sixthPayment +
-        fee.seventhPayment +
-        fee.eighthPayment +
-        fee.ninthPayment;
-
-      // Calculate monthly payments
-      const monthlyPayment =
-        totalPayment / safeMonthIndex - calculatedScholarship;
-
-      // Create payments array with monthly payments
-      payments = [
-        fee.downPayment,
-        ...Array(safeMonthIndex).fill(monthlyPayment),
-      ];
-
-      // Apply discount to the second payment
-      if (discount) {
-        const allPaymentsSum = fee.downPayment + totalPayment;
-        const discountValue =
-          discount.type === 'VALUE'
-            ? discount.value
-            : (discount.value / 100) * allPaymentsSum; // Monthly: discount = % of all payments, deducted from 2nd payment
-        payments[1] -= discountValue;
-      }
+    if (typeof downPaymentAmount !== 'number' || isNaN(downPaymentAmount)) {
+      throw new Error('Invalid total value');
     }
 
-    const purchaseHistoryPromises = payments.map((payment, index) => {
-      const total =
-        payment + FEES[paymentMethod] - (index > 0 ? calculatedScholarship : 0); // Apply scholarship only from the second payment onwards
-      if (typeof total !== 'number' || isNaN(total)) {
-        throw new Error('Invalid total value');
-      }
-      return prisma.purchaseHistory.create({
-        data: { total },
-        select: { id: true, transactionId: true },
-      });
+    const transaction = await prisma.purchaseHistory.create({
+      data: { total: downPaymentAmount },
+      select: { id: true, transactionId: true },
     });
-
-    const transactionIds = await Promise.all(purchaseHistoryPromises);
-    const transactionPromises = transactionIds.map((transaction, index) => {
-      const total =
-        payments[index] +
-        (index > 0 ? calculatedMisc : 0) +
-        FEES[paymentMethod] -
-        (index > 0 ? calculatedScholarship : 0); // Apply scholarship only from the second payment onwards
-      return createTransaction(
+    const [response] = await Promise.all([
+      createTransaction(
         userId,
         email,
         transaction.transactionId,
-        total,
+        downPaymentAmount,
         description,
         transaction.id,
         TransactionSource.ENROLLMENT,
         paymentMethod
-      );
-    });
-
-    const [responses] = await Promise.all(transactionPromises);
-
-    const schoolFeePromises = transactionIds.map((transaction, index) => {
-      return prisma.schoolFee.create({
+      ),
+    ]);
+    await Promise.all([
+      prisma.schoolFee.create({
         data: {
           gradeLevel: incomingGradeLevel,
-          order: index,
+          order: 0,
           paymentType: payment,
           transaction: {
             connect: {
@@ -632,17 +568,307 @@ export const createSchoolFees = async (
             },
           },
         },
-      });
-    });
-    const schoolFeeResponses = await Promise.all(schoolFeePromises);
-    // Log the school fee responses for verification
+      }),
+    ]);
     result = {
-      transaction: responses,
-      amount: payments[0] + FEES[paymentMethod],
+      transaction: response,
+      amount: downPaymentAmount,
     };
   }
   console.log('Exiting createSchoolFees function...');
   return result;
+};
+
+/**
+ * Create remaining MONTHLY installments after the initial (order 0) fee is paid.
+ * monthIndex is based on the payment date so late payers get fewer installments.
+ */
+export const createRemainingMonthlyInstallments = async (transactionId) => {
+  const schoolFee = await prisma.schoolFee.findFirst({
+    where: {
+      transactionId,
+      deletedAt: null,
+    },
+    select: {
+      order: true,
+      paymentType: true,
+      studentId: true,
+      gradeLevel: true,
+      transaction: {
+        select: {
+          transactionId: true,
+          description: true,
+          fee: true,
+          userId: true,
+          user: {
+            select: {
+              id: true,
+              email: true,
+            },
+          },
+        },
+      },
+      student: {
+        select: {
+          id: true,
+          studentRecord: {
+            select: {
+              schoolYear: true,
+              program: true,
+              enrollmentType: true,
+              cottageType: true,
+              accreditation: true,
+              incomingGradeLevel: true,
+              discount: true,
+              scholarship: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (
+    !schoolFee ||
+    schoolFee.paymentType !== PaymentType.MONTHLY ||
+    schoolFee.order !== 0
+  ) {
+    return null;
+  }
+
+  const existingInstallments = await prisma.schoolFee.count({
+    where: {
+      studentId: schoolFee.studentId,
+      paymentType: PaymentType.MONTHLY,
+      gradeLevel: schoolFee.gradeLevel,
+      order: { gt: 0 },
+      deletedAt: null,
+    },
+  });
+
+  if (existingInstallments > 0) {
+    return null;
+  }
+
+  const studentRecord = schoolFee.student?.studentRecord;
+  if (!studentRecord) {
+    throw new Error(
+      `Student record not found for workspace ${schoolFee.studentId}`
+    );
+  }
+
+  const userId = schoolFee.transaction?.userId || schoolFee.transaction?.user?.id;
+  const email = schoolFee.transaction?.user?.email;
+  if (!userId || !email) {
+    throw new Error(
+      `Missing user for transaction ${transactionId}; cannot create remaining monthly installments`
+    );
+  }
+
+  const paymentMethod = schoolFee.transaction?.fee || 'ONLINE';
+  const miscellaneousFee = 500;
+  const incomingGradeLevel =
+    studentRecord.incomingGradeLevel || schoolFee.gradeLevel;
+  const program = studentRecord.program;
+  const enrollmentType = studentRecord.enrollmentType;
+  const cottageType = studentRecord.cottageType;
+  const accreditation = studentRecord.accreditation;
+  const discountCode = studentRecord.discount || '';
+  const scholarshipCode = studentRecord.scholarship || '';
+
+  const monthIndex = getMonthIndexForSchoolYear(
+    studentRecord.schoolYear,
+    new Date()
+  );
+  const safeMonthIndex =
+    monthIndex != null && monthIndex > 0 && Number.isFinite(monthIndex)
+      ? monthIndex
+      : 1;
+
+  let gradeLevel = incomingGradeLevel;
+  if (program === Program.HOMESCHOOL_COTTAGE) {
+    if (
+      [GradeLevel.GRADE_1, GradeLevel.GRADE_2, GradeLevel.GRADE_3].includes(
+        incomingGradeLevel
+      )
+    ) {
+      gradeLevel = GRADE_LEVEL_TYPES.FORM_1;
+    }
+    if (
+      [GradeLevel.GRADE_4, GradeLevel.GRADE_5, GradeLevel.GRADE_6].includes(
+        incomingGradeLevel
+      )
+    ) {
+      gradeLevel = GRADE_LEVEL_TYPES.FORM_2;
+    }
+    if (
+      [
+        GradeLevel.GRADE_7,
+        GradeLevel.GRADE_8,
+        GradeLevel.GRADE_9,
+        GradeLevel.GRADE_10,
+      ].includes(incomingGradeLevel)
+    ) {
+      gradeLevel = GRADE_LEVEL_TYPES.FORM_3;
+    }
+  }
+
+  const sanityFetchArgs =
+    program === Program.HOMESCHOOL_COTTAGE
+      ? [
+          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType && cottageType == $cottageType][0]{...}`,
+          {
+            enrollmentType,
+            gradeLevel,
+            program,
+            cottageType,
+          },
+        ]
+      : [
+          `*[_type == 'programs' && gradeLevel == $gradeLevel && programType == $program && enrollmentType == $enrollmentType][0]{...}`,
+          {
+            enrollmentType,
+            gradeLevel,
+            program,
+          },
+        ];
+
+  const fetchProgram = await sanityClient.fetch(...sanityFetchArgs);
+  const tuitionFee = fetchProgram?.tuitionFees.find(
+    (tuition) => tuition.type === accreditation
+  );
+  if (!tuitionFee?.paymentTerms?.[3]) {
+    throw new Error(
+      `Monthly payment terms not found for student ${schoolFee.studentId}`
+    );
+  }
+
+  const fee = tuitionFee.paymentTerms[3];
+  const description =
+    schoolFee.transaction?.description ||
+    `${PROGRAM[program]} for ${GRADE_LEVEL[incomingGradeLevel]} - ${ACCREDITATION[accreditation]}`;
+
+  const discount =
+    discountCode &&
+    (await sanityClient.fetch(
+      `*[_type == 'discounts' && code == $code][0]{...}`,
+      { code: discountCode }
+    ));
+
+  const scholarship =
+    scholarshipCode &&
+    (await sanityClient.fetch(
+      `*[_type == 'scholarships' && code == $code][0]{...}`,
+      { code: scholarshipCode }
+    ));
+
+  const isPastorsFee =
+    discount && discount?.code?.toLowerCase().includes('pastor');
+
+  const scholarshipValue = scholarship
+    ? scholarship.type === 'VALUE'
+      ? scholarship.value
+      : (scholarship.value / 100) * fee.fullPayment
+    : 0;
+
+  const calculatedScholarship = scholarshipValue / safeMonthIndex;
+  const calculatedMisc = miscellaneousFee / safeMonthIndex;
+
+  let payments;
+  if (isPastorsFee) {
+    const discountedPayment =
+      (discount.value - fee.downPayment) / safeMonthIndex;
+    payments = [
+      fee.downPayment,
+      ...Array(safeMonthIndex).fill(discountedPayment),
+    ];
+  } else {
+    const totalPayment =
+      fee.secondPayment +
+      fee.thirdPayment +
+      fee.fourthPayment +
+      fee.fifthPayment +
+      fee.sixthPayment +
+      fee.seventhPayment +
+      fee.eighthPayment +
+      fee.ninthPayment;
+
+    const monthlyPayment =
+      totalPayment / safeMonthIndex - calculatedScholarship;
+
+    payments = [
+      fee.downPayment,
+      ...Array(safeMonthIndex).fill(monthlyPayment),
+    ];
+
+    if (discount) {
+      const allPaymentsSum = fee.downPayment + totalPayment;
+      const discountValue =
+        discount.type === 'VALUE'
+          ? discount.value
+          : (discount.value / 100) * allPaymentsSum;
+      payments[1] -= discountValue;
+    }
+  }
+
+  // Skip order 0 (already created/paid); create remaining installments only
+  const remainingPayments = payments.slice(1);
+
+  const purchaseHistoryPromises = remainingPayments.map((paymentAmount) => {
+    const total =
+      paymentAmount + FEES[paymentMethod] - calculatedScholarship;
+    if (typeof total !== 'number' || isNaN(total)) {
+      throw new Error('Invalid total value');
+    }
+    return prisma.purchaseHistory.create({
+      data: { total },
+      select: { id: true, transactionId: true },
+    });
+  });
+
+  const purchaseHistories = await Promise.all(purchaseHistoryPromises);
+  const transactionPromises = purchaseHistories.map((purchase, index) => {
+    const paymentAmount = remainingPayments[index];
+    const total =
+      paymentAmount +
+      calculatedMisc +
+      FEES[paymentMethod] -
+      calculatedScholarship;
+    return createTransaction(
+      userId,
+      email,
+      purchase.transactionId,
+      total,
+      description,
+      purchase.id,
+      TransactionSource.ENROLLMENT,
+      paymentMethod
+    );
+  });
+
+  await Promise.all(transactionPromises);
+
+  const schoolFeePromises = purchaseHistories.map((purchase, index) => {
+    return prisma.schoolFee.create({
+      data: {
+        gradeLevel: incomingGradeLevel,
+        order: index + 1,
+        paymentType: PaymentType.MONTHLY,
+        transaction: {
+          connect: {
+            transactionId: purchase.transactionId,
+          },
+        },
+        student: {
+          connect: {
+            id: schoolFee.studentId,
+          },
+        },
+      },
+    });
+  });
+
+  return Promise.all(schoolFeePromises);
 };
 
 export const createPayAllFees = async (
