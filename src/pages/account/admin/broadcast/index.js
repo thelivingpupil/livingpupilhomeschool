@@ -10,6 +10,9 @@ import {
   GRADE_LEVEL_FORMS,
   ACCREDITATION_NEW,
   PROGRAM,
+  ENROLLMENT_TYPE,
+  PHILIPPINE_ISLAND_GROUP,
+  PHILIPPINE_ISLAND_GROUP_LABELS,
 } from '@/utils/constants';
 import { useStudents } from '@/hooks/data';
 import { ChevronDownIcon } from '@heroicons/react/outline';
@@ -17,7 +20,11 @@ import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '@/lib/client/firebase';
 import toast from 'react-hot-toast';
 import Modal from '@/components/Modal';
-import { getSenderDetails, getSenderCredentials } from '@/utils/index';
+import {
+  getSenderDetails,
+  getSenderCredentials,
+  getIslandGroupFromAddress,
+} from '@/utils/index';
 import { html as announcementHtml } from '@/config/email-templates/broadcast/announcement';
 import crypto from 'crypto';
 import format from 'date-fns/format';
@@ -79,6 +86,11 @@ const STUDENT_STATUS_OPTIONS = [
   { value: '__NONE__', label: 'No status' },
 ];
 
+const REGION_OPTIONS = Object.values(PHILIPPINE_ISLAND_GROUP).map((value) => ({
+  value,
+  label: PHILIPPINE_ISLAND_GROUP_LABELS[value],
+}));
+
 const Broadcast = () => {
   const { data: studentsData, isLoading } = useStudents();
   const [filterBy, setFilterBy] = useState('');
@@ -91,6 +103,8 @@ const Broadcast = () => {
   const [program, setProgram] = useState([]); // Updated to be an array
   const [accreditation, setAccreditation] = useState([]); // Updated to be an array
   const [studentStatuses, setStudentStatuses] = useState([]); // Auto only: ENROLLED, INITIALLY_ENROLLED, etc.
+  const [regions, setRegions] = useState([]); // Auto only: LUZON, VISAYAS, MINDANAO
+  const [enrollmentTypes, setEnrollmentTypes] = useState([]); // Auto only: NEW, CONTINUING
   const [emailSendType, setEmailSendType] = useState('auto'); // State to determine single or multiple emails
   const [singularEmail, setSingularEmail] = useState(''); // State for singular email input
   const [singularParent, setSingularParent] = useState('');
@@ -174,6 +188,8 @@ const Broadcast = () => {
     setProgram('');
     setAccreditation('');
     setStudentStatuses([]);
+    setRegions([]);
+    setEnrollmentTypes([]);
   };
 
   // Filter students based on selected filters
@@ -183,7 +199,9 @@ const Broadcast = () => {
       (filterValues.length > 0 ||
         program.length > 0 ||
         accreditation.length > 0 ||
-        studentStatuses.length > 0)
+        studentStatuses.length > 0 ||
+        regions.length > 0 ||
+        enrollmentTypes.length > 0)
     ) {
       let filtered = filterEnrolledStudents(studentsData, schoolYear);
 
@@ -237,6 +255,23 @@ const Broadcast = () => {
         );
       }
 
+      // Region filter: derive island group from guardian address
+      if (regions.length > 0) {
+        filtered = filtered.filter((student) => {
+          const guardian = student.student?.creator?.guardianInformation;
+          const address = `${guardian?.address1 || ''} ${guardian?.address2 || ''}`.trim();
+          const islandGroup = getIslandGroupFromAddress(address);
+          return islandGroup && regions.includes(islandGroup);
+        });
+      }
+
+      // Enrollment Type filter: NEW / CONTINUING
+      if (enrollmentTypes.length > 0) {
+        filtered = filtered.filter((student) =>
+          enrollmentTypes.includes(student.enrollmentType)
+        );
+      }
+
       setFilteredStudents(filtered);
     } else {
       setFilteredStudents(studentsData?.students || []);
@@ -247,16 +282,20 @@ const Broadcast = () => {
     program,
     accreditation,
     studentStatuses,
+    regions,
+    enrollmentTypes,
     studentsData,
     schoolYear,
   ]);
 
-  // Extract guardian emails after filtering students (any filter: Grade/Form/Group, Program, Accreditation, or Student Status)
+  // Extract guardian emails after filtering students (any filter including Region / Enrollment Type)
   const hasAnyFilter =
     filterValues.length > 0 ||
     program.length > 0 ||
     accreditation.length > 0 ||
-    studentStatuses.length > 0;
+    studentStatuses.length > 0 ||
+    regions.length > 0 ||
+    enrollmentTypes.length > 0;
   useEffect(() => {
     if (!hasAnyFilter || filteredStudents.length === 0) {
       setGuardianEmails([]);
@@ -286,7 +325,16 @@ const Broadcast = () => {
 
       setGuardianEmails(uniqueEmailsAndGuardians);
     }
-  }, [filteredStudents, filterValues, program, accreditation, studentStatuses, hasAnyFilter]);
+  }, [
+    filteredStudents,
+    filterValues,
+    program,
+    accreditation,
+    studentStatuses,
+    regions,
+    enrollmentTypes,
+    hasAnyFilter,
+  ]);
 
   useEffect(() => {
     // Validate form when any related state changes
@@ -297,7 +345,9 @@ const Broadcast = () => {
         (filterValues.length > 0 ||
           program.length > 0 ||
           accreditation.length > 0 ||
-          studentStatuses.length > 0) &&
+          studentStatuses.length > 0 ||
+          regions.length > 0 ||
+          enrollmentTypes.length > 0) &&
         guardianEmails.length > 0 &&
         emailSender &&
         emailSubject &&
@@ -318,6 +368,8 @@ const Broadcast = () => {
     program,
     accreditation,
     studentStatuses,
+    regions,
+    enrollmentTypes,
     emailSender,
     emailSubject,
     emailContent,
@@ -1197,7 +1249,17 @@ const Broadcast = () => {
         }));
 
   if (isLoading) {
-    return <div>Loading...</div>; // Loading state when data is being fetched
+    return (
+      <AdminLayout>
+        <Meta title="Living Pupil Homeschool - Broadcast Email" />
+        <div className="relative flex flex-col items-center justify-center w-full min-h-[60vh] text-gray-800">
+          <div className="text-center">
+            <div className="inline-block w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="mt-4 text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
   }
 
   const handleFilterByChange = (key) => {
@@ -1347,6 +1409,40 @@ const Broadcast = () => {
                       checked={studentStatuses.includes(value)}
                       onChange={(e) =>
                         handleCheckboxChange(e, setStudentStatuses)
+                      }
+                    />
+                    <span className="ml-2">{label}</span>
+                  </label>
+                ))}
+              </div>
+
+              {/* Region (Auto only) — derived from guardian address */}
+              <div className="mt-2">
+                <div className="text-lg font-bold">Region:</div>
+                {REGION_OPTIONS.map(({ value, label }) => (
+                  <label key={value} className="block">
+                    <input
+                      type="checkbox"
+                      value={value}
+                      checked={regions.includes(value)}
+                      onChange={(e) => handleCheckboxChange(e, setRegions)}
+                    />
+                    <span className="ml-2">{label}</span>
+                  </label>
+                ))}
+              </div>
+
+              {/* Enrollment Type (Auto only) */}
+              <div className="mt-2">
+                <div className="text-lg font-bold">Enrollment Type:</div>
+                {Object.entries(ENROLLMENT_TYPE).map(([value, label]) => (
+                  <label key={value} className="block">
+                    <input
+                      type="checkbox"
+                      value={value}
+                      checked={enrollmentTypes.includes(value)}
+                      onChange={(e) =>
+                        handleCheckboxChange(e, setEnrollmentTypes)
                       }
                     />
                     <span className="ml-2">{label}</span>
@@ -1588,8 +1684,9 @@ const Broadcast = () => {
             guardianEmails.length === 0 && (
               <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded text-amber-800 text-sm">
                 No recipients found. Select a <strong>School Year</strong> and
-                at least one filter (Grade/Form/Group, Program, or Accreditation)
-                that matches students for that year.
+                at least one filter (Grade/Form/Group, Program, Accreditation,
+                Student Status, Region, or Enrollment Type) that matches students
+                for that year.
               </div>
             )}
 

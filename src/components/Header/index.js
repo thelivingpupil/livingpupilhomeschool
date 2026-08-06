@@ -204,7 +204,7 @@ const Header = ({ menu }) => {
         </Menu>
       </div>
       <div className="flex flex-col md:flex-row md:flex-wrap md:items-center">
-        <Actions />
+        {!router.pathname.includes('/account/admin') && <Actions />}
         {renderMenu()}
       </div>
     </div>

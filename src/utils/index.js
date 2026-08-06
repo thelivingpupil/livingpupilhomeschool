@@ -4,6 +4,10 @@ import format from 'date-fns/format';
 import { addMonths, setDate } from 'date-fns';
 import { ShippingType } from '@prisma/client';
 import { parse } from 'date-fns';
+import {
+  PHILIPPINE_ISLAND_GROUP,
+  PHILIPPINE_ISLAND_GROUP_KEYWORDS,
+} from '@/utils/constants';
 
 const deadlines = {
   currentYear: [
@@ -913,6 +917,33 @@ export const getShippingTypeFromAddress = (address) => {
 
   // Default fallback
   return ShippingType.VISAYAS;
+};
+
+/**
+ * Classify a free-text PH address into Luzon / Visayas / Mindanao.
+ * Uses province/city/region keywords (not shop shipping types).
+ * Returns null when the address is empty or cannot be classified.
+ */
+export const getIslandGroupFromAddress = (address) => {
+  if (!address || !String(address).trim()) return null;
+
+  const lowerAddress = String(address).toLowerCase();
+
+  const matches = Object.entries(PHILIPPINE_ISLAND_GROUP_KEYWORDS).flatMap(
+    ([islandGroup, keywords]) =>
+      keywords.map((keyword) => ({ islandGroup, keyword }))
+  );
+
+  // Prefer longer keywords so "cagayan de oro" wins over "cagayan"
+  matches.sort((a, b) => b.keyword.length - a.keyword.length);
+
+  for (const { islandGroup, keyword } of matches) {
+    if (lowerAddress.includes(keyword)) {
+      return PHILIPPINE_ISLAND_GROUP[islandGroup] || islandGroup;
+    }
+  }
+
+  return null;
 };
 
 export const calculateShippingFeeFromAddress = (address, itemCount) => {
