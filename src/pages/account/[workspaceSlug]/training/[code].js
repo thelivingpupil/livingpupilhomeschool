@@ -9,7 +9,7 @@ import { useWorkspace } from '@/providers/workspace';
 import toast from 'react-hot-toast';
 import api from '@/lib/common/api';
 import JotFormEmbed from 'react-jotform-embed';
-import { PARENT_TRAINING_CODES } from '@/utils/constants';
+import { PARENT_TRAINING_CODES, courseMatchesStudentPartnerSchool } from '@/utils/constants';
 
 const Course = ({ course }) => {
   const { workspace, setWorkspace } = useWorkspace();
@@ -90,7 +90,11 @@ const Course = ({ course }) => {
           />
           <Content.Title title={course.title} subtitle={course.description} />
           <Content.Divider />
-          {workspace.studentRecord ? (
+          {workspace.studentRecord &&
+          courseMatchesStudentPartnerSchool(
+            course.partnerSchool,
+            workspace.studentRecord.partnerSchool
+          ) ? (
             <Content.Container>
               <Card>
                 <Card.Body title="Watch This Training Video">
@@ -193,8 +197,9 @@ const Course = ({ course }) => {
           ) : (
             <div className="px-3 py-3 text-sm text-red-500 border-2 border-red-600 rounded bg-red-50">
               <p>
-                You will need to enroll your student first prior to viewing the
-                student courses and parent training videos.
+                {workspace.studentRecord
+                  ? 'This course is only available to students from the assigned partner school.'
+                  : 'You will need to enroll your student first prior to viewing the student courses and parent training videos.'}
               </p>
             </div>
           )}

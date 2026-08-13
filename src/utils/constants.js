@@ -27,6 +27,27 @@ export const PARTNER_SCHOOL = {
   MANDAUE: 'Mandaue Christian School',
 };
 
+const PARTNER_SCHOOL_ALIASES = {
+  KAIROS: 'KAIROS',
+  MANDAUE: 'MANDAUE',
+  MANDAUE_CHRISTIAN_SCHOOL: 'MANDAUE',
+  HOMELIFE_ACADEMY: 'HOMELIFE_ACADEMY',
+};
+
+export const courseMatchesStudentPartnerSchool = (
+  coursePartnerSchool,
+  studentPartnerSchool
+) => {
+  if (!coursePartnerSchool) return true;
+
+  const normalizedCourse =
+    PARTNER_SCHOOL_ALIASES[coursePartnerSchool] || coursePartnerSchool;
+  const normalizedStudent =
+    PARTNER_SCHOOL_ALIASES[studentPartnerSchool] || studentPartnerSchool;
+
+  return normalizedCourse === normalizedStudent;
+};
+
 export const ACCREDITATION_NEW = {
   LOCAL: 'DepEd Accreditation (Local)',
   INTERNATIONAL: 'US Accreditation (International)',
@@ -36,6 +57,12 @@ export const ACCREDITATION_NEW = {
 export const ENROLLMENT_TYPE = {
   CONTINUING: 'Continuing Student',
   NEW: 'New Student',
+};
+
+export const PREVIOUS_SCHOOL_TYPE = {
+  INTERNATIONAL:
+    'From an International School / Non-DepEd Accredited School / School Outside the Philippines',
+  LOCAL: 'From a Local School / DepEd-Accredited School',
 };
 
 export const FEES = {
