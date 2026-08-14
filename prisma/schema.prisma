@@ -232,6 +232,9 @@ model StudentRecord {
   liveBirthCertificate             String?
   reportCard                       String?
   schoolYearReportCard             String?
+  previousSchoolType               PreviousSchoolType?
+  gapYearAgreement                 String?
+  lrnProvisionForm                 String?
   discount                         String?
   cottageType                      CottageType?
   partnerSchool                    PartnerSchool?
@@ -750,6 +753,11 @@ enum Currency {
 enum Enrollment {
   CONTINUING
   NEW
+}
+
+enum PreviousSchoolType {
+  INTERNATIONAL
+  LOCAL
 }
 
 enum Fees {
