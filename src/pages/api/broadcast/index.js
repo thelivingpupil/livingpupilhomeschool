@@ -223,6 +223,13 @@ export default async function handler(req, res) {
             // Validate CC / BCC Emails
             const validCcEmails = (ccEmails || []).filter(isValidEmail);
             const validBccEmails = (bccEmails || []).filter(isValidEmail);
+            // Auto broadcasts send one email per parent; BCC should get a single copy, not one per parent.
+            let bccSent = false;
+            const bccForThisSend = () => {
+                if (bccSent || validBccEmails.length === 0) return [];
+                bccSent = true;
+                return validBccEmails;
+            };
 
             // Send email to each guardian, but skip if email is invalid
             const promises = guardianEmails.map(async (guardianEmail) => {
@@ -241,7 +248,7 @@ export default async function handler(req, res) {
                         attachments, // Attach images with cid and file attachments
                         replyTo: replyEmail,
                         cc: validCcEmails,
-                        bcc: validBccEmails,
+                        bcc: bccForThisSend(),
                     });
 
                     // Increment the counter for each successful email sent
@@ -261,7 +268,7 @@ export default async function handler(req, res) {
                             attachments, // Attach images with cid and file attachments
                             replyTo: replyEmail,
                             cc: validCcEmails,
-                            bcc: validBccEmails,
+                            bcc: bccForThisSend(),
                         });
 
                         // Increment the counter for each successful email sent

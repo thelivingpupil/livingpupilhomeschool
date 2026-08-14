@@ -261,8 +261,13 @@ const Broadcast = () => {
       if (regions.length > 0) {
         filtered = filtered.filter((student) => {
           const guardian = student.student?.creator?.guardianInformation;
-          const address = `${guardian?.address1 || ''} ${guardian?.address2 || ''}`.trim();
-          const islandGroup = getIslandGroupFromAddress(address);
+          // Prefer the enrollment student address (barangay / city / province / zip)
+          // over guardian street address, which is often empty or unmatched.
+          const islandGroup =
+            getIslandGroupFromAddress(student.studentAddress2) ||
+            getIslandGroupFromAddress(student.studentAddress1) ||
+            getIslandGroupFromAddress(guardian?.address2) ||
+            getIslandGroupFromAddress(guardian?.address1);
           return islandGroup && regions.includes(islandGroup);
         });
       }
@@ -572,7 +577,8 @@ const Broadcast = () => {
       // Chunk the guardian emails into batches of 50
       const batches = chunkArray(guardianEmailsToSend, 50);
 
-      for (const batch of batches) {
+      for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+        const batch = batches[batchIndex];
         const response = await fetch('/api/broadcast', {
           // Adjust the API endpoint accordingly
           method: 'POST',
@@ -585,7 +591,8 @@ const Broadcast = () => {
             subject: emailSubject,
             guardianEmails: batch, // Send the current batch
             ccEmails,
-            bccEmails,
+            // Auto mode batches would otherwise BCC every parent; send BCC on the first batch only
+            bccEmails: batchIndex === 0 ? bccEmails : [],
             attachmentUrls, // Include attachment URLs in the JSON payload
           }),
         });

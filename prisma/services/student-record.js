@@ -195,6 +195,9 @@ export const createStudentRecord = async (
   mediaConsent,
   enrollmentAgreementSignature,
   enrollmentAgreementSignatureDate,
+  previousSchoolType = null,
+  gapYearAgreement = null,
+  lrnProvisionForm = null,
   cottageSlotId = null,
   client = prisma,
 ) =>
@@ -220,6 +223,9 @@ export const createStudentRecord = async (
       image,
       liveBirthCertificate,
       reportCard,
+      previousSchoolType,
+      gapYearAgreement,
+      lrnProvisionForm,
       discount,
       primaryTeacherName,
       primaryTeacherAge,
@@ -261,6 +267,14 @@ export const updateFile = async (studentId, type, url) => {
     }
     case 'schoolYearReportCard': {
       data.schoolYearReportCard = url;
+      break;
+    }
+    case 'gapYear': {
+      data.gapYearAgreement = url;
+      break;
+    }
+    case 'lrnForm': {
+      data.lrnProvisionForm = url;
       break;
     }
     case 'idPictureFront': {
@@ -306,11 +320,16 @@ export const getStudentRecords = async () =>
       liveBirthCertificate: true,
       reportCard: true,
       schoolYearReportCard: true,
+      previousSchoolType: true,
+      gapYearAgreement: true,
+      lrnProvisionForm: true,
       idPictureFront: true,
       idPictureBack: true,
       discount: true,
       studentStatus: true,
       cottageType: true,
+      studentAddress1: true,
+      studentAddress2: true,
       student: {
         select: {
           creator: {
@@ -387,11 +406,16 @@ export const getEnrolledStudentRecords = async () =>
       liveBirthCertificate: true,
       reportCard: true,
       schoolYearReportCard: true,
+      previousSchoolType: true,
+      gapYearAgreement: true,
+      lrnProvisionForm: true,
       idPictureFront: true,
       idPictureBack: true,
       discount: true,
       studentStatus: true,
       cottageType: true,
+      studentAddress1: true,
+      studentAddress2: true,
       student: {
         select: {
           creator: {
@@ -466,6 +490,9 @@ export const getStudentRecord = async (id) =>
       liveBirthCertificate: true,
       reportCard: true,
       schoolYearReportCard: true,
+      previousSchoolType: true,
+      gapYearAgreement: true,
+      lrnProvisionForm: true,
       idPictureFront: true,
       idPictureBack: true,
       discount: true,
@@ -497,6 +524,9 @@ export const updateStudentRecord = async (studentId, studentNewData) =>
       image: studentNewData.pictureLink,
       liveBirthCertificate: studentNewData.birthCertificateLink,
       reportCard: studentNewData.reportCardLink,
+      previousSchoolType: studentNewData.previousSchoolType || null,
+      gapYearAgreement: studentNewData.gapYearAgreementLink,
+      lrnProvisionForm: studentNewData.lrnProvisionFormLink,
       discount: studentNewData.discountCode,
       accreditation: studentNewData.accreditation,
       partnerSchool: studentNewData.partnerSchool || null,
