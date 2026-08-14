@@ -374,15 +374,8 @@ export const PHILIPPINE_ISLAND_GROUP_LABELS = {
   MINDANAO: 'Mindanao',
 };
 
-/**
- * Address keywords for Luzon / Visayas / Mindanao (provinces, major cities, region names).
- * Matching uses longest keyword first so phrases like "cagayan de oro" beat "cagayan".
- * Based on PSA/PhilAtlas island-group membership of PH regions.
- */
 export const PHILIPPINE_ISLAND_GROUP_KEYWORDS = {
-  // Luzon: NCR, CAR, I, II, III, IV-A (CALABARZON), MIMAROPA, V (Bicol)
   LUZON: [
-    'national capital region',
     'metro manila',
     'cordillera administrative region',
     'cagayan valley',

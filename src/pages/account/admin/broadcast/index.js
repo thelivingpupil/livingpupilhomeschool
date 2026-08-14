@@ -510,6 +510,12 @@ const Broadcast = () => {
 
     try {
       const guardianEmailsToSend = guardianEmails;
+      const bccEmailsToSend = [
+        ...bccEmails,
+        ...bccInput.split(/[,\s;]+/),
+      ]
+        .map((email) => String(email).trim())
+        .filter(Boolean);
 
       // Process images in email content first
       toast.loading('Processing images...', { id: 'processing-images' });
@@ -592,7 +598,7 @@ const Broadcast = () => {
             guardianEmails: batch, // Send the current batch
             ccEmails,
             // Auto mode batches would otherwise BCC every parent; send BCC on the first batch only
-            bccEmails: batchIndex === 0 ? bccEmails : [],
+            bccEmails: batchIndex === 0 ? bccEmailsToSend : [],
             attachmentUrls, // Include attachment URLs in the JSON payload
           }),
         });
@@ -1584,7 +1590,7 @@ const Broadcast = () => {
             <label className="text-lg font-bold">BCC Emails:</label>
             <div className="flex space-x-2">
               <input
-                type="email"
+                type="text"
                 value={bccInput}
                 onChange={(e) => setBccInput(e.target.value)}
                 className="p-2 border rounded w-full md:w-1/2"
@@ -1593,7 +1599,11 @@ const Broadcast = () => {
               <button
                 onClick={() => {
                   if (bccInput) {
-                    setBccEmails((prev) => [...prev, bccInput]);
+                    const emails = bccInput
+                      .split(/[,\s;]+/)
+                      .map((email) => email.trim())
+                      .filter(Boolean);
+                    setBccEmails((prev) => [...prev, ...emails]);
                     setBccInput('');
                   }
                 }}

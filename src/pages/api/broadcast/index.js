@@ -222,14 +222,7 @@ export default async function handler(req, res) {
 
             // Validate CC / BCC Emails
             const validCcEmails = (ccEmails || []).filter(isValidEmail);
-            const validBccEmails = (bccEmails || []).filter(isValidEmail);
-            // Auto broadcasts send one email per parent; BCC should get a single copy, not one per parent.
-            let bccSent = false;
-            const bccForThisSend = () => {
-                if (bccSent || validBccEmails.length === 0) return [];
-                bccSent = true;
-                return validBccEmails;
-            };
+            const validBccEmails = [...new Set((bccEmails || []).map((email) => String(email).trim()).filter(isValidEmail))];
 
             // Send email to each guardian, but skip if email is invalid
             const promises = guardianEmails.map(async (guardianEmail) => {
@@ -248,7 +241,6 @@ export default async function handler(req, res) {
                         attachments, // Attach images with cid and file attachments
                         replyTo: replyEmail,
                         cc: validCcEmails,
-                        bcc: bccForThisSend(),
                     });
 
                     // Increment the counter for each successful email sent
@@ -268,7 +260,6 @@ export default async function handler(req, res) {
                             attachments, // Attach images with cid and file attachments
                             replyTo: replyEmail,
                             cc: validCcEmails,
-                            bcc: bccForThisSend(),
                         });
 
                         // Increment the counter for each successful email sent
@@ -281,6 +272,30 @@ export default async function handler(req, res) {
 
             try {
                 await Promise.all(promises);
+
+                // One archive copy per BCC address (not attached to every parent email)
+                for (const bccEmail of validBccEmails) {
+                    try {
+                        await sendMail({
+                            from: `${senderName} <info@livingpupilhomeschool.com>`,
+                            html: announcementHtml({
+                                parentName: 'Team',
+                                emailContent: processedEmailContent,
+                                senderRole,
+                                senderFullName,
+                            }),
+                            subject,
+                            text: announcementText({ parentName: 'Team' }),
+                            to: bccEmail,
+                            attachments,
+                            replyTo: replyEmail,
+                        });
+                        emailCount++;
+                    } catch (error) {
+                        console.error(`Failed to send BCC copy to ${bccEmail}:`, error);
+                    }
+                }
+
                 return res.status(200).json({ message: `Emails sent successfully. Total emails sent: ${emailCount}` });
             } catch (error) {
                 console.error('Failed to send emails:', error);
