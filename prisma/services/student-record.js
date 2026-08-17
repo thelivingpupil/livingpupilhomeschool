@@ -155,26 +155,150 @@ export const countStudentsByProgram = async () =>
     where: { deletedAt: null, student: { deletedAt: null } },
   });
 
+const isDbClient = (value) =>
+  Boolean(
+    value &&
+      typeof value === 'object' &&
+      (typeof value.$queryRaw === 'function' ||
+        typeof value.studentRecord?.create === 'function' ||
+        typeof value.cottageSlot?.updateMany === 'function')
+  );
+
 const getStudentRecordClient = (client) => {
   if (client == null) {
     return prisma;
   }
 
-  if (typeof client.studentRecord?.create === 'function') {
+  if (isDbClient(client)) {
     return client;
   }
 
-  throw new Error(
-    `Invalid database client passed to createStudentRecord (${typeof client})`
-  );
+  if (isDbClient(client.default)) {
+    return client.default;
+  }
+
+  return prisma;
 };
 
-export const createStudentRecord = async (record, client) => {
-  if (!record || typeof record !== 'object' || Array.isArray(record)) {
-    throw new Error(
-      'createStudentRecord expects a student record object as the first argument'
-    );
+const recordFromPositional = (values) => {
+  const [
+    id,
+    firstName,
+    middleName,
+    lastName,
+    birthDate,
+    gender,
+    religion,
+    incomingGradeLevel,
+    enrollmentType,
+    program,
+    cottageType,
+    accreditation,
+    schoolYear,
+    reason,
+    formerSchoolName,
+    formerSchoolAddress,
+    image,
+    liveBirthCertificate,
+    reportCard,
+    discount,
+    primaryTeacherName,
+    primaryTeacherAge,
+    primaryTeacherRelationship,
+    primaryTeacherEducation,
+    primaryTeacherProfile,
+    studentStatus,
+    signature,
+    specialNeeds,
+    specialNeedSpecific,
+    formerRegistrar,
+    formerRegistrarEmail,
+    formerRegistrarNumber,
+    studentAddress1,
+    studentAddress2,
+    isInternationalAddress,
+    studentInternationalAddress,
+    mediaConsent,
+    enrollmentAgreementSignature,
+    enrollmentAgreementSignatureDate,
+    maybeCottageSlotOrPreviousSchoolType,
+    maybeGapYearAgreement,
+    maybeLrnProvisionForm,
+    maybeCottageSlotId,
+  ] = values;
+
+  const hasDocFields = values.length >= 43;
+
+  return {
+    id,
+    firstName,
+    middleName,
+    lastName,
+    birthDate,
+    gender,
+    religion,
+    incomingGradeLevel,
+    enrollmentType,
+    program,
+    cottageType,
+    accreditation,
+    schoolYear,
+    reason,
+    formerSchoolName,
+    formerSchoolAddress,
+    image,
+    liveBirthCertificate,
+    reportCard,
+    discount,
+    primaryTeacherName,
+    primaryTeacherAge,
+    primaryTeacherRelationship,
+    primaryTeacherEducation,
+    primaryTeacherProfile,
+    studentStatus,
+    signature,
+    specialNeeds,
+    specialNeedSpecific,
+    formerRegistrar,
+    formerRegistrarEmail,
+    formerRegistrarNumber,
+    studentAddress1,
+    studentAddress2,
+    isInternationalAddress,
+    studentInternationalAddress,
+    mediaConsent,
+    enrollmentAgreementSignature,
+    enrollmentAgreementSignatureDate,
+    previousSchoolType: hasDocFields ? maybeCottageSlotOrPreviousSchoolType : null,
+    gapYearAgreement: hasDocFields ? maybeGapYearAgreement : null,
+    lrnProvisionForm: hasDocFields ? maybeLrnProvisionForm : null,
+    cottageSlotId: hasDocFields
+      ? maybeCottageSlotId
+      : maybeCottageSlotOrPreviousSchoolType,
+  };
+};
+
+export const createStudentRecord = async (...args) => {
+  let client;
+  const last = args[args.length - 1];
+
+  if (isDbClient(last) || last == null) {
+    client = args.pop();
+  } else if (
+    args.length > 1 &&
+    last &&
+    typeof last === 'object' &&
+    !Array.isArray(last) &&
+    !('firstName' in last)
+  ) {
+    client = args.pop();
   }
+
+  const first = args[0];
+  const record =
+    args.length === 1 && first && typeof first === 'object' && !Array.isArray(first)
+      ? first
+      : recordFromPositional(args);
 
   const db = getStudentRecordClient(client);
   const {

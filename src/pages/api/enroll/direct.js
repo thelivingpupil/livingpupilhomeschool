@@ -48,6 +48,9 @@ const handler = async (req, res) => {
       pictureLink,
       birthCertificateLink,
       reportCardLink,
+      previousSchoolType,
+      gapYearAgreementLink,
+      lrnProvisionFormLink,
       slug,
       primaryGuardianName,
       primaryGuardianOccupation,
@@ -113,8 +116,8 @@ const handler = async (req, res) => {
       slug
     );
 
-    const studentRecordArgs = [
-      workspace.id,
+    const studentRecordData = {
+      id: workspace.id,
       firstName,
       middleName,
       lastName,
@@ -130,41 +133,46 @@ const handler = async (req, res) => {
       reason,
       formerSchoolName,
       formerSchoolAddress,
-      pictureLink,
-      birthCertificateLink,
-      reportCardLink,
-      discountCode,
+      image: pictureLink,
+      liveBirthCertificate: birthCertificateLink,
+      reportCard: reportCardLink,
+      discount: discountCode,
       primaryTeacherName,
       primaryTeacherAge,
       primaryTeacherRelationship,
       primaryTeacherEducation,
       primaryTeacherProfile,
-      STUDENT_STATUS.PENDING,
-      signatureLink,
-      specialRadio,
-      specialNeeds,
+      studentStatus: STUDENT_STATUS.PENDING,
+      signature: signatureLink,
+      specialNeeds: specialRadio,
+      specialNeedSpecific: specialNeeds,
       formerRegistrar,
       formerRegistrarEmail,
       formerRegistrarNumber,
-      address1,
-      address2,
-      isInternationalAddress === true || isInternationalAddress === 'true'
-        ? true
-        : isInternationalAddress === false || isInternationalAddress === 'false'
-          ? false
-          : null,
-      studentInternationalAddress || null,
-      mediaConsent === true || mediaConsent === 'true'
-        ? true
-        : mediaConsent === false || mediaConsent === 'false'
-          ? false
-          : null,
-      enrollmentAgreementSignature || null,
-      enrollmentAgreementSignatureDate
+      studentAddress1: address1,
+      studentAddress2: address2,
+      isInternationalAddress:
+        isInternationalAddress === true || isInternationalAddress === 'true'
+          ? true
+          : isInternationalAddress === false || isInternationalAddress === 'false'
+            ? false
+            : null,
+      studentInternationalAddress: studentInternationalAddress || null,
+      mediaConsent:
+        mediaConsent === true || mediaConsent === 'true'
+          ? true
+          : mediaConsent === false || mediaConsent === 'false'
+            ? false
+            : null,
+      enrollmentAgreementSignature: enrollmentAgreementSignature || null,
+      enrollmentAgreementSignatureDate: enrollmentAgreementSignatureDate
         ? new Date(enrollmentAgreementSignatureDate)
         : null,
-      cottageSlotId || null,
-    ];
+      previousSchoolType: previousSchoolType || null,
+      gapYearAgreement: gapYearAgreementLink || null,
+      lrnProvisionForm: lrnProvisionFormLink || null,
+      cottageSlotId: cottageSlotId || null,
+    };
 
     let studentRecord;
     try {
@@ -173,7 +181,7 @@ const handler = async (req, res) => {
         cottageSlotId,
         incomingGradeLevel,
         schoolYear,
-        (tx) => createStudentRecord(...studentRecordArgs, tx),
+        (tx) => createStudentRecord(studentRecordData, tx),
       );
     } catch (error) {
       if (error instanceof CottageSlotError) {
