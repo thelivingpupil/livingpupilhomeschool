@@ -10,7 +10,7 @@ import Meta from '@/components/Meta/index';
 import { useInvitations, useWorkspaces } from '@/hooks/data/index';
 import { AccountLayout } from '@/layouts/index';
 import api from '@/lib/common/api';
-import { PlusIcon } from '@heroicons/react/outline';
+import { PlusIcon, XIcon } from '@heroicons/react/outline';
 import Modal from '@/components/Modal';
 import {
   BadgeCheckIcon,
@@ -33,6 +33,8 @@ const Welcome = () => {
   const [showModal, setModalState] = useState(false);
   const validName = name.length > 0 && name.length <= 64;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
 
   const accept = (memberId) => {
     setSubmittingState(true);
@@ -113,6 +115,37 @@ const Welcome = () => {
 
   const toggleModal = () => setModalState(!showModal);
 
+  const openDeleteModal = (workspace) => {
+    setWorkspaceToDelete(workspace);
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setWorkspaceToDelete(null);
+  };
+
+  const deleteEmptyWorkspace = () => {
+    if (!workspaceToDelete?.slug) return;
+
+    setSubmittingState(true);
+    api(`/api/workspace/${workspaceToDelete.slug}/empty`, {
+      method: 'DELETE',
+    }).then((response) => {
+      setSubmittingState(false);
+
+      if (response.errors) {
+        Object.keys(response.errors).forEach((error) =>
+          toast.error(response.errors[error].msg)
+        );
+      } else {
+        closeDeleteModal();
+        mutate('/api/workspaces');
+        toast.success('Workspace deleted!');
+      }
+    });
+  };
+
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Dashboard" />
@@ -149,6 +182,33 @@ const Welcome = () => {
           </Button>
         </div>
       </Modal>
+      <Modal
+        show={showDeleteModal}
+        title="Are you sure you want to delete this Workspace?"
+        toggle={closeDeleteModal}
+      >
+        <p className="text-sm text-gray-600">
+          {workspaceToDelete?.name
+            ? `"${workspaceToDelete.name}" has no student record and will be removed.`
+            : 'This empty workspace will be removed.'}
+        </p>
+        <div className="flex items-center justify-end space-x-3">
+          <Button
+            className="text-gray-700 bg-gray-200 hover:bg-gray-300"
+            disabled={isSubmitting}
+            onClick={closeDeleteModal}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="text-white bg-red-600 hover:bg-red-700"
+            disabled={isSubmitting}
+            onClick={deleteEmptyWorkspace}
+          >
+            {isSubmitting ? 'Deleting...' : 'Delete'}
+          </Button>
+        </div>
+      </Modal>
       <Content.Title
         title="Living Pupil Homeschool Dashboard"
         subtitle="Enroll your child's future with us"
@@ -165,7 +225,20 @@ const Welcome = () => {
             workspacesData.workspaces.map(
               (workspace, index) =>
                 workspace.deletedAt !== null && (
-                  <Card key={index}>
+                  <Card
+                    key={index}
+                    className={!workspace.studentRecord ? 'relative group' : ''}
+                  >
+                    {!workspace.studentRecord && (
+                      <button
+                        type="button"
+                        aria-label="Delete workspace"
+                        className="absolute top-3 right-3 z-10 p-1 text-red-600 rounded opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100 max-sm:opacity-100 hover:bg-red-50"
+                        onClick={() => openDeleteModal(workspace)}
+                      >
+                        <XIcon className="w-5 h-5" />
+                      </button>
+                    )}
                     <Card.Body title={workspace.name}>
                       {!workspace.studentRecord ? (
                         <div className="flex items-center px-2 py-1 space-x-3 text-sm border-2 rounded-full text-amber-500 border-amber-600 bg-amber-50">

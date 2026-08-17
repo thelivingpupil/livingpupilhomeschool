@@ -94,6 +94,37 @@ export const deleteWorkspace = async (id, email, slug) => {
   throw new Error('Workspace deletion is disabled. Please send a deletion request instead.');
 };
 
+export const deleteEmptyWorkspace = async (id, email, slug) => {
+  const workspace = await getOwnWorkspace(id, email, slug);
+  if (!workspace) throw new Error('Unable to find workspace');
+
+  const studentRecord = await prisma.studentRecord.findUnique({
+    where: { studentId: workspace.id },
+    select: { id: true },
+  });
+
+  if (studentRecord) {
+    throw new Error(
+      'Only empty workspaces without a student record can be deleted'
+    );
+  }
+
+  const deletedAt = new Date();
+
+  await prisma.$transaction([
+    prisma.member.updateMany({
+      data: { deletedAt },
+      where: { workspaceId: workspace.id, deletedAt: null },
+    }),
+    prisma.workspace.update({
+      data: { deletedAt },
+      where: { id: workspace.id },
+    }),
+  ]);
+
+  return { deleted: true };
+};
+
 export const requestWorkspaceDeletion = async (id, email, slug) => {
   const workspace = await getOwnWorkspace(id, email, slug);
   if (!workspace) throw new Error('Unable to find workspace');

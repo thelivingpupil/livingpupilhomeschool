@@ -1,10 +1,14 @@
-const Card = ({ children, danger }) => {
+const Card = ({ children, danger, className = '' }) => {
   return danger ? (
-    <div className="flex flex-col justify-between border-2 border-red-600 rounded p-4">
+    <div
+      className={`flex flex-col justify-between border-2 border-red-600 rounded p-4 ${className}`}
+    >
       {children}
     </div>
   ) : (
-    <div className="flex flex-col justify-between border rounded dark:border-gray-600 p-4">
+    <div
+      className={`flex flex-col justify-between border rounded dark:border-gray-600 p-4 ${className}`}
+    >
       {children}
     </div>
   );
