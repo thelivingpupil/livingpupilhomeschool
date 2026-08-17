@@ -244,7 +244,7 @@ export const enrollStudentWithCottageSlot = async (
   createRecord,
 ) => {
   if (program !== Program.HOMESCHOOL_COTTAGE) {
-    return createRecord(prisma);
+    return createRecord();
   }
 
   await assertCottageSlotForEnrollment(

@@ -155,15 +155,27 @@ export const countStudentsByProgram = async () =>
     where: { deletedAt: null, student: { deletedAt: null } },
   });
 
-const getStudentRecordClient = (client = prisma) => {
-  if (client && typeof client.studentRecord?.create === 'function') {
+const getStudentRecordClient = (client) => {
+  if (client == null) {
+    return prisma;
+  }
+
+  if (typeof client.studentRecord?.create === 'function') {
     return client;
   }
 
-  throw new Error('Invalid database client passed to createStudentRecord');
+  throw new Error(
+    `Invalid database client passed to createStudentRecord (${typeof client})`
+  );
 };
 
-export const createStudentRecord = async (record, client = prisma) => {
+export const createStudentRecord = async (record, client) => {
+  if (!record || typeof record !== 'object' || Array.isArray(record)) {
+    throw new Error(
+      'createStudentRecord expects a student record object as the first argument'
+    );
+  }
+
   const db = getStudentRecordClient(client);
   const {
     id,
