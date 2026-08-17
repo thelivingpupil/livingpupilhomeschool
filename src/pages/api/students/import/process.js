@@ -158,42 +158,47 @@ const handler = async (req, res) => {
             );
 
             // Create student record
-            await createStudentRecord(
-              workspace.id,
+            await createStudentRecord({
+              id: workspace.id,
               firstName,
-              row['Middle Name']?.trim() || null,
+              middleName: row['Middle Name']?.trim() || null,
               lastName,
-              new Date(row['Birth Date'].trim()),
-              row['Gender']?.toUpperCase(),
-              row['Religion']?.toUpperCase(),
-              row['Grade Level']?.toUpperCase(),
-              row['Enrollment Type']?.toUpperCase(),
-              row['Program']?.toUpperCase(),
-              row['Cottage Type']?.toUpperCase() || null,
-              row['Accreditation']?.toUpperCase(),
+              birthDate: new Date(row['Birth Date'].trim()),
+              gender: row['Gender']?.toUpperCase(),
+              religion: row['Religion']?.toUpperCase(),
+              incomingGradeLevel: row['Grade Level']?.toUpperCase(),
+              enrollmentType: row['Enrollment Type']?.toUpperCase(),
+              program: row['Program']?.toUpperCase(),
+              cottageType: row['Cottage Type']?.toUpperCase() || null,
+              accreditation: row['Accreditation']?.toUpperCase(),
               schoolYear,
-              row['Reason']?.trim(),
-              row['Former School Name']?.trim(),
-              row['Former School Address']?.trim(),
-              null, // image
-              null, // liveBirthCertificate
-              null, // reportCard
-              null, // discount
-              row['Primary Teacher Name']?.trim(),
-              row['Primary Teacher Age']?.trim(),
-              row['Primary Teacher Relationship']?.trim(),
-              row['Primary Teacher Education']?.trim(),
-              row['Primary Teacher Profile']?.trim(),
-              STUDENT_STATUS.PENDING,
-              null, // signature
-              row['Special Needs']?.trim(),
-              row['Special Needs']?.trim() === 'YES' ? row['Special Needs Specific']?.trim() : null,
-              row['Former Registrar']?.trim() || null,
-              row['Former Registrar Email']?.trim() || null,
-              row['Former Registrar Number']?.trim() || null,
-              row['Student Address 1']?.trim() || row['Address Line 1']?.trim(),
-              row['Student Address 2']?.trim() || row['Address Line 2']?.trim()
-            );
+              reason: row['Reason']?.trim(),
+              formerSchoolName: row['Former School Name']?.trim(),
+              formerSchoolAddress: row['Former School Address']?.trim(),
+              image: null,
+              liveBirthCertificate: null,
+              reportCard: null,
+              discount: null,
+              primaryTeacherName: row['Primary Teacher Name']?.trim(),
+              primaryTeacherAge: row['Primary Teacher Age']?.trim(),
+              primaryTeacherRelationship: row['Primary Teacher Relationship']?.trim(),
+              primaryTeacherEducation: row['Primary Teacher Education']?.trim(),
+              primaryTeacherProfile: row['Primary Teacher Profile']?.trim(),
+              studentStatus: STUDENT_STATUS.PENDING,
+              signature: null,
+              specialNeeds: row['Special Needs']?.trim(),
+              specialNeedSpecific:
+                row['Special Needs']?.trim() === 'YES'
+                  ? row['Special Needs Specific']?.trim()
+                  : null,
+              formerRegistrar: row['Former Registrar']?.trim() || null,
+              formerRegistrarEmail: row['Former Registrar Email']?.trim() || null,
+              formerRegistrarNumber: row['Former Registrar Number']?.trim() || null,
+              studentAddress1:
+                row['Student Address 1']?.trim() || row['Address Line 1']?.trim(),
+              studentAddress2:
+                row['Student Address 2']?.trim() || row['Address Line 2']?.trim(),
+            });
           });
 
           // Create school fees OUTSIDE of transaction (createSchoolFees manages its own transactions)

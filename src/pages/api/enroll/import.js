@@ -501,28 +501,24 @@ const handler = async (req, res) => {
         slugify(firstName.toLowerCase())
       );
 
-      const studentRecord = await createStudentRecord(
-        workspace.id,
-        student.firstName,
-        student.middleName,
-        student.lastName,
-        new Date(student.birthDate),
-        student.gender,
-        student.religion,
-        student.incomingGradeLevel,
-        student.enrollmentType,
-        student.program,
-        null,
-        student.accreditation,
-        SCHOOL_YEAR.toString(),
-        'From Import',
-        'From Import',
-        'From Import',
-        undefined,
-        undefined,
-        undefined,
-        undefined
-      );
+      const studentRecord = await createStudentRecord({
+        id: workspace.id,
+        firstName: student.firstName,
+        middleName: student.middleName,
+        lastName: student.lastName,
+        birthDate: new Date(student.birthDate),
+        gender: student.gender,
+        religion: student.religion,
+        incomingGradeLevel: student.incomingGradeLevel,
+        enrollmentType: student.enrollmentType,
+        program: student.program,
+        cottageType: null,
+        accreditation: student.accreditation,
+        schoolYear: SCHOOL_YEAR.toString(),
+        reason: 'From Import',
+        formerSchoolName: 'From Import',
+        formerSchoolAddress: 'From Import',
+      });
 
       const schoolFees = await createSchoolFees(
         activeUser.id,

@@ -155,53 +155,63 @@ export const countStudentsByProgram = async () =>
     where: { deletedAt: null, student: { deletedAt: null } },
   });
 
-export const createStudentRecord = async (
-  id,
-  firstName,
-  middleName,
-  lastName,
-  birthDate,
-  gender,
-  religion,
-  incomingGradeLevel,
-  enrollmentType,
-  program,
-  cottageType,
-  accreditation,
-  schoolYear,
-  reason,
-  formerSchoolName,
-  formerSchoolAddress,
-  image,
-  liveBirthCertificate,
-  reportCard,
-  discount,
-  primaryTeacherName,
-  primaryTeacherAge,
-  primaryTeacherRelationship,
-  primaryTeacherEducation,
-  primaryTeacherProfile,
-  studentStatus,
-  signature,
-  specialNeeds,
-  specialNeedSpecific,
-  formerRegistrar,
-  formerRegistrarEmail,
-  formerRegistrarNumber,
-  studentAddress1,
-  studentAddress2,
-  isInternationalAddress,
-  studentInternationalAddress,
-  mediaConsent,
-  enrollmentAgreementSignature,
-  enrollmentAgreementSignatureDate,
-  previousSchoolType = null,
-  gapYearAgreement = null,
-  lrnProvisionForm = null,
-  cottageSlotId = null,
-  client = prisma,
-) =>
-  await client.studentRecord.create({
+const getStudentRecordClient = (client = prisma) => {
+  if (client && typeof client.studentRecord?.create === 'function') {
+    return client;
+  }
+
+  throw new Error('Invalid database client passed to createStudentRecord');
+};
+
+export const createStudentRecord = async (record, client = prisma) => {
+  const db = getStudentRecordClient(client);
+  const {
+    id,
+    firstName,
+    middleName,
+    lastName,
+    birthDate,
+    gender,
+    religion,
+    incomingGradeLevel,
+    enrollmentType,
+    program,
+    cottageType,
+    accreditation,
+    schoolYear,
+    reason,
+    formerSchoolName,
+    formerSchoolAddress,
+    image,
+    liveBirthCertificate,
+    reportCard,
+    discount,
+    primaryTeacherName,
+    primaryTeacherAge,
+    primaryTeacherRelationship,
+    primaryTeacherEducation,
+    primaryTeacherProfile,
+    studentStatus,
+    signature,
+    specialNeeds,
+    specialNeedSpecific,
+    formerRegistrar,
+    formerRegistrarEmail,
+    formerRegistrarNumber,
+    studentAddress1,
+    studentAddress2,
+    isInternationalAddress,
+    studentInternationalAddress,
+    mediaConsent,
+    enrollmentAgreementSignature,
+    enrollmentAgreementSignatureDate,
+    previousSchoolType = null,
+    gapYearAgreement = null,
+    lrnProvisionForm = null,
+    cottageSlotId = null,
+  } = record;
+
+  return db.studentRecord.create({
     data: {
       studentId: id,
       firstName,
@@ -248,6 +258,7 @@ export const createStudentRecord = async (
       enrollmentAgreementSignatureDate,
     },
   });
+};
 
 export const updateFile = async (studentId, type, url) => {
   let data = {};
