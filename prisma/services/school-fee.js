@@ -636,7 +636,7 @@ export const createRemainingMonthlyInstallments = async (transactionId) => {
     return null;
   }
 
-  const existingInstallments = await prisma.schoolFee.count({
+  const existingFees = await prisma.schoolFee.findMany({
     where: {
       studentId: schoolFee.studentId,
       paymentType: PaymentType.MONTHLY,
@@ -644,11 +644,9 @@ export const createRemainingMonthlyInstallments = async (transactionId) => {
       order: { gt: 0 },
       deletedAt: null,
     },
+    select: { order: true },
   });
-
-  if (existingInstallments > 0) {
-    return null;
-  }
+  const existingOrders = new Set(existingFees.map((fee) => fee.order));
 
   const studentRecord = schoolFee.student?.studentRecord;
   if (!studentRecord) {
@@ -765,76 +763,87 @@ export const createRemainingMonthlyInstallments = async (transactionId) => {
   const isPastorsFee =
     discount && discount?.code?.toLowerCase().includes('pastor');
 
+  const term = (value) => Number(value) || 0;
+  const toMoney = (value) => Math.round(Number(value) * 100) / 100;
+  const processingFee = FEES[paymentMethod] ?? FEES.ONLINE;
+
   const scholarshipValue = scholarship
     ? scholarship.type === 'VALUE'
-      ? scholarship.value
-      : (scholarship.value / 100) * fee.fullPayment
+      ? term(scholarship.value)
+      : (term(scholarship.value) / 100) * term(fee.fullPayment)
     : 0;
 
   const calculatedScholarship = scholarshipValue / safeMonthIndex;
   const calculatedMisc = miscellaneousFee / safeMonthIndex;
 
+  const totalPayment =
+    term(fee.secondPayment) +
+    term(fee.thirdPayment) +
+    term(fee.fourthPayment) +
+    term(fee.fifthPayment) +
+    term(fee.sixthPayment) +
+    term(fee.seventhPayment) +
+    term(fee.eighthPayment) +
+    term(fee.ninthPayment);
+
   let payments;
   if (isPastorsFee) {
     const discountedPayment =
-      (discount.value - fee.downPayment) / safeMonthIndex;
+      (term(discount.value) - term(fee.downPayment)) / safeMonthIndex;
     payments = [
-      fee.downPayment,
+      term(fee.downPayment),
       ...Array(safeMonthIndex).fill(discountedPayment),
     ];
   } else {
-    const totalPayment =
-      fee.secondPayment +
-      fee.thirdPayment +
-      fee.fourthPayment +
-      fee.fifthPayment +
-      fee.sixthPayment +
-      fee.seventhPayment +
-      fee.eighthPayment +
-      fee.ninthPayment;
-
-    const monthlyPayment =
-      totalPayment / safeMonthIndex - calculatedScholarship;
-
+    const monthlyPayment = totalPayment / safeMonthIndex;
     payments = [
-      fee.downPayment,
+      term(fee.downPayment),
       ...Array(safeMonthIndex).fill(monthlyPayment),
     ];
 
     if (discount) {
-      const allPaymentsSum = fee.downPayment + totalPayment;
+      const allPaymentsSum = term(fee.downPayment) + totalPayment;
       const discountValue =
         discount.type === 'VALUE'
-          ? discount.value
-          : (discount.value / 100) * allPaymentsSum;
+          ? term(discount.value)
+          : (term(discount.value) / 100) * allPaymentsSum;
       payments[1] -= discountValue;
     }
   }
 
   // Skip order 0 (already created/paid); create remaining installments only
   const remainingPayments = payments.slice(1);
+  const createdSchoolFees = [];
 
-  const purchaseHistoryPromises = remainingPayments.map((paymentAmount) => {
-    const total =
-      paymentAmount + FEES[paymentMethod] - calculatedScholarship;
-    if (typeof total !== 'number' || isNaN(total)) {
-      throw new Error('Invalid total value');
+  for (let index = 0; index < remainingPayments.length; index++) {
+    const order = index + 1;
+    if (existingOrders.has(order)) {
+      continue;
     }
-    return prisma.purchaseHistory.create({
+
+    const paymentAmount = remainingPayments[index];
+    const total = toMoney(
+      paymentAmount + calculatedMisc + processingFee - calculatedScholarship
+    );
+    if (!Number.isFinite(total) || total <= 0) {
+      console.error('Skipping invalid monthly installment', {
+        order,
+        paymentAmount,
+        calculatedMisc,
+        processingFee,
+        calculatedScholarship,
+        paymentMethod,
+        total,
+      });
+      continue;
+    }
+
+    const purchase = await prisma.purchaseHistory.create({
       data: { total },
       select: { id: true, transactionId: true },
     });
-  });
 
-  const purchaseHistories = await Promise.all(purchaseHistoryPromises);
-  const transactionPromises = purchaseHistories.map((purchase, index) => {
-    const paymentAmount = remainingPayments[index];
-    const total =
-      paymentAmount +
-      calculatedMisc +
-      FEES[paymentMethod] -
-      calculatedScholarship;
-    return createTransaction(
+    await createTransaction(
       userId,
       email,
       purchase.transactionId,
@@ -844,15 +853,11 @@ export const createRemainingMonthlyInstallments = async (transactionId) => {
       TransactionSource.ENROLLMENT,
       paymentMethod
     );
-  });
 
-  await Promise.all(transactionPromises);
-
-  const schoolFeePromises = purchaseHistories.map((purchase, index) => {
-    return prisma.schoolFee.create({
+    const created = await prisma.schoolFee.create({
       data: {
         gradeLevel: incomingGradeLevel,
-        order: index + 1,
+        order,
         paymentType: PaymentType.MONTHLY,
         transaction: {
           connect: {
@@ -866,9 +871,16 @@ export const createRemainingMonthlyInstallments = async (transactionId) => {
         },
       },
     });
-  });
+    createdSchoolFees.push(created);
+  }
 
-  return Promise.all(schoolFeePromises);
+  if (createdSchoolFees.length === 0 && remainingPayments.length > 0) {
+    throw new Error(
+      `Invalid monthly installment total for student ${schoolFee.studentId} (monthIndex=${safeMonthIndex}, remaining=${totalPayment}, misc=${calculatedMisc}, fee=${processingFee}, scholarship=${calculatedScholarship})`
+    );
+  }
+
+  return createdSchoolFees;
 };
 
 export const createPayAllFees = async (
@@ -933,9 +945,17 @@ export const deleteStudentSchoolFees = async (studentId) => {
       throw new Error('Student ID cannot be null');
     }
 
+    const existingCount = await prisma.schoolFee.count({
+      where: { studentId, deletedAt: null },
+    });
+
+    if (existingCount === 0) {
+      return;
+    }
+
     await prisma.schoolFee.updateMany({
       data: { deletedAt: new Date() },
-      where: { studentId },
+      where: { studentId, deletedAt: null },
     });
   } catch (error) {
     console.error('Error deleting student school fees:', error);

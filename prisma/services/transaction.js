@@ -258,11 +258,16 @@ export const createTransaction = async (
   source,
   fee
 ) => {
+  const normalizedAmount = Math.round(Number(amount) * 100) / 100;
+  if (!Number.isFinite(normalizedAmount) || normalizedAmount <= 0) {
+    throw new Error(`Invalid transaction amount: ${amount}`);
+  }
+
   const response = await api(
     `${process.env.PAYMENTS_BASE_URL}/${transactionId}/post`,
     {
       body: {
-        Amount: amount,
+        Amount: normalizedAmount,
         Currency: Currency.PHP,
         Description: description,
         Email: email,
@@ -278,18 +283,28 @@ export const createTransaction = async (
     RefNo: referenceNumber,
     Status: transactionStatus,
     Message: message,
-    Url: url,
+    Url: paymentUrl,
   } = response;
+
+  if (!referenceNumber) {
+    throw new Error(
+      message ||
+        `Failed to create payment transaction (status: ${
+          transactionStatus || response.status
+        })`
+    );
+  }
+
   await prisma.transaction.create({
     data: {
       transactionId,
       referenceNumber,
-      amount,
+      amount: normalizedAmount,
       transactionStatus,
       source: source || description,
       description,
       message,
-      url: `${url}`,
+      url: `${paymentUrl || ''}`,
       fee,
       user: {
         connect: {
@@ -303,7 +318,7 @@ export const createTransaction = async (
       },
     },
   });
-  return { url: `${url}`, referenceNumber, transactionId };
+  return { url: `${paymentUrl || ''}`, referenceNumber, transactionId };
 };
 
 export const getTransaction = async (transactionId, referenceNumber) =>
@@ -580,12 +595,6 @@ export const updateTransaction = async (
   payment = undefined,
   amount = undefined
 ) => {
-  const existing = await prisma.transaction.findUnique({
-    where: { transactionId },
-    select: { paymentStatus: true },
-  });
-  const wasAlreadyPaid = existing?.paymentStatus === TransactionStatus.S;
-
   const transaction = await prisma.transaction.update({
     data: {
       paymentReference,
@@ -612,9 +621,10 @@ export const updateTransaction = async (
     where: { transactionId },
   });
 
-  // On first successful payment of MONTHLY order-0, create remaining installments
-  // using monthIndex based on payment date (dynamic import avoids circular deps).
-  if (!wasAlreadyPaid && paymentStatus === TransactionStatus.S) {
+  // When MONTHLY order-0 is paid, create any missing remaining installments.
+  // Idempotent: skips orders that already exist, so retries after a failed
+  // Dragonpay call still work even if this transaction is already Success.
+  if (paymentStatus === TransactionStatus.S) {
     try {
       const { createRemainingMonthlyInstallments } = await import(
         './school-fee'

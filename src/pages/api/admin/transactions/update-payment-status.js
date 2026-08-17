@@ -28,12 +28,6 @@ const handler = async (req, res) => {
         });
       }
 
-      const existing = await prisma.transaction.findUnique({
-        where: { transactionId },
-        select: { paymentStatus: true },
-      });
-      const wasAlreadyPaid = existing?.paymentStatus === TransactionStatus.S;
-
       // Update the transaction payment status
       const updatedTransaction = await prisma.transaction.update({
         where: { transactionId },
@@ -46,7 +40,7 @@ const handler = async (req, res) => {
         },
       });
 
-      if (!wasAlreadyPaid && paymentStatus === TransactionStatus.S) {
+      if (paymentStatus === TransactionStatus.S) {
         try {
           await createRemainingMonthlyInstallments(transactionId);
         } catch (error) {
@@ -54,6 +48,13 @@ const handler = async (req, res) => {
             `Failed to create remaining monthly installments for ${transactionId}:`,
             error
           );
+          return res.status(500).json({
+            errors: {
+              error: {
+                msg: `Payment status updated, but monthly installments were not created: ${error.message}`,
+              },
+            },
+          });
         }
       }
 

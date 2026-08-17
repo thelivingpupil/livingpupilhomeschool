@@ -14,6 +14,7 @@ import {
   GradeLevel,
   GuardianType,
   PaymentType,
+  PreviousSchoolType,
   Program,
   Religion,
 } from '@prisma/client';
@@ -60,6 +61,7 @@ import {
   GRADE_LEVEL_GROUPS,
   GRADE_LEVEL_TYPES,
   PAYMENT_TYPE,
+  PREVIOUS_SCHOOL_TYPE,
   PROGRAM,
   RELIGION,
   SCHOOL_YEAR,
@@ -147,11 +149,18 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
   const [pictureProgress, setPictureProgress] = useState(0);
   const [birthCertificateProgress, setBirthCertificateProgress] = useState(0);
   const [reportCardProgress, setReportCardProgress] = useState(0);
+  const [gapYearProgress, setGapYearProgress] = useState(0);
+  const [lrnFormProgress, setLrnFormProgress] = useState(0);
   const [idPictureProgress, setIdPictureProgress] = useState(0);
   const [signatureProgress, setSignatureProgress] = useState(0);
   const [pictureLink, setPictureLink] = useState(null);
   const [birthCertificateLink, setBirthCertificateLink] = useState(null);
   const [reportCardLink, setReportCardLink] = useState(null);
+  const [gapYearAgreementLink, setGapYearAgreementLink] = useState(null);
+  const [lrnProvisionFormLink, setLrnProvisionFormLink] = useState(null);
+  const [previousSchoolType, setPreviousSchoolType] = useState('');
+  const [gapYearExpanded, setGapYearExpanded] = useState(false);
+  const [lrnExpanded, setLrnExpanded] = useState(false);
   const [idPictureLink, setIdPictureLink] = useState(null);
   const [signatureLink, setSignatureLink] = useState(null);
   const [enrollmentAgreementSignatureLink, setEnrollmentAgreementSignatureLink] =
@@ -860,6 +869,102 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     }
   };
 
+  const handleGapYearUpload = (e, auto, studentId) => {
+    const file = e.target?.files[0];
+
+    if (file) {
+      if (file.size < 10485760) {
+        const extension = file.name.split('.').pop();
+        const storageRef = ref(
+          storage,
+          `files/${workspace.slug}/gapYear-${crypto
+            .createHash('md5')
+            .update(file.name)
+            .digest('hex')
+            .substring(0, 12)}-${format(
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss',
+          )}.${extension}`,
+        );
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+            );
+            setGapYearProgress(progress);
+          },
+          (error) => {
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              if (!auto) {
+                setGapYearAgreementLink(downloadURL);
+              } else {
+                updateFile(studentId, 'gapYear', downloadURL);
+              }
+            });
+          },
+        );
+      } else {
+        toast.error('File too large. Size should not exceed 10 MB.');
+      }
+    }
+  };
+
+  const handleLrnFormUpload = (e, auto, studentId) => {
+    const file = e.target?.files[0];
+
+    if (file) {
+      if (file.size < 10485760) {
+        const extension = file.name.split('.').pop();
+        const storageRef = ref(
+          storage,
+          `files/${workspace.slug}/lrnForm-${crypto
+            .createHash('md5')
+            .update(file.name)
+            .digest('hex')
+            .substring(0, 12)}-${format(
+            new Date(),
+            'yyyy.MM.dd.kk.mm.ss',
+          )}.${extension}`,
+        );
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+            );
+            setLrnFormProgress(progress);
+          },
+          (error) => {
+            toast.error(
+              error?.message || error?.code || 'Failed to upload file',
+            );
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              if (!auto) {
+                setLrnProvisionFormLink(downloadURL);
+              } else {
+                updateFile(studentId, 'lrnForm', downloadURL);
+              }
+            });
+          },
+        );
+      } else {
+        toast.error('File too large. Size should not exceed 10 MB.');
+      }
+    }
+  };
+
   const handleIdPictureUpload = (e, auto, studentId) => {
     const file = e.target?.files[0];
 
@@ -1120,6 +1225,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         pictureLink,
         birthCertificateLink,
         reportCardLink,
+        previousSchoolType: previousSchoolType || null,
+        gapYearAgreementLink,
+        lrnProvisionFormLink,
         paymentMethod,
         slug: workspace.slug,
         primaryGuardianName,
@@ -1226,6 +1334,14 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           }
           case 'card': {
             setReportCardLink(url);
+            break;
+          }
+          case 'gapYear': {
+            setGapYearAgreementLink(url);
+            break;
+          }
+          case 'lrnForm': {
+            setLrnProvisionFormLink(url);
             break;
           }
           case 'idPicture': {
@@ -1674,21 +1790,57 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </p>
           </div>
         )}
-        <label className="text-lg font-bold" htmlFor="txtMother">
-          Optional: You can upload these files at a later time
-        </label>
-        <p className="text-sm text-gray-600">
-          Accepted file formats are <strong>PDF</strong>, <strong>PNG</strong>,
-          <strong>JPEG/JPG</strong>, and <strong>GIF</strong> with a maximum
-          file size of <strong className="text-red-600">10 MB</strong>.
-        </p>
+
+        <div className="space-y-2">
+          <label className="text-lg font-bold">
+            1. Select the Student&apos;s Previous School Type{' '}
+            <span className="ml-1 text-red-600">*</span>
+          </label>
+          <p className="text-sm text-gray-600">
+            Please choose the appropriate option based on the student&apos;s
+            previous educational background:
+          </p>
+          <div
+            className={`relative inline-block w-full rounded ${
+              !previousSchoolType ? 'border-red-500 border-2' : 'border'
+            }`}
+          >
+            <select
+              className="w-full px-3 py-2 rounded appearance-none"
+              onChange={(e) => setPreviousSchoolType(e.target.value)}
+              value={previousSchoolType}
+            >
+              <option value="">Select previous school type</option>
+              <option value={PreviousSchoolType.INTERNATIONAL}>
+                {PREVIOUS_SCHOOL_TYPE[PreviousSchoolType.INTERNATIONAL]}
+              </option>
+              <option value={PreviousSchoolType.LOCAL}>
+                {PREVIOUS_SCHOOL_TYPE[PreviousSchoolType.LOCAL]}
+              </option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <ChevronDownIcon className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-lg font-bold">2. Required Documents</label>
+          <p className="text-sm text-gray-600">
+            Optional: You can upload these files at a later time. Accepted file
+            formats are <strong>PDF</strong>, <strong>PNG</strong>,{' '}
+            <strong>JPEG/JPG</strong>, and <strong>GIF</strong> with a maximum
+            file size of <strong className="text-red-600">10 MB</strong>.
+          </p>
+        </div>
+
         <table className="table border border-collapse">
           <tbody>
             <tr>
               <td className="w-1/2 px-3 py-2 border">
                 <h3 className="text-xl font-medium">ID Picture</h3>
                 <p className="text-sm text-gray-400">
-                  Digital copy of the child's latest photo with{' '}
+                  Digital copy of the child&apos;s latest photo with{' '}
                   <strong>WHITE</strong> background
                 </p>
               </td>
@@ -1743,8 +1895,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               >
                 <h3 className="text-xl font-medium">Birth Certificate</h3>
                 <p className="text-sm text-gray-400">
-                  <strong>Philippine Statistics Authority (PSA)</strong> issued
-                  copy of the child's birth certificate
+                  Upload a clear copy of the student&apos;s PSA or Birth
+                  Certificate.
                 </p>
               </td>
               <td className="w-1/4 px-3 py-2 border">
@@ -1784,11 +1936,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             <tr>
               <td className="w-1/2 px-3 py-2 border">
                 <h3 className="text-xl font-medium">
-                  Report Card / School Card
+                  School Card (Report Card)
                 </h3>
                 <p className="text-sm text-gray-400">
-                  Copy of the child's report card or school card from the
-                  previous school
+                  Upload the student&apos;s latest School Card (Report Card).
                 </p>
               </td>
               <td className="w-1/4 px-3 py-2 border">
@@ -1832,6 +1983,184 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </tr>
           </tbody>
         </table>
+
+        <div className="border rounded">
+          <button
+            type="button"
+            className="flex items-center justify-between w-full px-4 py-3 text-left"
+            onClick={() => setGapYearExpanded(!gapYearExpanded)}
+          >
+            <span className="text-lg font-bold">Gap Year Enrollment</span>
+            <ChevronDownIcon
+              className={`w-5 h-5 transition-transform ${
+                gapYearExpanded ? 'rotate-180' : ''
+              }`}
+            />
+          </button>
+          {gapYearExpanded && (
+            <div className="px-4 pb-4 space-y-3 border-t">
+              <p className="pt-3 text-sm text-gray-600">
+                If you are enrolling under the Gap Year Program, please:
+              </p>
+              <ol className="pl-5 text-sm text-gray-600 list-decimal space-y-1">
+                <li>Download and complete the Gap Year Agreement Form.</li>
+                <li>Upload the accomplished form.</li>
+              </ol>
+              <a
+                className="inline-block text-sm text-blue-600 underline"
+                href="/files/Gap Year Aggreement New SY 2026-2027.pdf"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Gap Year Agreement Form
+              </a>
+              <table className="w-full table border border-collapse">
+                <tbody>
+                  <tr>
+                    <td className="w-1/2 px-3 py-2 border">
+                      <h3 className="text-base font-medium">
+                        Gap Year Agreement Form
+                      </h3>
+                      <p className="text-sm text-gray-400">
+                        Upload the accomplished Gap Year Agreement Form.
+                      </p>
+                    </td>
+                    <td className="w-1/4 px-3 py-2 border">
+                      <input
+                        className="text-xs cursor-pointer"
+                        accept=".gif,.jpeg,.jpg,.png,.pdf"
+                        disabled={!firstName || !middleName || !lastName}
+                        onChange={handleGapYearUpload}
+                        type="file"
+                      />
+                      <div className="w-full mt-2 rounded-full shadow bg-grey-light">
+                        <div
+                          className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
+                          style={{ width: `${gapYearProgress}%` }}
+                        >
+                          <span className="px-3">{gapYearProgress}%</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="w-1/4 px-3 py-2 border">
+                      <div className="flex flex-col items-center justify-center">
+                        {gapYearAgreementLink ? (
+                          <Link href={gapYearAgreementLink}>
+                            <a
+                              className="text-sm text-blue-600 underline"
+                              target="_blank"
+                            >
+                              Preview Document
+                            </a>
+                          </Link>
+                        ) : (
+                          <p>No file selected</p>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div className="border rounded">
+          <button
+            type="button"
+            className="flex items-center justify-between w-full px-4 py-3 text-left"
+            onClick={() => setLrnExpanded(!lrnExpanded)}
+          >
+            <span className="text-lg font-bold">
+              Students Without a Learner Reference Number (LRN)
+            </span>
+            <ChevronDownIcon
+              className={`w-5 h-5 transition-transform ${
+                lrnExpanded ? 'rotate-180' : ''
+              }`}
+            />
+          </button>
+          {lrnExpanded && (
+            <div className="px-4 pb-4 space-y-3 border-t">
+              <p className="pt-3 text-sm text-gray-600">
+                If the student is enrolling for the first time in a
+                DepEd-recognized school and does not yet have a Learner
+                Reference Number (LRN), and will be enrolled under Local or Dual
+                Accreditation, please complete the required agreement form.
+              </p>
+              <a
+                className="inline-block text-sm text-blue-600 underline"
+                href="https://drive.google.com/file/d/1F7K-caL87uD_f5xBfzzSPe-XExeEJHEj/view?usp=sharing"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Download LRN Agreement Form
+              </a>
+              <p className="text-sm text-gray-600">
+                After accomplishing the form, upload it below.
+              </p>
+              <table className="w-full table border border-collapse">
+                <tbody>
+                  <tr>
+                    <td className="w-1/2 px-3 py-2 border">
+                      <h3 className="text-base font-medium">
+                        LRN Provision Form
+                      </h3>
+                      <p className="text-sm text-gray-400">
+                        Upload the accomplished LRN agreement form.
+                      </p>
+                    </td>
+                    <td className="w-1/4 px-3 py-2 border">
+                      <input
+                        className="text-xs cursor-pointer"
+                        accept=".gif,.jpeg,.jpg,.png,.pdf"
+                        disabled={!firstName || !middleName || !lastName}
+                        onChange={handleLrnFormUpload}
+                        type="file"
+                      />
+                      <div className="w-full mt-2 rounded-full shadow bg-grey-light">
+                        <div
+                          className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
+                          style={{ width: `${lrnFormProgress}%` }}
+                        >
+                          <span className="px-3">{lrnFormProgress}%</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="w-1/4 px-3 py-2 border">
+                      <div className="flex flex-col items-center justify-center">
+                        {lrnProvisionFormLink ? (
+                          <Link href={lrnProvisionFormLink}>
+                            <a
+                              className="text-sm text-blue-600 underline"
+                              target="_blank"
+                            >
+                              Preview Document
+                            </a>
+                          </Link>
+                        ) : (
+                          <p>No file selected</p>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div className="px-3 py-3 text-sm border rounded bg-gray-50 border-gray-200 space-y-2">
+          <p>
+            Your enrollment application will be reviewed once all required
+            documents have been submitted.
+          </p>
+          <p>
+            <strong>Important Reminder:</strong> Please ensure that all uploaded
+            documents are clear, complete, and readable. Incomplete or incorrect
+            submissions may delay the processing of your enrollment.
+          </p>
+        </div>
       </div>
     );
   };
@@ -3853,6 +4182,200 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                     </div>
                   </div>
                 </div>
+                <div
+                  className={`flex flex-col justify-between rounded ${
+                    gapYearAgreementLink ||
+                    workspace.studentRecord.gapYearAgreement
+                      ? 'border'
+                      : 'border-2 border-gray-300 border-dashed'
+                  }`}
+                >
+                  <div className="flex flex-col p-5 space-y-3 overflow-auto">
+                    <div className="flex flex-col space-y-5">
+                      <div className="flex flex-col space-y-4 lg:flex-row lg:space-x-5 lg:space-y-0">
+                        <div
+                          className={`hidden lg:flex items-center justify-center w-20 h-20 text-white rounded-lg ${
+                            gapYearAgreementLink ||
+                            workspace.studentRecord.gapYearAgreement
+                              ? 'bg-primary-400'
+                              : 'bg-gray-300'
+                          }`}
+                        >
+                          <DocumentIcon className="w-8 h-8" />
+                        </div>
+                        <div className="flex flex-col space-y-2">
+                          <h4 className="text-xl font-medium">
+                            Gap Year Agreement
+                          </h4>
+                          <p className="text-sm text-gray-500">
+                            Optional — for Gap Year Program enrollees
+                          </p>
+                          <div className="flex items-center space-x-3">
+                            {gapYearAgreementLink ||
+                            workspace.studentRecord.gapYearAgreement ? (
+                              <>
+                                <Link
+                                  href={
+                                    gapYearAgreementLink ||
+                                    workspace.studentRecord.gapYearAgreement
+                                  }
+                                >
+                                  <a
+                                    className="underline text-primary-500"
+                                    target="_blank"
+                                  >
+                                    Open
+                                  </a>
+                                </Link>
+                                <span>&bull;</span>
+                                <label
+                                  className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                  htmlFor="fileGapYearReplace"
+                                >
+                                  Replace
+                                </label>
+                                <input
+                                  id="fileGapYearReplace"
+                                  className="hidden text-xs"
+                                  accept=".gif,.jpeg,.jpg,.png,.pdf"
+                                  name="fileGapYearReplace"
+                                  onChange={(e) =>
+                                    handleGapYearUpload(
+                                      e,
+                                      true,
+                                      workspace.studentRecord.studentId,
+                                    )
+                                  }
+                                  type="file"
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <label
+                                  className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                  htmlFor="fileGapYear"
+                                >
+                                  Upload Document
+                                </label>
+                                <input
+                                  id="fileGapYear"
+                                  className="hidden text-xs"
+                                  accept=".gif,.jpeg,.jpg,.png,.pdf"
+                                  name="fileGapYear"
+                                  onChange={(e) =>
+                                    handleGapYearUpload(
+                                      e,
+                                      true,
+                                      workspace.studentRecord.studentId,
+                                    )
+                                  }
+                                  type="file"
+                                />
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className={`flex flex-col justify-between rounded ${
+                    lrnProvisionFormLink ||
+                    workspace.studentRecord.lrnProvisionForm
+                      ? 'border'
+                      : 'border-2 border-gray-300 border-dashed'
+                  }`}
+                >
+                  <div className="flex flex-col p-5 space-y-3 overflow-auto">
+                    <div className="flex flex-col space-y-5">
+                      <div className="flex flex-col space-y-4 lg:flex-row lg:space-x-5 lg:space-y-0">
+                        <div
+                          className={`hidden lg:flex items-center justify-center w-20 h-20 text-white rounded-lg ${
+                            lrnProvisionFormLink ||
+                            workspace.studentRecord.lrnProvisionForm
+                              ? 'bg-primary-400'
+                              : 'bg-gray-300'
+                          }`}
+                        >
+                          <DocumentIcon className="w-8 h-8" />
+                        </div>
+                        <div className="flex flex-col space-y-2">
+                          <h4 className="text-xl font-medium">
+                            LRN Provision Form
+                          </h4>
+                          <p className="text-sm text-gray-500">
+                            Optional — for students without an LRN
+                          </p>
+                          <div className="flex items-center space-x-3">
+                            {lrnProvisionFormLink ||
+                            workspace.studentRecord.lrnProvisionForm ? (
+                              <>
+                                <Link
+                                  href={
+                                    lrnProvisionFormLink ||
+                                    workspace.studentRecord.lrnProvisionForm
+                                  }
+                                >
+                                  <a
+                                    className="underline text-primary-500"
+                                    target="_blank"
+                                  >
+                                    Open
+                                  </a>
+                                </Link>
+                                <span>&bull;</span>
+                                <label
+                                  className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                  htmlFor="fileLrnFormReplace"
+                                >
+                                  Replace
+                                </label>
+                                <input
+                                  id="fileLrnFormReplace"
+                                  className="hidden text-xs"
+                                  accept=".gif,.jpeg,.jpg,.png,.pdf"
+                                  name="fileLrnFormReplace"
+                                  onChange={(e) =>
+                                    handleLrnFormUpload(
+                                      e,
+                                      true,
+                                      workspace.studentRecord.studentId,
+                                    )
+                                  }
+                                  type="file"
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <label
+                                  className="px-2 py-1 text-xs text-center rounded cursor-pointer bg-secondary-500 hover:bg-secondary-600"
+                                  htmlFor="fileLrnForm"
+                                >
+                                  Upload Document
+                                </label>
+                                <input
+                                  id="fileLrnForm"
+                                  className="hidden text-xs"
+                                  accept=".gif,.jpeg,.jpg,.png,.pdf"
+                                  name="fileLrnForm"
+                                  onChange={(e) =>
+                                    handleLrnFormUpload(
+                                      e,
+                                      true,
+                                      workspace.studentRecord.studentId,
+                                    )
+                                  }
+                                  type="file"
+                                />
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 {/* ID Picture Front Card */}
                 <div
                   className={`flex flex-col justify-between rounded ${
@@ -4256,6 +4779,36 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   <strong>Report Card:</strong>{' '}
                   {reportCardLink ? (
                     <Link href={reportCardLink}>
+                      <a className="text-blue-600 underline" target="_blank">
+                        Link Preview
+                      </a>
+                    </Link>
+                  ) : (
+                    'N/A'
+                  )}
+                </div>
+                <p>
+                  <strong>Previous School Type:</strong>{' '}
+                  {previousSchoolType
+                    ? PREVIOUS_SCHOOL_TYPE[previousSchoolType]
+                    : 'N/A'}
+                </p>
+                <div>
+                  <strong>Gap Year Agreement:</strong>{' '}
+                  {gapYearAgreementLink ? (
+                    <Link href={gapYearAgreementLink}>
+                      <a className="text-blue-600 underline" target="_blank">
+                        Link Preview
+                      </a>
+                    </Link>
+                  ) : (
+                    'N/A'
+                  )}
+                </div>
+                <div>
+                  <strong>LRN Provision Form:</strong>{' '}
+                  {lrnProvisionFormLink ? (
+                    <Link href={lrnProvisionFormLink}>
                       <a className="text-blue-600 underline" target="_blank">
                         Link Preview
                       </a>

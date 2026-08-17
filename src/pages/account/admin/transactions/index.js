@@ -264,8 +264,15 @@ const Transactions = () => {
       },
       method: 'PUT',
     })
-      .then(() => {
+      .then((response) => {
         setUpdatingTransaction(false);
+        if (response.errors || (response.status && response.status >= 400)) {
+          toast.error(
+            response.errors?.error?.msg ||
+              `Error in updating payment status for ${updateTransaction.name}`
+          );
+          return;
+        }
         toast.success(
           `Successfully updated payment status for ${updateTransaction.name}`
         );

@@ -13,6 +13,7 @@ import {
   ACCREDITATION_NEW,
   ENROLLMENT_TYPE,
   GRADE_LEVEL,
+  PREVIOUS_SCHOOL_TYPE,
   PROGRAM,
   RELIGION,
   COTTAGE_TYPE,
@@ -1729,6 +1730,42 @@ const Students = ({ schoolFees, programs }) => {
               </div>
             ) : (
               <p className="text-sm">- No Report Card Uploaded</p>
+            )}
+            <div className="flex flex-col p-3 space-y-2 border rounded">
+              <h3 className="text-2xl font-medium">Previous School Type</h3>
+              <p className="text-sm">
+                {student.previousSchoolType
+                  ? PREVIOUS_SCHOOL_TYPE[student.previousSchoolType]
+                  : '- Not specified'}
+              </p>
+            </div>
+            {student.gapYearAgreement ? (
+              <div className="flex flex-col p-3 space-y-2 border rounded">
+                <h3 className="text-2xl font-medium">Gap Year Agreement</h3>
+                <div className="flex items-center space-x-3">
+                  <Link href={student.gapYearAgreement}>
+                    <a className="underline text-primary-500" target="_blank">
+                      View Uploaded Document
+                    </a>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm">- No Gap Year Agreement Uploaded</p>
+            )}
+            {student.lrnProvisionForm ? (
+              <div className="flex flex-col p-3 space-y-2 border rounded">
+                <h3 className="text-2xl font-medium">LRN Provision Form</h3>
+                <div className="flex items-center space-x-3">
+                  <Link href={student.lrnProvisionForm}>
+                    <a className="underline text-primary-500" target="_blank">
+                      View Uploaded Document
+                    </a>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm">- No LRN Provision Form Uploaded</p>
             )}
             <div className="flex flex-col p-3 space-y-2 border rounded">
               <h3 className="text-2xl font-medium">School Year Report Card</h3>
