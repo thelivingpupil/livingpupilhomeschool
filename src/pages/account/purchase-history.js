@@ -272,6 +272,14 @@ const PurchaseHistory = () => {
     }
   };
 
+  const v2Orders = sortedOrderFees.filter(
+    (order) => order[0]?.orderSource === 'V2'
+  );
+  const v1Orders = sortedOrderFees.filter(
+    (order) => order[0]?.orderSource !== 'V2'
+  );
+  const displayedOrders = table === 'NEW' ? v2Orders : v1Orders;
+
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - Shop Purchases" />
@@ -414,7 +422,7 @@ const PurchaseHistory = () => {
                 </Card.Footer>
               </Card>
             ))
-          ) : (
+          ) : v1Orders.length > 0 ? null : (
             <Card>
               <Card.Body
                 title="You haven't purchased anything from the Living Pupil Homeschool Shop yet..."
@@ -433,14 +441,14 @@ const PurchaseHistory = () => {
           )}
         </Content.Container>
       )}
-      {table === 'NEW' && (
+      {(table === 'NEW' || v1Orders.length > 0) && (
         <Content.Container>
-          {!orderFeeData?.data?.orderFees?.orderFee || orderFeeDataIsLoading ? (
+          {orderFeeDataIsLoading ? (
             <Card>
               <Card.Body />
             </Card>
-          ) : sortedOrderFees.length > 0 ? (
-            sortedOrderFees.map((order, index) => (
+          ) : displayedOrders.length > 0 ? (
+            displayedOrders.map((order, index) => (
               <Card key={index}>
                 <Card.Body
                   title={
