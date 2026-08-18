@@ -595,14 +595,79 @@ export const updateTransaction = async (
   payment = undefined,
   amount = undefined
 ) => {
-  const transaction = await prisma.transaction.update({
+  const existingV1 = await prisma.transaction.findUnique({
+    where: { transactionId },
+    select: { transactionId: true },
+  });
+
+  if (existingV1) {
+    const transaction = await prisma.transaction.update({
+      data: {
+        paymentReference,
+        paymentStatus,
+        message,
+        ...(typeof balance !== 'undefined' && { balance }),
+        ...(typeof payment !== 'undefined' && { payment }),
+        ...(typeof amount !== 'undefined' && { amount }),
+      },
+      select: {
+        transactionId: true,
+        referenceNumber: true,
+        amount: true,
+        currency: true,
+        transactionStatus: true,
+        paymentStatus: true,
+        source: true,
+        paymentReference: true,
+        description: true,
+        message: true,
+        url: true,
+        createdAt: true,
+      },
+      where: { transactionId },
+    });
+
+    // When MONTHLY order-0 is paid, create any missing remaining installments.
+    // Idempotent: skips orders that already exist, so retries after a failed
+    // Dragonpay call still work even if this transaction is already Success.
+    if (paymentStatus === TransactionStatus.S) {
+      try {
+        const { createRemainingMonthlyInstallments } = await import(
+          './school-fee'
+        );
+        await createRemainingMonthlyInstallments(transactionId);
+      } catch (error) {
+        console.error(
+          `Failed to create remaining monthly installments for ${transactionId}:`,
+          error
+        );
+      }
+    }
+
+    return {
+      ...transaction,
+      amount: transaction?.amount?.toNumber() || 0,
+      createdAt: transaction?.createdAt?.toDateString(),
+    };
+  }
+
+  const existingV2 = await prisma.transactionV2.findUnique({
+    where: { transactionId },
+    select: { transactionId: true, source: true },
+  });
+
+  if (!existingV2) {
+    throw new Error(`Transaction ${transactionId} not found`);
+  }
+
+  const transaction = await prisma.transactionV2.update({
     data: {
       paymentReference,
       paymentStatus,
       message,
-      ...(typeof balance !== 'undefined' && { balance }), // Check for undefined
-      ...(typeof payment !== 'undefined' && { payment }), // Check for undefined
-      ...(typeof amount !== 'undefined' && { amount }), // Check for undefined
+      ...(typeof balance !== 'undefined' && { balance }),
+      ...(typeof payment !== 'undefined' && { payment }),
+      ...(typeof amount !== 'undefined' && { amount }),
     },
     select: {
       transactionId: true,
@@ -621,21 +686,14 @@ export const updateTransaction = async (
     where: { transactionId },
   });
 
-  // When MONTHLY order-0 is paid, create any missing remaining installments.
-  // Idempotent: skips orders that already exist, so retries after a failed
-  // Dragonpay call still work even if this transaction is already Success.
-  if (paymentStatus === TransactionStatus.S) {
-    try {
-      const { createRemainingMonthlyInstallments } = await import(
-        './school-fee'
-      );
-      await createRemainingMonthlyInstallments(transactionId);
-    } catch (error) {
-      console.error(
-        `Failed to create remaining monthly installments for ${transactionId}:`,
-        error
-      );
-    }
+  const isSuccess =
+    paymentStatus === TransactionStatus.S || paymentStatus === 'S';
+
+  if (isSuccess && transaction.source === TransactionSource.STORE) {
+    const { commitShopOrderOnFirstPayment } = await import(
+      '@/prisma/services/order-v2'
+    );
+    await commitShopOrderOnFirstPayment(transactionId);
   }
 
   return {

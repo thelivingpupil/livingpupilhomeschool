@@ -1,6 +1,7 @@
 import Meta from '@/components/Meta/index';
 import { LandingLayout } from '@/layouts/index';
 import sanityClient from '@/lib/server/sanity';
+import { getStoreProducts } from '@/prisma/services/product';
 import Footer from '@/sections/footer';
 import Header from '@/sections/header';
 import ShopSection from '@/sections/shop';
@@ -21,33 +22,19 @@ const Shop = ({ page, shop }) => {
   );
 };
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const [[header, footer], items] = await Promise.all([
     sanityClient.fetch(
       `*[_type == 'sections' && (name == 'Common Header' || name == 'Common Footer') && !(_id in path("drafts.**"))]`
     ),
-    sanityClient.fetch(`*[_type == 'shopItems' && !(_id in path("drafts.**"))] | order(name asc)`),
+    getStoreProducts(),
   ]);
-
-  const categories = [];
-  items.forEach((item) => {
-    if (item.categories) {
-      categories.push(...item.categories);
-    }
-  });
-
-  const uniqueCategories = categories
-    .sort()
-    .filter(
-      (value, index, self) => self.indexOf(value) === index && value !== ''
-    );
 
   return {
     props: {
       page: { footer, header },
-      shop: { categories: uniqueCategories, items },
+      shop: { categories: [], items },
     },
-    revalidate: 10,
   };
 };
 

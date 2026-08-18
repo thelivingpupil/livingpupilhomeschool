@@ -1,8 +1,5 @@
-import { TransactionStatus } from '@prisma/client';
-
 import { validateSession } from '@/config/api-validation';
-import prisma from '@/prisma/index';
-import { createRemainingMonthlyInstallments } from '@/prisma/services/school-fee';
+import { updateTransaction } from '@/prisma/services/transaction';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -18,7 +15,8 @@ const handler = async (req, res) => {
         });
       }
 
-      const { transactionId, paymentStatus } = req.body;
+      const { transactionId, paymentStatus, paymentReference, message } =
+        req.body;
 
       if (!transactionId || !paymentStatus) {
         return res.status(400).json({
@@ -28,37 +26,16 @@ const handler = async (req, res) => {
         });
       }
 
-      // Update the transaction payment status
-      const updatedTransaction = await prisma.transaction.update({
-        where: { transactionId },
-        data: { paymentStatus },
-        select: {
-          transactionId: true,
-          paymentStatus: true,
-          amount: true,
-          referenceNumber: true,
-        },
-      });
+      // Uses V1 then V2; on V2 STORE success, commits reserved shop inventory.
+      // V1 Success also creates remaining monthly installments inside updateTransaction.
+      const updatedTransaction = await updateTransaction(
+        transactionId,
+        paymentReference || 'ADMIN',
+        paymentStatus,
+        message || 'Marked as paid by admin'
+      );
 
-      if (paymentStatus === TransactionStatus.S) {
-        try {
-          await createRemainingMonthlyInstallments(transactionId);
-        } catch (error) {
-          console.error(
-            `Failed to create remaining monthly installments for ${transactionId}:`,
-            error
-          );
-          return res.status(500).json({
-            errors: {
-              error: {
-                msg: `Payment status updated, but monthly installments were not created: ${error.message}`,
-              },
-            },
-          });
-        }
-      }
-
-      res.status(200).json({
+      return res.status(200).json({
         data: {
           message: 'Payment status updated successfully',
           transaction: updatedTransaction,
@@ -66,15 +43,18 @@ const handler = async (req, res) => {
       });
     } catch (error) {
       console.error('Payment status update error:', error);
-      res.status(500).json({
-        errors: { error: { msg: 'Failed to update payment status' } },
+      const statusCode = error.message?.includes('not found') ? 404 : 500;
+      return res.status(statusCode).json({
+        errors: {
+          error: { msg: error.message || 'Failed to update payment status' },
+        },
       });
     }
-  } else {
-    res.status(405).json({
-      errors: { error: { msg: `${method} method unsupported` } },
-    });
   }
+
+  return res.status(405).json({
+    errors: { error: { msg: `${method} method unsupported` } },
+  });
 };
 
 export default handler;

@@ -41,14 +41,17 @@ const AgreementReadGate = ({
         </p>
       )}
     </div>
-    <AgreementScrollModal
-      show={modalOpen}
-      title={title}
-      onClose={onClose}
-      onAcknowledge={onAcknowledge}
-    >
-      {children}
-    </AgreementScrollModal>
+    {/* Mount only when open to avoid nested Headless UI Dialog issues */}
+    {modalOpen ? (
+      <AgreementScrollModal
+        show={modalOpen}
+        title={title}
+        onClose={onClose}
+        onAcknowledge={onAcknowledge}
+      >
+        {children}
+      </AgreementScrollModal>
+    ) : null}
   </>
 );
 

@@ -2,6 +2,8 @@ import {
   AcademicCapIcon,
   AdjustmentsIcon,
   CashIcon,
+  ClipboardListIcon,
+  CollectionIcon,
   CreditCardIcon,
   HomeIcon,
   NewspaperIcon,
@@ -11,7 +13,7 @@ import {
   UsersIcon,
   InboxIcon,
   DocumentIcon,
-  UserGroupIcon
+  UserGroupIcon,
 } from '@heroicons/react/outline';
 import { QuestionMarkCircleIcon } from '@heroicons/react/solid';
 
@@ -55,12 +57,6 @@ const adminSidebarMenu = () => [
         showDefault: true,
       },
       {
-        name: 'Shop',
-        icon: ShoppingCartIcon,
-        path: `/account/admin/shop`,
-        showDefault: true,
-      },
-      {
         name: 'Enrollment',
         icon: CreditCardIcon,
         path: `/account/admin/transactions`,
@@ -88,6 +84,35 @@ const adminSidebarMenu = () => [
         name: 'Parent Training',
         icon: UsersIcon,
         path: `/account/admin/parent-training`,
+        showDefault: true,
+      },
+    ],
+  },
+  {
+    name: 'Shop',
+    menuItems: [
+      {
+        name: 'Products',
+        icon: ShoppingCartIcon,
+        path: `/account/admin/shop/products`,
+        showDefault: true,
+      },
+      {
+        name: 'Ledger',
+        icon: ClipboardListIcon,
+        path: `/account/admin/shop/ledger`,
+        showDefault: true,
+      },
+      {
+        name: 'Orders',
+        icon: CollectionIcon,
+        path: `/account/admin/shop/orders`,
+        showDefault: true,
+      },
+      {
+        name: 'Legacy Orders',
+        icon: CollectionIcon,
+        path: `/account/admin/shop`,
         showDefault: true,
       },
     ],
