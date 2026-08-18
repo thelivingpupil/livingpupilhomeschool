@@ -474,6 +474,8 @@ export const getStudentRecords = async () =>
       idPictureBack: true,
       discount: true,
       studentStatus: true,
+      signature: true,
+      enrollmentAgreementSignature: true,
       cottageType: true,
       studentAddress1: true,
       studentAddress2: true,

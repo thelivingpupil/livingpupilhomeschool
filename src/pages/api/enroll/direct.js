@@ -4,11 +4,8 @@ import {
   html as recordHtml,
   text as recordText,
 } from '@/config/email-templates/enrollment-update';
-import {
-  html as policiesHtml,
-  text as policiesText,
-} from '@/config/email-templates/policies';
 import { sendMail } from '@/lib/server/mail';
+import { sendSignedEnrollmentAgreements } from '@/lib/server/signed-enrollment-agreements';
 import {
   CottageSlotError,
   enrollStudentWithCottageSlot,
@@ -234,27 +231,13 @@ const handler = async (req, res) => {
       }),
       to: [session.user.email],
     });
-    const attachments = [
-      {
-        filename: 'Payment Policies.pdf',
-        path: 'https://livingpupilhomeschool.com/files/Payment_Policies.pdf'
-      },
-      {
-        filename:
-          'General Policies on Payment of Tuition Fees, Refund and Withdrawal or Transfer Policy.pdf',
-        path: 'https://livingpupilhomeschool.com/files/Homeschool_Agreement.pdf'
-      }
-    ];
-    await sendMail({
-      html: policiesHtml({
-        parentName,
-      }),
-      subject: `[Living Pupil Homeschool] Signed General Policies on Payment of Tuition Fees, Refund and Withdrawal or Transfer Policy`,
-      text: policiesText({
-        parentName,
-      }),
+    await sendSignedEnrollmentAgreements({
       to: [session.user.email],
-      attachments,
+      parentName,
+      signatureUrl: signatureLink,
+      partnershipSignatureUrl: enrollmentAgreementSignature,
+      signerName: primaryGuardianName,
+      signedAt: enrollmentAgreementSignatureDate,
     });
     await sendMail({
       html: recordHtml({

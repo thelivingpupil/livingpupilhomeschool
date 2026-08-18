@@ -176,6 +176,7 @@ const Students = ({ schoolFees, programs }) => {
   const age = differenceInYears(new Date(), birthDate) || 0;
   const [showConfirmChange, setShowConfirmChange] = useState(false);
   const [isUpdatingRecord, setUpdatingRecord] = useState(false);
+  const [isResendingAgreements, setIsResendingAgreements] = useState(false);
 
   useEffect(() => {
     if (!incomingGradeLevel || !schoolYear) {
@@ -438,6 +439,35 @@ const Students = ({ schoolFees, programs }) => {
     setAccreditation(student.accreditation);
     setPayment(student.student.schoolFees[0].paymentType);
     setScholarship(student.scholarship);
+  };
+
+  const resendSignedAgreements = (student) => {
+    if (!student?.signature || !student?.enrollmentAgreementSignature) {
+      toast.error('Signed agreements are not available for this student');
+      return;
+    }
+
+    setIsResendingAgreements(true);
+    api('/api/admin/students/resend-agreements', {
+      body: { studentId: student.studentId },
+      method: 'POST',
+    })
+      .then((response) => {
+        setIsResendingAgreements(false);
+        if (response.errors) {
+          Object.keys(response.errors).forEach((error) =>
+            toast.error(response.errors[error].msg)
+          );
+          return;
+        }
+        toast.success('Signed agreements sent to the parent');
+      })
+      .catch((error) => {
+        setIsResendingAgreements(false);
+        toast.error(
+          `Error sending signed agreements: ${error.message || 'Please try again'}`
+        );
+      });
   };
 
   const viewUpdateStudentStatus = (student) => {
@@ -1960,6 +1990,21 @@ const Students = ({ schoolFees, programs }) => {
                 }}
               >
                 Edit Student School Fees
+              </button>
+              <button
+                className="px-3 py-1 my-1 text-white rounded bg-primary-600 hover:bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={
+                  isResendingAgreements ||
+                  !student.signature ||
+                  !student.enrollmentAgreementSignature
+                }
+                onClick={() => {
+                  resendSignedAgreements(student);
+                }}
+              >
+                {isResendingAgreements
+                  ? 'Sending Signed Agreements...'
+                  : 'Resend Signed Agreements'}
               </button>
               <button
                 className="px-3 py-1 my-1 text-white rounded bg-primary-600 hover:bg-primary-400"
