@@ -70,7 +70,7 @@ const emailSenderOptions = [
   { value: 'admin', label: 'Admin' },
   { value: 'directress', label: 'Directress' },
   { value: 'cottage', label: 'Cottage Coordinator' },
-  { value: 'stella', label: 'Marie Stella' },
+  { value: 'stella', label: 'Marie Stella Contratista' },
   { value: 'coo', label: 'COO' },
 ];
 

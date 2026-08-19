@@ -813,7 +813,7 @@ export const getSenderDetails = (sender) => {
       break;
     case 'stella':
       senderRole = 'Cottage Teacher';
-      senderFullName = 'Marie Stella';
+      senderFullName = 'Marie Stella Contratista';
       break;
     default:
       throw new Error(`Unknown sender: ${sender}`);
