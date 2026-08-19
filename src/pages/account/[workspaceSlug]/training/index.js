@@ -4,7 +4,10 @@ import Meta from '@/components/Meta';
 import AccountLayout from '@/layouts/AccountLayout';
 import sanityClient from '@/lib/server/sanity';
 import { useWorkspace } from '@/providers/workspace';
-import { courseMatchesStudentPartnerSchool } from '@/utils/constants';
+import {
+  courseMatchesStudentPartnerSchool,
+  getStudentPartnerSchools,
+} from '@/utils/constants';
 import Link from 'next/link';
 
 const Training = ({ courses }) => {
@@ -33,7 +36,7 @@ const Training = ({ courses }) => {
                       course.curriculum?.includes(workspace.studentRecord.program) &&
                       courseMatchesStudentPartnerSchool(
                         course.partnerSchool,
-                        workspace.studentRecord?.partnerSchool
+                        getStudentPartnerSchools(workspace.studentRecord)
                       )
                   )
                   .sort((a, b) => collator.compare(a.code, b.code))

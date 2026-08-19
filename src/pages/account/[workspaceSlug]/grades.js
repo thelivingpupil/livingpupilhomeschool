@@ -5,10 +5,14 @@ import { AccountLayout } from '@/layouts/index';
 import Card from '@/components/Card';
 import { useWorkspace } from '@/providers/workspace';
 import JotFormEmbed from 'react-jotform-embed';
-import { GradeLevel, PartnerSchool } from '@prisma/client';
+import { GradeLevel } from '@prisma/client';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import { getSession } from 'next-auth/react';
-import { PARTNER_SCHOOL } from '@/utils/constants';
+import {
+  PartnerSchool,
+  formatStudentPartnerSchools,
+  getUsPartnerSchool,
+} from '@/utils/constants';
 
 // S.Y. 2026-2027 Term Requirements - by partner school
 const termForms = {
@@ -174,7 +178,9 @@ const Grades = () => {
   const schoolYearReportCardUrl =
     workspace?.studentRecord?.schoolYearReportCard;
   const gradeLevel = workspace?.studentRecord?.incomingGradeLevel;
-  const partnerSchool = workspace?.studentRecord?.partnerSchool;
+  const partnerSchool = getUsPartnerSchool(
+    workspace?.studentRecord?.partnerSchool,
+  );
   const showPartnerForms = formPage === 'term' || formPage === 'year-end';
 
   const getFormId = () => {
@@ -238,7 +244,8 @@ const Grades = () => {
               {showPartnerForms && partnerSchool && (
                 <>
                   <p className="mt-3 text-sm text-gray-600">
-                    Partner School: {PARTNER_SCHOOL[partnerSchool]}
+                    Partner School:{' '}
+                    {formatStudentPartnerSchools(workspace?.studentRecord)}
                   </p>
                   {formId ? (
                     <div className="mt-4 min-h-[600px] w-full">
