@@ -9,7 +9,11 @@ import { useWorkspace } from '@/providers/workspace';
 import toast from 'react-hot-toast';
 import api from '@/lib/common/api';
 import JotFormEmbed from 'react-jotform-embed';
-import { PARENT_TRAINING_CODES, courseMatchesStudentPartnerSchool } from '@/utils/constants';
+import {
+  PARENT_TRAINING_CODES,
+  courseMatchesStudentPartnerSchool,
+  getStudentPartnerSchools,
+} from '@/utils/constants';
 
 const Course = ({ course }) => {
   const { workspace, setWorkspace } = useWorkspace();
@@ -93,7 +97,7 @@ const Course = ({ course }) => {
           {workspace.studentRecord &&
           courseMatchesStudentPartnerSchool(
             course.partnerSchool,
-            workspace.studentRecord.partnerSchool
+            getStudentPartnerSchools(workspace.studentRecord)
           ) ? (
             <Content.Container>
               <Card>

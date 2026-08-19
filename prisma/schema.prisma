@@ -803,6 +803,8 @@ enum CottageType {
 enum PartnerSchool {
   KAIROS
   MANDAUE
+  HOMELIFE_KAIROS
+  HOMELIFE_MANDAUE
 }
 
 enum CottageSlotGradeTarget {

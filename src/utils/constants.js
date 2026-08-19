@@ -25,13 +25,108 @@ export const ACCREDITATION = {
 export const PARTNER_SCHOOL = {
   KAIROS: 'Kairos',
   MANDAUE: 'Mandaue Christian School',
+  HOMELIFE: 'Homelife Academy',
+  HOMELIFE_KAIROS: 'Homelife Academy, Kairos',
+  HOMELIFE_MANDAUE: 'Homelife Academy, Mandaue Christian School',
+};
+
+export const PartnerSchool = {
+  KAIROS: 'KAIROS',
+  MANDAUE: 'MANDAUE',
+  HOMELIFE_KAIROS: 'HOMELIFE_KAIROS',
+  HOMELIFE_MANDAUE: 'HOMELIFE_MANDAUE',
 };
 
 const PARTNER_SCHOOL_ALIASES = {
   KAIROS: 'KAIROS',
   MANDAUE: 'MANDAUE',
   MANDAUE_CHRISTIAN_SCHOOL: 'MANDAUE',
-  HOMELIFE_ACADEMY: 'HOMELIFE_ACADEMY',
+  HOMELIFE: 'HOMELIFE',
+  HOMELIFE_ACADEMY: 'HOMELIFE',
+  HOMELIFE_KAIROS: 'HOMELIFE_KAIROS',
+  HOMELIFE_MANDAUE: 'HOMELIFE_MANDAUE',
+};
+
+const US_PARTNER_SCHOOLS = ['KAIROS', 'MANDAUE'];
+
+const DUAL_PARTNER_SCHOOLS = {
+  KAIROS: 'HOMELIFE_KAIROS',
+  MANDAUE: 'HOMELIFE_MANDAUE',
+  HOMELIFE_KAIROS: 'HOMELIFE_KAIROS',
+  HOMELIFE_MANDAUE: 'HOMELIFE_MANDAUE',
+};
+
+const PARTNER_SCHOOL_MEMBERS = {
+  KAIROS: ['KAIROS'],
+  MANDAUE: ['MANDAUE'],
+  HOMELIFE_KAIROS: ['HOMELIFE', 'KAIROS'],
+  HOMELIFE_MANDAUE: ['HOMELIFE', 'MANDAUE'],
+};
+
+export const getUsPartnerSchool = (partnerSchool) => {
+  if (!partnerSchool) return '';
+  if (US_PARTNER_SCHOOLS.includes(partnerSchool)) return partnerSchool;
+  if (partnerSchool === 'HOMELIFE_KAIROS' || partnerSchool === 'HOMELIFE,KAIROS') {
+    return 'KAIROS';
+  }
+  if (partnerSchool === 'HOMELIFE_MANDAUE' || partnerSchool === 'HOMELIFE,MANDAUE') {
+    return 'MANDAUE';
+  }
+  return '';
+};
+
+export const composePartnerSchool = (accreditation, partnerSchool) => {
+  const selected = getUsPartnerSchool(partnerSchool) || partnerSchool;
+  if (!selected) return null;
+  if (accreditation === 'DUAL') {
+    return DUAL_PARTNER_SCHOOLS[selected] || null;
+  }
+  return US_PARTNER_SCHOOLS.includes(selected) ? selected : getUsPartnerSchool(selected) || null;
+};
+
+export const getStudentPartnerSchools = (studentRecord) => {
+  if (!studentRecord) return [];
+
+  const stored = studentRecord.partnerSchool;
+  if (PARTNER_SCHOOL_MEMBERS[stored]) {
+    return PARTNER_SCHOOL_MEMBERS[stored];
+  }
+
+  if (studentRecord.accreditation === 'DUAL') {
+    const usSchool = getUsPartnerSchool(stored);
+    return usSchool ? ['HOMELIFE', usSchool] : ['HOMELIFE'];
+  }
+
+  const usSchool = getUsPartnerSchool(stored);
+  return usSchool ? [usSchool] : [];
+};
+
+export const formatStudentPartnerSchools = (studentRecord) => {
+  if (studentRecord?.partnerSchool && PARTNER_SCHOOL[studentRecord.partnerSchool]) {
+    return PARTNER_SCHOOL[studentRecord.partnerSchool];
+  }
+
+  const schools = getStudentPartnerSchools(studentRecord);
+  if (schools.length === 0) return 'Not assigned';
+
+  return schools
+    .map((school) => PARTNER_SCHOOL[school] || school)
+    .join(', ');
+};
+
+const expandPartnerSchools = (partnerSchool) => {
+  if (!partnerSchool) return [];
+  if (Array.isArray(partnerSchool)) {
+    return [...new Set(partnerSchool.flatMap(expandPartnerSchools))];
+  }
+
+  if (PARTNER_SCHOOL_MEMBERS[partnerSchool]) {
+    return PARTNER_SCHOOL_MEMBERS[partnerSchool];
+  }
+
+  const normalized =
+    PARTNER_SCHOOL_ALIASES[partnerSchool] || partnerSchool;
+  return PARTNER_SCHOOL_MEMBERS[normalized] || [normalized];
 };
 
 export const courseMatchesStudentPartnerSchool = (
@@ -40,12 +135,12 @@ export const courseMatchesStudentPartnerSchool = (
 ) => {
   if (!coursePartnerSchool) return true;
 
-  const normalizedCourse =
-    PARTNER_SCHOOL_ALIASES[coursePartnerSchool] || coursePartnerSchool;
-  const normalizedStudent =
-    PARTNER_SCHOOL_ALIASES[studentPartnerSchool] || studentPartnerSchool;
+  const courseSchools = expandPartnerSchools(coursePartnerSchool);
+  const studentSchools = expandPartnerSchools(studentPartnerSchool);
 
-  return normalizedCourse === normalizedStudent;
+  if (studentSchools.length === 0) return false;
+
+  return courseSchools.every((school) => studentSchools.includes(school));
 };
 
 export const ACCREDITATION_NEW = {

@@ -20,6 +20,9 @@ import {
   GRADE_LEVEL_GROUPS,
   GRADE_LEVEL_TYPES,
   PARTNER_SCHOOL,
+  PartnerSchool,
+  composePartnerSchool,
+  formatStudentPartnerSchools,
   PAYMENT_TYPE,
   SCHOOL_YEAR,
   ENROLLMENT_STATUS_BG_COLOR,
@@ -36,7 +39,6 @@ import {
   Gender,
   GradeLevel,
   GuardianType,
-  PartnerSchool,
   PaymentType,
   Program,
   Religion,
@@ -394,7 +396,9 @@ const Students = ({ schoolFees, programs }) => {
     setPictureLink(student.image);
     setReportCardLink(student.reportCard);
     setAccreditation(student.accreditation);
-    setPartnerSchool(student.partnerSchool || '');
+    setPartnerSchool(
+      composePartnerSchool(student.accreditation, student.partnerSchool) || ''
+    );
     setPayment(student.student.schoolFees[0].paymentType);
     setScholarship(student.scholarship);
     setUserId(student.student.creator.guardianInformation.userId);
@@ -478,7 +482,7 @@ const Students = ({ schoolFees, programs }) => {
         discountCode,
         scholarshipCode,
         accreditation,
-        partnerSchool: partnerSchool || null,
+        partnerSchool: composePartnerSchool(accreditation, partnerSchool),
         email,
         studentStatus,
       },
@@ -491,6 +495,15 @@ const Students = ({ schoolFees, programs }) => {
             toast.error(response.errors[error].msg)
           );
         } else {
+          const savedPartnerSchool = composePartnerSchool(
+            accreditation,
+            partnerSchool
+          );
+          setStudent((current) =>
+            current
+              ? { ...current, partnerSchool: savedPartnerSchool }
+              : current
+          );
           toast.success('Student record has been updated');
           toggleModal2();
           toggleModal();
@@ -1875,6 +1888,8 @@ const Students = ({ schoolFees, programs }) => {
                 {PROGRAM[student.program]} -{' '}
                 {ACCREDITATION[student.accreditation]}
               </p>
+              <h4 className="font-bold text-gray-600">Partner School</h4>
+              <p className="text-lg">{formatStudentPartnerSchools(student)}</p>
               <h4 className="font-bold text-gray-600">Birth Date</h4>
               <p className="text-lg">
                 {format(new Date(student.birthDate), 'MMMM dd, yyyy')} (
@@ -2132,30 +2147,61 @@ const Students = ({ schoolFees, programs }) => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col w-full">
-              <label className="text-lg font-bold" htmlFor="partnerSchool">
-                Partner School
-              </label>
-              <div className="relative inline-block w-full border rounded">
-                <select
-                  className="w-full px-3 py-2 rounded appearance-none"
-                  id="partnerSchool"
-                  onChange={(e) => setPartnerSchool(e.target.value)}
-                  value={partnerSchool}
-                >
-                  <option value="">Not assigned</option>
-                  <option value={PartnerSchool.KAIROS}>
-                    {PARTNER_SCHOOL.KAIROS}
-                  </option>
-                  <option value={PartnerSchool.MANDAUE}>
-                    {PARTNER_SCHOOL.MANDAUE}
-                  </option>
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                  <ChevronDownIcon className="w-5 h-5" />
+            {accreditation === Accreditation.DUAL ? (
+              <div className="flex flex-col w-full">
+                <label className="text-lg font-bold" htmlFor="partnerSchool">
+                  Partner Schools <span className="ml-1 text-red-600">*</span>
+                </label>
+                <p className="mb-2 text-sm text-gray-500">
+                  Dual accreditation uses Homelife Academy plus Kairos or
+                  Mandaue Christian School.
+                </p>
+                <div className="relative inline-block w-full border rounded">
+                  <select
+                    className="w-full px-3 py-2 rounded appearance-none"
+                    id="partnerSchool"
+                    onChange={(e) => setPartnerSchool(e.target.value)}
+                    value={partnerSchool}
+                  >
+                    <option value="">Select partner schools...</option>
+                    <option value={PartnerSchool.HOMELIFE_KAIROS}>
+                      {PARTNER_SCHOOL.HOMELIFE_KAIROS}
+                    </option>
+                    <option value={PartnerSchool.HOMELIFE_MANDAUE}>
+                      {PARTNER_SCHOOL.HOMELIFE_MANDAUE}
+                    </option>
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <ChevronDownIcon className="w-5 h-5" />
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col w-full">
+                <label className="text-lg font-bold" htmlFor="partnerSchool">
+                  Partner School
+                </label>
+                <div className="relative inline-block w-full border rounded">
+                  <select
+                    className="w-full px-3 py-2 rounded appearance-none"
+                    id="partnerSchool"
+                    onChange={(e) => setPartnerSchool(e.target.value)}
+                    value={partnerSchool}
+                  >
+                    <option value="">Not assigned</option>
+                    <option value={PartnerSchool.KAIROS}>
+                      {PARTNER_SCHOOL.KAIROS}
+                    </option>
+                    <option value={PartnerSchool.MANDAUE}>
+                      {PARTNER_SCHOOL.MANDAUE}
+                    </option>
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <ChevronDownIcon className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           {/* {renderFileUpload()} */}
           <div className="flex flex-col p-3 space-y-2">
@@ -2172,7 +2218,8 @@ const Students = ({ schoolFees, programs }) => {
                 isSubmitting ||
                 !firstName ||
                 !middleName ||
-                !lastName
+                !lastName ||
+                (accreditation === Accreditation.DUAL && !partnerSchool)
               }
             >
               Save Changes

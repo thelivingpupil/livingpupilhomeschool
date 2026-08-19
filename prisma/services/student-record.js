@@ -1,5 +1,6 @@
 import { GradeLevel, Program, TransactionStatus } from '@prisma/client';
 import prisma from '@/prisma/index';
+import { composePartnerSchool } from '@/utils/constants';
 
 export const countEnrolledStudentsByGradeLevel = async (startDate, endDate) => {
   const filterDate =
@@ -676,7 +677,10 @@ export const updateStudentRecord = async (studentId, studentNewData) =>
       lrnProvisionForm: studentNewData.lrnProvisionFormLink,
       discount: studentNewData.discountCode,
       accreditation: studentNewData.accreditation,
-      partnerSchool: studentNewData.partnerSchool || null,
+      partnerSchool: composePartnerSchool(
+        studentNewData.accreditation,
+        studentNewData.partnerSchool
+      ),
       scholarship: studentNewData.scholarshipCode,
       idPictureFront: studentNewData.idPictureFront,
       idPictureBack: studentNewData.idPictureBack,

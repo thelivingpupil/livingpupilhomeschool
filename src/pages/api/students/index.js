@@ -3,6 +3,7 @@ import { getStudentRecords } from '@/prisma/services/student-record';
 import { deleteStudentRecord, updateStudentRecord } from '@/prisma/services/student-record';
 import { sendMail } from '@/lib/server/mail';
 import { html, text } from '@/config/email-templates/workspace-create';
+import { composePartnerSchool } from '@/utils/constants';
 import { deleteStudentWorkspace } from '@/prisma/services/workspace';
 
 const ALLOW_DELETION = true;
@@ -63,7 +64,7 @@ const handler = async (req, res) => {
         reportCardLink,
         discountCode,
         accreditation,
-        partnerSchool: partnerSchool || null,
+        partnerSchool: composePartnerSchool(accreditation, partnerSchool),
         scholarshipCode,
         idPictureFront,
         idPictureBack,
