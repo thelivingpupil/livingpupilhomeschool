@@ -951,6 +951,41 @@ export const PARENT_TRAINING_CODES = {
     code: null,
     sequence: 'Parent Training 4',
   },
+  PT26273A: {
+    name: 'How to Grade Kinder 2 Students (Kairos)',
+    code: null,
+    sequence: 'Parent Training 5',
+  },
+  PT26273B: {
+    name: 'How to Grade Kinder 2 Students (Mandaue Christian School)',
+    code: null,
+    sequence: 'Parent Training 5',
+  },
+  PT26273C: {
+    name: 'How to Grade Form 1 - 3 Students (Kairos)',
+    code: null,
+    sequence: 'Parent Training 5',
+  },
+  SHDYB21: {
+    name: 'How to Grade Form 1 - 3 Students (Mandaue Christian School)',
+    code: null,
+    sequence: 'Parent Training 5',
+  },
+  PT26273D: {
+    name: 'How to Assess and Grade International Students (Homelife Academy)',
+    code: null,
+    sequence: 'Parent Training 6',
+  },
+  'Msha712!': {
+    name: 'CM Assessment Training Sy 2026-2027 (Kairos)',
+    code: null,
+    sequence: 'Parent Training 7',
+  },
+  JDwhs18: {
+    name: 'CM Assessment Training Sy 26-27 (Mandaue Christian School)',
+    code: null,
+    sequence: 'Parent Training 7',
+  },
 
   /* SY 2025-2026 — kept for future reuse
   PT12025: {
@@ -1036,35 +1071,61 @@ export const PARENT_TRAINING_CODES = {
   */
 };
 
-// SY 2026-2027
+// SY 2026-2027 — published Sanity courses for schoolYear 2026-2027 only
 const PRESCHOOL_KINDER_PARENT_TRAINING = {
   FPT20261: '1. Atmosphere of Learning',
   FPT20262: '2. Preschool and Kinder Foundations',
   FPT20264: '3. How to do artist and composer study',
 };
 
+const K2_PARENT_TRAINING = {
+  FPT20261: '1. Atmosphere of Learning',
+  FPT20262: '2. Preschool and Kinder Foundations',
+  FPT20264: '3. How to do artist and composer study',
+  PT26273A: '4. How to Grade Kinder 2 Students (Kairos)',
+  PT26273B: '5. How to Grade Kinder 2 Students (Mandaue Christian School)',
+  PT26273D: '6. How to Assess and Grade International Students (Homelife Academy)',
+  'Msha712!': '7. CM Assessment Training Sy 2026-2027 (Kairos)',
+  JDwhs18: '8. CM Assessment Training Sy 26-27 (Mandaue Christian School)',
+};
+
 const FORM_1_PARENT_TRAINING = {
   FPT20261: '1. Atmosphere of Learning',
   FPT20263A: '2. Foundations Form 1, 2 & 3',
   FPT20264: '3. How to do artist and composer study',
+  PT26273C: '4. How to Grade Form 1 - 3 Students (Kairos)',
+  SHDYB21: '5. How to Grade Form 1 - 3 Students (Mandaue Christian School)',
+  PT26273D: '6. How to Assess and Grade International Students (Homelife Academy)',
+  'Msha712!': '7. CM Assessment Training Sy 2026-2027 (Kairos)',
+  JDwhs18: '8. CM Assessment Training Sy 26-27 (Mandaue Christian School)',
 };
 
 const FORM_2_PARENT_TRAINING = {
   FPT20261: '1. Atmosphere of Learning',
   FPT20263B: '2. Foundations Form 1, 2 & 3',
   FPT20264: '3. How to do artist and composer study',
+  PT26273C: '4. How to Grade Form 1 - 3 Students (Kairos)',
+  SHDYB21: '5. How to Grade Form 1 - 3 Students (Mandaue Christian School)',
+  PT26273D: '6. How to Assess and Grade International Students (Homelife Academy)',
+  'Msha712!': '7. CM Assessment Training Sy 2026-2027 (Kairos)',
+  JDwhs18: '8. CM Assessment Training Sy 26-27 (Mandaue Christian School)',
 };
 
 const FORM_3_PARENT_TRAINING = {
   FPT20261: '1. Atmosphere of Learning',
   FPT20263C: '2. Foundations Form 1, 2 & 3',
   FPT20264: '3. How to do artist and composer study',
+  PT26273C: '4. How to Grade Form 1 - 3 Students (Kairos)',
+  SHDYB21: '5. How to Grade Form 1 - 3 Students (Mandaue Christian School)',
+  PT26273D: '6. How to Assess and Grade International Students (Homelife Academy)',
+  'Msha712!': '7. CM Assessment Training Sy 2026-2027 (Kairos)',
+  JDwhs18: '8. CM Assessment Training Sy 26-27 (Mandaue Christian School)',
 };
 
 export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   PRESCHOOL: PRESCHOOL_KINDER_PARENT_TRAINING,
   K1: PRESCHOOL_KINDER_PARENT_TRAINING,
-  K2: PRESCHOOL_KINDER_PARENT_TRAINING,
+  K2: K2_PARENT_TRAINING,
   GRADE_1: FORM_1_PARENT_TRAINING,
   GRADE_2: FORM_1_PARENT_TRAINING,
   GRADE_3: FORM_1_PARENT_TRAINING,
