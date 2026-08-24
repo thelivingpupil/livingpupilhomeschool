@@ -26,6 +26,7 @@ export const PARTNER_SCHOOL = {
   KAIROS: 'Kairos',
   MANDAUE: 'Mandaue Christian School',
   HOMELIFE: 'Homelife Academy',
+  HOMELIFE_ACADEMY: 'Homelife Academy',
   HOMELIFE_KAIROS: 'Homelife Academy, Kairos',
   HOMELIFE_MANDAUE: 'Homelife Academy, Mandaue Christian School',
 };
@@ -33,6 +34,7 @@ export const PARTNER_SCHOOL = {
 export const PartnerSchool = {
   KAIROS: 'KAIROS',
   MANDAUE: 'MANDAUE',
+  HOMELIFE_ACADEMY: 'HOMELIFE_ACADEMY',
   HOMELIFE_KAIROS: 'HOMELIFE_KAIROS',
   HOMELIFE_MANDAUE: 'HOMELIFE_MANDAUE',
 };
@@ -42,7 +44,7 @@ const PARTNER_SCHOOL_ALIASES = {
   MANDAUE: 'MANDAUE',
   MANDAUE_CHRISTIAN_SCHOOL: 'MANDAUE',
   HOMELIFE: 'HOMELIFE',
-  HOMELIFE_ACADEMY: 'HOMELIFE',
+  HOMELIFE_ACADEMY: 'HOMELIFE_ACADEMY',
   HOMELIFE_KAIROS: 'HOMELIFE_KAIROS',
   HOMELIFE_MANDAUE: 'HOMELIFE_MANDAUE',
 };
@@ -59,6 +61,7 @@ const DUAL_PARTNER_SCHOOLS = {
 const PARTNER_SCHOOL_MEMBERS = {
   KAIROS: ['KAIROS'],
   MANDAUE: ['MANDAUE'],
+  HOMELIFE_ACADEMY: ['HOMELIFE_ACADEMY', 'HOMELIFE'],
   HOMELIFE_KAIROS: ['HOMELIFE', 'KAIROS'],
   HOMELIFE_MANDAUE: ['HOMELIFE', 'MANDAUE'],
 };
@@ -76,6 +79,14 @@ export const getUsPartnerSchool = (partnerSchool) => {
 };
 
 export const composePartnerSchool = (accreditation, partnerSchool) => {
+  if (!partnerSchool) return null;
+
+  const isHomelifeAcademy =
+    partnerSchool === 'HOMELIFE_ACADEMY' || partnerSchool === 'HOMELIFE';
+  if (isHomelifeAcademy) {
+    return accreditation === 'INTERNATIONAL' ? 'HOMELIFE_ACADEMY' : null;
+  }
+
   const selected = getUsPartnerSchool(partnerSchool) || partnerSchool;
   if (!selected) return null;
   if (accreditation === 'DUAL') {
