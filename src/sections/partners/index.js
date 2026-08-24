@@ -9,7 +9,7 @@ const Partners = ({ logos, name }) => {
         <div className="w-full mb-10 md:w-1/4">
           <h3 className="text-xl font-bold text-center md:text-left">{name}</h3>
         </div>
-        <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-5 md:w-3/4">
+        <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-6 md:w-3/4">
           {logos.map((logo, index) => {
             const imageAsset = builder.image(logo.asset);
             return (
