@@ -760,7 +760,7 @@ export const getSenderCredentials = (sender) => {
       email = process.env.COTTAGE_EMAIL;
       break;
     case 'stella':
-      senderName = 'LP Cottage Teacher';
+      senderName = 'LP Records';
       email = process.env.STELLA_EMAIL;
       break;
     default:
@@ -812,7 +812,7 @@ export const getSenderDetails = (sender) => {
       senderFullName = 'Joshua Jacalan';
       break;
     case 'stella':
-      senderRole = 'Cottage Teacher';
+      senderRole = 'Records';
       senderFullName = 'Marie Stella Contratista';
       break;
     default:
