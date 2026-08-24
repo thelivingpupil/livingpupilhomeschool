@@ -2195,6 +2195,11 @@ const Students = ({ schoolFees, programs }) => {
                     <option value={PartnerSchool.MANDAUE}>
                       {PARTNER_SCHOOL.MANDAUE}
                     </option>
+                    {accreditation === Accreditation.INTERNATIONAL && (
+                      <option value={PartnerSchool.HOMELIFE_ACADEMY}>
+                        {PARTNER_SCHOOL.HOMELIFE_ACADEMY}
+                      </option>
+                    )}
                   </select>
                   <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                     <ChevronDownIcon className="w-5 h-5" />
