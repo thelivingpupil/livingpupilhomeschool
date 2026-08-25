@@ -4,6 +4,7 @@ import {
   GridToolbarContainer,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
+  GridToolbarExport,
 } from '@mui/x-data-grid';
 import {
   Box,
@@ -185,6 +186,10 @@ const ShopOrdersAdmin = () => {
           SHOP_SHIPPING_TYPE[order.shippingType] || order.shippingType || '—',
         statusLabel: orderStatusBadge(order).label,
         statusBadge: orderStatusBadge(order),
+        userEmail: order.user?.email || '',
+        itemsLabel: (order.orderItems || [])
+          .map((item) => `${item.name} (x${item.quantity})`)
+          .join('; '),
         itemCount: (order.orderItems || []).reduce(
           (sum, item) => sum + (item.quantity || 0),
           0
@@ -390,6 +395,16 @@ const ShopOrdersAdmin = () => {
       <GridToolbarContainer>
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
+        <GridToolbarExport
+          csvOptions={{
+            fileName: `shop-orders-${format(
+              new Date(),
+              'yyyy.MM.dd.kk.mm.ss'
+            )}`,
+            utf8WithBom: true,
+            allColumns: true,
+          }}
+        />
       </GridToolbarContainer>
     );
   }
@@ -420,6 +435,26 @@ const ShopOrdersAdmin = () => {
               headerName: 'Customer',
               flex: 1,
               minWidth: 180,
+            },
+            {
+              field: 'userEmail',
+              headerName: 'Email',
+              width: 220,
+            },
+            {
+              field: 'contactNumber',
+              headerName: 'Contact',
+              width: 150,
+            },
+            {
+              field: 'deliveryAddress',
+              headerName: 'Address',
+              width: 240,
+            },
+            {
+              field: 'itemsLabel',
+              headerName: 'Item details',
+              width: 260,
             },
             {
               field: 'total',
@@ -476,6 +511,7 @@ const ShopOrdersAdmin = () => {
               width: 90,
               sortable: false,
               filterable: false,
+              disableExport: true,
               renderCell: (params) => (
                 <IconButton
                   size="small"
@@ -494,6 +530,14 @@ const ShopOrdersAdmin = () => {
           ]}
           initialState={{
             pagination: { paginationModel: { pageSize: 25 } },
+            columns: {
+              columnVisibilityModel: {
+                userEmail: false,
+                contactNumber: false,
+                deliveryAddress: false,
+                itemsLabel: false,
+              },
+            },
           }}
           pageSizeOptions={[10, 25, 50]}
           disableRowSelectionOnClick
