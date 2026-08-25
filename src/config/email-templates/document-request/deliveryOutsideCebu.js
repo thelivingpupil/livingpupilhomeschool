@@ -1,5 +1,11 @@
 import { DOCUMENT_DETAILS } from '@/utils/constants';
 
+const COURIER_DISPLAY = {
+    spx: 'SPX',
+    lc: 'LBC',
+    lbc: 'LBC',
+};
+
 const html = ({
     requestorFullName,
     studentFullName,
@@ -7,6 +13,9 @@ const html = ({
     trackingCode,
     courier
 }) => {
+    const courierLabel = COURIER_DISPLAY[courier] || String(courier || '').toUpperCase();
+    const isLbc = courier === 'lbc' || courier === 'lc';
+
     return `<!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 
@@ -193,7 +202,7 @@ const html = ({
                                                                 <div style="color:#000;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:15px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
                                                                     <p style="margin: 0; margin-bottom: 16px;">Hello <strong style="color: #2e3494;">${requestorFullName}</strong>,</p>
                                                                     <p style="margin: 0; margin-bottom: 16px;">Good day!</p>
-                                                                    <p style="margin: 0; margin-bottom: 16px;">We are pleased to inform you that the requested documents for <strong>${studentFullName}</strong> have been shipped via LBC. The documents include the following:</p>
+                                                                    <p style="margin: 0; margin-bottom: 16px;">We are pleased to inform you that the requested documents for <strong>${studentFullName}</strong> have been shipped via ${courierLabel}. The documents include the following:</p>
                                                                     <ul>
         ${document.map(doc => {
         const detail = DOCUMENT_DETAILS[doc.docName];
@@ -201,7 +210,7 @@ const html = ({
     }).join('')}
     </ul>
                                                                     <p style="margin-top: 20px; margin-bottom: 16px;">Here are the shipping details for your reference:</p>
-                                                                    ${courier === "lbc"
+                                                                    ${isLbc
             ? `<p>LBC Tracking Number: <strong>${trackingCode}</strong></p>
            <p>You may track the shipment's status using the tracking number on the <a href="https://www.lbcexpress.com/bn/track" target="_blank">LBC Tracking Page</a>.</p>`
             : `<p>Tracking Link: <strong><a href="${trackingCode}" target="_blank">${trackingCode}</a></strong></p>
