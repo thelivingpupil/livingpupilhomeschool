@@ -2039,7 +2039,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             onClick={() => setLrnExpanded(!lrnExpanded)}
           >
             <span className="text-lg font-bold">
-              Students Without a Learner Reference Number (LRN)
+              Student Without a Learner Reference Number (LRN)
             </span>
             <ChevronDownIcon
               className={`w-5 h-5 transition-transform ${
@@ -2050,10 +2050,12 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
           {lrnExpanded && (
             <div className="px-4 pb-4 space-y-3 border-t">
               <p className="pt-3 text-sm text-gray-600">
+                For Grade 1 and above:
+                <br />
                 If the student is enrolling for the first time in a
-                DepEd-recognized school and does not yet have a Learner
-                Reference Number (LRN), and will be enrolled under Local or Dual
-                Accreditation, please complete the required agreement form.
+                DepEd-recognized school, does not have an LRN, and will enroll
+                under Local or Dual Accreditation, please complete the required
+                LRN Agreement Form.
               </p>
               <a
                 className="inline-block text-sm text-blue-600 underline"

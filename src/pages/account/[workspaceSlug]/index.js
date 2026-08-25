@@ -2072,7 +2072,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             onClick={() => setLrnExpanded(!lrnExpanded)}
           >
             <span className="text-lg font-bold">
-              Students Without a Learner Reference Number (LRN)
+              Student Without a Learner Reference Number (LRN)
             </span>
             <ChevronDownIcon
               className={`w-5 h-5 transition-transform ${
@@ -2083,10 +2083,12 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           {lrnExpanded && (
             <div className="px-4 pb-4 space-y-3 border-t">
               <p className="pt-3 text-sm text-gray-600">
+                For Grade 1 and above:
+                <br />
                 If the student is enrolling for the first time in a
-                DepEd-recognized school and does not yet have a Learner
-                Reference Number (LRN), and will be enrolled under Local or Dual
-                Accreditation, please complete the required agreement form.
+                DepEd-recognized school, does not have an LRN, and will enroll
+                under Local or Dual Accreditation, please complete the required
+                LRN Agreement Form.
               </p>
               <a
                 className="inline-block text-sm text-blue-600 underline"
@@ -3984,6 +3986,212 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </Content.Container>
           ) : (
             <Content.Container>
+              <Card>
+                <Card.Body
+                  title="Student Record Information"
+                  // subtitle={`Last Updated: ${workspace.studentRecord.updatedAt}`}
+                >
+                  <div className="flex flex-row items-center py-5 space-x-10">
+                    <div className="relative flex items-center justify-center w-32 h-32 overflow-hidden text-center text-white bg-gray-400 rounded-full">
+                      <label
+                        className="text-center cursor-pointer group"
+                        htmlFor="filePicture"
+                      >
+                        {workspace.studentRecord.image ? (
+                          <Image
+                            alt={workspace.studentRecord.firstName}
+                            className="rounded-full group-hover:opacity-25"
+                            layout="fill"
+                            loading="lazy"
+                            objectFit="cover"
+                            objectPosition="top"
+                            src={pictureLink || workspace.studentRecord.image}
+                          />
+                        ) : (
+                          <UserIcon className="w-16 h-16" />
+                        )}
+                        <input
+                          id="filePicture"
+                          className="hidden text-xs"
+                          accept=".jpeg,.jpg,.png"
+                          name="filePicture"
+                          onChange={(e) =>
+                            handlePictureUpload(
+                              e,
+                              true,
+                              workspace.studentRecord.studentId,
+                            )
+                          }
+                          type="file"
+                        />
+                        <span className="text-xs">Click to Upload</span>
+                      </label>
+                    </div>
+                    <div className="space-y-3">
+                      <h2 className="text-4xl font-medium">
+                        {workspace.studentRecord.firstName}{' '}
+                        {workspace.studentRecord.middleName}{' '}
+                        {workspace.studentRecord.lastName}
+                      </h2>
+                      <div>
+                        <h3 className="text-sm text-gray-400">
+                          <span className="font-bold">Student Record ID: </span>
+                          <span>
+                            {workspace.studentRecord.studentId}
+                          </span>
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
+                  <hr className="border-dashed" />
+                  <div className="flex flex-row space-x-10">
+                    <div className="w-1/2 space-y-10">
+                      <div>
+                        <h4 className="font-bold text-gray-600">
+                          Program and Accreditation
+                        </h4>
+                        <p className="text-2xl">
+                          {PROGRAM[workspace.studentRecord.program]} -{' '}
+                          {ACCREDITATION[workspace.studentRecord.accreditation]}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-600">Birth Date</h4>
+                        <p className="text-2xl">
+                          {format(
+                            new Date(workspace.studentRecord.birthDate),
+                            'MMMM dd, yyyy',
+                          )}{' '}
+                          (
+                          {differenceInYears(
+                            new Date(),
+                            new Date(workspace.studentRecord.birthDate),
+                          )}{' '}
+                          years old )
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-600">
+                          Former School
+                        </h4>
+                        <p className="text-2xl capitalize">
+                          {workspace.studentRecord.formerSchoolName}
+                        </p>
+                        <p className="text-lg">
+                          {workspace.studentRecord.formerSchoolAddress}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="w-1/2 space-y-10">
+                      <div>
+                        <h4 className="font-bold text-gray-600">Grade Level</h4>
+                        <p className="text-2xl">
+                          {
+                            GRADE_LEVEL[
+                              workspace.studentRecord.incomingGradeLevel
+                            ]
+                          }
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-600">Gender</h4>
+                        <p className="text-2xl capitalize">
+                          {workspace.studentRecord.gender.toLowerCase()}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-600">Religion</h4>
+                        <p className="text-2xl capitalize">
+                          {RELIGION[workspace.studentRecord.religion]}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ID Picture Download Section */}
+                  {(workspace.studentRecord.idPictureFront ||
+                    workspace.studentRecord.idPictureBack) && (
+                    <div className="mt-6 p-4 border rounded-lg bg-gray-50">
+                      <h4 className="font-bold text-gray-600 mb-3">
+                        ID Picture
+                      </h4>
+                      <div className="flex items-center space-x-4">
+                        {workspace.studentRecord.idPictureFront && (
+                          <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
+                            <Image
+                              alt="ID Picture Front"
+                              className="object-cover"
+                              layout="fill"
+                              loading="lazy"
+                              src={workspace.studentRecord.idPictureFront}
+                            />
+                          </div>
+                        )}
+                        {workspace.studentRecord.idPictureBack && (
+                          <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
+                            <Image
+                              alt="ID Picture Back"
+                              className="object-cover"
+                              layout="fill"
+                              loading="lazy"
+                              src={workspace.studentRecord.idPictureBack}
+                            />
+                          </div>
+                        )}
+                        <div className="flex flex-col space-y-2">
+                          <p className="text-sm text-gray-600">
+                            Official ID pictures uploaded by admin
+                          </p>
+                          <div className="flex space-x-2">
+                            {workspace.studentRecord.idPictureFront && (
+                              <Link
+                                href={workspace.studentRecord.idPictureFront}
+                              >
+                                <a
+                                  className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
+                                  target="_blank"
+                                >
+                                  View Front
+                                </a>
+                              </Link>
+                            )}
+                            {workspace.studentRecord.idPictureBack && (
+                              <Link
+                                href={workspace.studentRecord.idPictureBack}
+                              >
+                                <a
+                                  className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
+                                  target="_blank"
+                                >
+                                  View Back
+                                </a>
+                              </Link>
+                            )}
+                            {workspace.studentRecord.idPictureFront && (
+                              <a
+                                className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
+                                download
+                                href={workspace.studentRecord.idPictureFront}
+                              >
+                                Download Front
+                              </a>
+                            )}
+                            {workspace.studentRecord.idPictureBack && (
+                              <a
+                                className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
+                                download
+                                href={workspace.studentRecord.idPictureBack}
+                              >
+                                Download Back
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </Card.Body>
+              </Card>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 <div
                   className={`flex flex-col justify-between rounded ${
@@ -4497,212 +4705,6 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   </div>
                 </div>
               </div>
-              <Card>
-                <Card.Body
-                  title="Student Record Information"
-                  // subtitle={`Last Updated: ${workspace.studentRecord.updatedAt}`}
-                >
-                  <div className="flex flex-row items-center py-5 space-x-10">
-                    <div className="relative flex items-center justify-center w-32 h-32 overflow-hidden text-center text-white bg-gray-400 rounded-full">
-                      <label
-                        className="text-center cursor-pointer group"
-                        htmlFor="filePicture"
-                      >
-                        {workspace.studentRecord.image ? (
-                          <Image
-                            alt={workspace.studentRecord.firstName}
-                            className="rounded-full group-hover:opacity-25"
-                            layout="fill"
-                            loading="lazy"
-                            objectFit="cover"
-                            objectPosition="top"
-                            src={pictureLink || workspace.studentRecord.image}
-                          />
-                        ) : (
-                          <UserIcon className="w-16 h-16" />
-                        )}
-                        <input
-                          id="filePicture"
-                          className="hidden text-xs"
-                          accept=".jpeg,.jpg,.png"
-                          name="filePicture"
-                          onChange={(e) =>
-                            handlePictureUpload(
-                              e,
-                              true,
-                              workspace.studentRecord.studentId,
-                            )
-                          }
-                          type="file"
-                        />
-                        <span className="text-xs">Click to Upload</span>
-                      </label>
-                    </div>
-                    <div className="space-y-3">
-                      <h2 className="text-4xl font-medium">
-                        {workspace.studentRecord.firstName}{' '}
-                        {workspace.studentRecord.middleName}{' '}
-                        {workspace.studentRecord.lastName}
-                      </h2>
-                      <div>
-                        <h3 className="text-sm text-gray-400">
-                          <span className="font-bold">Student Record ID: </span>
-                          <span>
-                            {workspace.studentRecord.studentId}
-                          </span>
-                        </h3>
-                      </div>
-                    </div>
-                  </div>
-                  <hr className="border-dashed" />
-                  <div className="flex flex-row space-x-10">
-                    <div className="w-1/2 space-y-10">
-                      <div>
-                        <h4 className="font-bold text-gray-600">
-                          Program and Accreditation
-                        </h4>
-                        <p className="text-2xl">
-                          {PROGRAM[workspace.studentRecord.program]} -{' '}
-                          {ACCREDITATION[workspace.studentRecord.accreditation]}
-                        </p>
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-gray-600">Birth Date</h4>
-                        <p className="text-2xl">
-                          {format(
-                            new Date(workspace.studentRecord.birthDate),
-                            'MMMM dd, yyyy',
-                          )}{' '}
-                          (
-                          {differenceInYears(
-                            new Date(),
-                            new Date(workspace.studentRecord.birthDate),
-                          )}{' '}
-                          years old )
-                        </p>
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-gray-600">
-                          Former School
-                        </h4>
-                        <p className="text-2xl capitalize">
-                          {workspace.studentRecord.formerSchoolName}
-                        </p>
-                        <p className="text-lg">
-                          {workspace.studentRecord.formerSchoolAddress}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="w-1/2 space-y-10">
-                      <div>
-                        <h4 className="font-bold text-gray-600">Grade Level</h4>
-                        <p className="text-2xl">
-                          {
-                            GRADE_LEVEL[
-                              workspace.studentRecord.incomingGradeLevel
-                            ]
-                          }
-                        </p>
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-gray-600">Gender</h4>
-                        <p className="text-2xl capitalize">
-                          {workspace.studentRecord.gender.toLowerCase()}
-                        </p>
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-gray-600">Religion</h4>
-                        <p className="text-2xl capitalize">
-                          {RELIGION[workspace.studentRecord.religion]}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ID Picture Download Section */}
-                  {(workspace.studentRecord.idPictureFront ||
-                    workspace.studentRecord.idPictureBack) && (
-                    <div className="mt-6 p-4 border rounded-lg bg-gray-50">
-                      <h4 className="font-bold text-gray-600 mb-3">
-                        ID Picture
-                      </h4>
-                      <div className="flex items-center space-x-4">
-                        {workspace.studentRecord.idPictureFront && (
-                          <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
-                            <Image
-                              alt="ID Picture Front"
-                              className="object-cover"
-                              layout="fill"
-                              loading="lazy"
-                              src={workspace.studentRecord.idPictureFront}
-                            />
-                          </div>
-                        )}
-                        {workspace.studentRecord.idPictureBack && (
-                          <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
-                            <Image
-                              alt="ID Picture Back"
-                              className="object-cover"
-                              layout="fill"
-                              loading="lazy"
-                              src={workspace.studentRecord.idPictureBack}
-                            />
-                          </div>
-                        )}
-                        <div className="flex flex-col space-y-2">
-                          <p className="text-sm text-gray-600">
-                            Official ID pictures uploaded by admin
-                          </p>
-                          <div className="flex space-x-2">
-                            {workspace.studentRecord.idPictureFront && (
-                              <Link
-                                href={workspace.studentRecord.idPictureFront}
-                              >
-                                <a
-                                  className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
-                                  target="_blank"
-                                >
-                                  View Front
-                                </a>
-                              </Link>
-                            )}
-                            {workspace.studentRecord.idPictureBack && (
-                              <Link
-                                href={workspace.studentRecord.idPictureBack}
-                              >
-                                <a
-                                  className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
-                                  target="_blank"
-                                >
-                                  View Back
-                                </a>
-                              </Link>
-                            )}
-                            {workspace.studentRecord.idPictureFront && (
-                              <a
-                                className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
-                                download
-                                href={workspace.studentRecord.idPictureFront}
-                              >
-                                Download Front
-                              </a>
-                            )}
-                            {workspace.studentRecord.idPictureBack && (
-                              <a
-                                className="px-3 py-1 text-sm text-green-600 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
-                                download
-                                href={workspace.studentRecord.idPictureBack}
-                              >
-                                Download Back
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </Card.Body>
-              </Card>
             </Content.Container>
           )}
           <Modal

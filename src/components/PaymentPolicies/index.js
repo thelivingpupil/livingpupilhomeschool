@@ -37,8 +37,8 @@ export const PaymentPoliciesText = ({ inModal = false }) => (
         <strong>WITHDRAWAL CHARGES POLICY.</strong> All withdrawal from
         enrollment must be submitted in writing by the parent or legal guardian
         of the learners. The parent will email the withdrawal letter to our admin
-        at: admthelivingpupil@gmail.com and the finance department at:
-        finance.livingpupil@gmail.com. Such withdrawal shall be subject to the
+        at: registrar@livingpupilhomeschoolph.com and the finance department at:
+        finance@livingpupilhomeschoolph.com. Such withdrawal shall be subject to the
         following charges:
         <div className="mt-3 overflow-x-auto">
           <table className="w-full text-sm border border-collapse border-gray-300">

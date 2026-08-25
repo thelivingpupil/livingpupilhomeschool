@@ -121,8 +121,8 @@ const HomeschoolAgreementDocument = ({
           4. <Text style={styles.itemTitle}>WITHDRAWAL CHARGES POLICY.</Text>{' '}
           All withdrawal from enrollment must be submitted in writing by the
           parent or legal guardian of the learners. The parent will email the
-          withdrawal letter to our admin at: admthelivingpupil@gmail.com and the
-          finance department at: finance.livingpupil@gmail.com. Such withdrawal
+          withdrawal letter to our admin at: registrar@livingpupilhomeschoolph.com and the
+          finance department at: finance@livingpupilhomeschoolph.com. Such withdrawal
           shall be subject to the following charges:
         </Text>
         <View style={styles.table}>
