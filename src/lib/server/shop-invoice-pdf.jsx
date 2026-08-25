@@ -269,16 +269,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 36,
     alignItems: 'center',
   },
-  socialRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 10,
-  },
-  socialIcon: {
-    width: 16,
-    height: 16,
-    marginHorizontal: 14,
-  },
   footerLink: {
     fontSize: 10,
     color: '#2e3494',
@@ -389,20 +379,6 @@ const InvoiceDocument = ({ payload }) => (
       </View>
 
       <View style={styles.footer}>
-        <View style={styles.socialRow}>
-          <Image
-            src={path.join(EMAIL_IMG_DIR, 'facebook.png')}
-            style={styles.socialIcon}
-          />
-          <Image
-            src={path.join(EMAIL_IMG_DIR, 'instagram.png')}
-            style={styles.socialIcon}
-          />
-          <Image
-            src={path.join(EMAIL_IMG_DIR, 'youtube.png')}
-            style={styles.socialIcon}
-          />
-        </View>
         <Text style={styles.footerLink}>www.livingpupilhomeschool.com</Text>
         <Text style={styles.footerText}>
           Living Pupil Homeschool, Lot 49, Sector 6, Greenview Subdivision
