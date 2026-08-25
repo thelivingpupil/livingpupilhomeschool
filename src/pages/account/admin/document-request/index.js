@@ -581,7 +581,7 @@ const DocumentRequest = () => {
                         >
                           <option value="">--Select Courier--</option>
                           <option value="spx">SPX</option>
-                          <option value="lc">LBC</option>
+                          <option value="lbc">LBC</option>
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                           <ChevronDownIcon className="w-5 h-5" />
