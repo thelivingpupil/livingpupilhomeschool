@@ -238,6 +238,7 @@ const Students = ({ schoolFees, programs }) => {
       mobileNumber: student.student.creator?.guardianInformation?.mobileNumber || '',
       studentStatusDisplay: student.studentStatus || '',
       paymentStatusDisplay: student.studentStatus || '',
+      partnerSchoolDisplay: formatStudentPartnerSchools(student),
     }));
   }, [data]);
 
@@ -864,7 +865,8 @@ const Students = ({ schoolFees, programs }) => {
     secondaryEmail: false,
     telNumber: false,
     mobileNumber: false,
-    accreditation: false,
+    accreditation: true,
+    partnerSchoolDisplay: true,
   });
 
   //   return (
@@ -2507,11 +2509,25 @@ const Students = ({ schoolFees, programs }) => {
                 },
                 {
                   field: 'accreditation',
-                  headerName: 'Accrediation',
+                  headerName: 'Accreditation',
                   headerAlign: 'center',
                   align: 'center',
+                  minWidth: 180,
                   renderCell: (params) => (
-                    <span>{params.row.accreditation}</span>
+                    <span>
+                      {ACCREDITATION[params.row.accreditation] ||
+                        params.row.accreditation}
+                    </span>
+                  ),
+                },
+                {
+                  field: 'partnerSchoolDisplay',
+                  headerName: 'Partner School',
+                  headerAlign: 'center',
+                  align: 'center',
+                  minWidth: 180,
+                  renderCell: (params) => (
+                    <span>{params.row.partnerSchoolDisplay}</span>
                   ),
                 },
                 {
