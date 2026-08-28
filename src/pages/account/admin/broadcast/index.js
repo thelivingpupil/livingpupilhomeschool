@@ -1736,7 +1736,13 @@ const Broadcast = () => {
           {/* Show how many emails will be sent when there are recipients */}
           {guardianEmails.length > 0 && (
             <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-blue-800 text-sm font-medium">
-              {guardianEmails.length} email{guardianEmails.length === 1 ? '' : 's'} will be sent.
+              {guardianEmails.length} unique parent email
+              {guardianEmails.length === 1 ? '' : 's'} will be sent
+              {filteredStudents.length > 0 &&
+                ` (${filteredStudents.length} student${
+                  filteredStudents.length === 1 ? '' : 's'
+                })`}
+              .
             </div>
           )}
 
