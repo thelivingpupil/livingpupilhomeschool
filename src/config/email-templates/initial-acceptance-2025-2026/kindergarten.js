@@ -176,7 +176,7 @@ const html = ({
                                       </li>
                                       <li style="margin: 0 0 10px 0;">
                                         <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                          Submit your child’s <b>school ID entry</b> using this link: <a href="https://forms.gle/qDmscL5o4HqxxMij7" target="_blank" style="text-decoration: underline; color: #ffffff;">https://forms.gle/qDmscL5o4HqxxMij7</a>
+                                          Submit your child’s <b>school ID entry</b> using this link: <a href="https://www.jotform.com/260150972907459" target="_blank" style="text-decoration: underline; color: #ffffff;">https://www.jotform.com/260150972907459</a>
                                         </p>
                                       </li>
                                     </ul>
@@ -339,7 +339,7 @@ The School Year 2026–2027 officially began on June 29, 2026. You may begin fol
 Admin Requirements
 To complete your enrollment process, please submit the following:
 - Upload your child’s report card and birth certificate (required for new families).
-- Submit your child’s school ID entry: https://forms.gle/qDmscL5o4HqxxMij7
+- Submit your child’s school ID entry: https://www.jotform.com/260150972907459
 
 Self-Paced Parent Training
 Mandatory self-paced parent training sessions: https://livingpupilhomeschool.com/
