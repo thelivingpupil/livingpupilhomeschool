@@ -177,7 +177,7 @@ const html = ({
                                       </li>
                                       <li style="margin: 0 0 10px 0;">
                                         <p style="margin: 0; margin-bottom: 4px; color:#ffffff;">
-                                          Submit your child’s School ID entry through this form: <a href="https://form.jotform.com/260150972907459" target="_blank" style="text-decoration: underline; color: #ffffff;">https://form.jotform.com/260150972907459</a>
+                                          Submit your child’s School ID entry through this form: <a href="https://www.jotform.com/260150972907459" target="_blank" style="text-decoration: underline; color: #ffffff;">https://www.jotform.com/260150972907459</a>
                                         </p>
                                       </li>
                                     </ul>
