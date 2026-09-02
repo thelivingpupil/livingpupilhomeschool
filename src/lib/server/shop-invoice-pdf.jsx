@@ -108,7 +108,7 @@ export const buildInvoicePayload = (order) => {
 const styles = StyleSheet.create({
   page: {
     paddingTop: 0,
-    paddingBottom: 32,
+    paddingBottom: 72,
     paddingHorizontal: 0,
     fontSize: 10,
     fontFamily: 'Helvetica',
@@ -121,11 +121,25 @@ const styles = StyleSheet.create({
   body: {
     paddingHorizontal: 36,
   },
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
   title: {
     fontSize: 16,
     fontFamily: 'Helvetica-Bold',
     color: '#2e3494',
-    marginBottom: 12,
+  },
+  copyBadge: {
+    backgroundColor: '#2e3494',
+    color: '#ffffff',
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    fontSize: 9,
+    fontFamily: 'Helvetica-Bold',
+    letterSpacing: 0.6,
   },
   metaRow: {
     flexDirection: 'row',
@@ -265,7 +279,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   footer: {
-    marginTop: 28,
+    position: 'absolute',
+    bottom: 24,
+    left: 0,
+    right: 0,
     paddingHorizontal: 36,
     alignItems: 'center',
   },
@@ -282,16 +299,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const InvoiceDocument = ({ payload }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
+const InvoicePage = ({ payload, copyLabel }) => (
+  <Page size="A4" style={styles.page}>
       <Image
         src={path.join(EMAIL_IMG_DIR, 'lp-email-header.jpg')}
         style={styles.headerImage}
       />
 
       <View style={styles.body}>
-        <Text style={styles.title}>Invoice {payload.orderCode}</Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>Invoice {payload.orderCode}</Text>
+          {copyLabel ? <Text style={styles.copyBadge}>{copyLabel}</Text> : null}
+        </View>
 
         {payload.isPaid ? <Text style={styles.paidBadge}>PAID</Text> : null}
 
@@ -378,7 +397,7 @@ const InvoiceDocument = ({ payload }) => (
         </View>
       </View>
 
-      <View style={styles.footer}>
+      <View style={styles.footer} fixed>
         <Text style={styles.footerLink}>www.livingpupilhomeschool.com</Text>
         <Text style={styles.footerText}>
           Living Pupil Homeschool, Lot 49, Sector 6, Greenview Subdivision
@@ -389,17 +408,32 @@ const InvoiceDocument = ({ payload }) => (
         </Text>
       </View>
     </Page>
+);
+
+const InvoiceDocument = ({ payload, copies }) => (
+  <Document>
+    {copies.map((copyLabel, index) => (
+      <InvoicePage
+        key={`${copyLabel || 'invoice'}-${index}`}
+        payload={payload}
+        copyLabel={copyLabel}
+      />
+    ))}
   </Document>
 );
 
-export const renderInvoicePdf = async (orderOrPayload) => {
+const PRINT_COPIES = ['CUSTOMER COPY', 'SELLER COPY'];
+
+export const renderInvoicePdf = async (orderOrPayload, options = {}) => {
   const payload =
     orderOrPayload?.booksTotal != null && Array.isArray(orderOrPayload?.items)
       ? orderOrPayload
       : buildInvoicePayload(orderOrPayload);
 
+  const copies = options.duplicateCopies ? PRINT_COPIES : [null];
+
   const buffer = await renderToBuffer(
-    <InvoiceDocument payload={payload} />
+    <InvoiceDocument payload={payload} copies={copies} />
   );
   return Buffer.from(buffer);
 };

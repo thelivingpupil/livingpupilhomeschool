@@ -48,7 +48,7 @@ const handler = async (req, res) => {
       });
     }
 
-    const pdfBuffer = await renderInvoicePdf(order);
+    const pdfBuffer = await renderInvoicePdf(order, { duplicateCopies: true });
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
