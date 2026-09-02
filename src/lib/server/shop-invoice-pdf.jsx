@@ -121,25 +121,11 @@ const styles = StyleSheet.create({
   body: {
     paddingHorizontal: 36,
   },
-  titleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
   title: {
     fontSize: 16,
     fontFamily: 'Helvetica-Bold',
     color: '#2e3494',
-  },
-  copyBadge: {
-    backgroundColor: '#2e3494',
-    color: '#ffffff',
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    fontSize: 9,
-    fontFamily: 'Helvetica-Bold',
-    letterSpacing: 0.6,
+    marginBottom: 12,
   },
   metaRow: {
     flexDirection: 'row',
@@ -299,7 +285,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const InvoicePage = ({ payload, copyLabel }) => (
+const InvoicePage = ({ payload }) => (
   <Page size="A4" style={styles.page}>
       <Image
         src={path.join(EMAIL_IMG_DIR, 'lp-email-header.jpg')}
@@ -307,10 +293,7 @@ const InvoicePage = ({ payload, copyLabel }) => (
       />
 
       <View style={styles.body}>
-        <View style={styles.titleRow}>
-          <Text style={styles.title}>Invoice {payload.orderCode}</Text>
-          {copyLabel ? <Text style={styles.copyBadge}>{copyLabel}</Text> : null}
-        </View>
+        <Text style={styles.title}>Invoice {payload.orderCode}</Text>
 
         {payload.isPaid ? <Text style={styles.paidBadge}>PAID</Text> : null}
 
@@ -410,19 +393,13 @@ const InvoicePage = ({ payload, copyLabel }) => (
     </Page>
 );
 
-const InvoiceDocument = ({ payload, copies }) => (
+const InvoiceDocument = ({ payload, copyCount }) => (
   <Document>
-    {copies.map((copyLabel, index) => (
-      <InvoicePage
-        key={`${copyLabel || 'invoice'}-${index}`}
-        payload={payload}
-        copyLabel={copyLabel}
-      />
+    {Array.from({ length: copyCount }, (_, index) => (
+      <InvoicePage key={`invoice-${index}`} payload={payload} />
     ))}
   </Document>
 );
-
-const PRINT_COPIES = ['CUSTOMER COPY', 'SELLER COPY'];
 
 export const renderInvoicePdf = async (orderOrPayload, options = {}) => {
   const payload =
@@ -430,10 +407,10 @@ export const renderInvoicePdf = async (orderOrPayload, options = {}) => {
       ? orderOrPayload
       : buildInvoicePayload(orderOrPayload);
 
-  const copies = options.duplicateCopies ? PRINT_COPIES : [null];
+  const copyCount = options.duplicateCopies ? 2 : 1;
 
   const buffer = await renderToBuffer(
-    <InvoiceDocument payload={payload} copies={copies} />
+    <InvoiceDocument payload={payload} copyCount={copyCount} />
   );
   return Buffer.from(buffer);
 };

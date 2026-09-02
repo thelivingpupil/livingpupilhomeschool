@@ -557,6 +557,7 @@ const shopOrderV2Include = {
           paymentReference: true,
           description: true,
           createdAt: true,
+          updatedAt: true,
         },
       },
     },

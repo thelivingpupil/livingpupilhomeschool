@@ -75,6 +75,22 @@ const money = (value) =>
     currency: 'PHP',
   }).format(Number(value || 0));
 
+const isSuccessfulPayment = (status) => status === 'S';
+
+const getPaymentValidatedAt = (order) => {
+  const timestamps = (order?.orderFees || [])
+    .filter(
+      (fee) =>
+        isSuccessfulPayment(fee.transaction?.paymentStatus) &&
+        fee.transaction?.updatedAt
+    )
+    .map((fee) => new Date(fee.transaction.updatedAt).getTime())
+    .filter((time) => !Number.isNaN(time));
+
+  if (!timestamps.length) return null;
+  return new Date(Math.min(...timestamps)).toISOString();
+};
+
 const paymentLabel = (fee, fees, paymentType) => {
   if (paymentType === 'FULL_PAYMENT') {
     return 'Full Payment';
@@ -194,6 +210,7 @@ const ShopOrdersAdmin = () => {
           (sum, item) => sum + (item.quantity || 0),
           0
         ),
+        paymentValidatedAt: getPaymentValidatedAt(order),
       })) || [],
     [data?.orders]
   );
@@ -502,6 +519,13 @@ const ShopOrdersAdmin = () => {
               field: 'createdAt',
               headerName: 'Created',
               width: 170,
+              valueFormatter: (value) =>
+                value ? format(new Date(value), 'MMM d, yyyy h:mm a') : '—',
+            },
+            {
+              field: 'paymentValidatedAt',
+              headerName: 'Payment Validated',
+              width: 180,
               valueFormatter: (value) =>
                 value ? format(new Date(value), 'MMM d, yyyy h:mm a') : '—',
             },
@@ -929,6 +953,18 @@ const ShopOrdersAdmin = () => {
                       '—'}
                   </span>
                 </div>
+                {isSuccessfulPayment(selectedTransaction.paymentStatus) &&
+                selectedTransaction.updatedAt ? (
+                  <div className="flex justify-between">
+                    <span className="font-medium">Validated:</span>
+                    <span>
+                      {format(
+                        new Date(selectedTransaction.updatedAt),
+                        'MMM d, yyyy h:mm a'
+                      )}
+                    </span>
+                  </div>
+                ) : null}
               </div>
             </div>
 
@@ -998,7 +1034,14 @@ const ShopOrdersAdmin = () => {
                   Payment Status
                 </h4>
                 <p className="text-sm text-green-700">
-                  This payment has been marked as successful.
+                  This payment has been marked as successful
+                  {selectedTransaction.updatedAt
+                    ? ` on ${format(
+                        new Date(selectedTransaction.updatedAt),
+                        'MMM d, yyyy h:mm a'
+                      )}`
+                    : ''}
+                  .
                 </p>
               </div>
             ) : null}
