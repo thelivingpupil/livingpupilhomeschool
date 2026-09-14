@@ -345,9 +345,56 @@ model User {
   orderV2             OrderV2[]
   inventoryMovements  InventoryMovement[]
   createdWorkspaceV2  WorkspaceV2[]
+  orientationProgress OrientationProgress[]
 
   @@unique([userCode, email])
   @@map("users")
+}
+
+model OrientationVideo {
+  id                   String                  @id @default(cuid())
+  title                String
+  schoolYear           String
+  videoUrl             String
+  videoPath            String?
+  requiredWatchSeconds Int
+  isActive             Boolean                 @default(true)
+  createdAt            DateTime                @default(now())
+  deletedAt            DateTime?
+  updatedAt            DateTime                @updatedAt
+  gradeLevels          OrientationVideoGrade[]
+  progress             OrientationProgress[]
+
+  @@map("orientationVideos")
+}
+
+model OrientationVideoGrade {
+  id                 String           @id @default(cuid())
+  orientationVideoId String
+  gradeLevel         GradeLevel
+  orientationVideo   OrientationVideo @relation(fields: [orientationVideoId], references: [id], onDelete: Cascade)
+
+  @@unique([orientationVideoId, gradeLevel])
+  @@map("orientationVideoGrades")
+}
+
+model OrientationProgress {
+  id                 String           @id @default(cuid())
+  userId             String
+  orientationVideoId String
+  gradeLevel         GradeLevel
+  schoolYear         String
+  status             String
+  watchedSeconds     Int              @default(0)
+  startedAt          DateTime         @default(now())
+  finishedAt         DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orientationVideo   OrientationVideo @relation(fields: [orientationVideoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, orientationVideoId])
+  @@map("orientationProgress")
 }
 
 model VerificationToken {

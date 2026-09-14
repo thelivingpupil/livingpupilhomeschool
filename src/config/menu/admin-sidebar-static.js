@@ -1,6 +1,7 @@
 import {
   AcademicCapIcon,
   AdjustmentsIcon,
+  BadgeCheckIcon,
   CashIcon,
   ClipboardListIcon,
   CollectionIcon,
@@ -8,6 +9,7 @@ import {
   HomeIcon,
   NewspaperIcon,
   PencilIcon,
+  PlayIcon,
   ShoppingCartIcon,
   UserCircleIcon,
   UsersIcon,
@@ -54,6 +56,18 @@ const adminSidebarMenu = () => [
         name: 'Cottage Slots',
         icon: AdjustmentsIcon,
         path: `/account/admin/cottage-slots`,
+        showDefault: true,
+      },
+      {
+        name: 'Orientation Videos',
+        icon: PlayIcon,
+        path: `/account/admin/orientation`,
+        showDefault: true,
+      },
+      {
+        name: 'Parent Orientation',
+        icon: BadgeCheckIcon,
+        path: `/account/admin/orientation-progress`,
         showDefault: true,
       },
       {

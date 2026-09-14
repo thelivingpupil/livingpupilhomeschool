@@ -17,6 +17,10 @@ import { createWorkspaceWithSlug } from '@/prisma/services/workspace';
 import { SCHOOL_YEAR } from '@/utils/constants';
 import { STUDENT_STATUS } from '@/utils/constants';
 import { getGuardianInformationID, createParentTrainingsForGrade } from '@/prisma/services/parent-training';
+import {
+  OrientationError,
+  assertOrientationFinished,
+} from '@/prisma/services/orientation';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -81,6 +85,26 @@ const handler = async (req, res) => {
       enrollmentAgreementSignature,
       enrollmentAgreementSignatureDate,
     } = req.body;
+
+    if (!session) {
+      return;
+    }
+
+    try {
+      await assertOrientationFinished(
+        session.user.userId,
+        incomingGradeLevel,
+        schoolYear,
+      );
+    } catch (error) {
+      if (error instanceof OrientationError) {
+        return res.status(error.statusCode).json({
+          errors: { error: { msg: error.message } },
+        });
+      }
+      throw error;
+    }
+
     const guardianInformation = {
       primaryGuardianName,
       primaryGuardianOccupation,

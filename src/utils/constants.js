@@ -930,6 +930,61 @@ export const PARENT_TRAINING_STATUS_BG_COLOR = {
   UNFINISHED: 'bg-secondary-500 text-white',
 };
 
+export const ORIENTATION_STATUS = {
+  STARTED: 'STARTED',
+  FINISHED: 'FINISHED',
+};
+
+export const ORIENTATION_STATUS_BG_COLOR = {
+  FINISHED: 'bg-green-600 text-white',
+  STARTED: 'bg-secondary-500 text-white',
+};
+
+export const parseWatchTimeToSeconds = (value) => {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return Math.max(0, Math.floor(value));
+  }
+
+  const trimmed = String(value || '').trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const parts = trimmed.split(':').map((part) => Number(part));
+  if (parts.some((part) => !Number.isFinite(part) || part < 0)) {
+    return null;
+  }
+
+  if (parts.length === 1) {
+    return Math.floor(parts[0]);
+  }
+
+  if (parts.length === 2) {
+    const [minutes, seconds] = parts;
+    if (seconds >= 60) {
+      return null;
+    }
+    return Math.floor(minutes) * 60 + Math.floor(seconds);
+  }
+
+  if (parts.length === 3) {
+    const [hours, minutes, seconds] = parts;
+    if (minutes >= 60 || seconds >= 60) {
+      return null;
+    }
+    return Math.floor(hours) * 3600 + Math.floor(minutes) * 60 + Math.floor(seconds);
+  }
+
+  return null;
+};
+
+export const formatSecondsToWatchTime = (seconds) => {
+  const total = Math.max(0, Math.floor(Number(seconds) || 0));
+  const minutes = Math.floor(total / 60);
+  const remainder = total % 60;
+  return `${minutes}:${String(remainder).padStart(2, '0')}`;
+};
+
 export const PARENT_TRAINING_CODES = {
   // SY 2026-2027
   FPT20261: {

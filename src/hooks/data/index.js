@@ -24,6 +24,8 @@ import useCottageSlots from './useCottageSlots';
 import useProducts from './useProducts';
 import useInventoryMovements from './useInventoryMovements';
 import useShopOrdersV2 from './useShopOrdersV2';
+import useOrientationVideos from './useOrientationVideos';
+import useOrientationProgress from './useOrientationProgress';
 
 export {
   useAffiliates,
@@ -52,4 +54,6 @@ export {
   useProducts,
   useInventoryMovements,
   useShopOrdersV2,
+  useOrientationVideos,
+  useOrientationProgress,
 };

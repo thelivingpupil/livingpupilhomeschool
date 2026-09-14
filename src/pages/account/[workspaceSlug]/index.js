@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   CheckIcon,
   ChevronDownIcon,
@@ -42,6 +42,7 @@ import Meta from '@/components/Meta/index';
 import Modal from '@/components/Modal';
 import { PaymentPoliciesText, PaymentPolicySignatureSection } from '@/components/PaymentPolicies';
 import AgreementReadGate from '@/components/AgreementReadGate';
+import OrientationGate from '@/components/OrientationGate';
 import {
   EnrollmentAgreementSignatureSection,
   MediaConsentSection,
@@ -132,6 +133,8 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     GradeLevel.PRESCHOOL,
   );
   const [schoolYear, setSchoolYear] = useState('');
+  const [orientationComplete, setOrientationComplete] = useState(false);
+  const [completedOrientationKey, setCompletedOrientationKey] = useState('');
   const [formerSchoolName, setFormerSchoolName] = useState('');
   const [formerSchoolAddress, setFormerSchoolAddress] = useState('');
   const [program, setProgram] = useState(Program.HOMESCHOOL_PROGRAM);
@@ -511,9 +514,28 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     }
   }, [program, cottageSlotsAvailable]);
 
+  const handleOrientationComplete = useCallback(({ gradeLevel, schoolYear: completedSchoolYear }) => {
+    setIncomingGradeLevel(gradeLevel);
+    setSchoolYear(completedSchoolYear);
+    setCompletedOrientationKey(`${gradeLevel}:${completedSchoolYear}`);
+    setOrientationComplete(true);
+  }, []);
+
+  useEffect(() => {
+    if (!incomingGradeLevel || !schoolYear || !completedOrientationKey) {
+      return;
+    }
+
+    const key = `${incomingGradeLevel}:${schoolYear}`;
+    if (completedOrientationKey !== key) {
+      setOrientationComplete(false);
+    }
+  }, [incomingGradeLevel, schoolYear, completedOrientationKey]);
+
   const age = differenceInYears(new Date(), birthDate) || 0;
   const validateNext =
-    (step === 0 &&
+    orientationComplete &&
+    ((step === 0 &&
       firstName.length > 0 &&
       middleName.length > 0 &&
       lastName.length > 0 &&
@@ -561,7 +583,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       agree &&
       signatureLink?.length > 0 &&
       (program !== Program.HOMESCHOOL_COTTAGE || cottageSlotId) &&
-      !isSubmittingCode);
+      !isSubmittingCode));
 
   const programFee = programs.find((programFee) => {
     let gradeLevel = incomingGradeLevel;
@@ -2240,7 +2262,10 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 }`}
               >
                 <select
-                  className="w-full px-3 py-2 capitalize rounded appearance-none"
+                  className={`w-full px-3 py-2 capitalize rounded appearance-none ${
+                    orientationComplete ? 'bg-gray-100 cursor-not-allowed' : ''
+                  }`}
+                  disabled={orientationComplete}
                   onChange={(e) => {
                     const newGradeLevel = e.target.value;
                     setIncomingGradeLevel(newGradeLevel);
@@ -2271,6 +2296,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 </div>
               </div>
             </div>
+            {orientationComplete ? (
+              <p className="mt-1 text-sm text-gray-500">
+                Grade level is locked to the orientation you completed.
+              </p>
+            ) : null}
           </div>
         </div>
         <div className="flex flex-row">
@@ -3927,6 +3957,13 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
           />
           <Content.Divider />
           {!workspace.studentRecord ? (
+            <>
+            <OrientationGate
+              show={!orientationComplete}
+              initialGradeLevel={incomingGradeLevel}
+              initialSchoolYear={schoolYear || SCHOOL_YEAR.SY_2026_2027}
+              onComplete={handleOrientationComplete}
+            />
             <Content.Container>
               <div className="flex justify-between w-full md:flex-wrap md:space-x-5">
                 {steps.map((name, index) => (
@@ -3984,6 +4021,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 </Card.Footer>
               </Card>
             </Content.Container>
+            </>
           ) : (
             <Content.Container>
               <Card>
@@ -5191,7 +5229,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
               ) : (
                 <button
                   className="w-full py-2 text-center rounded bg-secondary-500 hover:bg-secondary-400 disabled:opacity-25"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !orientationComplete}
                   onClick={submit}
                 >
                   {isSubmitting ? 'Processing...' : 'Submit Record'}
