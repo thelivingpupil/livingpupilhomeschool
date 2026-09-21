@@ -425,7 +425,8 @@ const OrientationAdmin = () => {
             </div>
             <p className="text-xs text-gray-500">
               Assign this video to one or more grades. A grade can also have more
-              than one orientation video.
+              than one orientation video. Videos assigned to every grade always
+              play first.
             </p>
           </div>
 

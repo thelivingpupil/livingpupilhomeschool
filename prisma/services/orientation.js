@@ -1,5 +1,25 @@
 import prisma from '@/prisma/index';
-import { ORIENTATION_STATUS } from '@/utils/constants';
+import { GRADE_LEVEL_GROUPS, ORIENTATION_STATUS } from '@/utils/constants';
+
+const ALL_ORIENTATION_GRADE_LEVELS = GRADE_LEVEL_GROUPS.flatMap(
+  (group) => group.levels,
+);
+
+const isAllGradesVideo = (video) => {
+  const assigned = new Set(video.gradeLevels || []);
+  return ALL_ORIENTATION_GRADE_LEVELS.every((level) => assigned.has(level));
+};
+
+const sortOrientationVideos = (videos) =>
+  [...videos].sort((a, b) => {
+    const allGradesDiff =
+      Number(isAllGradesVideo(b)) - Number(isAllGradesVideo(a));
+    if (allGradesDiff !== 0) {
+      return allGradesDiff;
+    }
+
+    return new Date(a.createdAt) - new Date(b.createdAt);
+  });
 
 const progressSelect = {
   id: true,
@@ -68,7 +88,7 @@ export const getActiveOrientationVideos = async (gradeLevel, schoolYear) => {
     select: videoSelect,
   });
 
-  return videos.map(serializeVideo);
+  return sortOrientationVideos(videos.map(serializeVideo));
 };
 
 const assertVideoForGrade = async (orientationVideoId, gradeLevel, schoolYear) => {
