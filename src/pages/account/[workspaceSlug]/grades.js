@@ -278,9 +278,8 @@ const Grades = () => {
   const schoolYearReportCardUrl =
     workspace?.studentRecord?.schoolYearReportCard;
   const gradeLevel = workspace?.studentRecord?.incomingGradeLevel;
-  const partnerSchool = getUsPartnerSchool(
-    workspace?.studentRecord?.partnerSchool,
-  );
+  const storedPartnerSchool = workspace?.studentRecord?.partnerSchool;
+  const partnerSchool = getUsPartnerSchool(storedPartnerSchool);
   const showPartnerForms = formPage === 'term' || formPage === 'year-end';
 
   const getFormId = () => {
@@ -335,13 +334,13 @@ const Grades = () => {
                 </div>
               </div>
 
-              {showPartnerForms && !partnerSchool && (
+              {showPartnerForms && !storedPartnerSchool && (
                 <p className="mt-4 text-gray-600">
                   Partner school not assigned. Please contact Living Pupil.
                 </p>
               )}
 
-              {showPartnerForms && partnerSchool && (
+              {showPartnerForms && storedPartnerSchool && (
                 <>
                   <p className="mt-3 text-sm text-gray-600">
                     Partner School:{' '}
@@ -358,7 +357,7 @@ const Grades = () => {
                     </div>
                   ) : (
                     <p className="mt-4 text-gray-600">
-                      No form available for this grade level.
+                      No form available for this partner school or grade level.
                     </p>
                   )}
                 </>

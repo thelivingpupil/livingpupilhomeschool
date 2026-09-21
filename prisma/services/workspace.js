@@ -23,12 +23,77 @@ import {
 import { sendMail } from '@/lib/server/mail';
 import prisma from '@/prisma/index';
 
+const STUDENT_STATUS_RANK = {
+  ENROLLED: 4,
+  INITIALLY_ENROLLED: 3,
+  PENDING: 2,
+};
+
+const hasActiveStudentRecord = (workspace) =>
+  Boolean(workspace?.studentRecord && !workspace.studentRecord.deletedAt);
+
+const hasPaidSchoolFee = (workspace) =>
+  (workspace.schoolFees || []).some(
+    (fee) => fee?.transaction?.paymentStatus === 'S'
+  );
+
+const studentStatusRank = (workspace) => {
+  // Status only counts after a successful payment, matching the parent
+  // dashboard. Paid + pending is a real enrollment; unpaid clones are not.
+  if (!hasPaidSchoolFee(workspace)) return 0;
+
+  return STUDENT_STATUS_RANK[workspace.studentRecord?.studentStatus] || 0;
+};
+
+export const pickCanonicalWorkspace = (workspaces = []) => {
+  if (!workspaces.length) return null;
+
+  return [...workspaces].sort((a, b) => {
+    const rankA = [
+      hasActiveStudentRecord(a) ? 1 : 0,
+      hasPaidSchoolFee(a) ? 1 : 0,
+      studentStatusRank(a),
+      a.studentRecord?.partnerSchool ? 1 : 0,
+    ];
+    const rankB = [
+      hasActiveStudentRecord(b) ? 1 : 0,
+      hasPaidSchoolFee(b) ? 1 : 0,
+      studentStatusRank(b),
+      b.studentRecord?.partnerSchool ? 1 : 0,
+    ];
+
+    for (let i = 0; i < rankA.length; i++) {
+      if (rankB[i] !== rankA[i]) return rankB[i] - rankA[i];
+    }
+
+    return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+  })[0];
+};
+
+const collapseWorkspacesBySlug = (workspaces = []) => {
+  const groups = new Map();
+
+  for (const workspace of workspaces) {
+    const key = workspace.slug || workspace.id;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(workspace);
+  }
+
+  return Array.from(groups.values()).map(pickCanonicalWorkspace);
+};
+
 export const countWorkspaces = async (slug) =>
   await prisma.workspace.count({
     where: { slug: { startsWith: slug } },
   });
 
 export const createWorkspaceWithSlug = async (creatorId, email, name, slug) => {
+  const count = await countWorkspaces(slug);
+
+  if (count > 0) {
+    slug = `${slug}-${count}`;
+  }
+
   const workspace = await prisma.workspace.create({
     data: {
       creatorId,
@@ -205,12 +270,31 @@ export const getInvitation = async (inviteCode) =>
     },
   });
 
-export const getOwnWorkspace = async (id, email, slug) =>
-  await prisma.workspace.findFirst({
+export const getOwnWorkspace = async (id, email, slug) => {
+  const workspaces = await prisma.workspace.findMany({
     select: {
       id: true,
       inviteCode: true,
       name: true,
+      createdAt: true,
+      studentRecord: {
+        select: {
+          deletedAt: true,
+          studentStatus: true,
+          partnerSchool: true,
+        },
+      },
+      schoolFees: {
+        select: {
+          transaction: {
+            select: { paymentStatus: true },
+          },
+        },
+        where: {
+          deletedAt: null,
+          transaction: { deletedAt: null },
+        },
+      },
     },
     where: {
       OR: [
@@ -231,6 +315,9 @@ export const getOwnWorkspace = async (id, email, slug) =>
       },
     },
   });
+
+  return pickCanonicalWorkspace(workspaces);
+};
 
 export const getSiteWorkspace = async (slug, customDomain) =>
   await prisma.workspace.findFirst({
@@ -258,9 +345,10 @@ export const getSiteWorkspace = async (slug, customDomain) =>
     },
   });
 
-export const getSingleWorkspace = async (id, email, slug) =>
-  await prisma.workspace.findFirst({
+export const getSingleWorkspace = async (id, email, slug) => {
+  const workspaces = await prisma.workspace.findMany({
     select: {
+      id: true,
       createdAt: true,
       creator: {
         select: {
@@ -314,6 +402,8 @@ export const getSingleWorkspace = async (id, email, slug) =>
           idPictureFront: true,
           idPictureBack: true,
           createdAt: true,
+          studentStatus: true,
+          deletedAt: true,
         },
       },
       schoolFees: {
@@ -375,9 +465,14 @@ export const getSingleWorkspace = async (id, email, slug) =>
     },
   });
 
-export const getWorkspace = async (id, email, slug) =>
-  await prisma.workspace.findFirst({
+  return pickCanonicalWorkspace(workspaces);
+};
+
+export const getWorkspace = async (id, email, slug) => {
+  const workspaces = await prisma.workspace.findMany({
     select: {
+      id: true,
+      createdAt: true,
       creatorId: true,
       name: true,
       inviteCode: true,
@@ -453,6 +548,8 @@ export const getWorkspace = async (id, email, slug) =>
           idPictureFront: true,
           idPictureBack: true,
           createdAt: true,
+          studentStatus: true,
+          deletedAt: true,
         },
       },
       schoolFees: {
@@ -514,6 +611,9 @@ export const getWorkspace = async (id, email, slug) =>
     },
   });
 
+  return pickCanonicalWorkspace(workspaces);
+};
+
 export const getWorkspaces = async (id, email) => {
   const currentYear = new Date().getFullYear();
 
@@ -522,7 +622,7 @@ export const getWorkspaces = async (id, email) => {
   const [fromYear, toYear] = !checkSchoolYear
     ? [currentYear, currentYear + 1]
     : [currentYear - 1, currentYear];
-  return await prisma.workspace.findMany({
+  const workspaces = await prisma.workspace.findMany({
     select: {
       createdAt: true,
       creator: {
@@ -585,6 +685,7 @@ export const getWorkspaces = async (id, email) => {
           idPictureBack: true,
           createdAt: true,
           studentStatus: true,
+          deletedAt: true,
         },
       },
       schoolFees: {
@@ -649,6 +750,8 @@ export const getWorkspaces = async (id, email) => {
       },
     },
   });
+
+  return collapseWorkspacesBySlug(workspaces);
 };
 
 export const getWorkspacePaths = async () => {

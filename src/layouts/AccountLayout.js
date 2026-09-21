@@ -116,12 +116,12 @@ const AccountLayout = ({ children }) => {
   // Extract workspaceSlug from route - wait for router to be ready
   const workspaceSlug = router.isReady ? router.query.workspaceSlug : null;
 
-  // Fetch workspace when slug is missing from context or does not match the route
+  // Always load by slug so duplicate workspaces with the same slug resolve
+  // to the canonical enrolled record instead of a leftover clone.
   const shouldFetchWorkspace =
-    workspaceSlug &&
+    Boolean(workspaceSlug) &&
     status === 'authenticated' &&
-    router.isReady &&
-    (!workspace || workspace.slug !== workspaceSlug);
+    router.isReady;
   const { data: workspaceData, error: workspaceError, isLoading: isLoadingWorkspace } = useSWR(
     shouldFetchWorkspace ? `/api/workspace/${workspaceSlug}` : null,
     null,
