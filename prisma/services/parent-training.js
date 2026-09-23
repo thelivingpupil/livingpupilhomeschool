@@ -1,19 +1,53 @@
 import prisma from '@/prisma/index';
-import { PARENT_TRAINING_PER_GRADE_LEVEL, SCHOOL_YEAR } from '@/utils/constants';
+import { getParentTrainingCodesForStudent, SCHOOL_YEAR } from '@/utils/constants';
 
-export const createParentTrainingsForGrade = async (gradeLevel, guardianId, schoolYear, status) => {
-    const trainings = PARENT_TRAINING_PER_GRADE_LEVEL[gradeLevel];
+export const createParentTrainingsForGrade = async (
+    gradeLevel,
+    guardianId,
+    schoolYear,
+    status,
+    studentRecord
+) => {
+    const courseCodes = getParentTrainingCodesForStudent(gradeLevel, studentRecord);
 
-    if (!trainings || Object.keys(trainings).length === 0) {
+    if (courseCodes.length === 0) {
         console.warn(`No trainings found for grade level: ${gradeLevel}`);
         return;
     }
 
-    const trainingPromises = Object.keys(trainings).map((courseCode) =>
+    const trainingPromises = courseCodes.map((courseCode) =>
         createParentTraining(courseCode, guardianId, schoolYear, status)
     );
 
     await Promise.all(trainingPromises);
+};
+
+export const createPartnerSchoolParentTrainingsForStudent = async (studentRecord) => {
+    if (!studentRecord?.partnerSchool || !studentRecord.schoolYear) return;
+
+    const workspace = await prisma.workspace.findUnique({
+        where: { id: studentRecord.studentId },
+        select: {
+            creator: {
+                select: {
+                    guardianInformation: {
+                        select: { id: true },
+                    },
+                },
+            },
+        },
+    });
+
+    const guardianId = workspace?.creator?.guardianInformation?.id;
+    if (!guardianId) return;
+
+    await createParentTrainingsForGrade(
+        studentRecord.incomingGradeLevel,
+        guardianId,
+        studentRecord.schoolYear,
+        'UNFINISHED',
+        studentRecord
+    );
 };
 
 export const createParentTraining = async (courseCode, guardianId, schoolYear, status) => {

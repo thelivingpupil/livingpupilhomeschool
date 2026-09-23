@@ -1021,36 +1021,43 @@ export const PARENT_TRAINING_CODES = {
     name: 'How to Grade Kinder 2 Students (Kairos)',
     code: null,
     sequence: 'Parent Training 5',
+    partnerSchool: 'KAIROS',
   },
   PT26273B: {
     name: 'How to Grade Kinder 2 Students (Mandaue Christian School)',
     code: null,
     sequence: 'Parent Training 5',
+    partnerSchool: 'MANDAUE',
   },
   PT26273C: {
     name: 'How to Grade Form 1 - 3 Students (Kairos)',
     code: null,
     sequence: 'Parent Training 5',
+    partnerSchool: 'KAIROS',
   },
   SHDYB21: {
     name: 'How to Grade Form 1 - 3 Students (Mandaue Christian School)',
     code: null,
     sequence: 'Parent Training 5',
+    partnerSchool: 'MANDAUE',
   },
   PT26273D: {
     name: 'How to Assess and Grade International Students (Homelife Academy)',
     code: null,
     sequence: 'Parent Training 6',
+    partnerSchool: 'HOMELIFE',
   },
   'Msha712!': {
     name: 'CM Assessment Training Sy 2026-2027 (Kairos)',
     code: null,
     sequence: 'Parent Training 7',
+    partnerSchool: 'KAIROS',
   },
   JDwhs18: {
     name: 'CM Assessment Training Sy 26-27 (Mandaue Christian School)',
     code: null,
     sequence: 'Parent Training 7',
+    partnerSchool: 'MANDAUE',
   },
 
   /* SY 2025-2026 — kept for future reuse
@@ -1204,6 +1211,19 @@ export const PARENT_TRAINING_PER_GRADE_LEVEL = {
   GRADE_10: FORM_3_PARENT_TRAINING,
   GRADE_11: {},
   GRADE_12: {},
+};
+
+export const getParentTrainingCodesForStudent = (gradeLevel, studentRecord) => {
+  const trainings = PARENT_TRAINING_PER_GRADE_LEVEL[gradeLevel];
+  if (!trainings) return [];
+
+  const studentSchools = getStudentPartnerSchools(studentRecord);
+
+  return Object.keys(trainings).filter((courseCode) => {
+    const requiredSchool = PARENT_TRAINING_CODES[courseCode]?.partnerSchool;
+    if (!requiredSchool) return true;
+    return studentSchools.includes(requiredSchool);
+  });
 };
 
 /* SY 2025-2026 — kept for future reuse
