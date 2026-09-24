@@ -82,10 +82,17 @@ const handler = async (req, res) => {
       }
 
       if (action === 'updateStatus' || status) {
-        await updateShopOrderV2Status({
-          orderCode,
-          status,
-        });
+        if (status === 'CANCELLED') {
+          await cancelShopOrderV2({
+            orderCode,
+            userId: session.user.userId,
+          });
+        } else {
+          await updateShopOrderV2Status({
+            orderCode,
+            status,
+          });
+        }
         return res.status(200).json({ data: { success: true } });
       }
 

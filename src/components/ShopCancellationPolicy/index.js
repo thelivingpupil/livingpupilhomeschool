@@ -10,6 +10,37 @@ const ShopCancellationPolicyText = ({ inModal = false }) => (
       Pupil Homeschool Bookshop. By agreeing, you acknowledge that you understand
       and accept these terms.
     </p>
+    <div className="p-4 text-white bg-black rounded-lg">
+      <h4 className="mb-3 text-base font-bold">
+        📦 LP Shop Order Processing Schedule
+      </h4>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left border-b border-gray-700">
+              <th className="py-2 pr-4 font-semibold">Order Period</th>
+              <th className="py-2 pr-4 font-semibold">Cut-off</th>
+              <th className="py-2 pr-4 font-semibold">Processing &amp; Packing</th>
+              <th className="py-2 font-semibold">Shipment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-b border-gray-800">
+              <td className="py-2 pr-4">Saturday – Monday</td>
+              <td className="py-2 pr-4">Monday, 11:59 PM</td>
+              <td className="py-2 pr-4">Tuesday</td>
+              <td className="py-2">Tuesday</td>
+            </tr>
+            <tr>
+              <td className="py-2 pr-4">Tuesday – Friday</td>
+              <td className="py-2 pr-4">Friday, 11:59 PM</td>
+              <td className="py-2 pr-4">Saturday</td>
+              <td className="py-2">Saturday</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
     <ol className="px-5 space-y-4 list-decimal">
       <li>
         <strong>ORDER CONFIRMATION.</strong> An order is considered placed once
@@ -36,11 +67,10 @@ const ShopCancellationPolicyText = ({ inModal = false }) => (
         finance review and applicable processing times.
       </li>
       <li>
-        <strong>NON-CANCELLABLE / NON-RETURNABLE ITEMS.</strong> Learning
-        materials, books, kits, and similar shop items that have already been
-        packed, released, shipped, or otherwise made available are generally
-        non-returnable and non-refundable, except where required by applicable
-        law or expressly approved by the school.
+        <strong>NON-CANCELLABLE / NON-RETURNABLE ITEMS.</strong> Once an order
+        has been placed, it is considered final. We are unable to accommodate
+        requests for product changes, swaps, cancellations, or change-of-mind
+        transactions, except in cases involving factory defects.
       </li>
       <li>
         <strong>SHIPPING & PICK-UP.</strong> Shipping fees, delivery areas, and

@@ -387,7 +387,7 @@ const InvoicePage = ({ payload }) => (
           Pagsabungan, Mandaue City, Cebu 6014
         </Text>
         <Text style={styles.footerText}>
-          (032) 252 7568 • (+63) 917 1199 351 • info@livingpupilhomeschool.com
+          (+63) 962 110 8035 • shop@livingpupilhomeschoolph.com
         </Text>
       </View>
     </Page>

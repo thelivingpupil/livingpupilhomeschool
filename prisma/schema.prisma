@@ -905,6 +905,7 @@ enum ShopPaymentType {
 enum OrderV2Status {
   ORDER_PLACED
   PROCESSING
+  IN_TRANSIT
   SHIPPED
   COMPLETED
   CANCELLED

@@ -594,6 +594,8 @@ const mapOrderV2StatusToLegacy = (status) => {
       return 'Order_Placed';
     case OrderV2Status.PROCESSING:
       return 'Processing';
+    case 'IN_TRANSIT':
+      return 'In_Transit';
     case OrderV2Status.SHIPPED:
       return 'For_Delivery';
     case OrderV2Status.COMPLETED:

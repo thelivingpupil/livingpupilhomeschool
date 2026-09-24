@@ -40,16 +40,23 @@ import {
 const ORDER_STATUSES = [
   'ORDER_PLACED',
   'PROCESSING',
+  'IN_TRANSIT',
   'SHIPPED',
   'COMPLETED',
+  'CANCELLED',
 ];
 
 const V2_TO_LEGACY_STATUS = {
   ORDER_PLACED: 'Order_Placed',
   PROCESSING: 'Processing',
+  IN_TRANSIT: 'In_Transit',
   SHIPPED: 'For_Delivery',
   COMPLETED: 'Completed',
   CANCELLED: 'Cancelled',
+};
+
+const STATUS_OPTION_LABEL = {
+  CANCELLED: 'Cancel',
 };
 
 const legacyOrderStatus = (status) =>
@@ -355,7 +362,10 @@ const ShopOrdersAdmin = () => {
       if (response.errors) {
         throw new Error(response.errors?.error?.msg || 'Update failed');
       }
-      toast.success(`Updated ${statusOrder.orderCode} to ${nextStatus}`);
+      const legacy = legacyOrderStatus(nextStatus);
+      const statusLabel =
+        STATUS_OPTION_LABEL[nextStatus] || ORDER_STATUS[legacy] || nextStatus;
+      toast.success(`Updated ${statusOrder.orderCode} to ${statusLabel}`);
       setStatusOrder(null);
       setNextStatus('');
       await refreshViewOrder();
@@ -1106,7 +1116,7 @@ const ShopOrdersAdmin = () => {
             const legacy = legacyOrderStatus(status);
             return (
               <option key={status} value={status}>
-                {ORDER_STATUS[legacy] || status}
+                {STATUS_OPTION_LABEL[status] || ORDER_STATUS[legacy] || status}
               </option>
             );
           })}
