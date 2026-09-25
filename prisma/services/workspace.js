@@ -228,6 +228,7 @@ export const requestWorkspaceDeletion = async (id, email, slug) => {
 
   await sendMail({
     to: adminEmail,
+    bcc: ['lpwebsite2022@gmail.com'],
     subject: `[Living Pupil Homeschool] Deletion request for ${workspace.name}`,
     html: deleteRequestHtml({
       workspaceId: workspace.id,
