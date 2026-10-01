@@ -167,6 +167,32 @@ const overallPieOptions = {
     },
 };
 
+const ENROLLMENT_FILTERS = [
+    { value: 'ALL', label: 'All' },
+    { value: 'NEW', label: 'New' },
+    { value: 'CONTINUING', label: 'Continuing' },
+];
+
+const getFamilyEnrollmentType = (row) => {
+    const workspaces = row?.guardian?.user?.createdWorkspace || [];
+    let hasNew = false;
+    let hasContinuing = false;
+
+    workspaces.forEach((workspace) => {
+        const record = workspace.studentRecord;
+        if (!record || record.deletedAt) return;
+        if (record.schoolYear !== SCHOOL_YEAR.SY_2026_2027) return;
+        if (record.studentStatus === 'DROPPED') return;
+
+        if (record.enrollmentType === 'CONTINUING') hasContinuing = true;
+        if (record.enrollmentType === 'NEW') hasNew = true;
+    });
+
+    if (hasContinuing) return 'CONTINUING';
+    if (hasNew) return 'NEW';
+    return null;
+};
+
 const percentChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -195,6 +221,7 @@ const percentChartOptions = {
 const ParentTraining = () => {
     const { data, isLoading } = useParentTrainings();
     const [isDashboardOpen, setDashboardOpen] = useState(true);
+    const [enrollmentFilter, setEnrollmentFilter] = useState('ALL');
     function CustomToolbar() {
         return (
             <GridToolbarContainer>
@@ -212,17 +239,24 @@ const ParentTraining = () => {
 
     const trainings = data?.parentTraining || [];
 
+    const snapshotTrainings = useMemo(() => {
+        if (enrollmentFilter === 'ALL') return trainings;
+        return trainings.filter(
+            (row) => getFamilyEnrollmentType(row) === enrollmentFilter
+        );
+    }, [trainings, enrollmentFilter]);
+
     const lessonStats = useMemo(
         () => LESSON_GROUPS.map((lesson) => ({
             ...lesson,
-            ...getLessonStats(trainings, lesson.codes),
+            ...getLessonStats(snapshotTrainings, lesson.codes),
         })),
-        [trainings]
+        [snapshotTrainings]
     );
 
     const overallStats = useMemo(
-        () => getOverallStats(trainings, LESSON_GROUPS),
-        [trainings]
+        () => getOverallStats(snapshotTrainings, LESSON_GROUPS),
+        [snapshotTrainings]
     );
 
     const chartStats = [overallStats, ...lessonStats];
@@ -279,6 +313,25 @@ const ParentTraining = () => {
             </button>
             {isDashboardOpen && (
             <div className="mb-5 space-y-5">
+            <div className="flex items-center gap-2">
+                {ENROLLMENT_FILTERS.map((option) => {
+                    const isActive = enrollmentFilter === option.value;
+                    return (
+                        <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => setEnrollmentFilter(option.value)}
+                            className={`px-3 py-1 text-sm rounded-md ${
+                                isActive
+                                    ? 'bg-primary-500 text-white'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
+                        >
+                            {option.label}
+                        </button>
+                    );
+                })}
+            </div>
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
                 {lessonStats.map((lesson) => (
                     <Card key={lesson.key}>

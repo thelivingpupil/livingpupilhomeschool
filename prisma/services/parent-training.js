@@ -112,12 +112,19 @@ export const getParentTrainings = async () =>
                             id: true,
                             createdWorkspace: {
                                 select: {
-                                    slug: true
+                                    slug: true,
+                                    studentRecord: {
+                                        select: {
+                                            enrollmentType: true,
+                                            schoolYear: true,
+                                            studentStatus: true,
+                                            deletedAt: true,
+                                        },
+                                    },
                                 },
                                 where: {
                                     deletedAt: null
                                 },
-                                take: 1,
                                 orderBy: {
                                     createdAt: 'desc'
                                 }
