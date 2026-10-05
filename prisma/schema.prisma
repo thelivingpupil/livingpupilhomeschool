@@ -263,6 +263,7 @@ model StudentRecord {
   district                         District?
   idPictureBack                    String?
   idPictureFront                   String?
+  monthlyPaymentCount              Int?
   cottageSlotId                    String?
   cottageSlot                      CottageSlot?  @relation(fields: [cottageSlotId], references: [id], onDelete: Restrict)
   student                          Workspace     @relation(fields: [studentId], references: [id], onDelete: Cascade)

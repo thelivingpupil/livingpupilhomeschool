@@ -581,7 +581,8 @@ export const createSchoolFees = async (
 
 /**
  * Create remaining MONTHLY installments after the initial (order 0) fee is paid.
- * monthIndex is based on the payment date so late payers get fewer installments.
+ * Uses the payment count saved on the student record when school fees were updated.
+ * Otherwise monthIndex is based on the payment date so late payers get fewer installments.
  */
 export const createRemainingMonthlyInstallments = async (transactionId) => {
   const schoolFee = await prisma.schoolFee.findFirst({
@@ -621,6 +622,7 @@ export const createRemainingMonthlyInstallments = async (transactionId) => {
               incomingGradeLevel: true,
               discount: true,
               scholarship: true,
+              monthlyPaymentCount: true,
             },
           },
         },
@@ -674,10 +676,11 @@ export const createRemainingMonthlyInstallments = async (transactionId) => {
   const discountCode = studentRecord.discount || '';
   const scholarshipCode = studentRecord.scholarship || '';
 
-  const monthIndex = getMonthIndexForSchoolYear(
-    studentRecord.schoolYear,
-    new Date()
-  );
+  const storedCount = Number(studentRecord.monthlyPaymentCount);
+  const monthIndex =
+    Number.isInteger(storedCount) && storedCount >= 1 && storedCount <= 8
+      ? storedCount
+      : getMonthIndexForSchoolYear(studentRecord.schoolYear, new Date());
   const safeMonthIndex =
     monthIndex != null && monthIndex > 0 && Number.isFinite(monthIndex)
       ? monthIndex
@@ -838,43 +841,55 @@ export const createRemainingMonthlyInstallments = async (transactionId) => {
       continue;
     }
 
-    const purchase = await prisma.purchaseHistory.create({
-      data: { total },
-      select: { id: true, transactionId: true },
-    });
+    try {
+      const purchase = await prisma.purchaseHistory.create({
+        data: { total },
+        select: { id: true, transactionId: true },
+      });
 
-    await createTransaction(
-      userId,
-      email,
-      purchase.transactionId,
-      total,
-      description,
-      purchase.id,
-      TransactionSource.ENROLLMENT,
-      paymentMethod
-    );
+      await createTransaction(
+        userId,
+        email,
+        purchase.transactionId,
+        total,
+        description,
+        purchase.id,
+        TransactionSource.ENROLLMENT,
+        paymentMethod,
+        { timeoutMs: 15000 }
+      );
 
-    const created = await prisma.schoolFee.create({
-      data: {
-        gradeLevel: incomingGradeLevel,
+      const created = await prisma.schoolFee.create({
+        data: {
+          gradeLevel: incomingGradeLevel,
+          order,
+          paymentType: PaymentType.MONTHLY,
+          transaction: {
+            connect: {
+              transactionId: purchase.transactionId,
+            },
+          },
+          student: {
+            connect: {
+              id: schoolFee.studentId,
+            },
+          },
+        },
+      });
+      createdSchoolFees.push(created);
+    } catch (error) {
+      console.error('Failed to create monthly installment', {
         order,
-        paymentType: PaymentType.MONTHLY,
-        transaction: {
-          connect: {
-            transactionId: purchase.transactionId,
-          },
-        },
-        student: {
-          connect: {
-            id: schoolFee.studentId,
-          },
-        },
-      },
-    });
-    createdSchoolFees.push(created);
+        studentId: schoolFee.studentId,
+        error,
+      });
+    }
   }
 
-  if (createdSchoolFees.length === 0 && remainingPayments.length > 0) {
+  const missingOrders = remainingPayments.filter(
+    (_, index) => !existingOrders.has(index + 1)
+  );
+  if (createdSchoolFees.length === 0 && missingOrders.length > 0) {
     throw new Error(
       `Invalid monthly installment total for student ${schoolFee.studentId} (monthIndex=${safeMonthIndex}, remaining=${totalPayment}, misc=${calculatedMisc}, fee=${processingFee}, scholarship=${calculatedScholarship})`
     );

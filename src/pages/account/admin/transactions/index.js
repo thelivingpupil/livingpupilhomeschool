@@ -265,7 +265,6 @@ const Transactions = () => {
       method: 'PUT',
     })
       .then((response) => {
-        setUpdatingTransaction(false);
         if (response.errors || (response.status && response.status >= 400)) {
           toast.error(
             response.errors?.error?.msg ||
@@ -280,10 +279,12 @@ const Transactions = () => {
         toggleModal();
       })
       .catch(() => {
-        setUpdatingTransaction(false);
         toast.error(
           `Error in updating payment status for ${updateTransaction.name}`
         );
+      })
+      .finally(() => {
+        setUpdatingTransaction(false);
       });
   };
 
@@ -749,7 +750,7 @@ const Transactions = () => {
                   disabled={isUpdatingTransaction || !newPaymentStatus}
                   onClick={handleUpdateStatus}
                 >
-                  Update Status
+                  {isUpdatingTransaction ? 'Updating...' : 'Update Status'}
                 </button>
               </div>
             </>
