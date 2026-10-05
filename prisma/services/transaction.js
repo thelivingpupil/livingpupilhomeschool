@@ -256,29 +256,44 @@ export const createTransaction = async (
   description,
   purchaseId,
   source,
-  fee
+  fee,
+  options = {}
 ) => {
   const normalizedAmount = Math.round(Number(amount) * 100) / 100;
   if (!Number.isFinite(normalizedAmount) || normalizedAmount <= 0) {
     throw new Error(`Invalid transaction amount: ${amount}`);
   }
 
-  const response = await api(
-    `${process.env.PAYMENTS_BASE_URL}/${transactionId}/post`,
-    {
-      body: {
-        Amount: normalizedAmount,
-        Currency: Currency.PHP,
-        Description: description,
-        Email: email,
-        Expiry: add(new Date(), { years: 1 }),
-      },
-      headers: {
-        Authorization: `${getBasicAuthorization()}`,
-      },
-      method: 'POST',
+  const timeoutMs = options.timeoutMs ?? 20000;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let response;
+  try {
+    response = await api(
+      `${process.env.PAYMENTS_BASE_URL}/${transactionId}/post`,
+      {
+        body: {
+          Amount: normalizedAmount,
+          Currency: Currency.PHP,
+          Description: description,
+          Email: email,
+          Expiry: add(new Date(), { years: 1 }),
+        },
+        headers: {
+          Authorization: `${getBasicAuthorization()}`,
+        },
+        method: 'POST',
+        signal: controller.signal,
+      }
+    );
+  } catch (error) {
+    if (error?.name === 'AbortError') {
+      throw new Error('Payment service timed out');
     }
-  );
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
   const {
     RefNo: referenceNumber,
     Status: transactionStatus,
@@ -586,6 +601,27 @@ export const renewOldTransaction = async (
   return { url, referenceNumber };
 };
 
+const pendingInstallmentJobs = new Set();
+
+const scheduleRemainingMonthlyInstallments = (transactionId) => {
+  if (pendingInstallmentJobs.has(transactionId)) return;
+  pendingInstallmentJobs.add(transactionId);
+
+  import('./school-fee')
+    .then(({ createRemainingMonthlyInstallments }) =>
+      createRemainingMonthlyInstallments(transactionId)
+    )
+    .catch((error) => {
+      console.error(
+        `Failed to create remaining monthly installments for ${transactionId}:`,
+        error
+      );
+    })
+    .finally(() => {
+      pendingInstallmentJobs.delete(transactionId);
+    });
+};
+
 export const updateTransaction = async (
   transactionId,
   paymentReference,
@@ -628,20 +664,10 @@ export const updateTransaction = async (
     });
 
     // When MONTHLY order-0 is paid, create any missing remaining installments.
-    // Idempotent: skips orders that already exist, so retries after a failed
-    // Dragonpay call still work even if this transaction is already Success.
+    // This runs after the status is saved so the admin request is not blocked
+    // by payment-gateway calls. Retries skip orders that already exist.
     if (paymentStatus === TransactionStatus.S) {
-      try {
-        const { createRemainingMonthlyInstallments } = await import(
-          './school-fee'
-        );
-        await createRemainingMonthlyInstallments(transactionId);
-      } catch (error) {
-        console.error(
-          `Failed to create remaining monthly installments for ${transactionId}:`,
-          error
-        );
-      }
+      scheduleRemainingMonthlyInstallments(transactionId);
     }
 
     return {

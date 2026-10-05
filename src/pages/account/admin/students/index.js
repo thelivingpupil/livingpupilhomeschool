@@ -46,6 +46,7 @@ import {
 } from '@prisma/client';
 import sanityClient from '@/lib/server/sanity';
 import { useStudents, useWorkspaces } from '@/hooks/data';
+import { mutate } from 'swr';
 import { UserIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import format from 'date-fns/format';
@@ -442,7 +443,10 @@ const Students = ({ schoolFees, programs }) => {
     setPictureLink(student.image);
     setReportCardLink(student.reportCard);
     setAccreditation(student.accreditation);
-    setPayment(student.student.schoolFees[0].paymentType);
+    setProgram(student.program);
+    setCottageType(student.cottageType ?? null);
+    setPayment(student.student?.schoolFees?.[0]?.paymentType ?? null);
+    setMonthIndex(resolveMonthlyPaymentCount(student));
     setScholarship(student.scholarship);
   };
 
@@ -575,15 +579,24 @@ const Students = ({ schoolFees, programs }) => {
     })
       .then((response) => {
         setSubmittingState(false);
-        if (response.errors) {
-          Object.keys(response.errors).forEach((error) =>
-            toast.error(response.errors[error].msg)
-          );
-        } else {
-          toast.success('Generate school fees success');
-          toggleModal3();
-          toggleModal();
+        if (response.status >= 400 || response.errors || response.error) {
+          if (response.errors) {
+            Object.keys(response.errors).forEach((error) =>
+              toast.error(response.errors[error].msg)
+            );
+          } else {
+            toast.error(
+              response.error ||
+                response.message ||
+                'Failed to generate school fees'
+            );
+          }
+          return;
         }
+        toast.success('Generate school fees success');
+        mutate('/api/students');
+        toggleModal3();
+        toggleModal();
       })
       .catch((error) => {
         setSubmittingState(false);
@@ -629,12 +642,21 @@ const Students = ({ schoolFees, programs }) => {
       });
   };
 
-  //Get month index for calculations of monthly payments
+  // Remaining monthly installments after the initial fee. 1–8.
   const [monthIndex, setMonthIndex] = useState(null);
   const [monthlyPayment, setMonthlyPayment] = useState(0);
-  useEffect(() => {
-    setMonthIndex(getMonthIndexForSchoolYear(schoolYear, new Date()));
-  }, [schoolYear]);
+
+  const resolveMonthlyPaymentCount = (studentRecord) => {
+    const saved = Number(studentRecord?.monthlyPaymentCount);
+    if (Number.isInteger(saved) && saved >= 1 && saved <= 8) {
+      return saved;
+    }
+    const calculated = getMonthIndexForSchoolYear(
+      studentRecord?.schoolYear,
+      new Date()
+    );
+    return calculated > 0 ? calculated : 1;
+  };
 
   useEffect(() => {
     if (accreditation !== null) {
@@ -646,6 +668,22 @@ const Students = ({ schoolFees, programs }) => {
       );
     }
   }, [accreditation, programFee, monthIndex, calculateMonthlyPayment]);
+
+  useEffect(() => {
+    if (!showModal3 || !programFee) return;
+    const programFeeByAccreditation = programFee.tuitionFees?.find(
+      (tuition) => tuition.type === accreditation
+    );
+    if (payment === PaymentType.ANNUAL) {
+      setFee(programFeeByAccreditation?.paymentTerms?.[0] ?? null);
+    } else if (payment === PaymentType.SEMI_ANNUAL) {
+      setFee(programFeeByAccreditation?.paymentTerms?.[1] ?? null);
+    } else if (payment === PaymentType.QUARTERLY) {
+      setFee(programFeeByAccreditation?.paymentTerms?.[2] ?? null);
+    } else if (payment === PaymentType.MONTHLY) {
+      setFee(programFeeByAccreditation?.paymentTerms?.[3] ?? null);
+    }
+  }, [showModal3, payment, programFee, accreditation]);
 
   const handleAccreditationChange = (e) => {
     const selectedAccreditation = e.target.value;
@@ -1300,6 +1338,44 @@ const Students = ({ schoolFees, programs }) => {
               </div>
             </div>
           </div>
+          {payment === PaymentType.MONTHLY && (
+            <div>
+              <label className="text-lg font-bold" htmlFor="monthlyPaymentCount">
+                Number of payments <span className="ml-1 text-red-600">*</span>
+              </label>
+              <p className="mb-2 text-sm text-gray-500">
+                Initial fee plus the monthly payments this student will have.
+                These monthly payments are created when the initial fee is paid.
+              </p>
+              <div
+                className={`relative inline-block w-full rounded ${
+                  !monthIndex ? 'border-red-500 border-2' : 'border'
+                }`}
+              >
+                <select
+                  id="monthlyPaymentCount"
+                  className="w-full px-3 py-2 rounded appearance-none"
+                  onChange={(e) => setMonthIndex(Number(e.target.value))}
+                  value={monthIndex ?? ''}
+                >
+                  <option value="">Select number of payments...</option>
+                  {Array.from({ length: 8 }, (_, index) => {
+                    const monthlyCount = index + 1;
+                    const totalPayments = monthlyCount + 1;
+                    return (
+                      <option key={monthlyCount} value={monthlyCount}>
+                        {totalPayments} payments (initial fee + {monthlyCount}{' '}
+                        monthly {monthlyCount === 1 ? 'payment' : 'payments'})
+                      </option>
+                    );
+                  })}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDownIcon className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+          )}
           <div>
             <label className="text-lg font-bold" htmlFor="txtMother">
               Scholarship (optional)
@@ -1432,7 +1508,8 @@ const Students = ({ schoolFees, programs }) => {
                               }).format(
                                 fee?._type === 'nineTermPayment'
                                   ? monthlyPayment -
-                                  (discount?.value - fee?.downPayment) / 9
+                                  (discount?.value - fee?.downPayment) /
+                                    (monthIndex || 1)
                                   : fee &&
                                   fee[payments[index + 1]] -
                                   (discount?.value - fee?.downPayment) / 3
@@ -1479,7 +1556,7 @@ const Students = ({ schoolFees, programs }) => {
                                     : fee?._type === 'fourTermPayment'
                                       ? 3
                                       : fee?._type === 'nineTermPayment'
-                                        ? 9
+                                        ? monthIndex || 1
                                         : 0)
                                   ? Math.ceil(
                                     scholarship.value /
@@ -1488,7 +1565,7 @@ const Students = ({ schoolFees, programs }) => {
                                       : fee?._type === 'fourTermPayment'
                                         ? 3
                                         : fee?._type === 'nineTermPayment'
-                                          ? 9
+                                          ? monthIndex || 1
                                           : 1)
                                   )
                                   : 0
@@ -2335,7 +2412,17 @@ const Students = ({ schoolFees, programs }) => {
                 });
                 generateNewSchoolFees(studentId);
               }}
-              disabled={isSubmitting || !userId}
+              disabled={
+                isSubmitting ||
+                !userId ||
+                !payment ||
+                (payment === PaymentType.MONTHLY &&
+                  !(
+                    Number.isInteger(Number(monthIndex)) &&
+                    Number(monthIndex) >= 1 &&
+                    Number(monthIndex) <= 8
+                  ))
+              }
             >
               Save Changes
             </button>

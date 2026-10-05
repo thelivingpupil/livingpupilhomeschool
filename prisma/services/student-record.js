@@ -479,6 +479,7 @@ export const getStudentRecords = async () =>
       signature: true,
       enrollmentAgreementSignature: true,
       cottageType: true,
+      monthlyPaymentCount: true,
       studentAddress1: true,
       studentAddress2: true,
       student: {
@@ -716,7 +717,8 @@ export const updateStudentRecordForSchoolFees = async (
   newDiscountCode,
   newScholarshipCode,
   newProgram,
-  newCottageType
+  newCottageType,
+  monthlyPaymentCount = null
 ) =>
   await prisma.studentRecord.update({
     data: {
@@ -727,6 +729,7 @@ export const updateStudentRecordForSchoolFees = async (
       scholarship: newScholarshipCode,
       cottageType: newCottageType,
       program: newProgram,
+      monthlyPaymentCount,
     },
     where: { studentId },
   });
