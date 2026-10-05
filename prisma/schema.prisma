@@ -260,6 +260,7 @@ model StudentRecord {
   studentAddress2                  String?
   studentInternationalAddress      String?
   isInternationalAddress           Boolean?
+  district                         District?
   idPictureBack                    String?
   idPictureFront                   String?
   cottageSlotId                    String?
@@ -845,6 +846,12 @@ enum GuardianType {
 enum CottageType {
   THREE_DAYS_A_WEEK
   FIVE_DAYS_A_WEEK
+}
+
+enum District {
+  LUZON
+  CEBU
+  MINDANAO
 }
 
 enum PartnerSchool {
