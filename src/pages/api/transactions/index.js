@@ -67,6 +67,18 @@ const handler = async (req, res) => {
           .json({ error: 'Student has no linked guardian account' });
       }
 
+      let monthlyPaymentCount = null;
+      if (payment === 'MONTHLY') {
+        const count = Number(monthIndex);
+        if (!Number.isInteger(count) || count < 1 || count > 8) {
+          return res.status(400).json({
+            error:
+              'Choose between 2 and 9 payments for a monthly plan (initial fee plus 1 to 8 monthly payments).',
+          });
+        }
+        monthlyPaymentCount = count;
+      }
+
       const resolvedPaymentMethod = paymentMethod || 'ONLINE';
 
       // Delete existing school fees
@@ -80,7 +92,8 @@ const handler = async (req, res) => {
           discountCode,
           scholarshipCode,
           program,
-          cottageType
+          cottageType,
+          monthlyPaymentCount
         ),
         createSchoolFees(
           userId,
