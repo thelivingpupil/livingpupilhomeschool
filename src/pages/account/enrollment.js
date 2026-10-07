@@ -43,6 +43,7 @@ import Meta from '@/components/Meta/index';
 import Modal from '@/components/Modal';
 import { PaymentPoliciesText, PaymentPolicySignatureSection } from '@/components/PaymentPolicies';
 import AgreementReadGate from '@/components/AgreementReadGate';
+import EnrollmentUpdateAnnouncement from '@/components/EnrollmentUpdateAnnouncement';
 import OrientationGate from '@/components/OrientationGate';
 import {
   EnrollmentAgreementSignatureSection,
@@ -71,7 +72,9 @@ import {
   getMonthIndexForSchoolYear,
   calculateMonthlyPayment,
   GRADE_TO_FORM_MAP,
+  LOCAL_ACCREDITATION_CLOSED_MESSAGE,
   gradeCanHaveCottageSlots,
+  isLocalAccreditationClosed,
 } from '@/utils/constants';
 import { PortableText } from '@portabletext/react';
 import { event } from 'react-ga';
@@ -143,6 +146,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
     student?.incomingGradeLevel || GradeLevel.PRESCHOOL,
   );
   const [schoolYear, setSchoolYear] = useState('');
+  const [gradeSelectionReady, setGradeSelectionReady] = useState(false);
   const [orientationComplete, setOrientationComplete] = useState(false);
   const [completedOrientationKey, setCompletedOrientationKey] = useState('');
   const [formerSchoolName, setFormerSchoolName] = useState(
@@ -1324,8 +1328,25 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
     }
   }, [accreditation, programFee, monthIndex, calculateMonthlyPayment]);
 
+  useEffect(() => {
+    if (
+      accreditation === Accreditation.LOCAL &&
+      isLocalAccreditationClosed(incomingGradeLevel)
+    ) {
+      setAccreditation(null);
+    }
+  }, [accreditation, incomingGradeLevel]);
+
   const handleAccreditationChange = (e) => {
     const selectedAccreditation = e.target.value;
+    if (
+      selectedAccreditation === Accreditation.LOCAL &&
+      isLocalAccreditationClosed(incomingGradeLevel)
+    ) {
+      setAccreditation(null);
+      return;
+    }
+
     if (selectedAccreditation) {
       setAccreditation(selectedAccreditation);
     } else {
@@ -2230,9 +2251,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               >
                 <select
                   className={`w-full px-3 py-2 capitalize rounded appearance-none ${
-                    orientationComplete ? 'bg-gray-100 cursor-not-allowed' : ''
+                    orientationComplete || !gradeSelectionReady
+                      ? 'bg-gray-100 cursor-not-allowed'
+                      : ''
                   }`}
-                  disabled={orientationComplete}
+                  disabled={orientationComplete || !gradeSelectionReady}
                   onChange={(e) => {
                     const newGradeLevel = e.target.value;
                     setIncomingGradeLevel(newGradeLevel);
@@ -2859,8 +2882,14 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
               value={accreditation}
             >
               <option value="">Please select accreditation...</option>
-              <option value={Accreditation.LOCAL}>
+              <option
+                disabled={isLocalAccreditationClosed(incomingGradeLevel)}
+                value={Accreditation.LOCAL}
+              >
                 {ACCREDITATION[Accreditation.LOCAL]}
+                {isLocalAccreditationClosed(incomingGradeLevel)
+                  ? ' (Closed)'
+                  : ''}
               </option>
               <option
                 disabled={
@@ -2890,6 +2919,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             </div>
           </div>
         </div>
+        {isLocalAccreditationClosed(incomingGradeLevel) ? (
+          <p className="text-sm text-amber-700">
+            {LOCAL_ACCREDITATION_CLOSED_MESSAGE}
+          </p>
+        ) : null}
         <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
           {/* {program === Program.HOMESCHOOL_PROGRAM && (
             <>
@@ -3859,8 +3893,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
 
   return (
     <AccountLayout>
+      <EnrollmentUpdateAnnouncement
+        onResolved={() => setGradeSelectionReady(true)}
+      />
       <OrientationGate
-        show={!orientationComplete}
+        show={gradeSelectionReady && !orientationComplete}
         initialGradeLevel={incomingGradeLevel}
         initialSchoolYear={schoolYear || SCHOOL_YEAR.SY_2026_2027}
         onComplete={handleOrientationComplete}
