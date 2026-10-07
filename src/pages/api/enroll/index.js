@@ -14,7 +14,11 @@ import {
 import { createStudentRecord } from '@/prisma/services/student-record';
 import { updateGuardianInformation } from '@/prisma/services/user';
 import { getOwnWorkspace } from '@/prisma/services/workspace';
-import { STUDENT_STATUS } from '@/utils/constants';
+import {
+  LOCAL_ACCREDITATION_CLOSED_MESSAGE,
+  STUDENT_STATUS,
+  isLocalAccreditationClosed,
+} from '@/utils/constants';
 import {
   createParentTrainingsForGrade,
   getGuardianInformationID,
@@ -91,6 +95,17 @@ const handler = async (req, res) => {
 
     if (!session) {
       return;
+    }
+
+    if (
+      accreditation === 'LOCAL' &&
+      isLocalAccreditationClosed(incomingGradeLevel)
+    ) {
+      return res.status(400).json({
+        errors: {
+          error: { msg: LOCAL_ACCREDITATION_CLOSED_MESSAGE },
+        },
+      });
     }
 
     try {

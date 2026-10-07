@@ -14,8 +14,12 @@ import { createSchoolFees } from '@/prisma/services/school-fee';
 import { createStudentRecord } from '@/prisma/services/student-record';
 import { updateGuardianInformation } from '@/prisma/services/user';
 import { createWorkspaceWithSlug } from '@/prisma/services/workspace';
-import { SCHOOL_YEAR } from '@/utils/constants';
-import { STUDENT_STATUS } from '@/utils/constants';
+import {
+  LOCAL_ACCREDITATION_CLOSED_MESSAGE,
+  SCHOOL_YEAR,
+  STUDENT_STATUS,
+  isLocalAccreditationClosed,
+} from '@/utils/constants';
 import { getGuardianInformationID, createParentTrainingsForGrade } from '@/prisma/services/parent-training';
 import {
   OrientationError,
@@ -88,6 +92,17 @@ const handler = async (req, res) => {
 
     if (!session) {
       return;
+    }
+
+    if (
+      accreditation === 'LOCAL' &&
+      isLocalAccreditationClosed(incomingGradeLevel)
+    ) {
+      return res.status(400).json({
+        errors: {
+          error: { msg: LOCAL_ACCREDITATION_CLOSED_MESSAGE },
+        },
+      });
     }
 
     try {

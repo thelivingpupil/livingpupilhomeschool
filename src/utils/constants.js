@@ -340,6 +340,27 @@ export const getCottageSlotQueryTargets = (incomingGradeLevel) => {
 export const gradeCanHaveCottageSlots = (incomingGradeLevel) =>
   getCottageSlotQueryTargets(incomingGradeLevel).length > 0;
 
+const LOCAL_ACCREDITATION_CLOSED_GRADES = new Set([
+  GradeLevel.GRADE_1,
+  GradeLevel.GRADE_2,
+  GradeLevel.GRADE_3,
+  GradeLevel.GRADE_4,
+  GradeLevel.GRADE_5,
+  GradeLevel.GRADE_6,
+  GradeLevel.GRADE_7,
+  GradeLevel.GRADE_8,
+  GradeLevel.GRADE_9,
+  GradeLevel.GRADE_10,
+  GradeLevel.GRADE_11,
+  GradeLevel.GRADE_12,
+]);
+
+export const isLocalAccreditationClosed = (gradeLevel) =>
+  LOCAL_ACCREDITATION_CLOSED_GRADES.has(gradeLevel);
+
+export const LOCAL_ACCREDITATION_CLOSED_MESSAGE =
+  'Local Accreditation enrollment is closed for Grades 1–12. International Accreditation remains open.';
+
 export const shouldShowTuitionFees = (program, gradeLevel) =>
   program !== 'HOMESCHOOL_COTTAGE' ||
   !GRADE_LEVEL_FORMS.SENIOR_HIGH.includes(gradeLevel);
