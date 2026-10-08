@@ -366,8 +366,18 @@ const LOCAL_ACCREDITATION_CLOSED_GRADES = new Set([
   GradeLevel.GRADE_12,
 ]);
 
-export const isLocalAccreditationClosed = (gradeLevel) =>
-  LOCAL_ACCREDITATION_CLOSED_GRADES.has(gradeLevel);
+const LOCAL_ACCREDITATION_OPEN_EMAILS = new Set([
+  'tine.tolentino9@gmail.com',
+]);
+
+export const isLocalAccreditationClosed = (gradeLevel, email) => {
+  const normalizedEmail = String(email || '').trim().toLowerCase();
+  if (LOCAL_ACCREDITATION_OPEN_EMAILS.has(normalizedEmail)) {
+    return false;
+  }
+
+  return LOCAL_ACCREDITATION_CLOSED_GRADES.has(gradeLevel);
+};
 
 export const LOCAL_ACCREDITATION_CLOSED_MESSAGE =
   'Local Accreditation enrollment is closed for Grades 1–12. International Accreditation remains open.';
