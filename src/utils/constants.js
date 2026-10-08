@@ -299,6 +299,17 @@ export const GRADE_LEVEL_GROUPS = [
   },
 ];
 
+const GRADE_LEVEL_SEQUENCE = GRADE_LEVEL_GROUPS.flatMap((group) => group.levels);
+
+export const nextGradeLevel = (gradeLevel) => {
+  const index = GRADE_LEVEL_SEQUENCE.indexOf(gradeLevel);
+  if (index < 0 || index >= GRADE_LEVEL_SEQUENCE.length - 1) {
+    return gradeLevel || GradeLevel.PRESCHOOL;
+  }
+
+  return GRADE_LEVEL_SEQUENCE[index + 1];
+};
+
 export const COTTAGE_TYPE = {
   THREE_DAYS_A_WEEK: '3 days a week',
   FIVE_DAYS_A_WEEK: '5 days a week',

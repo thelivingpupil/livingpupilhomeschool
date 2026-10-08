@@ -63,6 +63,7 @@ import {
   FEES,
   GRADE_LEVEL,
   GRADE_LEVEL_GROUPS,
+  nextGradeLevel,
   GRADE_LEVEL_TYPES,
   PAYMENT_TYPE,
   PREVIOUS_SCHOOL_TYPE,
@@ -143,7 +144,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
   }, [student]);
 
   const [incomingGradeLevel, setIncomingGradeLevel] = useState(
-    student?.incomingGradeLevel || GradeLevel.PRESCHOOL,
+    student?.incomingGradeLevel
+      ? nextGradeLevel(student.incomingGradeLevel)
+      : GradeLevel.PRESCHOOL,
   );
   const [schoolYear, setSchoolYear] = useState('');
   const [gradeSelectionReady, setGradeSelectionReady] = useState(false);
