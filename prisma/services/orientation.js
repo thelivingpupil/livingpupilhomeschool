@@ -126,6 +126,8 @@ export const getOrientationForParent = async (userId, gradeLevel, schoolYear) =>
   const progress = await prisma.orientationProgress.findMany({
     where: {
       userId,
+      gradeLevel,
+      schoolYear,
       orientationVideoId: {
         in: videos.map((video) => video.id),
       },
@@ -166,7 +168,27 @@ export const startOrientationProgress = async (
   });
 
   if (existing) {
-    return { video, progress: existing };
+    if (
+      existing.gradeLevel === gradeLevel &&
+      existing.schoolYear === schoolYear
+    ) {
+      return { video, progress: existing };
+    }
+
+    const progress = await prisma.orientationProgress.update({
+      where: { id: existing.id },
+      data: {
+        gradeLevel,
+        schoolYear,
+        status: ORIENTATION_STATUS.STARTED,
+        watchedSeconds: 0,
+        startedAt: new Date(),
+        finishedAt: null,
+      },
+      select: progressSelect,
+    });
+
+    return { video, progress };
   }
 
   const progress = await prisma.orientationProgress.create({

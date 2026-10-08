@@ -77,38 +77,7 @@ const OrientationGate = ({
     setWatchedSeconds(0);
     watchedSecondsRef.current = 0;
 
-    const prefetchGrade = initialGradeLevel || GradeLevel.PRESCHOOL;
-    const prefetchYear = initialSchoolYear || SCHOOL_YEAR.SY_2026_2027;
-
-    let cancelled = false;
-
-    const prefetch = async () => {
-      const response = await api(
-        `/api/orientation?gradeLevel=${encodeURIComponent(
-          prefetchGrade,
-        )}&schoolYear=${encodeURIComponent(prefetchYear)}`,
-        { method: 'GET' },
-      );
-
-      if (cancelled || completingRef.current) {
-        return;
-      }
-
-      if (response.data?.allFinished) {
-        completingRef.current = true;
-        onCompleteRef.current({
-          gradeLevel: prefetchGrade,
-          schoolYear: prefetchYear,
-        });
-      }
-    };
-
-    prefetch();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [show, initialGradeLevel, initialSchoolYear]);
+  }, [show]);
 
   useEffect(() => {
     return () => {
@@ -224,8 +193,7 @@ const OrientationGate = ({
       setProgressByVideoId(nextProgress);
 
       if (lookup.data.allFinished) {
-        completingRef.current = true;
-        onCompleteRef.current({ gradeLevel, schoolYear });
+        setStage('finished');
         return;
       }
 
@@ -298,6 +266,11 @@ const OrientationGate = ({
     persistProgress(watchedSecondsRef.current);
   };
 
+  const handleProceed = () => {
+    completingRef.current = true;
+    onCompleteRef.current({ gradeLevel, schoolYear });
+  };
+
   const handleClose = () => {
     stopHeartbeat();
     if (stage === 'watch') {
@@ -348,9 +321,7 @@ const OrientationGate = ({
         return;
       }
 
-      completingRef.current = true;
-      toast.success('Orientation completed. You may continue enrollment.');
-      onCompleteRef.current({ gradeLevel, schoolYear });
+      setStage('finished');
     } catch (error) {
       toast.error(error.message || 'Unable to finish orientation');
     } finally {
@@ -398,12 +369,28 @@ const OrientationGate = ({
                 Homeschool Orientation
               </Dialog.Title>
               <p className="text-sm text-gray-600">
-                Please complete the orientation video
-                {videos.length > 1 ? 's' : ''} for your child&apos;s incoming
-                grade level before continuing with enrollment.
+                {stage === 'finished'
+                  ? 'This orientation is already finished. Continue when you are ready to enroll.'
+                  : `Please complete the orientation video${
+                      videos.length > 1 ? 's' : ''
+                    } for your child's incoming grade level before continuing with enrollment.`}
               </p>
 
-              {stage === 'select' ? (
+              {stage === 'finished' ? (
+                <div className="space-y-4">
+                  <div className="px-3 py-3 text-sm text-green-700 border-2 border-green-600 rounded bg-green-50">
+                    Orientation finished for {GRADE_LEVEL[gradeLevel]} · {schoolYear}.
+                  </div>
+                  <div className="flex justify-end pt-2">
+                    <Button
+                      className="text-white bg-primary-600 hover:bg-primary-500"
+                      onClick={handleProceed}
+                    >
+                      Continue
+                    </Button>
+                  </div>
+                </div>
+              ) : stage === 'select' ? (
                 <div className="space-y-4">
                   <div className="flex flex-col space-y-1">
                     <label className="font-medium">Incoming Grade Level *</label>

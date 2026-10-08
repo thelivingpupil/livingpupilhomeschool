@@ -1,7 +1,12 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import Button from '@/components/Button';
 import Modal from '@/components/Modal';
+
+// Longer than the modal leave animation (200ms) so the next dialog
+// does not mount while this one is still open. Headless UI 1.6 closes
+// a dialog that opens on top of another.
+const NEXT_DIALOG_DELAY_MS = 350;
 
 const EnrollmentUpdateAnnouncement = ({ onResolved }) => {
   const [open, setOpen] = useState(true);
@@ -11,13 +16,25 @@ const EnrollmentUpdateAnnouncement = ({ onResolved }) => {
   onResolvedRef.current = onResolved;
 
   const dismiss = () => {
-    if (!resolvedRef.current) {
-      resolvedRef.current = true;
-      onResolvedRef.current?.();
-    }
-
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (open) {
+      return undefined;
+    }
+
+    const timer = window.setTimeout(() => {
+      if (resolvedRef.current) {
+        return;
+      }
+
+      resolvedRef.current = true;
+      onResolvedRef.current?.();
+    }, NEXT_DIALOG_DELAY_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [open]);
 
   return (
     <Modal show={open} title="📢 ENROLLMENT UPDATE" toggle={dismiss}>
