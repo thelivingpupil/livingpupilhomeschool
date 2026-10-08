@@ -99,7 +99,7 @@ const handler = async (req, res) => {
 
     if (
       accreditation === 'LOCAL' &&
-      isLocalAccreditationClosed(incomingGradeLevel)
+      isLocalAccreditationClosed(incomingGradeLevel, session.user?.email)
     ) {
       return res.status(400).json({
         errors: {

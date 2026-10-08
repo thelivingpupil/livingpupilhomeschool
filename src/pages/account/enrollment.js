@@ -99,7 +99,13 @@ const payments = [
   'ninthPayment',
 ];
 
-const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
+const EnrollmentProcess = ({
+  guardian,
+  schoolFees,
+  programs,
+  student,
+  userEmail,
+}) => {
   const [step, setStep] = useState(0);
   const [viewFees, setViewFees] = useState(false);
   const [isSubmittingCode, setSubmittingCodeState] = useState(false);
@@ -1331,20 +1337,22 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
     }
   }, [accreditation, programFee, monthIndex, calculateMonthlyPayment]);
 
+  const localAccreditationClosed = isLocalAccreditationClosed(
+    incomingGradeLevel,
+    userEmail,
+  );
+
   useEffect(() => {
-    if (
-      accreditation === Accreditation.LOCAL &&
-      isLocalAccreditationClosed(incomingGradeLevel)
-    ) {
+    if (accreditation === Accreditation.LOCAL && localAccreditationClosed) {
       setAccreditation(null);
     }
-  }, [accreditation, incomingGradeLevel]);
+  }, [accreditation, localAccreditationClosed]);
 
   const handleAccreditationChange = (e) => {
     const selectedAccreditation = e.target.value;
     if (
       selectedAccreditation === Accreditation.LOCAL &&
-      isLocalAccreditationClosed(incomingGradeLevel)
+      localAccreditationClosed
     ) {
       setAccreditation(null);
       return;
@@ -2886,13 +2894,11 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             >
               <option value="">Please select accreditation...</option>
               <option
-                disabled={isLocalAccreditationClosed(incomingGradeLevel)}
+                disabled={localAccreditationClosed}
                 value={Accreditation.LOCAL}
               >
                 {ACCREDITATION[Accreditation.LOCAL]}
-                {isLocalAccreditationClosed(incomingGradeLevel)
-                  ? ' (Closed)'
-                  : ''}
+                {localAccreditationClosed ? ' (Closed)' : ''}
               </option>
               <option
                 disabled={
@@ -2922,7 +2928,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs, student }) => {
             </div>
           </div>
         </div>
-        {isLocalAccreditationClosed(incomingGradeLevel) ? (
+        {localAccreditationClosed ? (
           <p className="text-sm text-amber-700">
             {LOCAL_ACCREDITATION_CLOSED_MESSAGE}
           </p>
@@ -4628,6 +4634,7 @@ export const getServerSideProps = async (context) => {
       schoolFees,
       programs,
       student: studentID ? { ...student, birthDate: formattedBirthDate } : null,
+      userEmail: session?.user?.email || '',
     },
   };
 };

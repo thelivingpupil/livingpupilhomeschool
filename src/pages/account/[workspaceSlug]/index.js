@@ -98,7 +98,7 @@ const payments = [
   'ninthPayment',
 ];
 
-const Workspace = ({ guardian, schoolFees, programs }) => {
+const Workspace = ({ guardian, schoolFees, programs, userEmail }) => {
   const { workspace } = useWorkspace();
   const [step, setStep] = useState(0);
   const [viewFees, setViewFees] = useState(false);
@@ -1407,20 +1407,22 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     }
   }, [accreditation, programFee, monthIndex, calculateMonthlyPayment]);
 
+  const localAccreditationClosed = isLocalAccreditationClosed(
+    incomingGradeLevel,
+    userEmail,
+  );
+
   useEffect(() => {
-    if (
-      accreditation === Accreditation.LOCAL &&
-      isLocalAccreditationClosed(incomingGradeLevel)
-    ) {
+    if (accreditation === Accreditation.LOCAL && localAccreditationClosed) {
       setAccreditation(null);
     }
-  }, [accreditation, incomingGradeLevel]);
+  }, [accreditation, localAccreditationClosed]);
 
   const handleAccreditationChange = (e) => {
     const selectedAccreditation = e.target.value;
     if (
       selectedAccreditation === Accreditation.LOCAL &&
-      isLocalAccreditationClosed(incomingGradeLevel)
+      localAccreditationClosed
     ) {
       setAccreditation(null);
       return;
@@ -2905,13 +2907,11 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             >
               <option value="">Please select accreditation...</option>
               <option
-                disabled={isLocalAccreditationClosed(incomingGradeLevel)}
+                disabled={localAccreditationClosed}
                 value={Accreditation.LOCAL}
               >
                 {ACCREDITATION[Accreditation.LOCAL]}
-                {isLocalAccreditationClosed(incomingGradeLevel)
-                  ? ' (Closed)'
-                  : ''}
+                {localAccreditationClosed ? ' (Closed)' : ''}
               </option>
               <option
                 disabled={
@@ -2941,7 +2941,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
             </div>
           </div>
         </div>
-        {isLocalAccreditationClosed(incomingGradeLevel) ? (
+        {localAccreditationClosed ? (
           <p className="text-sm text-amber-700">
             {LOCAL_ACCREDITATION_CLOSED_MESSAGE}
           </p>
@@ -5437,7 +5437,14 @@ export const getServerSideProps = async (context) => {
     sanityClient.fetch(`*[_type == 'schoolFees']{...}`),
     sanityClient.fetch(`*[_type == 'programs']`),
   ]);
-  return { props: { guardian, schoolFees, programs } };
+  return {
+    props: {
+      guardian,
+      schoolFees,
+      programs,
+      userEmail: session?.user?.email || '',
+    },
+  };
 };
 
 export default Workspace;
