@@ -8,7 +8,6 @@ import {
   ClockIcon,
   LocationMarkerIcon,
   SearchIcon,
-  UserGroupIcon,
 } from '@heroicons/react/outline';
 
 import Content from '@/components/Content/index';
@@ -60,6 +59,7 @@ const DISTRICT_LABELS = {
   BUKIDNON_CDO: 'Bukidnon – CDO',
   CEBU: 'Cebu',
   LUZON: 'Luzon',
+  VISAYAS: 'Visayas',
 };
 
 const FILTERS = [
@@ -103,6 +103,14 @@ const CEBU_GROUPS = new Set([
   'CEBU_NORTH',
   'CEBU_CENTRAL',
   'CEBU_VISAYAS',
+]);
+const VISAYAS_GROUPS = new Set([
+  ...CEBU_GROUPS,
+  'VISAYAS',
+  'ILOILO',
+  'BOHOL',
+  'NEGROS',
+  'LEYTE',
 ]);
 const LUZON_GROUPS = new Set([
   'LUZON',
@@ -160,13 +168,29 @@ const inferAudience = (event) => {
   return null;
 };
 
+const areaInRegion = (region, areaDistrict) => {
+  if (region === 'CEBU') return CEBU_GROUPS.has(areaDistrict) && areaDistrict !== 'CEBU';
+  if (region === 'VISAYAS') {
+    return VISAYAS_GROUPS.has(areaDistrict) && areaDistrict !== 'VISAYAS' && areaDistrict !== 'CEBU';
+  }
+  if (region === 'LUZON') return LUZON_GROUPS.has(areaDistrict) && areaDistrict !== 'LUZON';
+  if (region === 'MINDANAO') {
+    return MINDANAO_GROUPS.has(areaDistrict) && areaDistrict !== 'MINDANAO';
+  }
+  return false;
+};
+
 const inferDistrict = (event) => {
   const explicit = normalizeDistrict(event.district);
-  if (explicit) return explicit;
   const area = String(event.area || '')
     .trim()
     .toLowerCase();
-  if (AREA_DISTRICT[area]) return AREA_DISTRICT[area];
+  const areaDistrict = AREA_DISTRICT[area];
+  if (explicit && areaDistrict && areaInRegion(explicit, areaDistrict)) {
+    return areaDistrict;
+  }
+  if (explicit) return explicit;
+  if (areaDistrict) return areaDistrict;
   const text = `${event.title || ''} ${(event.joiners || []).join(' ')} ${event.venue || ''}`.toLowerCase();
   if (/\bcebu\b/.test(text)) return 'CEBU';
   if (/\bluzon\b/.test(text)) return 'LUZON';
@@ -222,6 +246,11 @@ const eventTimestamp = (event) => {
   return Number.isNaN(time) ? null : time;
 };
 
+const formatClockLabel = (value) =>
+  String(value || '')
+    .trim()
+    .replace(/(\d)\s*(am|pm)\b/gi, (_, hour, meridiem) => `${hour} ${meridiem.toUpperCase()}`);
+
 const scheduleText = (event) => {
   if (event.scheduleLabel) return event.scheduleLabel;
   if (event.startDate) {
@@ -233,18 +262,21 @@ const scheduleText = (event) => {
     return end ? `${start} – ${end}` : start;
   }
   const dates = event.dateandtime || [];
-  if (!dates.length) return 'Schedule to be announced';
-  const start = formatManilaDate(dates[0]);
-  const end =
-    dates.length > 1 ? formatManilaDate(dates[dates.length - 1]) : '';
-  return end && end !== start ? `${start} – ${end}` : start;
+  if (dates.length) {
+    const start = formatManilaDate(dates[0]);
+    const end =
+      dates.length > 1 ? formatManilaDate(dates[dates.length - 1]) : '';
+    return end && end !== start ? `${start} – ${end}` : start;
+  }
+  const description = plainText(event.description).replace(/\s+/g, ' ').trim();
+  return description || '';
 };
 
 const timeText = (event) => {
   if (event.startTime && event.endTime) {
-    return `${event.startTime} – ${event.endTime}`;
+    return `${formatClockLabel(event.startTime)} – ${formatClockLabel(event.endTime)}`;
   }
-  if (event.startTime) return event.startTime;
+  if (event.startTime) return formatClockLabel(event.startTime);
   const value = event.dateandtime?.[0];
   if (!value || isDateOnly(value)) return '';
   return formatManilaTime(value);
@@ -255,8 +287,8 @@ const venueText = (event) => {
   const link = String(event.maplink || '').toLowerCase();
   const online = (event.types || []).includes('ONLINE') || link.includes('zoom');
   if (online) return 'Zoom (Online)';
-  if (event.maplink) return 'See map';
-  return 'Venue to be announced';
+  if (event.maplink) return 'View map';
+  return '';
 };
 
 const manilaDateKey = (value) =>
@@ -289,7 +321,8 @@ const isFinished = (event) => {
 
 const sameDistrictScope = (eventDistrict, studentDistrict) => {
   if (eventDistrict === studentDistrict) return true;
-  if (CEBU_GROUPS.has(eventDistrict) && CEBU_GROUPS.has(studentDistrict)) return true;
+  if (eventDistrict === 'CEBU' && CEBU_GROUPS.has(studentDistrict)) return true;
+  if (eventDistrict === 'VISAYAS' && VISAYAS_GROUPS.has(studentDistrict)) return true;
   if (eventDistrict === 'LUZON' && LUZON_GROUPS.has(studentDistrict)) return true;
   if (eventDistrict === 'MINDANAO' && MINDANAO_GROUPS.has(studentDistrict)) return true;
   return false;
@@ -302,23 +335,17 @@ const visibleToFamily = (event, studentDistricts) => {
   );
 };
 
-const familyScopeLabel = (studentDistricts) => {
-  const labels = [];
-  if (studentDistricts.some((district) => CEBU_GROUPS.has(district))) {
-    labels.push('North, Central, and South Cebu');
-  }
-  studentDistricts.forEach((district) => {
-    if (CEBU_GROUPS.has(district)) return;
-    if (DISTRICT_LABELS[district]) labels.push(DISTRICT_LABELS[district]);
-  });
-  return labels.join(' and ');
-};
+const familyScopeLabel = (studentDistricts) =>
+  [...new Set(studentDistricts.map((district) => DISTRICT_LABELS[district]).filter(Boolean))].join(
+    ' and ',
+  );
 
 const Calendar = ({ events, calendarPage, studentDistricts }) => {
   const [filter, setFilter] = useState('all');
   const [query, setQuery] = useState('');
   const [expandedImage, setExpandedImage] = useState(null);
   const [expandedEventId, setExpandedEventId] = useState(null);
+  const [showFeatured, setShowFeatured] = useState(true);
 
   const prepared = useMemo(
     () =>
@@ -361,7 +388,12 @@ const Calendar = ({ events, calendarPage, studentDistricts }) => {
     return current
       .filter((event) => {
         if (filter === 'district') {
-          if (!event.districtKey || !studentDistricts.includes(event.districtKey)) {
+          if (
+            !event.districtKey ||
+            !studentDistricts.some((district) =>
+              sameDistrictScope(event.districtKey, district),
+            )
+          ) {
             return false;
           }
         } else if (filter === 'online' && !event.online) {
@@ -425,41 +457,52 @@ const Calendar = ({ events, calendarPage, studentDistricts }) => {
       </div>
 
       <section className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-xl font-bold text-primary-600">Featured Events</h2>
-          <button
-            type="button"
-            className="text-sm font-semibold text-primary-600"
-            onClick={() => {
-              setFilter('all');
-              setQuery('');
-              document.getElementById('all-events')?.scrollIntoView({
-                behavior: 'smooth',
-              });
-            }}
-          >
-            View all events
-          </button>
-        </div>
-        {featured.length ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {featured.map((event) => (
-              <EventCard
-                key={event._id}
-                event={event}
-                expanded={expandedEventId === event._id}
-                onToggle={() =>
-                  setExpandedEventId(
-                    expandedEventId === event._id ? null : event._id,
-                  )
-                }
-                onImageClick={setExpandedImage}
-              />
-            ))}
+          <div className="flex flex-wrap items-center gap-x-2 text-sm font-semibold text-primary-600">
+            <button
+              type="button"
+              className="hover:underline"
+              onClick={() => {
+                setFilter('all');
+                setQuery('');
+                document.getElementById('all-events')?.scrollIntoView({
+                  behavior: 'smooth',
+                });
+              }}
+            >
+              View all events
+            </button>
+            <span aria-hidden="true">|</span>
+            <button
+              type="button"
+              className="hover:underline"
+              onClick={() => setShowFeatured((visible) => !visible)}
+            >
+              {showFeatured ? 'Hide Featured Events' : 'Show Featured Events'}
+            </button>
           </div>
-        ) : (
-          <Content.Empty>No featured events yet.</Content.Empty>
-        )}
+        </div>
+        {showFeatured &&
+          (featured.length ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {featured.map((event) => (
+                <EventCard
+                  key={event._id}
+                  event={event}
+                  expanded={expandedEventId === event._id}
+                  onToggle={() =>
+                    setExpandedEventId(
+                      expandedEventId === event._id ? null : event._id,
+                    )
+                  }
+                  onImageClick={setExpandedImage}
+                />
+              ))}
+            </div>
+          ) : (
+            <Content.Empty>No featured events yet.</Content.Empty>
+          ))}
       </section>
 
       <section id="all-events" className="space-y-4">
@@ -533,42 +576,29 @@ const Calendar = ({ events, calendarPage, studentDistricts }) => {
         )}
       </section>
 
-      <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <section className="mb-10 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <article className="rounded-2xl bg-primary-600 p-5 text-white">
           <CalendarIcon className="mb-3 h-8 w-8 text-secondary-300" />
           <h3 className="text-lg font-bold">
-            {calendarPage?.calendarSubscribeLabel ||
-              'Subscribe to the LP Manila Google Calendar'}
+            {(
+              calendarPage?.calendarSubscribeLabel ||
+              'Subscribe to the LP Google Calendar'
+            ).replace('LP Manila Google Calendar', 'LP Google Calendar')}
           </h3>
           <p className="mt-2 text-sm text-primary-100">
             {calendarPage?.calendarSubscribeText ||
               'Get the latest updates on events, activities, and important dates.'}
           </p>
-          {calendarPage?.calendarSubscribeUrl && (
-            <a
-              href={calendarPage.calendarSubscribeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary-600"
-            >
-              Subscribe now
-            </a>
-          )}
-        </article>
-        <article className="rounded-2xl border bg-white p-5">
-          <UserGroupIcon className="mb-3 h-8 w-8 text-primary-600" />
-          <h3 className="text-lg font-bold text-primary-700">
-            {calendarPage?.communityTitle || 'Be Part of Our Community'}
-          </h3>
-          <p className="mt-2 text-sm text-gray-600">
-            {calendarPage?.communityText ||
-              'Join our LP community, volunteer opportunities, family events, and more!'}
-          </p>
           <a
-            href="/account/community"
-            className="mt-4 inline-flex rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white"
+            href={
+              calendarPage?.calendarSubscribeUrl ||
+              'https://calendar.google.com/calendar/u/0/r/month/2026/10/1'
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary-600"
           >
-            {calendarPage?.communityButtonLabel || 'View Community Events'}
+            Subscribe now
           </a>
         </article>
         <article className="rounded-2xl border bg-white p-5">
@@ -620,46 +650,64 @@ const EventCard = ({ event, expanded, onToggle, onImageClick }) => (
         </span>
       )}
       <h3 className="font-bold text-gray-900">{event.title}</h3>
-      <p className="flex items-start gap-2 text-sm text-gray-600">
-        <CalendarIcon className="mt-0.5 h-4 w-4 shrink-0 text-primary-500" />
-        <span>{event.schedule}</span>
-      </p>
+      {event.schedule && (
+        <p className="flex items-start gap-2 text-sm text-gray-600">
+          <CalendarIcon className="mt-0.5 h-4 w-4 shrink-0 text-primary-500" />
+          <span>{event.schedule}</span>
+        </p>
+      )}
       {event.time && (
         <p className="flex items-start gap-2 text-sm text-gray-600">
           <ClockIcon className="mt-0.5 h-4 w-4 shrink-0 text-primary-500" />
           <span>{event.time}</span>
         </p>
       )}
-      <p className="flex items-start gap-2 text-sm text-gray-600">
-        <LocationMarkerIcon className="mt-0.5 h-4 w-4 shrink-0 text-primary-500" />
-        {event.maplink ? (
-          <a
-            href={event.maplink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            {event.venueLabel}
-          </a>
-        ) : (
-          <span>{event.venueLabel}</span>
-        )}
-      </p>
-      <button
-        type="button"
-        onClick={onToggle}
-        className="mt-auto rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white"
-      >
-        {expanded ? 'Hide Details' : 'View Details'}
-      </button>
-      {expanded && <EventDetails event={event} />}
+      {event.venueLabel && (
+        <p className="flex items-start gap-2 text-sm text-gray-600">
+          <LocationMarkerIcon className="mt-0.5 h-4 w-4 shrink-0 text-primary-500" />
+          {event.maplink ? (
+            <a
+              href={event.maplink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              {event.venueLabel}
+            </a>
+          ) : (
+            <span>{event.venueLabel}</span>
+          )}
+        </p>
+      )}
+      {hasEventDetails(event) && (
+        <button
+          type="button"
+          onClick={onToggle}
+          className="mt-auto rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white"
+        >
+          {expanded ? 'Hide Details' : 'View Details'}
+        </button>
+      )}
+      {expanded && hasEventDetails(event) && <EventDetails event={event} />}
     </div>
   </article>
 );
 
+const hasEventDetails = (event) => {
+  const description = plainText(event.description).replace(/\s+/g, ' ').trim();
+  return Boolean(
+    (description && description !== event.schedule) ||
+      event.districtKey ||
+      event.joiners?.filter(Boolean).length ||
+      event.link ||
+      event.eventFile?.url,
+  );
+};
+
 const EventDetails = ({ event }) => (
   <div className="space-y-3 border-t pt-3 text-sm text-gray-600">
-    {event.description && <PortableText value={event.description} />}
+    {plainText(event.description).replace(/\s+/g, ' ').trim() !== event.schedule &&
+      event.description && <PortableText value={event.description} />}
     {event.districtKey && (
       <p>
         <span className="font-semibold text-gray-800">District: </span>
@@ -733,9 +781,6 @@ export const getServerSideProps = async (context) => {
       calendarSubscribeLabel,
       calendarSubscribeText,
       calendarSubscribeUrl,
-      communityTitle,
-      communityText,
-      communityButtonLabel,
       districtTitle,
       districtText,
       districtButtonLabel
