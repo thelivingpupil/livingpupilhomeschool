@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { PortableText } from '@portabletext/react';
+import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { getSession } from 'next-auth/react';
 import { InvitationStatus } from '@prisma/client';
 import {
@@ -27,6 +28,7 @@ import {
 } from '@/utils/district-regions';
 
 const PRIORITY_SCHOOL_YEAR = '2026-2027';
+const FEATURED_LIMIT = 8;
 
 const AUDIENCE_LABELS = {
   parents: 'Parents',
@@ -48,12 +50,10 @@ const FILTERS = [
   { id: 'cottage', label: 'Cottage Class' },
   { id: 'students', label: 'Students' },
   { id: 'parents', label: 'Parents' },
-  { id: 'community', label: 'Community' },
-  { id: 'district', label: 'District Events' },
 ];
 
+const ALL_DISTRICTS = 'all';
 const MY_DISTRICTS = 'mine';
-const REGION_PREFIX = 'region:';
 
 const posterUrl = (poster) => {
   if (!poster?.asset) return null;
@@ -205,10 +205,8 @@ const isFinished = (event) => {
 };
 
 const matchesDistrictSelection = (event, selection, studentDistricts) => {
+  if (selection === ALL_DISTRICTS) return true;
   if (!event.districtKey) return false;
-  if (selection.startsWith(REGION_PREFIX)) {
-    return event.regionKey === selection.slice(REGION_PREFIX.length);
-  }
   const covered = scopeDistricts(event.districtKey);
   if (selection === MY_DISTRICTS) {
     return studentDistricts.some((district) => covered.includes(district));
@@ -221,7 +219,8 @@ const labelList = (keys, labels) =>
 
 const Calendar = ({ events, calendarPage, studentDistricts, regions }) => {
   const [filter, setFilter] = useState('all');
-  const [districtSelection, setDistrictSelection] = useState(MY_DISTRICTS);
+  const [districtSelection, setDistrictSelection] = useState(ALL_DISTRICTS);
+  const [showDistrictPicker, setShowDistrictPicker] = useState(false);
   const [query, setQuery] = useState('');
   const [expandedImage, setExpandedImage] = useState(null);
   const [expandedEventId, setExpandedEventId] = useState(null);
@@ -260,22 +259,41 @@ const Calendar = ({ events, calendarPage, studentDistricts, regions }) => {
     const flagged = current
       .filter((event) => event.featured)
       .sort((a, b) => (a.featuredOrder || 0) - (b.featuredOrder || 0));
-    if (flagged.length) return flagged.slice(0, 4);
+    if (flagged.length) return flagged.slice(0, FEATURED_LIMIT);
     return current
       .filter((event) => eventTimestamp(event))
       .sort((a, b) => eventTimestamp(a) - eventTimestamp(b))
-      .slice(0, 4);
+      .slice(0, FEATURED_LIMIT);
   }, [current]);
+
+  const featuredSliderOptions = useMemo(() => {
+    const slideable = (perPage) => {
+      const overflow = featured.length > perPage;
+      return { perPage, arrows: overflow, pagination: overflow, drag: overflow };
+    };
+    return {
+      ...slideable(3),
+      gap: '1rem',
+      rewind: true,
+      classes: {
+        prev: 'splide__arrow--prev !left-0',
+        next: 'splide__arrow--next !right-0',
+      },
+      breakpoints: {
+        1279: slideable(2),
+        639: slideable(1),
+      },
+    };
+  }, [featured.length]);
 
   const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return current
       .filter((event) => {
-        if (filter === 'district') {
-          if (!matchesDistrictSelection(event, districtSelection, studentDistricts)) {
-            return false;
-          }
-        } else if (filter === 'online' && !event.online) {
+        if (!matchesDistrictSelection(event, districtSelection, studentDistricts)) {
+          return false;
+        }
+        if (filter === 'online' && !event.online) {
           return false;
         } else if (filter === 'cottage' && !event.cottage) {
           return false;
@@ -308,24 +326,17 @@ const Calendar = ({ events, calendarPage, studentDistricts, regions }) => {
       });
   }, [current, filter, query, studentDistricts, districtSelection]);
 
-  const districtNames = studentDistricts
-    .map((district) => DISTRICT_LABELS[district])
-    .filter(Boolean);
   const regionNames = labelList(regions, REGION_LABELS);
-
-  const selectionLabel = (() => {
-    if (districtSelection === MY_DISTRICTS) {
-      return labelList(studentDistricts, DISTRICT_LABELS);
-    }
-    if (districtSelection.startsWith(REGION_PREFIX)) {
-      return `all ${REGION_LABELS[districtSelection.slice(REGION_PREFIX.length)]} districts`;
-    }
-    return DISTRICT_LABELS[districtSelection];
-  })();
+  const myDistrictsLabel = labelList(studentDistricts, DISTRICT_LABELS);
+  const selectionLabel =
+    districtSelection === MY_DISTRICTS
+      ? myDistrictsLabel
+      : DISTRICT_LABELS[districtSelection];
 
   const showDistrictEvents = () => {
-    setFilter('district');
-    setDistrictSelection(MY_DISTRICTS);
+    setFilter('all');
+    setShowDistrictPicker(true);
+    if (regionOptions.length) setDistrictSelection(MY_DISTRICTS);
     document.getElementById('all-events')?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -357,6 +368,8 @@ const Calendar = ({ events, calendarPage, studentDistricts, regions }) => {
               onClick={() => {
                 setFilter('all');
                 setQuery('');
+                setShowDistrictPicker(false);
+                setDistrictSelection(ALL_DISTRICTS);
                 document.getElementById('all-events')?.scrollIntoView({
                   behavior: 'smooth',
                 });
@@ -376,35 +389,57 @@ const Calendar = ({ events, calendarPage, studentDistricts, regions }) => {
         </div>
         {showFeatured &&
           (featured.length ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <Splide
+              key={featured.map((event) => event._id).join()}
+              options={featuredSliderOptions}
+              aria-label="Featured events"
+              className={`pb-8 ${
+                featured.length > 1 ? 'px-11' : ''
+              } ${featured.length > 2 ? 'sm:px-11' : 'sm:px-0'} ${
+                featured.length > 3 ? 'xl:px-11' : 'xl:px-0'
+              }`}
+            >
               {featured.map((event) => (
-                <EventCard
-                  key={event._id}
-                  event={event}
-                  expanded={expandedEventId === event._id}
-                  onToggle={() =>
-                    setExpandedEventId(
-                      expandedEventId === event._id ? null : event._id,
-                    )
-                  }
-                  onImageClick={setExpandedImage}
-                />
+                <SplideSlide key={event._id} className="flex">
+                  <EventCard
+                    event={event}
+                    expanded={expandedEventId === event._id}
+                    onToggle={() =>
+                      setExpandedEventId(
+                        expandedEventId === event._id ? null : event._id,
+                      )
+                    }
+                    onImageClick={setExpandedImage}
+                  />
+                </SplideSlide>
               ))}
-            </div>
+            </Splide>
           ) : (
             <Content.Empty>No featured events yet.</Content.Empty>
           ))}
       </section>
 
       <section id="all-events" className="space-y-4">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex min-w-0 flex-1 flex-wrap gap-1.5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div className="shrink-0">
+            <label className="relative block">
+              <span className="sr-only">Search events</span>
+              <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search events"
+                className="w-full rounded-full border border-gray-200 py-2 pl-9 pr-4 text-sm sm:w-56"
+              />
+            </label>
+          </div>
+          <div className="flex flex-wrap gap-2">
             {FILTERS.map((item) => (
               <button
                 key={item.id}
                 type="button"
                 onClick={() => setFilter(item.id)}
-                className={`whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ${
+                className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold ${
                   filter === item.id
                     ? 'bg-primary-600 text-white'
                     : 'bg-white text-primary-600 ring-1 ring-primary-200'
@@ -414,61 +449,38 @@ const Calendar = ({ events, calendarPage, studentDistricts, regions }) => {
               </button>
             ))}
           </div>
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-            {filter === 'district' && regionOptions.length > 0 && (
-              <label>
-                <span className="sr-only">Choose a district</span>
-                <select
-                  value={districtSelection}
-                  onChange={(event) => setDistrictSelection(event.target.value)}
-                  className="w-full rounded-full border border-gray-200 py-1 pl-3 pr-8 text-xs sm:w-52"
-                >
-                  <option value={MY_DISTRICTS}>
-                    My district ({labelList(studentDistricts, DISTRICT_LABELS)})
-                  </option>
-                  {regionOptions.map(({ region, districts }) => (
-                    <optgroup key={region} label={REGION_LABELS[region]}>
-                      <option value={`${REGION_PREFIX}${region}`}>
-                        All {REGION_LABELS[region]} districts
-                      </option>
-                      {districts.map((district) => (
-                        <option key={district} value={district}>
-                          {DISTRICT_LABELS[district]}
-                        </option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
-              </label>
-            )}
-            <label className="relative">
-              <span className="sr-only">Search events</span>
-              <SearchIcon className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search events"
-                className="w-full rounded-full border border-gray-200 py-1 pl-8 pr-3 text-xs sm:w-44"
-              />
-            </label>
-          </div>
         </div>
 
-        {filter === 'all' && (
-          <p className="text-sm text-gray-500">
-            {regionNames
+        {showDistrictPicker && regionOptions.length > 0 && (
+          <label className="block">
+            <span className="sr-only">Choose a district</span>
+            <select
+              value={districtSelection}
+              onChange={(event) => setDistrictSelection(event.target.value)}
+              className="w-full rounded-full border border-gray-200 py-2 pl-4 pr-8 text-sm sm:w-56"
+            >
+              <option value={ALL_DISTRICTS}>All districts</option>
+              <option value={MY_DISTRICTS}>My district ({myDistrictsLabel})</option>
+              {regionOptions.map(({ region, districts }) => (
+                <optgroup key={region} label={REGION_LABELS[region]}>
+                  {districts.map((district) => (
+                    <option key={district} value={district}>
+                      {DISTRICT_LABELS[district]}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </label>
+        )}
+
+        <p className="text-sm text-gray-500">
+          {districtSelection !== ALL_DISTRICTS
+            ? `Showing ${selectionLabel} events only.`
+            : regionNames
               ? `LP events for everyone, plus events from all ${regionNames} districts.`
               : 'LP events for everyone. District events appear once a 2026–2027 district is saved.'}
-          </p>
-        )}
-        {filter === 'district' && districtNames.length > 0 && (
-          <p className="text-sm text-gray-500">Showing {selectionLabel} only.</p>
-        )}
-        {filter === 'district' && districtNames.length === 0 && (
-          <p className="text-sm text-gray-500">
-            A district has not been saved for your 2026–2027 student yet.
-          </p>
-        )}
+        </p>
 
         {visible.length ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -545,7 +557,7 @@ const Calendar = ({ events, calendarPage, studentDistricts, regions }) => {
 };
 
 const EventCard = ({ event, expanded, onToggle, onImageClick }) => (
-  <article className="flex flex-col overflow-hidden rounded-2xl border bg-white shadow-sm">
+  <article className="flex w-full flex-col overflow-hidden rounded-2xl border bg-white shadow-sm">
     <button
       type="button"
       className="relative h-40 w-full bg-gray-50"
