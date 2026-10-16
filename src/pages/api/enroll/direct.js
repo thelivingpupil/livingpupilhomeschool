@@ -15,9 +15,11 @@ import { createStudentRecord } from '@/prisma/services/student-record';
 import { updateGuardianInformation } from '@/prisma/services/user';
 import { createWorkspaceWithSlug } from '@/prisma/services/workspace';
 import {
+  DUAL_ACCREDITATION_CLOSED_MESSAGE,
   LOCAL_ACCREDITATION_CLOSED_MESSAGE,
   SCHOOL_YEAR,
   STUDENT_STATUS,
+  isDualAccreditationClosed,
   isLocalAccreditationClosed,
 } from '@/utils/constants';
 import { getGuardianInformationID, createParentTrainingsForGrade } from '@/prisma/services/parent-training';
@@ -101,6 +103,17 @@ const handler = async (req, res) => {
       return res.status(400).json({
         errors: {
           error: { msg: LOCAL_ACCREDITATION_CLOSED_MESSAGE },
+        },
+      });
+    }
+
+    if (
+      accreditation === 'DUAL' &&
+      isDualAccreditationClosed(incomingGradeLevel)
+    ) {
+      return res.status(400).json({
+        errors: {
+          error: { msg: DUAL_ACCREDITATION_CLOSED_MESSAGE },
         },
       });
     }

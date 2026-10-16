@@ -74,8 +74,10 @@ import {
   calculateMonthlyPayment,
   GRADE_TO_FORM_MAP,
   LOCAL_ACCREDITATION_CLOSED_MESSAGE,
+  DUAL_ACCREDITATION_CLOSED_MESSAGE,
   gradeCanHaveCottageSlots,
   isLocalAccreditationClosed,
+  isDualAccreditationClosed,
 } from '@/utils/constants';
 import { PortableText } from '@portabletext/react';
 import { event } from 'react-ga';
@@ -1341,18 +1343,23 @@ const EnrollmentProcess = ({
     incomingGradeLevel,
     userEmail,
   );
+  const dualAccreditationClosed = isDualAccreditationClosed(incomingGradeLevel);
 
   useEffect(() => {
-    if (accreditation === Accreditation.LOCAL && localAccreditationClosed) {
+    if (
+      (accreditation === Accreditation.LOCAL && localAccreditationClosed) ||
+      (accreditation === Accreditation.DUAL && dualAccreditationClosed)
+    ) {
       setAccreditation(null);
     }
-  }, [accreditation, localAccreditationClosed]);
+  }, [accreditation, localAccreditationClosed, dualAccreditationClosed]);
 
   const handleAccreditationChange = (e) => {
     const selectedAccreditation = e.target.value;
     if (
-      selectedAccreditation === Accreditation.LOCAL &&
-      localAccreditationClosed
+      (selectedAccreditation === Accreditation.LOCAL &&
+        localAccreditationClosed) ||
+      (selectedAccreditation === Accreditation.DUAL && dualAccreditationClosed)
     ) {
       setAccreditation(null);
       return;
@@ -2913,6 +2920,7 @@ const EnrollmentProcess = ({
               </option>
               <option
                 disabled={
+                  dualAccreditationClosed ||
                   !(
                     incomingGradeLevel !== GradeLevel.PRESCHOOL &&
                     incomingGradeLevel !== GradeLevel.K1
@@ -2921,6 +2929,7 @@ const EnrollmentProcess = ({
                 value={Accreditation.DUAL}
               >
                 {ACCREDITATION[Accreditation.DUAL]}
+                {dualAccreditationClosed ? ' (Closed)' : ''}
               </option>
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -2928,9 +2937,18 @@ const EnrollmentProcess = ({
             </div>
           </div>
         </div>
-        {localAccreditationClosed ? (
+        {localAccreditationClosed && dualAccreditationClosed ? (
+          <p className="text-sm text-amber-700">
+            Local and Dual Accreditation enrollment is closed for Grades 1–12.
+            International Accreditation remains open.
+          </p>
+        ) : localAccreditationClosed ? (
           <p className="text-sm text-amber-700">
             {LOCAL_ACCREDITATION_CLOSED_MESSAGE}
+          </p>
+        ) : dualAccreditationClosed ? (
+          <p className="text-sm text-amber-700">
+            {DUAL_ACCREDITATION_CLOSED_MESSAGE}
           </p>
         ) : null}
         <div className="flex flex-col space-x-0 space-y-5 md:flex-row md:space-x-5 md:space-y-0">
