@@ -198,7 +198,6 @@ const userUnsettledDues = [
   'debbie.balonon@gmail.com',
   'tinneyolmedo@gmail.com',
   'mvdayangco@gmail.com',
-  'mitchborjal@yahoo.com',
   'deianirajill@gmail.com',
   'faithfortesa.va@gmail.com',
   'loste.gellieann@hotmail.com',
