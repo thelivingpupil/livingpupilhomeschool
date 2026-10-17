@@ -16,7 +16,9 @@ import {
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import format from 'date-fns/format';
 import toast from 'react-hot-toast';
+import * as XLSX from 'xlsx';
 
 import { AdminLayout } from '@/layouts/index';
 import Meta from '@/components/Meta';
@@ -24,6 +26,12 @@ import SideModal from '@/components/Modal/side-modal';
 import { useProducts } from '@/hooks/data';
 import api from '@/lib/common/api';
 import { storage } from '@/lib/client/firebase';
+
+const formatPrice = (value) =>
+  Number(value || 0).toLocaleString('en-PH', {
+    style: 'currency',
+    currency: 'PHP',
+  });
 
 const emptyForm = {
   code: '',
@@ -320,6 +328,34 @@ const ProductsAdmin = () => {
     }
   };
 
+  const exportInventory = () => {
+    const items = [...rows].sort((a, b) =>
+      String(a.name || '').localeCompare(String(b.name || ''), undefined, {
+        sensitivity: 'base',
+      })
+    );
+
+    if (!items.length) {
+      toast.error('No inventory to export');
+      return;
+    }
+
+    const sheet = XLSX.utils.aoa_to_sheet([
+      ['Name', 'Price', 'Available Stocks'],
+      ...items.map((product) => [
+        product.name || '',
+        Number(product.price || 0),
+        Number(product.available ?? 0),
+      ]),
+    ]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, sheet, 'Inventory');
+    XLSX.writeFile(
+      workbook,
+      `shop-inventory-${format(new Date(), 'yyyy.MM.dd.kk.mm.ss')}.xlsx`
+    );
+  };
+
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -327,6 +363,13 @@ const ProductsAdmin = () => {
         <GridToolbarFilterButton />
         <Button size="small" onClick={openCreateModal}>
           Add Product
+        </Button>
+        <Button
+          size="small"
+          onClick={exportInventory}
+          disabled={isLoading || !rows.length}
+        >
+          Export
         </Button>
       </GridToolbarContainer>
     );
@@ -380,11 +423,7 @@ const ProductsAdmin = () => {
               field: 'price',
               headerName: 'Price',
               width: 110,
-              valueFormatter: (value) =>
-                Number(value || 0).toLocaleString('en-PH', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }),
+              valueFormatter: (value) => formatPrice(value),
             },
             {
               field: 'quantityOnHand',
