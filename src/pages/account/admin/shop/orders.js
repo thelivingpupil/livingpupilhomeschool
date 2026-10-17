@@ -4,15 +4,18 @@ import {
   GridToolbarContainer,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
-  GridToolbarExport,
+  useGridApiContext,
+  gridFilteredSortedRowIdsSelector,
 } from '@mui/x-data-grid';
 import {
   Box,
+  Button,
   IconButton,
   Menu,
   MenuItem,
   Typography,
 } from '@mui/material';
+import * as XLSX from 'xlsx';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Image from 'next/image';
 import format from 'date-fns/format';
@@ -418,20 +421,45 @@ const ShopOrdersAdmin = () => {
   };
 
   function CustomToolbar() {
+    const apiRef = useGridApiContext();
+
+    const exportXlsx = () => {
+      const columns = apiRef.current
+        .getAllColumns()
+        .filter((column) => !column.disableExport);
+      const rowIds = gridFilteredSortedRowIdsSelector(apiRef);
+      const header = columns.map(
+        (column) => column.headerName || column.field
+      );
+      const body = rowIds.map((id) => {
+        const row = apiRef.current.getRow(id);
+        return columns.map((column) => {
+          const value = row?.[column.field];
+          if (typeof column.valueFormatter === 'function') {
+            const formatted = column.valueFormatter(value, row, column, apiRef);
+            return formatted == null ? '' : formatted;
+          }
+          if (value == null || typeof value === 'object') return '';
+          return value;
+        });
+      });
+
+      const sheet = XLSX.utils.aoa_to_sheet([header, ...body]);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, sheet, 'Orders');
+      XLSX.writeFile(
+        workbook,
+        `shop-orders-${format(new Date(), 'yyyy.MM.dd.kk.mm.ss')}.xlsx`
+      );
+    };
+
     return (
       <GridToolbarContainer>
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
-        <GridToolbarExport
-          csvOptions={{
-            fileName: `shop-orders-${format(
-              new Date(),
-              'yyyy.MM.dd.kk.mm.ss'
-            )}`,
-            utf8WithBom: true,
-            allColumns: true,
-          }}
-        />
+        <Button size="small" onClick={exportXlsx}>
+          Export
+        </Button>
       </GridToolbarContainer>
     );
   }
