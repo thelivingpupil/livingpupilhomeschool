@@ -22,8 +22,8 @@ import {
   isLocalAccreditationClosed,
 } from '@/utils/constants';
 import {
-  createParentTrainingsForGrade,
   getGuardianInformationID,
+  syncParentTrainingsForGuardian,
 } from '@/prisma/services/parent-training';
 import {
   OrientationError,
@@ -264,14 +264,12 @@ const handler = async (req, res) => {
     const guardianInfoId = await getGuardianInformationID(session.user.userId); // get guardian ID
     if (guardianInfoId) {
       try {
-        await createParentTrainingsForGrade(
-          incomingGradeLevel,
+        await syncParentTrainingsForGuardian(
           guardianInfoId,
-          schoolYear,
-          'UNFINISHED'
-        ); //create parent training
+          studentRecord.schoolYear || schoolYear
+        );
       } catch (error) {
-        console.error('Error creating parent trainings:', error);
+        console.error('Error syncing parent trainings:', error);
         // Continue even if parent training creation fails
       }
     } else {

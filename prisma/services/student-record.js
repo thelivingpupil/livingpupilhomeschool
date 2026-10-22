@@ -1,7 +1,7 @@
 import { GradeLevel, Program, TransactionStatus } from '@prisma/client';
 import prisma from '@/prisma/index';
 import { composePartnerSchool } from '@/utils/constants';
-import { createPartnerSchoolParentTrainingsForStudent } from '@/prisma/services/parent-training';
+import { syncParentTrainingsForStudent } from '@/prisma/services/parent-training';
 
 export const countEnrolledStudentsByGradeLevel = async (startDate, endDate) => {
   const filterDate =
@@ -693,9 +693,9 @@ export const updateStudentRecord = async (studentId, studentNewData) => {
   });
 
   try {
-    await createPartnerSchoolParentTrainingsForStudent(updated);
+    await syncParentTrainingsForStudent(updated);
   } catch (error) {
-    console.error('Error creating partner-school parent trainings:', error);
+    console.error('Error syncing parent trainings:', error);
   }
 
   return updated;
@@ -719,8 +719,8 @@ export const updateStudentRecordForSchoolFees = async (
   newProgram,
   newCottageType,
   monthlyPaymentCount = null
-) =>
-  await prisma.studentRecord.update({
+) => {
+  const updated = await prisma.studentRecord.update({
     data: {
       incomingGradeLevel: newgradeLevel,
       enrollmentType: newEnrollmentType,
@@ -733,3 +733,12 @@ export const updateStudentRecordForSchoolFees = async (
     },
     where: { studentId },
   });
+
+  try {
+    await syncParentTrainingsForStudent(updated);
+  } catch (error) {
+    console.error('Error syncing parent trainings:', error);
+  }
+
+  return updated;
+};
