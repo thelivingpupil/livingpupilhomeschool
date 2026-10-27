@@ -343,20 +343,13 @@ const Calendar = ({ events, calendarPage, studentDistricts, regions }) => {
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - School Calendar" />
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <Content.Title
-          title="Calendar of Events"
-          subtitle={
-            calendarPage?.subtitle ||
-            'Stay connected with our upcoming learning, family, and community activities.'
-          }
-        />
-        <div className="rounded-2xl bg-primary-600 px-5 py-4 text-white md:max-w-xs">
-          <p className="font-display text-xl leading-tight text-secondary-300">
-            Learn. Connect. Grow. Together.
-          </p>
-        </div>
-      </div>
+      <Content.Title
+        title="Calendar of Events"
+        subtitle={
+          calendarPage?.subtitle ||
+          'Stay connected with our upcoming learning, family, and community activities.'
+        }
+      />
 
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
