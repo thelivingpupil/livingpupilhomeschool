@@ -720,6 +720,7 @@ model Product {
   code        String              @unique
   name        String
   description String?
+  categories  String[]            @default([])
   price       Decimal             @default(0)
   imageUrl    String?
   imagePath   String?

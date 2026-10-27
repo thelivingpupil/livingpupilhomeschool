@@ -37,6 +37,7 @@ const emptyForm = {
   code: '',
   name: '',
   description: '',
+  categories: '',
   price: '',
   isActive: true,
   initialStock: 0,
@@ -100,6 +101,9 @@ const ProductsAdmin = () => {
       code: product.code || '',
       name: product.name || '',
       description: product.description || '',
+      categories: Array.isArray(product.categories)
+        ? product.categories.join(', ')
+        : '',
       price: product.price ?? '',
       isActive: product.isActive !== false,
       initialStock: 0,
@@ -287,6 +291,10 @@ const ProductsAdmin = () => {
         code: form.code.trim(),
         name: form.name.trim(),
         description: form.description,
+        categories: form.categories
+          .split(',')
+          .map((category) => category.trim())
+          .filter(Boolean),
         price: parsedPrice,
         imageUrl,
         imagePath,
@@ -418,6 +426,14 @@ const ProductsAdmin = () => {
               headerName: 'Name',
               flex: 1,
               minWidth: 180,
+            },
+            {
+              field: 'categories',
+              headerName: 'Categories',
+              flex: 1,
+              minWidth: 180,
+              valueGetter: (_value, row) =>
+                Array.isArray(row.categories) ? row.categories.join(', ') : '',
             },
             {
               field: 'price',
@@ -726,6 +742,21 @@ const ProductsAdmin = () => {
                 setForm((prev) => ({ ...prev, description: e.target.value }))
               }
             />
+          </div>
+
+          <div className="flex flex-col space-y-1">
+            <label className="font-medium">Categories</label>
+            <input
+              className="px-3 py-2 border rounded"
+              value={form.categories}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, categories: e.target.value }))
+              }
+              placeholder="Grade 4, Literature"
+            />
+            <span className="text-xs text-gray-500">
+              Separate categories with commas.
+            </span>
           </div>
 
           <div className="flex flex-col space-y-1">

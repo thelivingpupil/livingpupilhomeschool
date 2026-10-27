@@ -128,49 +128,8 @@ const Shop = ({ categories, items }) => {
     }
   }, [data]);
 
-  const onChangeFilter = (e) => {
-    const category = e.target.value;
-    setCategoryFilter(category);
-    setQuery('');
-
-    if (category !== 'all') {
-      shopItems = [
-        ...items.filter((item) => item?.categories?.includes(category)),
-      ];
-    } else {
-      shopItems = [...items];
-    }
-
-    handleSort(sortBy);
-  };
-
-  const onSort = (e) => {
-    const sortBy = e.target.value;
-    setSortBy(sortBy);
-    handleSort(sortBy);
-  };
-
-  const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase(); // Convert the search query to lowercase
-    setQuery(query);
-
-    if (query !== '') {
-      shopItems = [
-        ...items.filter(
-          (item) =>
-            (categoryFilter === 'all' ||
-              item?.categories?.includes(categoryFilter)) &&
-            item?.name?.toLowerCase().includes(query) // Convert item name to lowercase
-        ),
-      ];
-    } else {
-      shopItems = [...items];
-    }
-
-    handleSort(sortBy);
-  };
-
-  const handleSort = (sortBy) => {
+  const sortItems = (list, sortKey) => {
+    const next = [...list];
     let sort = (a, b) => {
       const first = a.name.toUpperCase();
       const second = b.name.toUpperCase();
@@ -185,7 +144,7 @@ const Shop = ({ categories, items }) => {
       return comparison;
     };
 
-    switch (sortBy) {
+    switch (sortKey) {
       case 'alphaDesc': {
         sort = (a, b) => {
           const first = b.name.toUpperCase();
@@ -212,13 +171,48 @@ const Shop = ({ categories, items }) => {
       }
     }
 
-    shopItems.sort(sort);
-    setShopItems([...shopItems]);
+    next.sort(sort);
+    return next;
+  };
+
+  const visibleItems = (category, query) =>
+    items.filter((item) => {
+      const inCategory =
+        category === 'all' || item?.categories?.includes(category);
+
+      if (!inCategory) return false;
+      if (!query) return true;
+
+      return item?.name?.toLowerCase().includes(query);
+    });
+
+  const onChangeFilter = (e) => {
+    const category = e.target.value;
+    setCategoryFilter(category);
+    setQuery('');
+    setShopItems(sortItems(visibleItems(category, ''), sortBy));
+  };
+
+  const onSort = (e) => {
+    const nextSort = e.target.value;
+    setSortBy(nextSort);
+    setShopItems(sortItems(shopItems, nextSort));
+  };
+
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase();
+    setQuery(query);
+    setShopItems(sortItems(visibleItems(categoryFilter, query), sortBy));
   };
 
   const debouncedChangeHandler = useMemo(
     () => debounce(handleSearch, 300),
-    [items, categories]
+    [items, categoryFilter, sortBy]
+  );
+
+  useEffect(
+    () => () => debouncedChangeHandler.cancel(),
+    [debouncedChangeHandler]
   );
 
   const disableShop = false;

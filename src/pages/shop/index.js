@@ -33,7 +33,12 @@ export const getServerSideProps = async () => {
   return {
     props: {
       page: { footer, header },
-      shop: { categories: [], items },
+      shop: {
+        categories: [
+          ...new Set(items.flatMap((item) => item.categories || [])),
+        ].sort((a, b) => a.localeCompare(b)),
+        items,
+      },
     },
   };
 };
