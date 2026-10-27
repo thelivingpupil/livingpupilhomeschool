@@ -1,44 +1,62 @@
+import { GradeLevel } from '@prisma/client';
 import { validateSession } from '@/config/api-validation';
-import { updateParentTrainingStatus, getParentTrainings, createParentTrainingsForGrade } from '@/prisma/services/parent-training';
+import { createParentTrainingsForGrade } from '@/prisma/services/parent-training';
+import parentTrainingHandler from '../index';
 
+const GRADE_LEVELS = Object.values(GradeLevel);
+const TRAINING_STATUSES = ['FINISHED', 'UNFINISHED'];
 
 const handler = async (req, res) => {
     const { method } = req;
 
-    if (method === 'GET') {
-        await validateSession(req, res);
-        const parentTraining = await getParentTrainings();
-        res.status(200).json({ data: { parentTraining } });
-    } else if (method === 'PATCH') {
-        try {
-            const {
-                courseCode,
-                guardianId,
-                schoolYear,
-                trainingStatus
-            } = req.body;
-            await Promise.all([updateParentTrainingStatus(courseCode, guardianId, schoolYear, trainingStatus)]);
-
-            res.status(200).json({ message: 'Student status updated successfully' });
-        } catch (error) {
-            console.error('Error updating parent training status:', error);
-            res.status(500).json({ error: 'Failed to update parent training status' });
-        }
+    if (method === 'GET' || method === 'PATCH') {
+        return parentTrainingHandler(req, res);
     } else if (method === 'POST') {
+        const session = await validateSession(req, res);
+        if (!session) return;
+
+        if (session.user?.userType !== 'ADMIN') {
+            return res.status(403).json({
+                errors: { error: { msg: 'Forbidden: Admin access required' } },
+            });
+        }
+
         try {
             const {
                 gradeLevel,
                 guardianId,
                 schoolYear,
                 status
-            } = req.body;
+            } = req.body || {};
 
-            await Promise.all([createParentTrainingsForGrade(gradeLevel, guardianId, schoolYear, status)]);
+            if (!gradeLevel || !guardianId || !schoolYear || !status) {
+                return res.status(400).json({
+                    errors: {
+                        error: {
+                            msg: 'gradeLevel, guardianId, schoolYear, and status are required',
+                        },
+                    },
+                });
+            }
 
-            res.status(200).json({ message: 'Student status updated successfully' });
+            if (!GRADE_LEVELS.includes(gradeLevel)) {
+                return res.status(400).json({
+                    errors: { error: { msg: 'Invalid grade level' } },
+                });
+            }
+
+            if (!TRAINING_STATUSES.includes(status)) {
+                return res.status(400).json({
+                    errors: { error: { msg: 'Invalid training status' } },
+                });
+            }
+
+            await createParentTrainingsForGrade(gradeLevel, guardianId, schoolYear, status);
+
+            res.status(200).json({ message: 'Parent trainings created successfully' });
         } catch (error) {
-            console.error('Error updating parent training status:', error);
-            res.status(500).json({ error: 'Failed to update parent training status' });
+            console.error('Error creating parent trainings:', error);
+            res.status(500).json({ error: 'Failed to create parent trainings' });
         }
     } else {
         res.status(405).json({ error: `${method} method unsupported` });
