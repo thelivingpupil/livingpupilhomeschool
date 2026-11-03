@@ -14,9 +14,12 @@ import {
   getUsPartnerSchool,
 } from '@/utils/constants';
 
+// Homelife Academy and Dual use this one term form.
+const HOMELIFE_DUAL_TERM_FORM_ID = '262088747216464';
+
 // S.Y. 2026-2027 Term Requirements - by partner school
 const termForms = {
-  [PartnerSchool.KAIROS]: '262088747216464',
+  [PartnerSchool.KAIROS]: HOMELIFE_DUAL_TERM_FORM_ID,
   [PartnerSchool.MANDAUE]: '262098951793472',
 };
 
@@ -227,7 +230,17 @@ const Grades = () => {
   const partnerSchool = getUsPartnerSchool(storedPartnerSchool);
   const showPartnerForms = formPage === 'term' || formPage === 'year-end';
 
+  const isHomelifeOrDual =
+    workspace?.studentRecord?.accreditation === 'DUAL' ||
+    storedPartnerSchool === PartnerSchool.HOMELIFE_ACADEMY ||
+    storedPartnerSchool === PartnerSchool.HOMELIFE_KAIROS ||
+    storedPartnerSchool === PartnerSchool.HOMELIFE_MANDAUE;
+
   const getFormId = () => {
+    if (formPage === 'term' && isHomelifeOrDual) {
+      return HOMELIFE_DUAL_TERM_FORM_ID;
+    }
+
     if (!partnerSchool) return null;
 
     if (formPage === 'term') {
