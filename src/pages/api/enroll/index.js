@@ -15,13 +15,15 @@ import { createStudentRecord } from '@/prisma/services/student-record';
 import { updateGuardianInformation } from '@/prisma/services/user';
 import { getOwnWorkspace } from '@/prisma/services/workspace';
 import {
+  DUAL_ACCREDITATION_CLOSED_MESSAGE,
   LOCAL_ACCREDITATION_CLOSED_MESSAGE,
   STUDENT_STATUS,
+  isDualAccreditationClosed,
   isLocalAccreditationClosed,
 } from '@/utils/constants';
 import {
-  createParentTrainingsForGrade,
   getGuardianInformationID,
+  syncParentTrainingsForGuardian,
 } from '@/prisma/services/parent-training';
 import {
   OrientationError,
@@ -104,6 +106,17 @@ const handler = async (req, res) => {
       return res.status(400).json({
         errors: {
           error: { msg: LOCAL_ACCREDITATION_CLOSED_MESSAGE },
+        },
+      });
+    }
+
+    if (
+      accreditation === 'DUAL' &&
+      isDualAccreditationClosed(incomingGradeLevel)
+    ) {
+      return res.status(400).json({
+        errors: {
+          error: { msg: DUAL_ACCREDITATION_CLOSED_MESSAGE },
         },
       });
     }
@@ -251,14 +264,12 @@ const handler = async (req, res) => {
     const guardianInfoId = await getGuardianInformationID(session.user.userId); // get guardian ID
     if (guardianInfoId) {
       try {
-        await createParentTrainingsForGrade(
-          incomingGradeLevel,
+        await syncParentTrainingsForGuardian(
           guardianInfoId,
-          schoolYear,
-          'UNFINISHED'
-        ); //create parent training
+          studentRecord.schoolYear || schoolYear
+        );
       } catch (error) {
-        console.error('Error creating parent trainings:', error);
+        console.error('Error syncing parent trainings:', error);
         // Continue even if parent training creation fails
       }
     } else {

@@ -16,7 +16,9 @@ import {
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import format from 'date-fns/format';
 import toast from 'react-hot-toast';
+import * as XLSX from 'xlsx';
 
 import { AdminLayout } from '@/layouts/index';
 import Meta from '@/components/Meta';
@@ -25,10 +27,17 @@ import { useProducts } from '@/hooks/data';
 import api from '@/lib/common/api';
 import { storage } from '@/lib/client/firebase';
 
+const formatPrice = (value) =>
+  Number(value || 0).toLocaleString('en-PH', {
+    style: 'currency',
+    currency: 'PHP',
+  });
+
 const emptyForm = {
   code: '',
   name: '',
   description: '',
+  categories: '',
   price: '',
   isActive: true,
   initialStock: 0,
@@ -92,6 +101,9 @@ const ProductsAdmin = () => {
       code: product.code || '',
       name: product.name || '',
       description: product.description || '',
+      categories: Array.isArray(product.categories)
+        ? product.categories.join(', ')
+        : '',
       price: product.price ?? '',
       isActive: product.isActive !== false,
       initialStock: 0,
@@ -279,6 +291,10 @@ const ProductsAdmin = () => {
         code: form.code.trim(),
         name: form.name.trim(),
         description: form.description,
+        categories: form.categories
+          .split(',')
+          .map((category) => category.trim())
+          .filter(Boolean),
         price: parsedPrice,
         imageUrl,
         imagePath,
@@ -320,6 +336,34 @@ const ProductsAdmin = () => {
     }
   };
 
+  const exportInventory = () => {
+    const items = [...rows].sort((a, b) =>
+      String(a.name || '').localeCompare(String(b.name || ''), undefined, {
+        sensitivity: 'base',
+      })
+    );
+
+    if (!items.length) {
+      toast.error('No inventory to export');
+      return;
+    }
+
+    const sheet = XLSX.utils.aoa_to_sheet([
+      ['Name', 'Price', 'Available Stocks'],
+      ...items.map((product) => [
+        product.name || '',
+        Number(product.price || 0),
+        Number(product.available ?? 0),
+      ]),
+    ]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, sheet, 'Inventory');
+    XLSX.writeFile(
+      workbook,
+      `shop-inventory-${format(new Date(), 'yyyy.MM.dd.kk.mm.ss')}.xlsx`
+    );
+  };
+
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -327,6 +371,13 @@ const ProductsAdmin = () => {
         <GridToolbarFilterButton />
         <Button size="small" onClick={openCreateModal}>
           Add Product
+        </Button>
+        <Button
+          size="small"
+          onClick={exportInventory}
+          disabled={isLoading || !rows.length}
+        >
+          Export
         </Button>
       </GridToolbarContainer>
     );
@@ -377,14 +428,18 @@ const ProductsAdmin = () => {
               minWidth: 180,
             },
             {
+              field: 'categories',
+              headerName: 'Categories',
+              flex: 1,
+              minWidth: 180,
+              valueGetter: (_value, row) =>
+                Array.isArray(row.categories) ? row.categories.join(', ') : '',
+            },
+            {
               field: 'price',
               headerName: 'Price',
               width: 110,
-              valueFormatter: (value) =>
-                Number(value || 0).toLocaleString('en-PH', {
-                  style: 'currency',
-                  currency: 'PHP',
-                }),
+              valueFormatter: (value) => formatPrice(value),
             },
             {
               field: 'quantityOnHand',
@@ -687,6 +742,21 @@ const ProductsAdmin = () => {
                 setForm((prev) => ({ ...prev, description: e.target.value }))
               }
             />
+          </div>
+
+          <div className="flex flex-col space-y-1">
+            <label className="font-medium">Categories</label>
+            <input
+              className="px-3 py-2 border rounded"
+              value={form.categories}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, categories: e.target.value }))
+              }
+              placeholder="Grade 4, Literature"
+            />
+            <span className="text-xs text-gray-500">
+              Separate categories with commas.
+            </span>
           </div>
 
           <div className="flex flex-col space-y-1">

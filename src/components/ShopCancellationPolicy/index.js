@@ -18,7 +18,9 @@ const ShopCancellationPolicyText = ({ inModal = false }) => (
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left border-b border-gray-700">
-              <th className="py-2 pr-4 font-semibold">Order Period</th>
+              <th className="py-2 pr-4 font-semibold">
+                Finance Validation Period
+              </th>
               <th className="py-2 pr-4 font-semibold">Cut-off</th>
               <th className="py-2 pr-4 font-semibold">Processing &amp; Packing</th>
               <th className="py-2 font-semibold">Shipment</th>
@@ -97,12 +99,12 @@ const ShopCancellationPolicyText = ({ inModal = false }) => (
     </p>
     <p>
       <a
-        href="/files/lp-shop-cancellation-policy.pdf"
+        href="/files/lp-shop-cancellation-policy.png"
         target="_blank"
         rel="noopener noreferrer"
         className="font-medium text-blue-600 underline"
       >
-        Download PDF copy of the bookshop cancellation policy
+        Download a copy of the bookshop cancellation policy
       </a>
     </p>
   </div>

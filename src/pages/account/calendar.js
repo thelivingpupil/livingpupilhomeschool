@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { PortableText } from '@portabletext/react';
+import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { getSession } from 'next-auth/react';
 import { InvitationStatus } from '@prisma/client';
 import {
@@ -16,8 +17,18 @@ import { AccountLayout } from '@/layouts/index';
 import sanityClient, { imageBuilder } from '@/lib/server/sanity';
 import ImageModal from '@/components/Modal/Image-Modal';
 import prisma from '@/prisma/index';
+import {
+  DISTRICT_LABELS,
+  REGION_LABELS,
+  canViewEvent,
+  familyRegions,
+  regionDistricts,
+  resolveEventScope,
+  scopeDistricts,
+} from '@/utils/district-regions';
 
 const PRIORITY_SCHOOL_YEAR = '2026-2027';
+const FEATURED_LIMIT = 8;
 
 const AUDIENCE_LABELS = {
   parents: 'Parents',
@@ -33,105 +44,16 @@ const AUDIENCE_STYLES = {
   community: 'bg-secondary-200 text-secondary-800',
 };
 
-const DISTRICT_LABELS = {
-  MAGITING: 'Magiting',
-  MAHARLIKA: 'Maharlika',
-  BULACAN: 'Bulacan',
-  GREATER_MANILA: 'Luzon (Greater Manila)',
-  BAYANI: 'Bayani',
-  MASINAG: 'Masinag',
-  MARANGAL: 'Marangal',
-  BICOL: 'Bicol',
-  CEBU_SOUTH: 'Cebu South',
-  CEBU_NORTH: 'Cebu North',
-  CEBU_VISAYAS: '(Cebu)/Visayas',
-  ILOILO: 'Iloilo',
-  CEBU_CENTRAL: 'Cebu Central',
-  BOHOL: 'Bohol',
-  NEGROS: 'Negros Island',
-  LEYTE: 'Leyte',
-  DAVAO: 'Davao',
-  MINDANAO: 'Mindanao',
-  MISAMIS_OCCIDENTAL: 'Misamis Occidental',
-  ILIGAN_MISAMIS_ORIENTAL: 'Iligan – Misamis Oriental',
-  ZAMBOANGA: 'Zamboanga',
-  SOCCSKSARGEN: 'SOCCSKSARGEN',
-  BUKIDNON_CDO: 'Bukidnon – CDO',
-  CEBU: 'Cebu',
-  LUZON: 'Luzon',
-  VISAYAS: 'Visayas',
-};
-
 const FILTERS = [
   { id: 'all', label: 'All' },
   { id: 'online', label: 'Online' },
   { id: 'cottage', label: 'Cottage Class' },
   { id: 'students', label: 'Students' },
   { id: 'parents', label: 'Parents' },
-  { id: 'community', label: 'Community' },
-  { id: 'district', label: 'District Events' },
 ];
 
-const AREA_DISTRICT = {
-  south: 'CEBU_SOUTH',
-  central: 'CEBU_CENTRAL',
-  north: 'CEBU_NORTH',
-  bayani: 'BAYANI',
-  magiting: 'MAGITING',
-  maharlika: 'MAHARLIKA',
-  marangal: 'MARANGAL',
-  masinag: 'MASINAG',
-  bulacan: 'BULACAN',
-  bicol: 'BICOL',
-  'greater-manila': 'GREATER_MANILA',
-  iloilo: 'ILOILO',
-  bohol: 'BOHOL',
-  negros: 'NEGROS',
-  leyte: 'LEYTE',
-  soccsksargen: 'SOCCSKSARGEN',
-  'bukidnon-cdo': 'BUKIDNON_CDO',
-  'misamis-occidental': 'MISAMIS_OCCIDENTAL',
-  zamboanga: 'ZAMBOANGA',
-  davao: 'DAVAO',
-  'iligan-misamis-oriental': 'ILIGAN_MISAMIS_ORIENTAL',
-  mindanao: 'MINDANAO',
-};
-
-const CEBU_GROUPS = new Set([
-  'CEBU',
-  'CEBU_SOUTH',
-  'CEBU_NORTH',
-  'CEBU_CENTRAL',
-  'CEBU_VISAYAS',
-]);
-const VISAYAS_GROUPS = new Set([
-  ...CEBU_GROUPS,
-  'VISAYAS',
-  'ILOILO',
-  'BOHOL',
-  'NEGROS',
-  'LEYTE',
-]);
-const LUZON_GROUPS = new Set([
-  'LUZON',
-  'MAGITING',
-  'MAHARLIKA',
-  'BULACAN',
-  'GREATER_MANILA',
-  'BAYANI',
-  'MASINAG',
-  'MARANGAL',
-  'BICOL',
-]);
-const MINDANAO_GROUPS = new Set([
-  'MINDANAO',
-  'DAVAO',
-  'MISAMIS_OCCIDENTAL',
-  'ILIGAN_MISAMIS_ORIENTAL',
-  'ZAMBOANGA',
-  'SOCCSKSARGEN',
-  'BUKIDNON_CDO',
-]);
+const ALL_DISTRICTS = 'all';
+const MY_DISTRICTS = 'mine';
 
 const posterUrl = (poster) => {
   if (!poster?.asset) return null;
@@ -148,13 +70,6 @@ const plainText = (value) => {
     .join(' ');
 };
 
-const normalizeDistrict = (value) => {
-  const key = String(value || '')
-    .trim()
-    .toUpperCase();
-  return DISTRICT_LABELS[key] ? key : null;
-};
-
 const inferAudience = (event) => {
   const explicit = String(event.audience || '')
     .trim()
@@ -165,36 +80,6 @@ const inferAudience = (event) => {
   if (text.includes('famil')) return 'families';
   if (/parent|moms|mom\b|dad\b/.test(text)) return 'parents';
   if (/student|grade|form|youth/.test(text)) return 'students';
-  return null;
-};
-
-const areaInRegion = (region, areaDistrict) => {
-  if (region === 'CEBU') return CEBU_GROUPS.has(areaDistrict) && areaDistrict !== 'CEBU';
-  if (region === 'VISAYAS') {
-    return VISAYAS_GROUPS.has(areaDistrict) && areaDistrict !== 'VISAYAS' && areaDistrict !== 'CEBU';
-  }
-  if (region === 'LUZON') return LUZON_GROUPS.has(areaDistrict) && areaDistrict !== 'LUZON';
-  if (region === 'MINDANAO') {
-    return MINDANAO_GROUPS.has(areaDistrict) && areaDistrict !== 'MINDANAO';
-  }
-  return false;
-};
-
-const inferDistrict = (event) => {
-  const explicit = normalizeDistrict(event.district);
-  const area = String(event.area || '')
-    .trim()
-    .toLowerCase();
-  const areaDistrict = AREA_DISTRICT[area];
-  if (explicit && areaDistrict && areaInRegion(explicit, areaDistrict)) {
-    return areaDistrict;
-  }
-  if (explicit) return explicit;
-  if (areaDistrict) return areaDistrict;
-  const text = `${event.title || ''} ${(event.joiners || []).join(' ')} ${event.venue || ''}`.toLowerCase();
-  if (/\bcebu\b/.test(text)) return 'CEBU';
-  if (/\bluzon\b/.test(text)) return 'LUZON';
-  if (/\bmindanao\b/.test(text)) return 'MINDANAO';
   return null;
 };
 
@@ -319,29 +204,23 @@ const isFinished = (event) => {
   return time < Date.now();
 };
 
-const sameDistrictScope = (eventDistrict, studentDistrict) => {
-  if (eventDistrict === studentDistrict) return true;
-  if (eventDistrict === 'CEBU' && CEBU_GROUPS.has(studentDistrict)) return true;
-  if (eventDistrict === 'VISAYAS' && VISAYAS_GROUPS.has(studentDistrict)) return true;
-  if (eventDistrict === 'LUZON' && LUZON_GROUPS.has(studentDistrict)) return true;
-  if (eventDistrict === 'MINDANAO' && MINDANAO_GROUPS.has(studentDistrict)) return true;
-  return false;
+const matchesDistrictSelection = (event, selection, studentDistricts) => {
+  if (selection === ALL_DISTRICTS) return true;
+  if (!event.districtKey) return false;
+  const covered = scopeDistricts(event.districtKey);
+  if (selection === MY_DISTRICTS) {
+    return studentDistricts.some((district) => covered.includes(district));
+  }
+  return covered.includes(selection);
 };
 
-const visibleToFamily = (event, studentDistricts) => {
-  if (!event.districtKey) return true;
-  return studentDistricts.some((district) =>
-    sameDistrictScope(event.districtKey, district),
-  );
-};
+const labelList = (keys, labels) =>
+  [...new Set(keys.map((key) => labels[key]).filter(Boolean))].join(' and ');
 
-const familyScopeLabel = (studentDistricts) =>
-  [...new Set(studentDistricts.map((district) => DISTRICT_LABELS[district]).filter(Boolean))].join(
-    ' and ',
-  );
-
-const Calendar = ({ events, calendarPage, studentDistricts }) => {
+const Calendar = ({ events, calendarPage, studentDistricts, regions }) => {
   const [filter, setFilter] = useState('all');
+  const [districtSelection, setDistrictSelection] = useState(ALL_DISTRICTS);
+  const [showDistrictPicker, setShowDistrictPicker] = useState(false);
   const [query, setQuery] = useState('');
   const [expandedImage, setExpandedImage] = useState(null);
   const [expandedEventId, setExpandedEventId] = useState(null);
@@ -352,7 +231,6 @@ const Calendar = ({ events, calendarPage, studentDistricts }) => {
       (events || []).map((event) => ({
         ...event,
         audience: inferAudience(event),
-        districtKey: inferDistrict(event),
         online: isOnlineEvent(event),
         cottage: isCottageEvent(event),
         posterUrl: posterUrl(event.poster),
@@ -364,39 +242,58 @@ const Calendar = ({ events, calendarPage, studentDistricts }) => {
   );
 
   const current = useMemo(
+    () => prepared.filter((event) => !isFinished(event)),
+    [prepared],
+  );
+
+  const regionOptions = useMemo(
     () =>
-      prepared.filter(
-        (event) =>
-          !isFinished(event) && visibleToFamily(event, studentDistricts),
-      ),
-    [prepared, studentDistricts],
+      regions.map((region) => ({
+        region,
+        districts: regionDistricts(region),
+      })),
+    [regions],
   );
 
   const featured = useMemo(() => {
     const flagged = current
       .filter((event) => event.featured)
       .sort((a, b) => (a.featuredOrder || 0) - (b.featuredOrder || 0));
-    if (flagged.length) return flagged.slice(0, 4);
+    if (flagged.length) return flagged.slice(0, FEATURED_LIMIT);
     return current
       .filter((event) => eventTimestamp(event))
       .sort((a, b) => eventTimestamp(a) - eventTimestamp(b))
-      .slice(0, 4);
+      .slice(0, FEATURED_LIMIT);
   }, [current]);
+
+  const featuredSliderOptions = useMemo(() => {
+    const slideable = (perPage) => {
+      const overflow = featured.length > perPage;
+      return { perPage, arrows: overflow, pagination: overflow, drag: overflow };
+    };
+    return {
+      ...slideable(3),
+      gap: '1rem',
+      rewind: true,
+      classes: {
+        prev: 'splide__arrow--prev !left-0',
+        next: 'splide__arrow--next !right-0',
+      },
+      breakpoints: {
+        1279: slideable(2),
+        639: slideable(1),
+      },
+    };
+  }, [featured.length]);
 
   const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return current
       .filter((event) => {
-        if (filter === 'district') {
-          if (
-            !event.districtKey ||
-            !studentDistricts.some((district) =>
-              sameDistrictScope(event.districtKey, district),
-            )
-          ) {
-            return false;
-          }
-        } else if (filter === 'online' && !event.online) {
+        if (!matchesDistrictSelection(event, districtSelection, studentDistricts)) {
+          return false;
+        }
+        if (filter === 'online' && !event.online) {
           return false;
         } else if (filter === 'cottage' && !event.cottage) {
           return false;
@@ -427,34 +324,32 @@ const Calendar = ({ events, calendarPage, studentDistricts }) => {
         if (bTime === null) return -1;
         return aTime - bTime;
       });
-  }, [current, filter, query, studentDistricts]);
+  }, [current, filter, query, studentDistricts, districtSelection]);
 
-  const districtNames = studentDistricts
-    .map((district) => DISTRICT_LABELS[district])
-    .filter(Boolean);
+  const regionNames = labelList(regions, REGION_LABELS);
+  const myDistrictsLabel = labelList(studentDistricts, DISTRICT_LABELS);
+  const selectionLabel =
+    districtSelection === MY_DISTRICTS
+      ? myDistrictsLabel
+      : DISTRICT_LABELS[districtSelection];
 
   const showDistrictEvents = () => {
-    setFilter('district');
+    setFilter('all');
+    setShowDistrictPicker(true);
+    if (regionOptions.length) setDistrictSelection(MY_DISTRICTS);
     document.getElementById('all-events')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
     <AccountLayout>
       <Meta title="Living Pupil Homeschool - School Calendar" />
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <Content.Title
-          title="Calendar of Events"
-          subtitle={
-            calendarPage?.subtitle ||
-            'Stay connected with our upcoming learning, family, and community activities.'
-          }
-        />
-        <div className="rounded-2xl bg-primary-600 px-5 py-4 text-white md:max-w-xs">
-          <p className="font-display text-xl leading-tight text-secondary-300">
-            Learn. Connect. Grow. Together.
-          </p>
-        </div>
-      </div>
+      <Content.Title
+        title="Calendar of Events"
+        subtitle={
+          calendarPage?.subtitle ||
+          'Stay connected with our upcoming learning, family, and community activities.'
+        }
+      />
 
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -466,6 +361,8 @@ const Calendar = ({ events, calendarPage, studentDistricts }) => {
               onClick={() => {
                 setFilter('all');
                 setQuery('');
+                setShowDistrictPicker(false);
+                setDistrictSelection(ALL_DISTRICTS);
                 document.getElementById('all-events')?.scrollIntoView({
                   behavior: 'smooth',
                 });
@@ -485,35 +382,57 @@ const Calendar = ({ events, calendarPage, studentDistricts }) => {
         </div>
         {showFeatured &&
           (featured.length ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <Splide
+              key={featured.map((event) => event._id).join()}
+              options={featuredSliderOptions}
+              aria-label="Featured events"
+              className={`pb-8 ${
+                featured.length > 1 ? 'px-11' : ''
+              } ${featured.length > 2 ? 'sm:px-11' : 'sm:px-0'} ${
+                featured.length > 3 ? 'xl:px-11' : 'xl:px-0'
+              }`}
+            >
               {featured.map((event) => (
-                <EventCard
-                  key={event._id}
-                  event={event}
-                  expanded={expandedEventId === event._id}
-                  onToggle={() =>
-                    setExpandedEventId(
-                      expandedEventId === event._id ? null : event._id,
-                    )
-                  }
-                  onImageClick={setExpandedImage}
-                />
+                <SplideSlide key={event._id} className="flex">
+                  <EventCard
+                    event={event}
+                    expanded={expandedEventId === event._id}
+                    onToggle={() =>
+                      setExpandedEventId(
+                        expandedEventId === event._id ? null : event._id,
+                      )
+                    }
+                    onImageClick={setExpandedImage}
+                  />
+                </SplideSlide>
               ))}
-            </div>
+            </Splide>
           ) : (
             <Content.Empty>No featured events yet.</Content.Empty>
           ))}
       </section>
 
       <section id="all-events" className="space-y-4">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex min-w-0 flex-1 flex-wrap gap-1.5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div className="shrink-0">
+            <label className="relative block">
+              <span className="sr-only">Search events</span>
+              <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search events"
+                className="w-full rounded-full border border-gray-200 py-2 pl-9 pr-4 text-sm sm:w-56"
+              />
+            </label>
+          </div>
+          <div className="flex flex-wrap gap-2">
             {FILTERS.map((item) => (
               <button
                 key={item.id}
                 type="button"
                 onClick={() => setFilter(item.id)}
-                className={`whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ${
+                className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold ${
                   filter === item.id
                     ? 'bg-primary-600 text-white'
                     : 'bg-white text-primary-600 ring-1 ring-primary-200'
@@ -523,37 +442,38 @@ const Calendar = ({ events, calendarPage, studentDistricts }) => {
               </button>
             ))}
           </div>
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-            <label className="relative">
-              <span className="sr-only">Search events</span>
-              <SearchIcon className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search events"
-                className="w-full rounded-full border border-gray-200 py-1 pl-8 pr-3 text-xs sm:w-44"
-              />
-            </label>
-          </div>
         </div>
 
-        {filter === 'all' && (
-          <p className="text-sm text-gray-500">
-            {districtNames.length
-              ? `LP events for everyone, plus ${familyScopeLabel(studentDistricts)}.`
+        {showDistrictPicker && regionOptions.length > 0 && (
+          <label className="block">
+            <span className="sr-only">Choose a district</span>
+            <select
+              value={districtSelection}
+              onChange={(event) => setDistrictSelection(event.target.value)}
+              className="w-full rounded-full border border-gray-200 py-2 pl-4 pr-8 text-sm sm:w-56"
+            >
+              <option value={ALL_DISTRICTS}>All districts</option>
+              <option value={MY_DISTRICTS}>My district ({myDistrictsLabel})</option>
+              {regionOptions.map(({ region, districts }) => (
+                <optgroup key={region} label={REGION_LABELS[region]}>
+                  {districts.map((district) => (
+                    <option key={district} value={district}>
+                      {DISTRICT_LABELS[district]}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </label>
+        )}
+
+        <p className="text-sm text-gray-500">
+          {districtSelection !== ALL_DISTRICTS
+            ? `Showing ${selectionLabel} events only.`
+            : regionNames
+              ? `LP events for everyone, plus events from all ${regionNames} districts.`
               : 'LP events for everyone. District events appear once a 2026–2027 district is saved.'}
-          </p>
-        )}
-        {filter === 'district' && districtNames.length > 0 && (
-          <p className="text-sm text-gray-500">
-            Showing {familyScopeLabel(studentDistricts)} only.
-          </p>
-        )}
-        {filter === 'district' && districtNames.length === 0 && (
-          <p className="text-sm text-gray-500">
-            A district has not been saved for your 2026–2027 student yet.
-          </p>
-        )}
+        </p>
 
         {visible.length ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -608,7 +528,9 @@ const Calendar = ({ events, calendarPage, studentDistricts }) => {
           </h3>
           <p className="mt-2 text-sm text-gray-600">
             {calendarPage?.districtText ||
-              'Check out events happening in our Cebu, Luzon, and Mindanao districts.'}
+              (regionNames
+                ? `Check out events happening across our ${regionNames} districts.`
+                : 'Check out events happening in our Cebu, Luzon, and Mindanao districts.')}
           </p>
           <button
             type="button"
@@ -628,7 +550,7 @@ const Calendar = ({ events, calendarPage, studentDistricts }) => {
 };
 
 const EventCard = ({ event, expanded, onToggle, onImageClick }) => (
-  <article className="flex flex-col overflow-hidden rounded-2xl border bg-white shadow-sm">
+  <article className="flex w-full flex-col overflow-hidden rounded-2xl border bg-white shadow-sm">
     <button
       type="button"
       className="relative h-40 w-full bg-gray-50"
@@ -812,13 +734,23 @@ export const getServerSideProps = async (context) => {
       : [],
   ]);
 
+  const studentDistricts = [
+    ...new Set((districtRows || []).map((row) => row.district).filter(Boolean)),
+  ];
+  const regions = familyRegions(studentDistricts);
+  const visibleEvents = (events || []).reduce((list, event) => {
+    const scope = resolveEventScope(event);
+    if (!canViewEvent(scope, regions)) return list;
+    list.push({ ...event, districtKey: scope.districtKey, regionKey: scope.regionKey });
+    return list;
+  }, []);
+
   return {
     props: {
-      events: events || [],
+      events: visibleEvents,
       calendarPage: calendarPage || null,
-      studentDistricts: [
-        ...new Set((districtRows || []).map((row) => row.district).filter(Boolean)),
-      ],
+      studentDistricts,
+      regions,
     },
   };
 };

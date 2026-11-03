@@ -1,17 +1,37 @@
 import { InventoryMovementType } from '@prisma/client';
 import prisma from '@/prisma/index';
 
+const storeProductWhere = {
+  isActive: true,
+  deletedAt: null,
+};
+
+export const parseProductCategories = (categories) => {
+  const list = Array.isArray(categories)
+    ? categories
+    : typeof categories === 'string'
+      ? categories.split(',')
+      : [];
+
+  return [
+    ...new Set(
+      list
+        .map((category) =>
+          typeof category === 'string'
+            ? category.trim().replace(/\s+/g, ' ')
+            : ''
+        )
+        .filter(Boolean)
+    ),
+  ];
+};
+
 export const getProducts = async () =>
   prisma.product.findMany({
     where: { deletedAt: null },
     include: { inventory: true },
     orderBy: { name: 'asc' },
   });
-
-const storeProductWhere = {
-  isActive: true,
-  deletedAt: null,
-};
 
 export const toShopItem = (product) => {
   const onHand = product.inventory?.quantityOnHand ?? 0;
@@ -25,7 +45,7 @@ export const toShopItem = (product) => {
     price: Number(product.price),
     image: product.imageUrl || null,
     description: product.description || '',
-    categories: [],
+    categories: parseProductCategories(product.categories),
     inventory: Math.max(0, onHand - reserved),
   };
 };
@@ -37,7 +57,7 @@ export const getStoreProducts = async () => {
     orderBy: { name: 'asc' },
   });
 
-  return products.map(toShopItem);
+  return products.map((product) => toShopItem(product));
 };
 
 export const getStoreProductById = async (productId) => {
@@ -58,6 +78,7 @@ export const createProduct = async ({
   code,
   name,
   description,
+  categories,
   price,
   imageUrl,
   imagePath,
@@ -75,6 +96,7 @@ export const createProduct = async ({
         code: code.trim(),
         name: name.trim(),
         description: description?.trim() || null,
+        categories: parseProductCategories(categories),
         price,
         imageUrl: imageUrl || null,
         imagePath: imagePath || null,
@@ -241,6 +263,7 @@ export const updateProduct = async ({
   code,
   name,
   description,
+  categories,
   price,
   imageUrl,
   imagePath,
@@ -253,6 +276,9 @@ export const updateProduct = async ({
   if (name !== undefined) data.name = name.trim();
   if (description !== undefined) {
     data.description = description?.trim() || null;
+  }
+  if (categories !== undefined) {
+    data.categories = parseProductCategories(categories);
   }
   if (price !== undefined) data.price = price;
   if (imageUrl !== undefined) data.imageUrl = imageUrl || null;

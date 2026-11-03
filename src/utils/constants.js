@@ -379,8 +379,14 @@ export const isLocalAccreditationClosed = (gradeLevel, email) => {
   return LOCAL_ACCREDITATION_CLOSED_GRADES.has(gradeLevel);
 };
 
+export const isDualAccreditationClosed = (gradeLevel) =>
+  LOCAL_ACCREDITATION_CLOSED_GRADES.has(gradeLevel);
+
 export const LOCAL_ACCREDITATION_CLOSED_MESSAGE =
   'Local Accreditation enrollment is closed for Grades 1–12. International Accreditation remains open.';
+
+export const DUAL_ACCREDITATION_CLOSED_MESSAGE =
+  'Dual Accreditation enrollment is closed for Grades 1–12. International Accreditation remains open.';
 
 export const shouldShowTuitionFees = (program, gradeLevel) =>
   program !== 'HOMESCHOOL_COTTAGE' ||
