@@ -140,13 +140,28 @@ const expandPartnerSchools = (partnerSchool) => {
   return PARTNER_SCHOOL_MEMBERS[normalized] || [normalized];
 };
 
+const courseSchoolRequirement = (partnerSchool) => {
+  if (!partnerSchool) return [];
+  if (Array.isArray(partnerSchool)) {
+    return [...new Set(partnerSchool.flatMap(courseSchoolRequirement))];
+  }
+
+  // Sanity tags the Homelife course as HOMELIFE_ACADEMY. That is the Homelife
+  // school, so dual students (Homelife + Kairos or Mandaue) qualify too.
+  if (partnerSchool === 'HOMELIFE' || partnerSchool === 'HOMELIFE_ACADEMY') {
+    return ['HOMELIFE'];
+  }
+
+  return expandPartnerSchools(partnerSchool);
+};
+
 export const courseMatchesStudentPartnerSchool = (
   coursePartnerSchool,
   studentPartnerSchool
 ) => {
   if (!coursePartnerSchool) return true;
 
-  const courseSchools = expandPartnerSchools(coursePartnerSchool);
+  const courseSchools = courseSchoolRequirement(coursePartnerSchool);
   const studentSchools = expandPartnerSchools(studentPartnerSchool);
 
   if (studentSchools.length === 0) return false;
