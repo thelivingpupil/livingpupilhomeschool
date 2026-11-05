@@ -468,7 +468,7 @@ const deadlines2026 = {
     {
       [PaymentType.ANNUAL]: [0],
       [PaymentType.SEMI_ANNUAL]: [0, 3, 6],
-      [PaymentType.QUARTERLY]: [0, 2, 3, 4],
+      [PaymentType.QUARTERLY]: [0, 2, 3, 6], // Oct 5, Nov 5, Feb 5
       [PaymentType.MONTHLY]: [0, 1, 2, 3, 4, 5, 6],
       [PaymentType.PAY_ALL]: [0],
     },
