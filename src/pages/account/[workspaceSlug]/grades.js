@@ -172,7 +172,6 @@ const userUnsettledDues = [
   'trinah_saguiguit@yahoo.com',
   'unadaphneramirez@gmail.com',
   'mark.elle11@gmail.com',
-  'kchinoguin28@gmail.com',
   'ietyayangpaqs10@gmail.com',
   'almamikai@gmail.com',
   'dfmbanaag@gmail.com',
