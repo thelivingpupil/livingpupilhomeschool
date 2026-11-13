@@ -23,6 +23,7 @@ import {
   useCartContext,
   SHOP_PAYMENT_TYPE,
 } from '@/providers/cart';
+import { SHOP_INSTALLMENT_ENABLED } from '@/utils/constants';
 import useUser from '@/hooks/data/useUser';
 import SignatureCanvas from 'react-signature-canvas';
 import api from '@/lib/common/api';
@@ -216,6 +217,18 @@ const Shop = ({ categories, items }) => {
   );
 
   const disableShop = false;
+
+  const availablePaymentTypes = Object.entries(SHOP_PAYMENT_TYPE).filter(
+    ([key]) => SHOP_INSTALLMENT_ENABLED || key !== 'INSTALLMENT'
+  );
+
+  useEffect(() => {
+    if (!SHOP_INSTALLMENT_ENABLED) {
+      if (!paymentType || paymentType === 'INSTALLMENT') {
+        setPaymentType('FULL_PAYMENT');
+      }
+    }
+  }, [paymentType, setPaymentType]);
 
   const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -1002,13 +1015,11 @@ const Shop = ({ categories, items }) => {
                         value={paymentType || ''}
                       >
                         <option value="">-</option>
-                        {Object.entries(SHOP_PAYMENT_TYPE).map(
-                          ([key, value]) => (
-                            <option key={key} value={key}>
-                              {value}
-                            </option>
-                          )
-                        )}
+                        {availablePaymentTypes.map(([key, value]) => (
+                          <option key={key} value={key}>
+                            {value}
+                          </option>
+                        ))}
                       </select>
                       <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                         <ChevronDownIcon className="w-5 h-5" />
@@ -1269,13 +1280,11 @@ const Shop = ({ categories, items }) => {
                           value={paymentType || ''}
                         >
                           <option value="">-</option>
-                          {Object.entries(SHOP_PAYMENT_TYPE).map(
-                            ([key, value]) => (
-                              <option key={key} value={key}>
-                                {value}
-                              </option>
-                            )
-                          )}
+                          {availablePaymentTypes.map(([key, value]) => (
+                            <option key={key} value={key}>
+                              {value}
+                            </option>
+                          ))}
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                           <ChevronDownIcon className="w-5 h-5" />

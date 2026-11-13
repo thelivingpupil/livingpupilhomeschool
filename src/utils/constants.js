@@ -530,6 +530,9 @@ export const SHOP_SHIPPING_TYPE = {
   PICK_UP: 'Pick up',
 };
 
+/** When false, shop checkout only allows full payment (existing installment orders still display). */
+export const SHOP_INSTALLMENT_ENABLED = false;
+
 /** Island groups used by broadcast (and similar) audience filters. */
 export const PHILIPPINE_ISLAND_GROUP = {
   LUZON: 'LUZON',

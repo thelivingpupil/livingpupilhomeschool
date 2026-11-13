@@ -25,6 +25,7 @@ import {
   requestCancelShopOrderV2,
 } from '@/prisma/services/order-v2';
 import { renderInvoicePdf } from '@/lib/server/shop-invoice-pdf';
+import { SHOP_INSTALLMENT_ENABLED } from '@/utils/constants';
 
 const handler = async (req, res) => {
   const { method } = req;
@@ -40,6 +41,18 @@ const handler = async (req, res) => {
         paymentType,
         signatureLink,
       } = req.body;
+
+      if (paymentType === 'INSTALLMENT' && !SHOP_INSTALLMENT_ENABLED) {
+        res.status(400).json({
+          errors: {
+            paymentType: {
+              msg: 'Shop installment payments are currently disabled. Please select Full Payment.',
+            },
+          },
+        });
+        return;
+      }
+
       const email = session.user.email;
       const userId = session.user.userId;
       const guardian = await getGuardianInformation(userId);
